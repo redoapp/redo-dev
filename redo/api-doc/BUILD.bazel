@@ -3,15 +3,15 @@ load("//stoplight/rules:rules.bzl", "stoplight_push")
 
 package(default_visibility = ["//visibility:public"])
 
+stoplight_push(
+    name = "deploy",
+    srcs = [":openapi"],
+    stoplight = "//tools/stoplight:bin",
+)
+
 copy_file(
     name = "openapi",
     src = "//redo/api-schema:openapi",
     out = "openapi.yaml",
     allow_symlink = True,
-)
-
-stoplight_push(
-    name = "push",
-    srcs = [":openapi"],
-    stoplight = "//tools/stoplight:bin",
 )

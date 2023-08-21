@@ -38,8 +38,8 @@ jobs:
           API_SPOTLIGHT_TOKEN: ${{ secrets.API_SPOTLIGHT_TOKEN }}
           WEB_SPOTLIGHT_TOKEN: ${{ secrets.WEB_SPOTLIGHT_TOKEN }}
         run: |
-          bazel run redo/api-doc:publish -- --ci-token "$API_SPOTLIGHT_TOKEN"
-          bazel run redo/web-doc:publish -- --ci-token "$WEB_SPOTLIGHT_TOKEN"
+          bazel run redo/api-doc:deploy -- --ci-token "$API_SPOTLIGHT_TOKEN"
+          bazel run redo/web-doc:deploy -- --ci-token "$WEB_SPOTLIGHT_TOKEN"
       - if: always()
         name: Cleanup
         uses: ./.github/actions/cleanup

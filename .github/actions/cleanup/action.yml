@@ -12,11 +12,9 @@ runs:
       with:
         name: profile
         path: .profile/
-    - name: Remove Bazel outputs # https://github.com/actions/cache/issues/1215
+    - name: Shutdown Bazel
       if: inputs.cache-write == 'true'
-      run: |
-        bazel shutdown
-        sudo rm -fr ~/.cache/bazel/*/*/execroot ~/.cache/bazel/*/*/sandbox
+      run: bazel shutdown
       shell: bash
     - name: Save Bazel cache
       if: inputs.cache-write == 'true'

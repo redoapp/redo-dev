@@ -3,14 +3,14 @@ load("//stoplight/rules:rules.bzl", "stoplight_push")
 
 package(default_visibility = ["//visibility:public"])
 
-copy_to_directory(
-    name = "docs",
-    srcs = glob(["src/**/*.md"]),
-    root_paths = ["redo/web-doc/src"],
-)
-
 stoplight_push(
-    name = "push",
+    name = "deploy",
     srcs = [":docs"],
     stoplight = "//tools/stoplight:bin",
+)
+
+copy_to_directory(
+    name = "docs",  # must be in docs/ apparently
+    srcs = glob(["src/**/*.md"]),
+    root_paths = ["redo/web-doc/src"],
 )
