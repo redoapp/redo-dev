@@ -1,0 +1,56 @@
+concurrency:
+  cancel-in-progress: true
+  group: build/${{ github.ref }}
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          bazel-cache-key: bazel/${{ runner.os }}-${{ runner.arch }}/build/lint
+      - name: Test lint
+        run: bazel test tools/lint:lint_test
+      - if: always()
+        name: Cleanup
+        uses: ./.github/actions/cleanup
+        with:
+          bazel-cache-key: bazel/${{ runner.os }}-${{ runner.arch }}/build/lint
+          cache-write: ${{ github.ref == 'refs/heads/main' }}
+    timeout-minutes: 15
+  publish:
+    name: Publish
+    needs: [lint]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          bazel-cache-key:
+            bazel/${{ runner.os }}-${{ runner.arch }}/build/publish
+      - name: Publish
+        env:
+          API_SPOTLIGHT_TOKEN: ${{ secrets.API_SPOTLIGHT_TOKEN }}
+          WEB_SPOTLIGHT_TOKEN: ${{ secrets.WEB_SPOTLIGHT_TOKEN }}
+        run: |
+          bazel run redo/api-doc:publish -- --ci-token "$API_SPOTLIGHT_TOKEN"
+          bazel run redo/web-doc:publish -- --ci-token "$WEB_SPOTLIGHT_TOKEN"
+      - if: always()
+        name: Cleanup
+        uses: ./.github/actions/cleanup
+        with:
+          bazel-cache-key:
+            bazel/${{ runner.os }}-${{ runner.arch }}/build/publish
+          cache-write: ${{ github.ref == 'refs/heads/main' }}
+    timeout-minutes: 15
+name: Build
+on: [push, workflow_dispatch]
+permissions:
+  actions: write
+  contents: read
+  id-token: write

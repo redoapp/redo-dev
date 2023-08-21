@@ -1,0 +1,27 @@
+name: Cleanup
+description: Save cache and upload profiles
+inputs:
+  bazel-cache-key:
+    required: true
+  cache-write:
+    default: "true"
+runs:
+  steps:
+    - name: Upload profiles
+      uses: actions/upload-artifact@v3
+      with:
+        name: profile
+        path: .profile/
+    - name: Remove Bazel outputs # https://github.com/actions/cache/issues/1215
+      if: inputs.cache-write == 'true'
+      run: |
+        bazel shutdown
+        sudo rm -fr ~/.cache/bazel/*/*/execroot ~/.cache/bazel/*/*/sandbox
+      shell: bash
+    - name: Save Bazel cache
+      if: inputs.cache-write == 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: ~/.cache/bazel
+        key: ${{ inputs.bazel-cache-key }}/${{ github.sha }}
+  using: composite

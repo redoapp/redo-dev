@@ -1,0 +1,21 @@
+name: Setup
+description: Setup Bazel
+inputs:
+  bazel-cache-key:
+    required: true
+  disk-size:
+    default: 5G
+runs:
+  steps:
+    - name: Install Bazel
+      uses: bazelbuild/setup-bazelisk@v2
+    - name: Restore Bazel repo cache
+      uses: actions/cache/restore@v3
+      with:
+        path: ~/.cache/bazel
+        key: ${{ inputs.bazel-cache-key }}/${{ github.sha }}
+        restore-keys: ${{ inputs.bazel-cache-key }}/
+    - name: Configure Bazel
+      run: .github/bin/bazel-configure
+      shell: bash
+  using: composite
