@@ -1,0 +1,9 @@
+.bazel-npm-cache.json
+.cdktf
+.DS_Store
+.vscode
+.yarn
+dist
+node_modules
+
+/bazel-*
