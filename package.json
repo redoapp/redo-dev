@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "@redocly/cli": "^1",
+    "@stoplight/cli": "^6",
+    "prettier": "^2"
+  }
+}

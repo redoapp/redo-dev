@@ -1,0 +1,134 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Return
+required: [destination, source, id, order, items]
+properties:
+  destination:
+    properties:
+      mailingAddress:
+        $ref: ./address.schema.yaml
+        description: Mailing address to send the returned items.
+        title: Mailing address
+      phoneNumber:
+        $ref: ./phone-number.schema.yaml
+        description: Phone number of the destination.
+        title: Phone number
+    type: object
+  id:
+    description: Return identifier.
+    examples: [64df65d4c5a4ca3eff4b4e43]
+    title: Identifier
+    type: string
+  order:
+    $ref: ./order.schema.yaml
+    description: Original order.
+    title: Order
+  items:
+    description: Return items
+    items:
+      properties:
+        exchangeItem:
+          description: Exchange item, if exchange
+          properties:
+            productExternalId:
+              description: Shopify product ID
+            variantExternalId:
+              description: Shopify variant ID
+            productName:
+              description: Shopify product name
+          type: object
+        item:
+          description: Single item (quantity 1)
+          properties:
+            productExternalId:
+              description: Shopify line item ID
+            variantExternalId:
+              description: Shopify variant ID
+            productName:
+              description: Shopify product name
+          type: object
+        reason:
+          description: Return reason
+          examples:
+            - Too big
+            - Other
+          type: string
+        refundType:
+          description: Refund method, if not exchange
+          enum:
+            - credit
+            - refund
+          type: string
+        valueAdjustment:
+          description: Return value adjustment
+          examples:
+            - amount: 0
+              currency: USD
+          $ref: ./money.schema.yaml
+        valueBase:
+          description: Original value
+          $ref: ./money.schema.yaml
+        value:
+          description: Final return value
+          $ref: ./money.schema.yaml
+      required:
+        - item
+        - reason
+      type: object
+    type: array
+  shipment:
+    description: Shipment, if has been made
+    properties:
+      carrier:
+        description: Carrier code
+        title: Carrier
+        type: string
+      status:
+        description: Status of shipment
+        title: Status
+        enum:
+          - pre_transit
+          - transit
+          - delivered
+          - cancelled
+          - flagged
+        type: string
+      tracker:
+        description: Tracking number
+        title: Tracker
+        type: string
+    title: Shipment
+    type: object
+  status:
+    description: Return status
+    examples:
+      - open
+    enum:
+      - manual_review
+      - open
+      - transit
+      - delivered
+      - cancelled
+      - closed
+    type: string
+  source:
+    properties:
+      emailAddress:
+        description: Email address.
+        title: Email address
+        format: email
+        type: string
+      mailingAddress:
+        title: Mailing address
+        $ref: ./address.schema.yaml
+      name:
+        title: Name
+        $ref: ./person-name.schema.yaml
+      phoneNumber:
+        title: Phone number
+        $ref: ./phone-number.schema.yaml
+    type: object
+  updatedAt:
+    format: date-time
+    type: string
+title: Return
+type: object

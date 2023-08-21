@@ -1,0 +1,25 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+alias(
+    name = "bazelrc",
+    actual = "//tools/bazel:bazelrc",
+)
+
+alias(
+    name = "lint",
+    actual = "//tools/lint",
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@redotech/_root",
+)
+
+js_library(
+    name = "prettier_config",
+    srcs = [".prettierrc.yml"],
+    root = ":root",
+)

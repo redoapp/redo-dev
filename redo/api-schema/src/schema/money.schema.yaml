@@ -1,0 +1,13 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Currency amount
+properties:
+  amount:
+    examples: [50.2, 1.78]
+    title: Amount
+    type: number
+  currency:
+    examples: [USD, EUR]
+    title: Currency
+    type: string
+title: Money
+type: object

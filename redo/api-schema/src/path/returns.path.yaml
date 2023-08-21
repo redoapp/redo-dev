@@ -1,0 +1,47 @@
+description: List of returns.
+get:
+  description: List returns
+  parameters:
+    - in: query
+      description: Minimum updated time
+      example: "2000-01-01T00:00:00Z"
+      name: updatedAtMin
+      schema:
+        format: date-time
+        type: string
+    - in: query
+      description: Maximum updated time
+      example: "2000-01-01T00:00:00Z"
+      name: updatedAtMax
+      schema:
+        format: date-time
+        type: string
+    - in: header
+      example: 64df700931a04885276c3364
+      description: Page marker, from X-Page-Next header
+      name: X-Page-Continue
+      schema:
+        type: string
+    - in: header
+      example: 20
+      description: Page size, defaults to 20
+      name: X-Page-Size
+      schema:
+        type: integer
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/return.schema.yaml
+      description: Success
+      headers:
+        X-Page-Next:
+          description: Next value for X-Page-Continue, for more results
+          schema:
+            type: string
+  security:
+    - Bearer: []
+  tags:
+    - Returns
+summary: Returns

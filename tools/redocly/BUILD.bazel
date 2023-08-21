@@ -1,0 +1,9 @@
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+nodejs_binary(
+    name = "bin",
+    dep = "@npm//@redocly/cli:lib",
+    main = "bin/cli.js",
+)

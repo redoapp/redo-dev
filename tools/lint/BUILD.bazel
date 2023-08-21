@@ -1,0 +1,30 @@
+load("@rules_file//generate:rules.bzl", "format", "generate_test", "multi_generate")
+
+package(default_visibility = ["//visibility:public"])
+
+format(
+    name = "bazel_lint",
+    srcs = ["@files//:bazel_files"],
+    formatter = "//tools/buildifier",
+    strip_prefix = "/files",
+)
+
+multi_generate(
+    name = "lint",
+    deps = [
+        ":bazel_lint",
+        ":prettier_lint",
+    ],
+)
+
+generate_test(
+    name = "lint_test",
+    generate = ":lint",
+)
+
+format(
+    name = "prettier_lint",
+    srcs = ["@files//:prettier_files"],
+    formatter = "//tools/prettier",
+    strip_prefix = "/files",
+)

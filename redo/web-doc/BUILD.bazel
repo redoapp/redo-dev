@@ -1,0 +1,16 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("//stoplight/rules:rules.bzl", "stoplight_push")
+
+package(default_visibility = ["//visibility:public"])
+
+copy_to_directory(
+    name = "docs",
+    srcs = glob(["src/**/*.md"]),
+    root_paths = ["redo/web-doc/src"],
+)
+
+stoplight_push(
+    name = "push",
+    srcs = [":docs"],
+    stoplight = "//tools/stoplight:bin",
+)

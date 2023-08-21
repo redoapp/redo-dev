@@ -1,0 +1,64 @@
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: Bearer
+    UserBearer:
+      type: http
+      scheme: Bearer
+info:
+  title: Redo API
+  description: >
+    ## Endpoints
+
+
+    Endpoints are authenticated using the Bearer authorization scheme, using the
+    REDO_API_SECRET.
+
+
+    ```
+
+    GET /v2.1/resource HTTP/1.1
+
+    Authorization: Bearer 77bb7598b7a972475cc7c7e171ec33af
+
+    Host: api.getredo.com
+
+    ```
+
+
+    ## Webhooks
+
+
+    Webhooks are authenticated using the Bearer authorization scheme, using
+    REDO_WEBHOOK_SECRET supplied by the subscriber.
+
+
+    ```
+
+    POST /events HTTP/1.1
+
+    Authorization: Bearer e41c953f9d70719e2979098cb3c8645e
+
+    Host: subscriber.example.com
+
+    ```
+
+
+    Webhook events are delivered in order for each individual subject (e.g.
+    return).
+
+
+    If the response is not a 2xx status code, the event will be retried multiple
+    times before discarding it.
+  version: 2.1.0
+openapi: 3.1.0
+paths:
+  /stores/:storeId/returns: { $ref: path/returns.path.yaml }
+  /stores/:storeId/returns/:returnId/flag: { $ref: path/return-flag.path.yaml }
+  /stores/:storeId/returns/:returnId/process:
+    { $ref: path/return-process.path.yaml }
+servers:
+  - url: https://api.getredo.com/v2.1
+webhooks:
+  return: { $ref: webhook/return.yaml }

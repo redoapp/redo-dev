@@ -1,0 +1,22 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Order
+properties:
+  customer:
+    properties:
+      emailAddress:
+        title: Email address
+        type: string
+        format: email
+      name: { $ref: ./person-name.schema.yaml }
+      phoneNumber: { $ref: ./phone-number.schema.yaml }
+    type: object
+  externalId:
+    description: Shopify ID
+    type: string
+  name:
+    description: Shopify name
+    examples:
+      - "#123"
+    type: string
+title: Order
+type: object

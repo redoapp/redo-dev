@@ -1,0 +1,42 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Address
+properties:
+  city:
+    description: City name
+    examples: [Anytown]
+    title: City
+    type: string
+  country:
+    description: Country code
+    examples: [US, CA]
+    title: Country
+    type: string
+  line1:
+    description: Line 1
+    title: Line 1
+    examples: [123 Main St]
+    type: string
+  line2:
+    description: Line 2
+    title: Line 2
+    examples: [""]
+    type: string
+  state:
+    description: State or province code
+    examples: [WA]
+    title: State
+    type: string
+  postalCode:
+    description: Postal or ZIP code
+    examples: ["12345"]
+    title: Postal code
+    type: string
+required:
+  - city
+  - country
+  - line1
+  - line2
+  - state
+  - postalCode
+title: Address
+type: object

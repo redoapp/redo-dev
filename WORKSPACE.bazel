@@ -1,0 +1,153 @@
+workspace(name = "redotech_redodev")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Skylib
+
+SKYLIB_VERSION = "d54e8a70ce90a24b921381cbe84fa0b88b22dc46"
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "7345a2c1b005aeead6dd402345a665cc514ae229100ff1e5e40f9939efd6856b",
+    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
+    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
+)
+
+# Aspect Bazel Lib
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "aspect_bazel_lib",
+    sha256 = "44f4f6d1ea1fc5a79ed6ca83f875038fee0a0c47db4f9c9beed097e56f8fad03",
+    strip_prefix = "bazel-lib-1.34.0",
+    url = "https://github.com/aspect-build/bazel-lib/releases/download/v1.34.0/bazel-lib-v1.34.0.tar.gz",
+)
+
+load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies")
+
+aspect_bazel_lib_dependencies()
+
+# Rules File
+
+FILE_VERSION = "7e07245edcc54d419a52d141b3c8e86e3dc0d5c5"
+
+http_archive(
+    name = "rules_file",
+    sha256 = "ee31f2ebcd09e289090420012d19ffaecb71c005e74f511301f1fd47cbd5f971",
+    strip_prefix = "rules_file-%s" % FILE_VERSION,
+    url = "https://github.com/hello-seer/rules_file/archive/%s.zip" % FILE_VERSION,
+)
+
+# Rules Go
+
+GO_VERSION = "8c30dd4b43d3c4980e11ed7cb182beeb1be9ea76"
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "2a3fc53aa343cfa7931a56eb5dfe17e5ba158496ea6b4afce610f637611fc2ef",
+    strip_prefix = "rules_go-%s" % GO_VERSION,
+    url = "https://github.com/bazelbuild/rules_go/archive/%s.zip" % GO_VERSION,
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.19.3")
+
+# Gazelle
+
+GAZELLE_VERSION = "v0.29.0"
+
+http_archive(
+    name = "bazel_gazelle",
+    sha256 = "ecba0f04f96b4960a5b250c8e8eeec42281035970aa8852dda73098274d14a1d",
+    url = "https://github.com/bazelbuild/bazel-gazelle/releases/download/%s/bazel-gazelle-%s.tar.gz" % (GAZELLE_VERSION, GAZELLE_VERSION),
+)
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+gazelle_dependencies()
+
+# Rules pkg
+
+RULES_PKG_VERSION = "9a5be9b884814ca1d9f5acbd710c22dea0119a7f"
+
+http_archive(
+    name = "rules_pkg",
+    sha256 = "d21285a01aa26935a965dbc0e7f4b5447335b2527a64b085edd6254b061b452f",
+    strip_prefix = "rules_pkg-%s" % RULES_PKG_VERSION,
+    url = "https://github.com/redoapp/rules_pkg/archive/%s.tar.gz" % RULES_PKG_VERSION,
+)
+
+# Rules Python
+
+PYTHON_VERSION = "0efcd94d0ee6e1e56b27d25469c28502282fab5b"
+
+http_archive(
+    name = "rules_python",
+    sha256 = "e611111d092e54f04e0818d1bc89aad6a841c6f50cbe96e8ec13a6eddcfbf354",
+    strip_prefix = "rules_python-%s" % PYTHON_VERSION,
+    url = "https://github.com/bazelbuild/rules_python/archive/%s.zip" % PYTHON_VERSION,
+)
+
+load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+
+python_register_toolchains(
+    name = "python3_11",
+    python_version = "3.11",
+)
+
+# Rules Javascript
+
+RULES_JAVASCRIPT_VERSION = "a1f58fec303e7a3336713dc2157669c3b490dde8"
+
+http_archive(
+    name = "better_rules_javascript",
+    sha256 = "05378c7b9f243e9e4f4c009749b15d750efafbcb94fae8ef5aed17e69131e63f",
+    strip_prefix = "rules_javascript-%s" % RULES_JAVASCRIPT_VERSION,
+    url = "https://github.com/rivethealth/rules_javascript/archive/%s.tar.gz" % RULES_JAVASCRIPT_VERSION,
+)
+
+load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "repositories")
+
+javascript_repositories()
+
+# Protobuf
+
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a",
+    strip_prefix = "protobuf-3.13.0",
+    url = "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.tar.gz",
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+# Buildtools
+
+BUILDTOOLS_VERSION = "6.0.1"
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = "2abb7494488d7232acf43a13f6be886dff2c72c4b928a9861074089493015312",
+    strip_prefix = "buildtools-%s" % BUILDTOOLS_VERSION,
+    url = "https://github.com/bazelbuild/buildtools/archive/%s.zip" % BUILDTOOLS_VERSION,
+)
+
+load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
+
+buildifier_dependencies()
+
+# Redo Dev
+
+load("//tools/file:workspace.bzl", "file_repositories")
+
+file_repositories()
+
+load("//tools/npm:workspace.bzl", "npm_repositories")
+
+npm_repositories()

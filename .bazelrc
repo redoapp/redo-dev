@@ -1,0 +1,41 @@
+# Startup
+startup --host_jvm_args=-Xmx1024m
+
+# Files
+import %workspace%/tools/bazel/deleted.bazelrc
+
+# Tags
+common --incompatible_allow_tags_propagation
+
+# Cache
+build --disk_cache ~/.cache/bazel-disk
+build:ci --disk_cache=''
+fetch --disk_cache ~/.cache/bazel-disk
+fetch:ci --disk_cache=''
+query --disk_cache ~/.cache/bazel-disk
+query:ci --disk_cache=''
+sync --disk_cache ~/.cache/bazel-disk
+sync:ci --disk_cache=''
+
+# Profile
+build --nogenerate_json_trace_profile
+
+# Build
+build -k
+build --incompatible_strict_action_env
+build --nolegacy_external_runfiles
+build --nosandbox_default_allow_network
+build --reuse_sandbox_directories
+
+# Test
+build --incompatible_exclusive_test_sandboxed
+build --nozip_undeclared_test_outputs
+build --test_output=errors
+test --build_tests_only
+
+# Python
+build --experimental_python_import_all_repositories=false
+build --incompatible_default_to_explicit_init_py
+
+# User settings
+try-import %workspace%/.user.bazelrc

@@ -1,0 +1,9 @@
+load("//openapi/rules:rules.bzl", "openapi_bundle")
+
+package(default_visibility = ["//visibility:public"])
+
+openapi_bundle(
+    name = "openapi",
+    srcs = glob(["src/**/*.yaml"]),
+    main = "src/openapi.yaml",
+)

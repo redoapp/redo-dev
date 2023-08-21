@@ -1,0 +1,17 @@
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("//stoplight/rules:rules.bzl", "stoplight_push")
+
+package(default_visibility = ["//visibility:public"])
+
+copy_file(
+    name = "openapi",
+    src = "//redo/api-schema:openapi",
+    out = "openapi.yaml",
+    allow_symlink = True,
+)
+
+stoplight_push(
+    name = "push",
+    srcs = [":openapi"],
+    stoplight = "//tools/stoplight:bin",
+)
