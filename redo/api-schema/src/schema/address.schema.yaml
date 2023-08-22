@@ -13,23 +13,23 @@ properties:
     type: string
   line1:
     description: Line 1
-    title: Line 1
     examples: [123 Main St]
+    title: Line 1
     type: string
   line2:
     description: Line 2
-    title: Line 2
     examples: [""]
-    type: string
-  state:
-    description: State or province code
-    examples: [WA]
-    title: State
+    title: Line 2
     type: string
   postalCode:
     description: Postal or ZIP code
     examples: ["12345"]
     title: Postal code
+    type: string
+  state:
+    description: State or province code
+    examples: [WA]
+    title: State
     type: string
 required:
   - city

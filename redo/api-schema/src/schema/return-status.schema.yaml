@@ -1,0 +1,12 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Return status.
+enum:
+  - manual_review
+  - open
+  - transit
+  - delivered
+  - cancelled
+  - closed
+examples: [open]
+type: string
+title: Return status

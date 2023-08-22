@@ -1,18 +1,14 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Person name
+description: Person name.
 properties:
   given:
     description: Given name
-    examples:
-      - John
+    examples: [John, Mary]
     type: string
   surname:
     description: Surname
-    examples:
-      - Smith
+    examples: [Smith, Brown]
     type: string
-required:
-  - given
-  - surname
+required: [given, surname]
 title: Person name
 type: object

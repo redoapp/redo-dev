@@ -1,0 +1,25 @@
+description: Return comment.
+post:
+  description: Create return comment.
+  operationId: Return comment create
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/comment.schema.yaml }
+    required: true
+  responses:
+    "201":
+      content:
+        application/json:
+          schema: { $ref: ../schema/comment.schema.yaml }
+      description: Success
+    "404":
+      description: Missing
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+  security:
+    - Bearer: []
+  summary: Create return comment
+  tags: [Returns]
+summary: Return comment

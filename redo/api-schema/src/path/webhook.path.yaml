@@ -1,0 +1,41 @@
+description: Webhook.
+delete:
+  description: Delete a webbhook.
+  operationId: Webhook delete
+  responses:
+    "204":
+      description: Deleted
+  security:
+    - Bearer: []
+  summary: Delete webhook
+  tags: [Webhooks]
+get:
+  description: Get a webhook.
+  operationId: Webhook get
+  responses:
+    "200":
+      description: Success
+      content:
+        application/json:
+          schema: { $ref: ../schema/webhook-read.schema.yaml }
+  summary: Get webhook
+  tags: [Webhooks]
+put:
+  description: Update a webhook.
+  operationId: Webhook update
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/webhook-write.schema.yaml }
+    required: true
+  responses:
+    "204":
+      description: Success
+    "404":
+      description: Missing
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+  summary: Update webhook
+  tags: [Webhooks]
+summary: Webhook

@@ -1,0 +1,56 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Order.
+properties:
+  customer:
+    properties:
+      emailAddress:
+        description: Email address of customer.
+        format: email
+        title: Email address
+        type: string
+      name:
+        $ref: ./person-name.schema.yaml
+        description: Name of customer.
+        title: Name
+      phoneNumber:
+        $ref: ./phone-number.schema.yaml
+        description: Phone number of customer.
+        title: Phone number
+    required: [name]
+    type: object
+  externalId:
+    description: Shopify ID
+    examples: ["1073459971", "450789469"]
+    title: External ID
+    type: string
+  id:
+    description: Order ID
+    example: 64e4da943dd822979a70bd12
+    title: ID
+    type: string
+  lineItems:
+    items:
+      properties:
+        externalId:
+          example: "123"
+          type: string
+        quantity:
+          example: 1
+          min: 1
+          type: integer
+        product:
+          $ref: ./product.schema.yaml
+          title: Product
+        variant:
+          $ref: ./product-variant.schema.yaml
+          title: Variant
+      required: [product, quantity, variant]
+    type: array
+  name:
+    description: Shopify name.
+    examples: ["#123"]
+    title: Name
+    type: string
+required: [customer, id, name]
+title: Order
+type: object

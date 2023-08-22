@@ -2133,7 +2133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.1.0":
+"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
@@ -3259,6 +3259,7 @@ __metadata:
     "@redocly/cli": ^1
     "@stoplight/cli": ^6
     prettier: ^2
+    yaml-sort: ^2
   languageName: unknown
   linkType: soft
 
@@ -3992,6 +3993,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yaml-sort@npm:^2":
+  version: 2.0.0
+  resolution: "yaml-sort@npm:2.0.0"
+  dependencies:
+    js-yaml: ^4.0.0
+    yargs: ^17.0.0
+  bin:
+    yaml-sort: yaml-sort.js
+  checksum: b2407e2370d0a7d15ffc67aaf62f93dd9a52732dce68e9bfab707380847570e360beb51c3e00c16cdbde315d310ea1868cfe526d46a66650bc5276bf3e425091
+  languageName: node
+  linkType: hard
+
 "yaml@npm:*":
   version: 2.3.1
   resolution: "yaml@npm:2.3.1"
@@ -4035,7 +4048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.1":
+"yargs@npm:^17.0.0, yargs@npm:^17.0.1":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:

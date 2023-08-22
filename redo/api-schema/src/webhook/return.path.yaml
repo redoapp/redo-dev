@@ -1,0 +1,49 @@
+description: Return event webhook.
+post:
+  operationId: "Webhook return event"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          description: Return event
+          properties:
+            at:
+              description: Event time
+              format: date-time
+              title: At
+              type: string
+            order:
+              $ref: ../schema/order-read.schema.yaml
+              description: Order for return.
+              title: Order
+            return:
+              $ref: ../schema/return-read.schema.yaml
+              description: Return.
+              title: Return
+            type:
+              description: Event type
+              enum:
+                - created
+                - updated
+              type: string
+          type: object
+    description: |
+      Return event webhook.
+
+      <!-- theme: warning -->
+      > #### Note
+      >
+      > This is not an actual Redo API endpoint, but a webhook.
+    required: true
+  responses:
+    2xx:
+      description: Success. Return a 2xx status code to indicate success.
+    default:
+      description:
+        Error. The event will be retried multiple times and then discarded.
+  security:
+    - UserBearer: []
+  summary: "Return event [Webhook]"
+  tags:
+    - Returns
+summary: "Return event [Webhook]"

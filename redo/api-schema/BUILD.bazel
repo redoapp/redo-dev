@@ -4,6 +4,9 @@ package(default_visibility = ["//visibility:public"])
 
 openapi_bundle(
     name = "openapi",
-    srcs = glob(["src/**/*.yaml"]),
+    srcs = glob([
+        "src/**/*.json",
+        "src/**/*.yaml",
+    ]),
     main = "src/openapi.yaml",
 )

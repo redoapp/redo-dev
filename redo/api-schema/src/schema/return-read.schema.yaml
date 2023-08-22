@@ -1,6 +1,5 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Return
-required: [destination, source, id, order, items]
+description: Return.
 properties:
   destination:
     properties:
@@ -18,10 +17,6 @@ properties:
     examples: [64df65d4c5a4ca3eff4b4e43]
     title: Identifier
     type: string
-  order:
-    $ref: ./order.schema.yaml
-    description: Original order.
-    title: Order
   items:
     description: Return items
     items:
@@ -29,52 +24,56 @@ properties:
         exchangeItem:
           description: Exchange item, if exchange
           properties:
-            productExternalId:
-              description: Shopify product ID
-            variantExternalId:
-              description: Shopify variant ID
-            productName:
-              description: Shopify product name
+            product:
+              $ref: ./product.schema.yaml
+            variant:
+              $ref: ./product-variant.schema.yaml
           type: object
-        item:
-          description: Single item (quantity 1)
+        lineItem:
+          description: Line item (quantity 1)
           properties:
-            productExternalId:
-              description: Shopify line item ID
-            variantExternalId:
-              description: Shopify variant ID
-            productName:
-              description: Shopify product name
+            index:
+              description: Zero-based index of line item in original order.
+              min: 0
+              title: Index
+              type: integer
+          required: [index]
+          title: Line item
           type: object
         reason:
           description: Return reason
-          examples:
-            - Too big
-            - Other
+          examples: [Too big, Other]
           type: string
         refundType:
           description: Refund method, if not exchange
-          enum:
-            - credit
-            - refund
+          enum: [credit, refund]
           type: string
+        value:
+          $ref: ./money.schema.yaml
+          description: Final return value
         valueAdjustment:
+          $ref: ./money.schema.yaml
           description: Return value adjustment
           examples:
             - amount: 0
               currency: USD
-          $ref: ./money.schema.yaml
         valueBase:
+          $ref: ./money.schema.yaml
           description: Original value
-          $ref: ./money.schema.yaml
-        value:
-          description: Final return value
-          $ref: ./money.schema.yaml
-      required:
-        - item
-        - reason
+      required: [item, reason]
       type: object
     type: array
+  order:
+    description: Original order.
+    properties:
+      id:
+        description: Order ID.
+        example: abc123
+        title: ID
+        type: string
+    required: [id]
+    title: Order
+    type: object
   shipment:
     description: Shipment, if has been made
     properties:
@@ -84,13 +83,13 @@ properties:
         type: string
       status:
         description: Status of shipment
-        title: Status
         enum:
           - pre_transit
           - transit
           - delivered
           - cancelled
           - flagged
+        title: Status
         type: string
       tracker:
         description: Tracking number
@@ -98,37 +97,40 @@ properties:
         type: string
     title: Shipment
     type: object
-  status:
-    description: Return status
-    examples:
-      - open
-    enum:
-      - manual_review
-      - open
-      - transit
-      - delivered
-      - cancelled
-      - closed
-    type: string
   source:
     properties:
       emailAddress:
         description: Email address.
-        title: Email address
         format: email
+        title: Email address
         type: string
       mailingAddress:
-        title: Mailing address
         $ref: ./address.schema.yaml
+        description: Mailing address returned items are sent from.
+        title: Mailing address
       name:
-        title: Name
         $ref: ./person-name.schema.yaml
+        description: Name of returner.
+        title: Name
       phoneNumber:
-        title: Phone number
         $ref: ./phone-number.schema.yaml
+        description: Phone number of returner.
+        title: Phone number
     type: object
+  status:
+    $ref: ./return-status.schema.yaml
+    description: Return status.
+    title: Status
   updatedAt:
+    description: Time of last update.
     format: date-time
+    title: Updated at
     type: string
+required:
+  - destination
+  - source
+  - id
+  - order
+  - items
 title: Return
 type: object

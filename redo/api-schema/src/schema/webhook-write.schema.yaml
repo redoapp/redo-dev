@@ -1,0 +1,19 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Webhook.
+properties:
+  callback:
+    description: Callback URL.
+    format: uri
+    pattern: ^https://
+    title: Callback
+  externalId:
+    description: External identifier.
+    title: External ID
+    type: string
+  topic:
+    enum: [return]
+    description: Topic.
+    title: Topic
+    type: string
+title: Webhook write
+type: object

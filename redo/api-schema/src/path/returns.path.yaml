@@ -1,47 +1,52 @@
 description: List of returns.
 get:
-  description: List returns
+  description: List returns, sorted by most recent to least recent.
+  operationId: Returns list
   parameters:
-    - in: query
-      description: Minimum updated time
+    - description: Minimum updated time, inclusive
       example: "2000-01-01T00:00:00Z"
-      name: updatedAtMin
-      schema:
-        format: date-time
-        type: string
-    - in: query
-      description: Maximum updated time
-      example: "2000-01-01T00:00:00Z"
-      name: updatedAtMax
-      schema:
-        format: date-time
-        type: string
-    - in: header
+      in: query
+      name: filter[updated_min]
+      schema: { format: date-time, type: string }
+    - description: Maximum updated time, exclusive
+      example: "2000-02-01T00:00:00Z"
+      in: query
+      name: filter[updated_max]
+      schema: { format: date-time, type: string }
+    - description: Page marker, from X-Page-Next header
       example: 64df700931a04885276c3364
-      description: Page marker, from X-Page-Next header
+      in: header
       name: X-Page-Continue
-      schema:
-        type: string
-    - in: header
+      schema: { type: string }
+    - description: Page size, defaults to 20
       example: 20
-      description: Page size, defaults to 20
+      in: header
       name: X-Page-Size
-      schema:
-        type: integer
+      schema: { type: integer }
   responses:
     "200":
       content:
         application/json:
           schema:
-            $ref: ../schema/return.schema.yaml
+            properties:
+              orders:
+                items: { $ref: ../schema/order-read.schema.yaml }
+                type: array
+              returns:
+                items: { $ref: ../schema/return-read.schema.yaml }
+                type: array
+            required: [orders, returns]
+            type: object
+
       description: Success
       headers:
         X-Page-Next:
           description: Next value for X-Page-Continue, for more results
-          schema:
-            type: string
+          schema: { type: string }
+    "404":
+      description: Missing
   security:
     - Bearer: []
-  tags:
-    - Returns
+  summary: List returns
+  tags: [Returns]
 summary: Returns

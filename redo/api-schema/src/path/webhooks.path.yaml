@@ -1,0 +1,42 @@
+description: Webhooks.
+get:
+  description: List webhooks for store.
+  operationId: Webhooks list
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            items: { $ref: ../schema/webhook-read.schema.yaml }
+            type: array
+      description: Success
+  summary: List webhooks
+  tags: [Webhooks]
+post:
+  description:
+    Create webhook for store. Or if webhook already exists with `externalId`,
+    updated it.
+  operationId: Webhook create
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: "../schema/webhook-write.schema.yaml" }
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema: { $ref: ../schema/webhook-read.schema.yaml }
+      description: Success
+    "201":
+      content:
+        application/json:
+          schema: { $ref: ../schema/webhook-read.schema.yaml }
+      description: Created
+    "404":
+      description: Missing
+  security:
+    - Bearer: []
+  summary: Create or update webhook
+  tags: [Webhooks]
+summary: Webhooks

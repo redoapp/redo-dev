@@ -1,0 +1,45 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Webhooks.
+properties:
+  callback:
+    description: Callback to POST events.
+    properties:
+      authToken:
+        description: Token for Bearer authorization.
+        format: password
+        title: Authorization token
+        type: string
+      url:
+        description: HTTPS callback URL.
+        format: uri
+        pattern: ^https://
+        title: URL
+        type: string
+    title: Callback
+    type: object
+  createdAt:
+    description: Time created.
+    format: date-time
+    title: Created at.
+    type: string
+  externalId:
+    description: External identifier.
+    title: External ID
+    type: string
+  id:
+    description: Webhook ID.
+    readonly: true
+    title: ID
+    type: string
+  updatedAt:
+    description: Time updated.
+    format: date-time
+    title: Updated at.
+    type: string
+  topic:
+    enum: [return]
+    description: Topic.
+    title: Topic
+    type: string
+title: Webhook read
+type: object

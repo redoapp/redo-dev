@@ -10,6 +10,7 @@ filegroup(
     srcs = glob(
         [
             "files/**/*.md",
+            "files/**/*.json",
             "files/**/*.yaml",
         ],
     ),

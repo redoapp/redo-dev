@@ -30,13 +30,13 @@ aspect_bazel_lib_dependencies()
 
 # Rules File
 
-FILE_VERSION = "7e07245edcc54d419a52d141b3c8e86e3dc0d5c5"
+FILE_VERSION = "a79a1036c27eb545cc6e7e08d99de525544bac4f"
 
 http_archive(
     name = "rules_file",
-    sha256 = "ee31f2ebcd09e289090420012d19ffaecb71c005e74f511301f1fd47cbd5f971",
+    sha256 = "1a9c25cb2a0aa240838175f86e42ca48683a914270641f8eae17c27bc78e9299",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
-    url = "https://github.com/hello-seer/rules_file/archive/%s.zip" % FILE_VERSION,
+    url = "https://github.com/rivethealth/rules_file/archive/%s.zip" % FILE_VERSION,
 )
 
 # Rules Go

@@ -1,0 +1,19 @@
+description: Return status.
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
+put:
+  description: Update return status.
+  operationId: Return status update
+  responses:
+    "200":
+      content:
+        application/json:
+          schema: { $ref: ../schema/return-status.schema.yaml }
+      description: Success
+    "404":
+      description: Missing
+  security:
+    - Bearer: []
+  summary: Update return status
+  tags: [Returns]
+summary: Return status

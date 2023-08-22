@@ -1,0 +1,9 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Comment (write)
+properties:
+  image:
+    contentEncoding: base64
+    type: string
+  message:
+    type: string
+title: Comment write
