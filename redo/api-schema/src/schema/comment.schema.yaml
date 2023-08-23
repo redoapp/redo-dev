@@ -1,9 +1,22 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Comment (write)
-properties:
-  image:
-    contentEncoding: base64
-    type: string
-  message:
-    type: string
-title: Comment write
+description: Comment with either message or image.
+examples:
+  - { message: "Item is worn." }
+  - { image: "eJxiYAEAAAD//wMAAAYABQ==" }
+oneOf:
+  - properties:
+      image:
+        contentEncoding: base64
+        description: Base64-encoded image
+        title: Image
+        type: string
+    title: Image comment
+    type: object
+  - properties:
+      message:
+        description: Message.
+        title: Message
+        type: string
+    title: Message comment
+    type: object
+title: Comment

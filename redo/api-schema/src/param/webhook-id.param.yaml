@@ -1,0 +1,7 @@
+description: Webhook ID
+in: path
+name: webhookId
+required: true
+schema:
+  example: 64e5a865a58eefeed7f05ea6
+  type: string

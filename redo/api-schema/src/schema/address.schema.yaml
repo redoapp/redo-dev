@@ -1,5 +1,5 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Address
+description: Address.
 properties:
   city:
     description: City name
@@ -17,6 +17,7 @@ properties:
     title: Line 1
     type: string
   line2:
+    default: ""
     description: Line 2
     examples: [""]
     title: Line 2
@@ -35,7 +36,6 @@ required:
   - city
   - country
   - line1
-  - line2
   - state
   - postalCode
 title: Address

@@ -1,23 +1,52 @@
 description: Return comment.
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
+get:
+  description: List return comments.
+  operationId: Return comments get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              comments:
+                description: Return comments.
+                items: { $ref: ../schema/comment.schema.yaml }
+                title: Comments
+                type: array
+            required: [comments]
+            type: object
+      description: Success
+  summary: List return comments
+  tags: [Returns]
 post:
   description: Create return comment.
   operationId: Return comment create
   requestBody:
     content:
       application/json:
-        schema: { $ref: ../schema/comment.schema.yaml }
+        schema:
+          properties:
+            comment: { $ref: ../schema/comment.schema.yaml }
+          required: [comment]
+          type: object
     required: true
   responses:
     "201":
       content:
         application/json:
-          schema: { $ref: ../schema/comment.schema.yaml }
-      description: Success
-    "404":
-      description: Missing
+          schema:
+            properties:
+              comment: { $ref: ../schema/comment.schema.yaml }
+            required: [comment]
+            type: object
+      description: Created
+    default:
       content:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.json }
+      description: Error
   security:
     - Bearer: []
   summary: Create return comment

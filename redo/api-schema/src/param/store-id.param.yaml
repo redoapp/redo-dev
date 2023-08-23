@@ -1,0 +1,7 @@
+description: Store ID
+in: path
+name: storeId
+required: true
+schema:
+  example: 64e5a8a1af49a89df37e4ee7
+  type: string

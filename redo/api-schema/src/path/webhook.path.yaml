@@ -20,6 +20,8 @@ get:
           schema: { $ref: ../schema/webhook-read.schema.yaml }
   summary: Get webhook
   tags: [Webhooks]
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
 put:
   description: Update a webhook.
   operationId: Webhook update
@@ -31,11 +33,11 @@ put:
   responses:
     "204":
       description: Success
-    "404":
-      description: Missing
+    default:
       content:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.json }
+      description: Error
   summary: Update webhook
   tags: [Webhooks]
 summary: Webhook

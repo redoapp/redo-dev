@@ -1,4 +1,4 @@
-description: List of returns.
+description: List of returns for store.
 get:
   description: List returns, sorted by most recent to least recent.
   operationId: Returns list
@@ -37,16 +37,20 @@ get:
                 type: array
             required: [orders, returns]
             type: object
-
       description: Success
       headers:
         X-Page-Next:
           description: Next value for X-Page-Continue, for more results
           schema: { type: string }
-    "404":
-      description: Missing
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+      description: Error
   security:
     - Bearer: []
   summary: List returns
   tags: [Returns]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
 summary: Returns

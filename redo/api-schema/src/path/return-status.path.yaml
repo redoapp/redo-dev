@@ -1,17 +1,48 @@
 description: Return status.
 parameters:
   - { $ref: ../param/return-id.param.yaml }
-put:
-  description: Update return status.
-  operationId: Return status update
+get:
+  description: Get return status.
+  operationId: Return status get
   responses:
     "200":
       content:
         application/json:
-          schema: { $ref: ../schema/return-status.schema.yaml }
+          schema:
+            properties:
+              status: { $ref: ../schema/return-status.schema.yaml }
+            required: status
+            type: object
       description: Success
-    "404":
-      description: Missing
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get return status
+  tags: [Returns]
+put:
+  description: Update return status.
+  operationId: Return status update
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            status: { $ref: ../schema/return-status.schema.yaml }
+          required: status
+          type: object
+    required: true
+  responses:
+    "204":
+      description: Updated
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+      description: Error
   security:
     - Bearer: []
   summary: Update return status

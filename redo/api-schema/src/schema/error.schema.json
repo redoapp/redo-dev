@@ -2,6 +2,7 @@
   "id": "https://tools.ietf.org/rfc/rfc7807.txt",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "description": "schema for a rfc7807",
+  "title": "Problem",
   "type": "object",
   "required": ["type"],
   "properties": {

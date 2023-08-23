@@ -1,0 +1,32 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: HTTPS callback
+properties:
+  auth:
+    default: null
+    description: Authorization.
+    oneOf:
+      - properties:
+          bearer:
+            description: Bearer
+            properties:
+              token:
+                description: Token for Bearer authorization.
+                example: abc123
+                format: password
+                title: Token
+                type: string
+            title: Bearer
+        title: Bearer authorization
+        type: object
+      - type: "null"
+    title: Authorization
+  url:
+    description: HTTPS callback URL.
+    example: https://subscriber.example.org/events
+    format: uri
+    pattern: ^https://
+    title: URL
+    type: string
+required: [authToken, url]
+title: HTTPS callback
+type: object

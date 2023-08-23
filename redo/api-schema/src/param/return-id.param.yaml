@@ -3,5 +3,5 @@ in: path
 name: returnId
 required: true
 schema:
-  examples: 64e4d5e837572a4813b73e40
+  example: 64e4d5e837572a4813b73e40
   type: string

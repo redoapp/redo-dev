@@ -2,18 +2,18 @@ $schema: https://json-schema.org/draft/2020-12/schema
 description: Webhook.
 properties:
   callback:
-    description: Callback URL.
-    format: uri
-    pattern: ^https://
+    $ref: ./https-callback.schema.yaml
+    description: Callback to POST events.
     title: Callback
   externalId:
-    description: External identifier.
+    default: null
+    description: Optional external identifier.
     title: External ID
-    type: string
+    type: [string, "null"]
   topic:
-    enum: [return]
+    $ref: ./webhook-topic.schema.yaml
     description: Topic.
     title: Topic
-    type: string
+required: [callback, topic]
 title: Webhook write
 type: object
