@@ -35,11 +35,11 @@ jobs:
             bazel/${{ runner.os }}-${{ runner.arch }}/build/publish
       - name: Publish
         env:
-          API_SPOTLIGHT_TOKEN: ${{ secrets.API_SPOTLIGHT_TOKEN }}
-          WEB_SPOTLIGHT_TOKEN: ${{ secrets.WEB_SPOTLIGHT_TOKEN }}
+          API_STOPLIGHT_TOKEN: ${{ secrets.API_STOPLIGHT_TOKEN }}
+          WEB_STOPLIGHT_TOKEN: ${{ secrets.WEB_STOPLIGHT_TOKEN }}
         run: |
-          bazel run redo/api-doc:deploy -- -b v2.2 --ci-token "$API_SPOTLIGHT_TOKEN"
-          bazel run redo/web-doc:deploy -- -b v2.2 --ci-token "$WEB_SPOTLIGHT_TOKEN"
+          bazel run redo/api-doc:deploy -- -b v2.2 --ci-token "$API_STOPLIGHT_TOKEN"
+          bazel run redo/web-doc:deploy -- -b v2.2 --ci-token "$WEB_STOPLIGHT_TOKEN"
       - if: always()
         name: Cleanup
         uses: ./.github/actions/cleanup
