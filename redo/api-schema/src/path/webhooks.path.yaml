@@ -15,6 +15,8 @@ get:
       description: Success
   summary: List webhooks
   tags: [Webhooks]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
 post:
   description:
     Create webhook for store. Or if webhook already exists with `externalId`,
@@ -54,6 +56,4 @@ post:
     - Bearer: []
   summary: Create or update webhook
   tags: [Webhooks]
-parameters:
-  - { $ref: ../param/store-id.param.yaml }
 summary: Webhooks

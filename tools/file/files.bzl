@@ -11,7 +11,11 @@ filegroup(
         [
             "files/**/*.md",
             "files/**/*.json",
-            "files/**/*.yaml",
         ],
     ),
+)
+
+filegroup(
+    name = "yaml_files",
+    srcs = glob(["files/**/*.yaml"]),
 )

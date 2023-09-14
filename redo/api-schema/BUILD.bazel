@@ -2,8 +2,16 @@ load("//openapi/rules:rules.bzl", "openapi_bundle")
 
 package(default_visibility = ["//visibility:public"])
 
-openapi_bundle(
+genrule(
     name = "openapi",
+    srcs = [":openapi0"],
+    outs = ["openapi.yaml"],
+    cmd = '$(execpath //yaml/rules:yq) "sort_keys(..)" < $< > $@',
+    tools = ["//yaml/rules:yq"],
+)
+
+openapi_bundle(
+    name = "openapi0",
     srcs = glob([
         "src/**/*.json",
         "src/**/*.yaml",

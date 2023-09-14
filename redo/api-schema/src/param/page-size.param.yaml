@@ -1,0 +1,5 @@
+description: Page size, defaults to 20
+example: 20
+in: header
+name: X-Page-Size
+schema: { type: integer }

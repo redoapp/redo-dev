@@ -1,0 +1,2 @@
+description: Next value for X-Page-Continue, for more results
+schema: { type: string }

@@ -1,9 +1,9 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Webhooks.
+description: Webhook read.
 properties:
   callback:
     $ref: ./https-callback.schema.yaml
-    description: Callback to POST events.
+    description: HTTPS callback URL to POST events.
     title: Callback
   createdAt:
     description: Time created.
@@ -20,15 +20,15 @@ properties:
     readonly: true
     title: ID
     type: string
-  updatedAt:
-    description: Time updated.
-    format: date-time
-    title: Updated at.
-    type: string
   topic:
     $ref: ./webhook-topic.schema.yaml
     description: Topic.
     title: Topic
-required: [callback, createdAt, id, updatedAt, topic]
+  updatedAt:
+    description: Last time updated.
+    format: date-time
+    title: Updated at.
+    type: string
+required: [callback, createdAt, externalId id, updatedAt, topic]
 title: Webhook read
 type: object

@@ -7,6 +7,6 @@ enum:
   - delivered
   - cancelled
   - closed
-examples: [open]
-type: string
+example: open
 title: Return status
+type: string

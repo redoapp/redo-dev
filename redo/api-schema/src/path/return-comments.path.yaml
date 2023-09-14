@@ -1,6 +1,4 @@
 description: Return comment.
-parameters:
-  - { $ref: ../param/return-id.param.yaml }
 get:
   description: List return comments.
   operationId: Return comments get
@@ -20,6 +18,8 @@ get:
       description: Success
   summary: List return comments
   tags: [Returns]
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
 post:
   description: Create return comment.
   operationId: Return comment create

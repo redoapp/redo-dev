@@ -1,4 +1,4 @@
-load("@rules_file//generate:rules.bzl", "format", "generate_test", "multi_generate")
+load("@rules_file//generate:rules.bzl", "format", "formatter_composite", "generate_test", "multi_generate")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -14,6 +14,7 @@ multi_generate(
     deps = [
         ":bazel_lint",
         ":prettier_lint",
+        ":yaml_lint",
     ],
 )
 
@@ -27,4 +28,19 @@ format(
     srcs = ["@files//:prettier_files"],
     formatter = "//tools/prettier",
     strip_prefix = "/files",
+)
+
+format(
+    name = "yaml_lint",
+    srcs = ["@files//:yaml_files"],
+    formatter = ":yaml_linter",
+    strip_prefix = "/files",
+)
+
+formatter_composite(
+    name = "yaml_linter",
+    formatters = [
+        "//tools/yaml:sorter",
+        "//tools/prettier",
+    ],
 )

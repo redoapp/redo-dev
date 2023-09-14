@@ -1,0 +1,7 @@
+load("//yaml/rules:rules.bzl", "yaml_sorter")
+
+package(default_visibility = ["//visibility:public"])
+
+yaml_sorter(
+    name = "sorter",
+)

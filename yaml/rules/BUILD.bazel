@@ -1,0 +1,7 @@
+load(":rules.bzl", "yq_bin")
+
+package(default_visibility = ["//visibility:public"])
+
+yq_bin(
+    name = "yq"
+)

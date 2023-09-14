@@ -1,0 +1,5 @@
+description: Minimum updated time, inclusive
+example: 2000-01-01T00:00:00Z
+in: query
+name: updated_at_min
+schema: { format: date-time, type: string }

@@ -1,10 +1,10 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Webhook.
+description: Webhook write.
 properties:
   callback:
     $ref: ./https-callback.schema.yaml
-    description: Callback to POST events.
-    title: Callback
+    description: HTTPS callback to POST events.
+    title: HTTPS callback
   externalId:
     default: null
     description: Optional external identifier.

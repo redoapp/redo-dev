@@ -1,0 +1,5 @@
+description: Page marker, from X-Page-Next header
+example: 64df700931a04885276c3364
+in: header
+name: X-Page-Continue
+schema: { type: string }

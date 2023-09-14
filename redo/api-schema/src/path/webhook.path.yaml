@@ -1,4 +1,3 @@
-description: Webhook.
 delete:
   description: Delete a webbhook.
   operationId: Webhook delete
@@ -9,15 +8,16 @@ delete:
     - Bearer: []
   summary: Delete webhook
   tags: [Webhooks]
+description: Webhook.
 get:
   description: Get a webhook.
   operationId: Webhook get
   responses:
     "200":
-      description: Success
       content:
         application/json:
           schema: { $ref: ../schema/webhook-read.schema.yaml }
+      description: Success
   summary: Get webhook
   tags: [Webhooks]
 parameters:
