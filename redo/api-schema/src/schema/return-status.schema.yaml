@@ -1,10 +1,20 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Return status.
+description: |
+  Return status.
+
+  * manual_review: Return requires pre-shipment merchant authorization.
+  * open: Return has been approved is awaiting shipment.
+  * transit: Return shipment is in transit.
+  * delivered: Return shipment has been delievered and awaiting processing.
+  * flagged: A problem with return processing requires merchant action.
+  * cancelled: The return has been cancelled.
+  * closed: The return has been completed.
 enum:
   - manual_review
   - open
   - transit
   - delivered
+  - flagged
   - cancelled
   - closed
 example: open

@@ -1,0 +1,26 @@
+description: Return.
+get:
+  description: Get return.
+  operationId: Return get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              return: { $ref: ../schema/return-read.schema.yaml }
+            required: [return]
+            type: object
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get return
+  tags: [Returns]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Return
