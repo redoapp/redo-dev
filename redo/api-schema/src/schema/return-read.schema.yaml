@@ -1,6 +1,11 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Return read.
 properties:
+  createdAt:
+    description: Time of creation.
+    format: date-time
+    title: Created at
+    type: string
   destination:
     properties:
       mailingAddress:
@@ -12,6 +17,41 @@ properties:
         description: Phone number of the destination.
         title: Phone number
     type: object
+  exchange:
+    description: Exchange order
+    properties:
+      items:
+        items:
+          properties:
+            id:
+              title: ID
+              type: string
+            product:
+              $ref: ./product.schema.yaml
+              title: Product
+            quantity:
+              $ref: ./item-quantity.schema.yaml
+              title: Quantity
+            variant:
+              $ref: ./product-variant.schema.yaml
+          required: [id, quantity, product, variant]
+        title: Line items
+        type: array
+      order:
+        properties:
+          externalId:
+            description: ID of external order
+            title: External ID
+            type: string
+          id:
+            type: string
+        type: object
+      provision:
+        $ref: ./exchange-provision.schema.yaml
+        title: Provision
+    required: [items, provision]
+    title: Exchange
+    type: object
   id:
     description: Return identifier.
     examples: [64df65d4c5a4ca3eff4b4e43]
@@ -22,45 +62,62 @@ properties:
     items:
       properties:
         exchangeItem:
-          description: Exchange item, if exchange
           properties:
-            product:
-              $ref: ./product.schema.yaml
-            variant:
-              $ref: ./product-variant.schema.yaml
+            id:
+              description: ID of exchange line item
+              title: ID
+              type: string
+          required: [string]
+          title: Exchange item
           type: object
-        lineItem:
-          description: Line item (quantity 1)
+        id:
+          description: Return item ID.
+          title: ID
+          type: string
+        orderItem:
+          description: Order line item
           properties:
-            index:
-              description: Zero-based index of line item in original order.
-              min: 0
-              title: Index
-              type: integer
+            id:
+              description:
+                "Line item ID in original order. Note: There can be more than
+                return item for an original line item, with different quantity,
+                return reasons, etc."
+              title: ID
+              type: string
           required: [index]
-          title: Line item
+          title: Order item
           type: object
+        quantity:
+          $ref: ./item-quantity.schema.yaml
+          title: Quantity
         reason:
           description: Return reason
           examples: [Too big, Other]
           type: string
-        refundType:
-          description: Refund method, if not exchange
-          enum: [credit, refund]
-          type: string
-        value:
-          $ref: ./money.schema.yaml
-          description: Final return value
-        valueAdjustment:
-          $ref: ./money.schema.yaml
-          description: Return value adjustment
-          examples:
-            - amount: 0
-              currency: USD
-        valueBase:
-          $ref: ./money.schema.yaml
-          description: Original value
-      required: [item, reason]
+        refund:
+          description: Refund
+          properties:
+            amount:
+              $ref: ./money.schema.yaml
+              title: Amount
+            pendingAmount:
+              $ref: ./money.schema.yaml
+              title: Planned amount
+            pendingTaxAmount:
+              $ref: ./money.schema.yaml
+              description: Taxes.
+              title: Taxes
+            taxAmount:
+              $ref: ./money.schema.yaml
+              description: Taxes.
+              title: Taxes
+            type:
+              description: Refund method
+              enum: [credit, refund]
+              type: string
+          required: [amount, pendingAmount, pendingTaxAmount, taxAmount, type]
+          type: object
+      required: [item, quantity, reason]
       type: object
     type: array
   order:
@@ -116,6 +173,7 @@ properties:
         $ref: ./phone-number.schema.yaml
         description: Phone number of returner.
         title: Phone number
+    required: [emailAddress, mailingAddress, name, phoneNumber]
     type: object
   status:
     $ref: ./return-status.schema.yaml
@@ -127,10 +185,13 @@ properties:
     title: Updated at
     type: string
 required:
+  - createdAt
   - destination
   - source
   - id
   - order
   - items
+  - status
+  - updatedAt
 title: Return
 type: object

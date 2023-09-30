@@ -28,7 +28,7 @@ properties:
     example: 64e4da943dd822979a70bd12
     title: ID
     type: string
-  lineItems:
+  items:
     items:
       properties:
         externalId:
@@ -38,19 +38,19 @@ properties:
           $ref: ./product.schema.yaml
           title: Product
         quantity:
-          example: 1
-          min: 1
-          type: integer
+          $ref: ./item-quantity.schema.yaml
+          title: Quantity
         variant:
           $ref: ./product-variant.schema.yaml
           title: Variant
       required: [product, quantity, variant]
+    title: Items
     type: array
   name:
     description: Shopify name.
     examples: ["#123"]
     title: Name
     type: string
-required: [customer, id, name]
+required: [customer, id, items, name]
 title: Order
 type: object

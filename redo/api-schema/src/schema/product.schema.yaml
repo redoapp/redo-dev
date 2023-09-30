@@ -1,8 +1,13 @@
 $schema: https://json-schema.org/draft/2020-12/schema
+description: Product.
 properties:
   externalId:
+    description: Product ID in external system (e.g. shopify).
+    title: External ID
     type: string
   name:
+    description: Product title
+    title: Name
     type: string
 title: Product
 type: object
