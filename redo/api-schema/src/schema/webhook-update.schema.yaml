@@ -1,0 +1,19 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Webhook update.
+properties:
+  callback:
+    $ref: ./https-callback.schema.yaml
+    description: HTTPS callback to POST events.
+    title: HTTPS callback
+  externalId:
+    default: null
+    description: Optional external identifier.
+    title: External ID
+    type: [string, "null"]
+  topic:
+    $ref: ./webhook-topic.schema.yaml
+    description: Topic.
+    title: Topic
+required: [callback, topic]
+title: Webhook update
+type: object

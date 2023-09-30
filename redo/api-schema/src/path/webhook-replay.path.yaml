@@ -1,0 +1,28 @@
+description: Webhook replay.
+parameters:
+  - { $ref: ../param/webhook-id.param.yaml }
+post:
+  description: Replay a webhook.
+  operationId: Webhook replay
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            start:
+              format: date-time
+              type: string
+          required: [start]
+          type: object
+    required: true
+  responses:
+    "204":
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.json }
+      description: Error
+  summary: Replay webhook
+  tags: [Webhooks]
+summary: Webhook replay

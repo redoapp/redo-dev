@@ -1,6 +1,11 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Webhook write.
+description: Webhook create.
 properties:
+  backfill:
+    default: false
+    description: Create events for already-existing items
+    title: Backfill
+    type: boolean
   callback:
     $ref: ./https-callback.schema.yaml
     description: HTTPS callback to POST events.
@@ -15,5 +20,5 @@ properties:
     description: Topic.
     title: Topic
 required: [callback, topic]
-title: Webhook write
+title: Webhook create
 type: object

@@ -27,7 +27,7 @@ post:
       application/json:
         schema:
           properties:
-            webhook: { $ref: "../schema/webhook-write.schema.yaml" }
+            webhook: { $ref: "../schema/webhook-create.schema.yaml" }
           type: object
     required: true
   responses:

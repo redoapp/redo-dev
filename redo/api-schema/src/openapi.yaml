@@ -48,6 +48,7 @@ paths:
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
   /stores/{storeId}/webhooks: { $ref: path/webhooks.path.yaml }
   /webhooks/{webhookId}: { $ref: path/webhook.path.yaml }
+  /webhooks/{webhookId}/replay: { $ref: path/webhook-replay.path.yaml }
 servers:
   - url: https://api.getredo.com/v2.2
 webhooks:

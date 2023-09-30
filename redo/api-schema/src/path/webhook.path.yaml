@@ -21,14 +21,14 @@ get:
   summary: Get webhook
   tags: [Webhooks]
 parameters:
-  - { $ref: ../param/return-id.param.yaml }
+  - { $ref: ../param/webhook-id.param.yaml }
 put:
   description: Update a webhook.
   operationId: Webhook update
   requestBody:
     content:
       application/json:
-        schema: { $ref: ../schema/webhook-write.schema.yaml }
+        schema: { $ref: ../schema/webhook-update.schema.yaml }
     required: true
   responses:
     "204":

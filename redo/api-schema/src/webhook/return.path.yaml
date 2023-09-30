@@ -23,6 +23,7 @@ post:
             type:
               description: Event type
               enum:
+                - backfill
                 - created
                 - updated
               type: string
