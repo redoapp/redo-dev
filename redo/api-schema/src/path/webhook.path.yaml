@@ -16,7 +16,11 @@ get:
     "200":
       content:
         application/json:
-          schema: { $ref: ../schema/webhook-read.schema.yaml }
+          schema:
+            properties:
+              webhook: { $ref: ../schema/webhook-read.schema.yaml }
+            required: [webhook]
+            type: object
       description: Success
   summary: Get webhook
   tags: [Webhooks]

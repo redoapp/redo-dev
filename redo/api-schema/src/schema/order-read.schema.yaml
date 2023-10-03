@@ -34,6 +34,10 @@ properties:
         externalId:
           example: "123"
           type: string
+        id:
+          description: Line item ID
+          title: ID
+          type: string
         product:
           $ref: ./product.schema.yaml
           title: Product
@@ -43,8 +47,8 @@ properties:
         variant:
           $ref: ./product-variant.schema.yaml
           title: Variant
-      required: [product, quantity, variant]
-    title: Items
+      required: [id, product, quantity, variant]
+    title: Line items
     type: array
   name:
     description: Shopify name.
