@@ -32,7 +32,11 @@ put:
   requestBody:
     content:
       application/json:
-        schema: { $ref: ../schema/webhook-update.schema.yaml }
+        schema:
+          properties:
+            webhook: { $ref: ../schema/webhook-update.schema.yaml }
+          required: [webbhook]
+          type: object
     required: true
   responses:
     "204":

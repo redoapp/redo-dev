@@ -3,11 +3,15 @@ properties:
   externalId:
     title: External ID
     type: string
+  name:
+    title: Title
+    type: string
   sku:
     title: SKU
     type: string
   weight:
     title: Weight
     type: { $ref: ./weight.schema.yaml }
+required: [name]
 title: Product variant
 type: object

@@ -16,7 +16,7 @@ post:
           type: object
     required: true
   responses:
-    "204":
+    "202":
       description: Success
     default:
       content:

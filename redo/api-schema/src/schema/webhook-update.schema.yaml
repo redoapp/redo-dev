@@ -10,10 +10,6 @@ properties:
     description: Optional external identifier.
     title: External ID
     type: [string, "null"]
-  topic:
-    $ref: ./webhook-topic.schema.yaml
-    description: Topic.
-    title: Topic
-required: [callback, topic]
+required: [callback]
 title: Webhook update
 type: object

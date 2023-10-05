@@ -8,8 +8,9 @@ get:
         application/json:
           schema:
             properties:
+              order: { $ref: ../schema/order-read.schema.yaml }
               return: { $ref: ../schema/return-read.schema.yaml }
-            required: [return]
+            required: [return, order]
             type: object
       description: Success
     default:

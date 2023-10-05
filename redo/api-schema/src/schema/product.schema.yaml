@@ -9,5 +9,6 @@ properties:
     description: Product title
     title: Name
     type: string
+required: [name]
 title: Product
 type: object
