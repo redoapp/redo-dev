@@ -14,4 +14,4 @@ def npm_repositories():
             package = dict(package)
             package["deps"] = [dep for dep in package["deps"] if not dep["id"].startswith("typescript@")]
         packages[id] = package
-    npm("npm", roots = ROOTS, packages = packages, plugins = plugins)
+    npm("redotech_redodev_npm", roots = ROOTS, packages = packages, plugins = plugins)

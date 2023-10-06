@@ -4,6 +4,6 @@ package(default_visibility = ["//visibility:public"])
 
 nodejs_binary(
     name = "bin",
-    dep = "@npm//@redocly/cli:lib",
+    dep = "@redotech_redodev_npm//@redocly/cli:lib",
     main = "bin/cli.js",
 )

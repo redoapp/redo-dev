@@ -4,6 +4,6 @@ package(default_visibility = ["//visibility:public"])
 
 nodejs_binary(
     name = "bin",
-    dep = "@npm//@stoplight/cli:lib",
+    dep = "@redotech_redodev_npm//@stoplight/cli:lib",
     main = "bin/stoplight.js",
 )
