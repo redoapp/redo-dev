@@ -9,13 +9,13 @@ get:
           schema:
             properties:
               status: { $ref: ../schema/return-status.schema.yaml }
-            required: status
+            required: [status]
             type: object
       description: Success
     default:
       content:
         application/problem+json:
-          schema: { $ref: ../schema/error.schema.json }
+          schema: { $ref: ../schema/error.schema.yaml }
       description: Error
   security:
     - Bearer: []
@@ -32,7 +32,7 @@ put:
         schema:
           properties:
             status: { $ref: ../schema/return-status.schema.yaml }
-          required: status
+          required: [status]
           type: object
     required: true
   responses:
@@ -41,7 +41,7 @@ put:
     default:
       content:
         application/problem+json:
-          schema: { $ref: ../schema/error.schema.json }
+          schema: { $ref: ../schema/error.schema.yaml }
       description: Error
   security:
     - Bearer: []

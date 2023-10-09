@@ -2,7 +2,6 @@ $schema: https://json-schema.org/draft/2020-12/schema
 description: HTTPS callback
 properties:
   auth:
-    default: null
     description: Authorization.
     oneOf:
       - properties:
@@ -27,6 +26,6 @@ properties:
     pattern: ^https://
     title: URL
     type: string
-required: [authToken, url]
+required: [auth, url]
 title: HTTPS callback
 type: object

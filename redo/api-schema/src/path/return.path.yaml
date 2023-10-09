@@ -16,7 +16,7 @@ get:
     default:
       content:
         application/problem+json:
-          schema: { $ref: ../schema/error.schema.json }
+          schema: { $ref: ../schema/error.schema.yaml }
       description: Error
   security:
     - Bearer: []
