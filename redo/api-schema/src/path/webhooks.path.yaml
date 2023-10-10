@@ -11,8 +11,14 @@ get:
               webhooks:
                 items: { $ref: ../schema/webhook-read.schema.yaml }
                 type: array
+            required: [webhooks]
             type: object
       description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
   summary: List webhooks
   tags: [Webhooks]
 parameters:

@@ -1,4 +1,4 @@
-$schema: https://json-schema.org/draft/2020-12/schema
+# $schema: https://json-schema.org/draft/2020-12/schema#
 properties:
   externalId:
     title: External ID
@@ -11,7 +11,7 @@ properties:
     type: string
   weight:
     title: Weight
-    type: { $ref: ./weight.schema.yaml }
+    $ref: ./weight.schema.yaml
 required: [name]
 title: Product variant
 type: object

@@ -1,4 +1,4 @@
-$schema: https://json-schema.org/draft/2020-12/schema
+# $schema: https://json-schema.org/draft/2020-12/schema#
 description: Phone number, in E.164 format
 examples: ["+15555555555"]
 title: Phone number
