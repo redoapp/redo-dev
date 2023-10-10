@@ -10,8 +10,8 @@ properties:
     title: SKU
     type: string
   weight:
-    title: Weight
     $ref: ./weight.schema.yaml
+    title: Weight
 required: [name]
 title: Product variant
 type: object
