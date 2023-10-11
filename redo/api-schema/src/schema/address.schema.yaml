@@ -28,8 +28,8 @@ properties:
     title: Postal code
     type: string
   state:
-    description: State or province code
-    examples: [WA]
+    description: State or province
+    examples: [WA, Washington]
     title: State
     type: string
 required:
