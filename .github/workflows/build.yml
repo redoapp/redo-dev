@@ -62,12 +62,26 @@ jobs:
         with:
           bazel-cache-key:
             bazel/${{ runner.os }}-${{ runner.arch }}/v2.2/build/publish-npm
+      - id: prev
+        name: Check existing package
+        run: |
+          echo "shasum=$(curl https://registry.npmjs.org/@redotech/redo-api-schema/latest | jq -r .dist.shasum)" | tee -a "$GITHUB_OUTPUT"
+          echo "version=$(curl https://registry.npmjs.org/@redotech/redo-api-schema/latest | jq -r '.version | split(".")[2]')" | tee -a "$GITHUB_OUTPUT"
+      - env:
+          PREV_VERSION: ${{ steps.prev.outputs.version }}
+        id: new
+        name: Build package
+        run: |
+          bazel build "--embed_label=$PREV_VERSION" --stamp redo/api-schema-js:package
+          echo "shasum=$(shasum bazel-bin/redo/api-schema-js/package.tgz | cut -d' ' -f1)" | tee -a "$GITHUB_OUTPUT"
       - env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        if: steps.new.outputs.shasum != steps.prev.outputs.shasum
         name: Login to npm
         run: bazel run @better_rules_javascript//npm -- c set "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN"
-      - name: Publish to npm
-        run: cat ~/.npmrc && bazel run "--embed_label=$GITHUB_RUN_NUMBER" --stamp redo/api-schema-js:publish -- --access public
+      - if: steps.new.outputs.shasum != steps.prev.outputs.shasum
+        name: Publish to npm
+        run: bazel run "--embed_label=$GITHUB_RUN_NUMBER" --stamp redo/api-schema-js:publish -- --access public
       - if: always()
         name: Clean up
         uses: ./.github/actions/cleanup
