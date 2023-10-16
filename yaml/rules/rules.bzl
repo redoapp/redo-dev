@@ -5,6 +5,7 @@ def _yaml_sort_format(ctx, src, out, bin):
     args.add(bin)
     args.add(src)
     args.add(out)
+
     # args.add("-P", "sort_keys(..)")
     ctx.actions.run_shell(
         arguments = [args],

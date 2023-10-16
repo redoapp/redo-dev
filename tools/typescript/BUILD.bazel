@@ -1,0 +1,23 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//typescript:rules.bzl", "configure_ts_compiler")
+
+package(default_visibility = ["//visibility:public"])
+
+cjs_root(
+    name = "root",
+    package_name = "@redotech/tools-typescript",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "lib",
+    srcs = glob(["tsconfig.*.json"]),
+    root = ":root",
+)
+
+configure_ts_compiler(
+    name = "tsc",
+    ts = "@redotech_redodev_npm//typescript:lib",
+    tslib = "@redotech_redodev_npm//tslib:lib",
+)

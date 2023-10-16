@@ -24,11 +24,13 @@ http_archive(
     url = "https://github.com/aspect-build/bazel-lib/releases/download/v1.34.5/bazel-lib-v1.34.5.tar.gz",
 )
 
-load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies", "register_yq_toolchains")
+load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies", "register_jq_toolchains", "register_yq_toolchains")
 
 aspect_bazel_lib_dependencies()
 
 register_yq_toolchains(version = "4.33.3")
+
+register_jq_toolchains()
 
 # Rules File
 
@@ -103,11 +105,11 @@ python_register_toolchains(
 
 # Rules Javascript
 
-RULES_JAVASCRIPT_VERSION = "a1f58fec303e7a3336713dc2157669c3b490dde8"
+RULES_JAVASCRIPT_VERSION = "3fb4571dbdc2646257009f0c59f938ee89d7156e"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "05378c7b9f243e9e4f4c009749b15d750efafbcb94fae8ef5aed17e69131e63f",
+    sha256 = "a993962c6dc153f94b26dcf2bba08a39ee7ca1688c9ff40b9d5643615977930c",
     strip_prefix = "rules_javascript-%s" % RULES_JAVASCRIPT_VERSION,
     url = "https://github.com/rivethealth/rules_javascript/archive/%s.tar.gz" % RULES_JAVASCRIPT_VERSION,
 )

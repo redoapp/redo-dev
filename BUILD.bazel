@@ -18,6 +18,11 @@ cjs_root(
     package_name = "@redotech/_root",
 )
 
+alias(
+    name = "npm_resolve",
+    actual = "//tools/npm:resolve",
+)
+
 js_library(
     name = "prettier_config",
     srcs = [".prettierrc.yml"],

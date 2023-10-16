@@ -1,0 +1,9 @@
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+nodejs_binary(
+    name = "openapi_typescript",
+    dep = "@redotech_redodev_npm//openapi-typescript:lib",
+    main = "bin/cli.js",
+)

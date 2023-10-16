@@ -1,5 +1,7 @@
 load("@better_rules_javascript//npm:rules.bzl", "yarn_resolve")
 
+package(default_visibility = ["//visibility:public"])
+
 yarn_resolve(
     name = "resolve",
     output = "npm.bzl",

@@ -2,7 +2,11 @@
   "devDependencies": {
     "@redocly/cli": "^1",
     "@stoplight/cli": "^6",
-    "prettier": "^2"
+    "openapi-typescript": "^6",
+    "prettier": "^2",
+    "prettier-plugin-sort-json": "^2",
+    "tslib": "^2",
+    "typescript": "^5"
   },
   "private": true
 }
