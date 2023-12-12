@@ -56,6 +56,9 @@ properties:
     description: Gift card(s) created for return
     items:
       properties:
+        amount:
+          $ref: ./money.schema.yaml
+          title: Amount
         code:
           description: Gift card 16 digit code.
           title: Code
@@ -64,9 +67,6 @@ properties:
           description: Gift card ID.
           title: ID
           type: string
-        value:
-          title: Value
-          type: number
       required: [amount, code, externalId]
       type: object
     title: Gift cards
