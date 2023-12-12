@@ -52,6 +52,25 @@ properties:
     required: [items, provision]
     title: Exchange
     type: object
+  giftCards:  
+    description: Gift card(s) created for return
+    items:
+      properties:
+        value:
+          type: number
+          title: Value
+        code:
+          description: Gift card 16 digit code.
+          title: Code
+          type: string
+        externalId:
+          description: Gift card ID.
+          title: ID
+          type: string
+      required: [amount, code, externalId]
+      type: object
+    title: Gift cards
+    type: array
   id:
     description: Return identifier.
     examples: [64df65d4c5a4ca3eff4b4e43]
@@ -187,6 +206,7 @@ properties:
 required:
   - createdAt
   - destination
+  - giftCards
   - source
   - id
   - order
