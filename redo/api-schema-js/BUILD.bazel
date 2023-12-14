@@ -63,5 +63,5 @@ openapi_ts(
     name = "openapi_ts",
     src = "//redo/api-schema:openapi",
     openapi_typescript = "//tools/openapi:openapi_typescript",
-    output = "src/openapi.ts",
+    output = "lib/openapi.d.ts",
 )
