@@ -30,11 +30,6 @@ post:
           type: object
     description: |
       Return event webhook.
-
-      <!-- theme: warning -->
-      > #### Note
-      >
-      > This is not an actual Redo API endpoint, but a webhook.
     required: true
   responses:
     2xx:
@@ -44,7 +39,7 @@ post:
         Error. The event will be retried multiple times and then discarded.
   security:
     - UserBearer: []
-  summary: "Return event [Webhook]"
+  summary: "Return event"
   tags:
     - Returns
-summary: "Return event [Webhook]"
+summary: "Return event"
