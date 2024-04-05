@@ -144,20 +144,20 @@ properties:
         refund:
           description: Refund
           properties:
-            amount:
-              $ref: ./money.schema.yaml
-              title: Amount
-            pendingAmount:
-              $ref: ./money.schema.yaml
-              title: Planned amount
-            pendingTaxAmount:
-              $ref: ./money.schema.yaml
-              description: Taxes.
-              title: Taxes
-            taxAmount:
-              $ref: ./money.schema.yaml
-              description: Taxes.
-              title: Taxes
+            # amount:
+            #   $ref: ./money.schema.yaml
+            #   title: Amount
+            # pendingAmount:
+            #   $ref: ./money.schema.yaml
+            #   title: Planned amount
+            # pendingTaxAmount:
+            #   $ref: ./money.schema.yaml
+            #   description: Taxes.
+            #   title: Taxes
+            # taxAmount:
+            #   $ref: ./money.schema.yaml
+            #   description: Taxes.
+            #   title: Taxes
             type:
               description: Refund method
               enum: [credit, refund]
