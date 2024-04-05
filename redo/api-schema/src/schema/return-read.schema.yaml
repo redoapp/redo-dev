@@ -141,10 +141,29 @@ properties:
           description: Return reason
           examples: [Too big, Other]
           type: string
-        refundType:
+        refund:
           description: Refund
-          required: false
-          type: string
+          properties:
+            amount:
+              $ref: ./money.schema.yaml
+              title: Amount
+            pendingAmount:
+              $ref: ./money.schema.yaml
+              title: Planned amount
+            pendingTaxAmount:
+              $ref: ./money.schema.yaml
+              description: Taxes.
+              title: Taxes
+            taxAmount:
+              $ref: ./money.schema.yaml
+              description: Taxes.
+              title: Taxes
+            type:
+              description: Refund method
+              enum: [credit, refund]
+              type: string
+          required: [amount, pendingAmount, pendingTaxAmount, taxAmount, type]
+          type: object
       required: [item, quantity, reason]
       type: object
     type: array
@@ -163,23 +182,16 @@ properties:
     description: Refunds
     items:
       properties:
+        amount:
+          $ref: ./money.schema.yaml
+          title: Amount
         externalId:
-          description: Refund ID
-          title: ID
+          description:
+            The external refund ID. For shopify stores, this will be structured
+            as `{Refund.id}/{OrderTransaction.id}`.
+          title: External ID
           type: integer
-        transactions:
-          items:
-            properties:
-              amount:
-                title: Amount
-                type: string
-              externalId:
-                description: Transaction ID
-                title: ID
-                type: integer
-          required: [amount, externalId]
-          type: object
-      required: [transactions, externalId]
+      required: [amount, externalId]
       type: object
     title: Refunds
     type: array
