@@ -1,0 +1,26 @@
+description: Return invoice line item.
+get:
+  description: Get invoice line item.
+  operationId: Invoice-line-item get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              invoice: { $ref: ../schema/invoice-line-item.schema.yaml}
+            required: [invoice]
+            type: object
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get invoice
+  tags: [Returns]
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
+summary: Return
