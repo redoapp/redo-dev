@@ -2,8 +2,8 @@
 description: Schema for an invoice.
 properties:
   charge:
-    description: The charge that the invoice is for.
     $ref: money.schema.yaml
+    description: The charge that the invoice is for.
   createdAt:
     description: The time the invoice was created.
     format: date-time
