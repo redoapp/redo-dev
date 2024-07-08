@@ -1,0 +1,50 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Schema for an invoice line item.
+properties:
+  charge:
+    description: The charge that the invoice is for.
+    properties:
+      currency:
+        description: The currency of the charge.
+        type: string
+      price:
+        description: The price of the charge.
+        type: string
+    type: object
+  charge_attempts:
+    description: The charge attempts for the invoice.
+    items:
+      properties:
+        charge_id:
+          description: The ID of the charge.
+          type: string
+        payment_method:
+          description: The payment method used for the charge.
+          type: object
+        status:
+          description: The status of the invoice.
+          type: string
+        webhook_event:
+          description: The webhook event for the charge.
+          type: object
+      type: object
+    type: array
+  charge_id:
+    description: The ID of the charge.
+    type: string
+  createdAt:
+    description: The time the invoice was created.
+    format: date-time
+    type: string
+  status:
+    description: The status of the invoice.
+    type: string
+  team:
+    description: The team that the invoice is for.
+    format: uuid
+    type: string
+  updatedAt:
+    description: The time the invoice was last updated.
+    format: date-time
+    type: string
+type: object
