@@ -8,7 +8,7 @@ get:
         application/json:
           schema:
             properties:
-              invoice: { $ref: ../schema/invoice-line-item.schema.yaml}
+              invoice: { $ref: ../schema/invoice-line-item.schema.yaml }
             required: [invoice]
             type: object
       description: Success

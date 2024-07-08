@@ -1,34 +1,34 @@
 # $schema: https://json-schema.org/draft/2020-12/schema#
-title: Invoice Line Item
 description: Schema for an invoice line item.
-type: object
-properties: 
-  date: 
-    type: string
-    format: date
-    description: The date of the invoice line item.
-  type: 
-    type: string
-    description: The type of the invoice line item.
-  orderId: 
-    type: string
-    description: The unique identifier for the order.
-  orderNumber: 
-    type: string
-    description: The order number.
-  charge: 
-    type: number
+properties:
+  charge:
     description: The charge amount for the invoice line item.
-  email: 
-    type: string
-    format: email
-    description: The email address of the customer.
-  customerFirstName: 
-    type: string
+    type: number
+  customerFirstName:
     description: The first name of the customer.
-  customerLastName: 
     type: string
+  customerLastName:
     description: The last name of the customer.
-  invoiceId: 
     type: string
+  date:
+    description: The date of the invoice line item.
+    format: date
+    type: string
+  email:
+    description: The email address of the customer.
+    format: email
+    type: string
+  invoiceId:
     description: The unique identifier for the invoice.
+    type: string
+  orderId:
+    description: The unique identifier for the order.
+    type: string
+  orderNumber:
+    description: The order number.
+    type: string
+  type:
+    description: The type of the invoice line item.
+    type: string
+title: Invoice Line Item
+type: object
