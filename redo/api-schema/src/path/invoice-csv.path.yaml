@@ -1,0 +1,24 @@
+description: Return invoice CSV file.
+get:
+  description: Get an invoice as a CSV.
+  operationId: Invoice csv get
+  parameters:
+    - { $ref: ../param/invoice-id.param.yaml }
+  responses:
+    "200":
+      content:
+        text/csv:
+          schema:
+            format: binary
+            type: string
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get invoice
+  tags: [Invoice]
+summary: Invoice

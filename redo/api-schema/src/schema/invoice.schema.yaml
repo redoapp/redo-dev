@@ -1,0 +1,29 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Schema for an invoice.
+properties:
+  charge:
+    $ref: money.schema.yaml
+    description: The charge that the invoice is for.
+  createdAt:
+    description: The time the invoice was created.
+    format: date-time
+    type: string
+  id:
+    description: The ID of the charge.
+    type: string
+  status:
+    description: The status of the invoice.
+    type: string
+  store:
+    properties:
+      id:
+        description: The ID of the store.
+        type: string
+    required: [id]
+    type: object
+  updatedAt:
+    description: The time the invoice was last updated.
+    format: date-time
+    type: string
+required: [team, updatedAt, status, createdAt, charge]
+type: object
