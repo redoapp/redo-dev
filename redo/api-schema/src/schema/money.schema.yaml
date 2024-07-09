@@ -2,9 +2,9 @@
 description: Currency amount
 properties:
   amount:
-    examples: [50.2, 1.78]
+    examples: ["50.2", "1.78"]
     title: Amount
-    type: number
+    type: string
   currency:
     examples: [USD, EUR]
     title: Currency

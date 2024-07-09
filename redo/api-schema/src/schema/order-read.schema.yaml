@@ -47,7 +47,14 @@ properties:
         variant:
           $ref: ./product-variant.schema.yaml
           title: Variant
-      required: [id, product, quantity, variant]
+        price:
+          $ref: ./money.schema.yaml
+          title: Price
+        fulfillmentLocationId:
+          description: ID of the location where the item was be fulfilled.
+          example: "123"
+          type: [string, null]
+      required: [id, product, quantity, variant, price, fulfillmentLocationId]
     title: Line items
     type: array
   name:
