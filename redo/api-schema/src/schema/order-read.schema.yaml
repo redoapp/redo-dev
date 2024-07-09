@@ -34,10 +34,17 @@ properties:
         externalId:
           example: "123"
           type: string
+        fulfillmentLocationId:
+          description: ID of the location where the item was be fulfilled.
+          example: "123"
+          type: [string, null]
         id:
           description: Line item ID
           title: ID
           type: string
+        price:
+          $ref: ./money.schema.yaml
+          title: Price
         product:
           $ref: ./product.schema.yaml
           title: Product
@@ -47,13 +54,6 @@ properties:
         variant:
           $ref: ./product-variant.schema.yaml
           title: Variant
-        price:
-          $ref: ./money.schema.yaml
-          title: Price
-        fulfillmentLocationId:
-          description: ID of the location where the item was be fulfilled.
-          example: "123"
-          type: [string, null]
       required: [id, product, quantity, variant, price, fulfillmentLocationId]
     title: Line items
     type: array
