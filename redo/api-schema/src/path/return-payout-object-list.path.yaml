@@ -2,14 +2,18 @@ description: Return a list of invoices.
 get:
   description: Get a list of invoices.
   operationId: Invoice list
+  parameters: [{ $ref: ../param/store-id.param.yaml }]
   responses:
     "200":
       content:
         application/json:
           schema:
             properties:
-              invoices: [{ $ref: ../schema/invoice.schema.yaml }]
-            required: [invoice]
+              invoices:
+                items:
+                  $ref: ../schema/invoice.schema.yaml
+                type: array
+            required: [invoices]
             type: object
       description: Success
     default:
@@ -21,5 +25,4 @@ get:
     Bearer: []
   summary: Get invoice
   tags: [Invoice]
-parameters: [{ $ref: ../param/store-id.param.yaml }]
 summary: Invoice
