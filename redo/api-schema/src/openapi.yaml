@@ -46,6 +46,8 @@ paths:
   /returns/{returnId}: { $ref: path/return.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
+  /stores/{storeId}/coverage-products:
+    { $ref: path/coverage-products.path.yaml }
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
   /stores/{storeId}/webhooks: { $ref: path/webhooks.path.yaml }

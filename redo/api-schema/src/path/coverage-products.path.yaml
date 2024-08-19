@@ -1,0 +1,38 @@
+description: Available coverage products.
+post:
+  description: Get available coverage products.
+  operationId: Coverage products
+  parameters:
+    - { $ref: ../param/store-id.param.yaml }
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            cart: { $ref: ../schema/storefront-cart.schema.yaml }
+            customer: { $ref: ../schema/storefront-customer.schema.yaml }
+          required: [cart]
+          type: object
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              coverageProducts:
+                description: Coverage products.
+                items: { $ref: ../schema/coverage-product.schema.yaml }
+                title: Coverage Products
+                type: array
+            required: [coverageProducts]
+            type: type
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  summary: Get coverage products
+  tags: [Coverage Products]
+summary: Coverage products
