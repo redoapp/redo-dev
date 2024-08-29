@@ -26,7 +26,7 @@ post:
                 title: Coverage Products
                 type: array
             required: [coverageProducts]
-            type: type
+            type: array
       description: Success
     default:
       content:
