@@ -1,0 +1,44 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Storefront cart.
+properties:
+  lineItems:
+    description: Line items.
+    items:
+      properties:
+        id:
+          description: Line item ID.
+          title: ID
+          type: string
+        priceTotal:
+          $ref: ./money.schema.yaml
+          description: Total price.
+          title: Price
+        product:
+          description: Product.
+          properties:
+            id:
+              title: ID
+              type: string
+          type: object
+        quantity:
+          description: Quantity.
+          title: Quantity
+          type: integer
+        variant:
+          description: Variant.
+          properties:
+            id:
+              title: ID
+              type: string
+          type: object
+      required: [id, quantity, product, variant]
+      type: object
+    title: Line items
+    type: array
+  priceTotal:
+    $ref: ./money.schema.yaml
+    description: Total price.
+    title: Price
+required: [lineItems]
+title: Storefront Cart
+type: object

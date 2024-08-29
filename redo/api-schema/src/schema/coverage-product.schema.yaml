@@ -1,0 +1,33 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Coverage product.
+properties:
+  coverages:
+    description: Coverage.
+    items:
+      properties:
+        lineItems:
+          items:
+            properties:
+              id:
+                description: Line item ID.
+                title: ID
+                type: string
+            type: object
+          type: array
+        type:
+          enum: [shipping_failure, return_shipping]
+          title: Coverage
+      required: [lineItems, type]
+      type: object
+    type: array
+  id:
+    description: Coverage ID.
+    title: ID
+    type: string
+  price:
+    $ref: ./money.schema.yaml
+    description: Price.
+    title: Price
+required: [coverage, id, price]
+title: Coverage product
+type: object
