@@ -17,7 +17,7 @@ info:
     REDO_API_SECRET.
 
     ```txt
-    GET /preview/resource HTTP/1.1
+    GET /v2.2/resource HTTP/1.1
     Authorization: Bearer 77bb7598b7a972475cc7c7e171ec33af
     Host: api.getredo.com
     ```
@@ -39,7 +39,7 @@ info:
     If the response is not a 2xx status code, the event will be retried multiple
     times before discarding it.
   title: Redo API
-  version: preview
+  version: 2.2.1
 openapi: 3.1.0
 paths:
   /invoices/{invoiceId}/items.csv: { $ref: path/invoice-csv.path.yaml }
@@ -54,7 +54,7 @@ paths:
   /webhooks/{webhookId}: { $ref: path/webhook.path.yaml }
   /webhooks/{webhookId}/replay: { $ref: path/webhook-replay.path.yaml }
 servers:
-  - url: https://api.getredo.com/preview
+  - url: https://api.getredo.com/v2.2
 webhooks:
   return:
     $ref: webhook/return.path.yaml
