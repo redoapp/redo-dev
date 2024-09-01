@@ -42,6 +42,7 @@ info:
   version: 2.2.1
 openapi: 3.1.0
 paths:
+  /invoices/pending/items.csv: { $ref: path/invoice-pending-csv.path.yaml }
   /invoices/{invoiceId}/items.csv: { $ref: path/invoice-csv.path.yaml }
   /returns/{returnId}: { $ref: path/return.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
