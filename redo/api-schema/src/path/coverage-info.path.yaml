@@ -1,0 +1,12 @@
+description: Navigate to the coverage info page.
+get:
+  description: Navigate to the coverage info page.
+  operationId: Coverage info navigate
+  parameters:
+    - { $ref: ../param/store-id.param.yaml }
+  responses:
+    "302":
+      description: Redirect
+  summary: Navigate to coverage info
+  tags: [Coverage info]
+summary: Coverage info
