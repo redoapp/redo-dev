@@ -1,0 +1,12 @@
+description: Navigate to the merchant admin page.
+get:
+  description: Navigate to the merchant admin page.
+  operationId: Merchant admin navigate
+  parameters:
+    - { $ref: ../param/store-id.param.yaml }
+  responses:
+    "302":
+      description: Redirect
+  summary: Navigate to merchant admin
+  tags: [Merchant admin]
+summary: Merchant admin

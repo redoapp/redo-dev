@@ -1,0 +1,21 @@
+description: Navigate to the customer portal.
+get:
+  description: Navigate to the customer portal.
+  operationId: Customer portal navigate
+  parameters:
+    - { $ref: ../param/store-id.param.yaml }
+    - description:
+        'HMAC-SHA256 JWT of {"iss":"<partnerId>","sub":"<storeId>/<customerId>"}'
+      in: query
+      name: token
+      schema: { type: string }
+    - description: Order ID
+      in: query
+      name: order_id
+      schema: { type: string }
+  responses:
+    "302":
+      description: Redirect
+  summary: Navigate to customer portal
+  tags: [Customer portal]
+summary: Customer portal
