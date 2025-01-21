@@ -17,6 +17,7 @@ properties:
                   item.
               id:
                 type: string
+            required: [id, code, discountAmount]
             type: object
           type: array
         id:
