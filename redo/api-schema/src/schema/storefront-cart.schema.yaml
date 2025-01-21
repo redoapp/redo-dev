@@ -50,6 +50,10 @@ properties:
             id:
               title: ID
               type: string
+            weight:
+              $ref: ./weight.schema.yaml
+              title: Weight
+              description: Weight of the variant.
           required: [id]
           type: object
       required: [id, quantity, product, variant, priceTotal]
