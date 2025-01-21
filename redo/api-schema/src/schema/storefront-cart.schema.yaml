@@ -5,10 +5,28 @@ properties:
     description: Line items.
     items:
       properties:
+        coupons:
+          items:
+            properties:
+              code:
+                type: string
+              discountAmount:
+                $ref: ./money.schema.yaml
+                description:
+                  The amount this coupon discounts in dollars for this line
+                  item.
+              id:
+                type: string
+            type: object
+          type: array
         id:
           description: Line item ID.
           title: ID
           type: string
+        originalPrice:
+          $ref: ./money.schema.yaml
+          description: Original price.
+          title: Original Price
         priceTotal:
           $ref: ./money.schema.yaml
           description: Total price.
