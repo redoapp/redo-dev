@@ -1,0 +1,29 @@
+description: Generate HTML and CSS for checkout buttons
+get:
+  description: Generate HTML and CSS for checkout buttons
+  operationId: Checkout buttons UI
+  parameters:
+    - $ref: "#/components/parameters/store-id.param"
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              css:
+                description:
+                  Boilerplate checkout button CSS, plus any merchant configured
+                  styles or A/B tests.
+                title: Checkout buttons CSS
+                type: string
+              html:
+                description: Boilerplate checkout button HTML
+                title: Checkout buttons HTML
+                type: string
+  summary:
+    Retrieve some rendered HTML and CSS for checkout buttons options for
+    enabling and disabling coverage
+  tags:
+    - Checkout buttons
+    - UI
+summary: Checkout buttons UI

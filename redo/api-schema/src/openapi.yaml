@@ -48,6 +48,8 @@ paths:
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
+  /stores/{storeId}/checkout-buttons-ui:
+    { $ref: path/checkout-buttons-ui.path.yaml }
   /stores/{storeId}/coverage-info: { $ref: path/coverage-info.path.yaml }
   /stores/{storeId}/coverage-products:
     { $ref: path/coverage-products.path.yaml }
