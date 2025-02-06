@@ -3,7 +3,7 @@ get:
   description: Generate HTML and CSS for checkout buttons
   operationId: Checkout buttons UI
   parameters:
-    - $ref: "#/components/parameters/store-id.param"
+    - { $ref: ../param/store-id.param.yaml }
   responses:
     "200":
       content:
