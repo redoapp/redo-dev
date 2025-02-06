@@ -8,9 +8,9 @@ inputs:
 runs:
   steps:
     - name: Upload profiles
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: profile
+        name: profile-${{github.run_id}}
         path: .profile/
     - name: Shutdown Bazel
       if: inputs.cache-write == 'true'
