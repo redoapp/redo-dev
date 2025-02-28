@@ -38,7 +38,6 @@ properties:
             id:
               title: ID
               type: string
-          required: [id]
           type: object
         quantity:
           description: Quantity.
@@ -50,9 +49,8 @@ properties:
             id:
               title: ID
               type: string
-          required: [id]
           type: object
-      required: [id, quantity, product, variant, priceTotal]
+      required: [id, quantity, product, variant]
       type: object
     title: Line items
     type: array
