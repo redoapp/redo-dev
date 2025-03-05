@@ -1,0 +1,20 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Length measurement with unit.
+properties:
+  unit:
+    description: Length unit
+    enum: [in, cm]
+    examples: [in, cm]
+    title: Unit
+    type: string
+  value:
+    description: Numeric length value
+    examples: [10.5, 30]
+    minimum: 0
+    title: Value
+    type: number
+required:
+  - value
+  - unit
+title: Length
+type: object

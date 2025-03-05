@@ -1,0 +1,58 @@
+description: Purchase a shipping label.
+post:
+  description:
+    Purchase a shipping label based on origin, destination, carrier, service,
+    and parcel information.
+  operationId: Shipment buy
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            carrier:
+              properties:
+                id:
+                  description:
+                    ID for the carrier account that provides the shipping rate.
+                  title: Carrier Account ID
+                  type: string
+              required: [id]
+              type: object
+            destination:
+              $ref: ../schema/shipping-contact.schema.yaml
+            origin:
+              $ref: ../schema/shipping-contact.schema.yaml
+            parcel:
+              $ref: ../schema/parcel.schema.yaml
+            service:
+              properties:
+                name:
+                  description: Service level name
+                  examples: ["Priority", "Ground"]
+                  type: string
+              required: [name]
+              type: object
+          required: [origin, destination, carrier, service, parcel]
+          type: object
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              shipment:
+                $ref: ../schema/shipment.schema.yaml
+            required: [shipment]
+            type: object
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Purchase shipping label
+  tags: [Shipping]
+summary: Shipment Buy
