@@ -47,8 +47,6 @@ paths:
   /returns/{returnId}: { $ref: path/return.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
-  /shipments/buy: { $ref: path/shipment-buy.path.yaml }
-  /shipments/rates: { $ref: path/shipment-rates.path.yaml }
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
   /stores/{storeId}/checkout-buttons-ui:
     { $ref: path/checkout-buttons-ui.path.yaml }
@@ -58,6 +56,8 @@ paths:
   /stores/{storeId}/customer-portal: { $ref: path/customer-portal.path.yaml }
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
+  /stores/{storeId}/shipments/buy: { $ref: path/shipment-buy.path.yaml }
+  /stores/{storeId}/shipments/rates: { $ref: path/shipment-rates.path.yaml }
   /stores/{storeId}/webhooks: { $ref: path/webhooks.path.yaml }
   /webhooks/{webhookId}: { $ref: path/webhook.path.yaml }
   /webhooks/{webhookId}/replay: { $ref: path/webhook-replay.path.yaml }
