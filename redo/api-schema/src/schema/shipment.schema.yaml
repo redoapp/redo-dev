@@ -2,7 +2,9 @@
 description: Shipment information.
 properties:
   documents:
-    description: Shipping documents
+    description:
+      Available shipping documents. You can access these documents using the GET
+      Shipment document endpoint.
     items:
       $ref: ./shipment-document.schema.yaml
     title: Documents
