@@ -1,0 +1,16 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Shipping document information.
+properties:
+  type:
+    $ref: ./shipment-document-type.schema.yaml
+  url:
+    description: URL to download the document
+    examples: ["https://example.com/labels/123.pdf"]
+    format: uri
+    title: URL
+    type: string
+required:
+  - type
+  - url
+title: Shipment Document
+type: object

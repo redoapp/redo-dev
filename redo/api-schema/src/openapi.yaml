@@ -47,6 +47,8 @@ paths:
   /returns/{returnId}: { $ref: path/return.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
+  /shipments/buy: { $ref: path/shipment-buy.path.yaml }
+  /shipments/rates: { $ref: path/shipment-rates.path.yaml }
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
   /stores/{storeId}/checkout-buttons-ui:
     { $ref: path/checkout-buttons-ui.path.yaml }

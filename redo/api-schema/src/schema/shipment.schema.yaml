@@ -1,0 +1,21 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Shipment information.
+properties:
+  documents:
+    description: Shipping documents
+    items:
+      $ref: ./shipment-document.schema.yaml
+    title: Documents
+    type: array
+  id:
+    description: Shipment identifier
+    title: Shipment ID
+    type: string
+  tracker:
+    $ref: ./shipment-tracker.schema.yaml
+required:
+  - id
+  - documents
+  - tracker
+title: Shipment
+type: object

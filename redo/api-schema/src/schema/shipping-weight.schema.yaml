@@ -1,0 +1,24 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Weight measurement with unit for shipping.
+properties:
+  unit:
+    description: Weight unit
+    enum:
+      - g
+      - kg
+      - oz
+      - lb
+    examples: ["lb", "kg"]
+    title: Unit
+    type: string
+  value:
+    description: Numeric weight value
+    examples: [1.5, 10]
+    minimum: 0
+    title: Value
+    type: number
+required:
+  - value
+  - unit
+title: Shipping Weight
+type: object
