@@ -1,0 +1,6 @@
+description: Type of document to download
+in: path
+name: documentType
+required: true
+schema:
+  $ref: ../schema/shipment-document-type.schema.yaml

@@ -58,6 +58,8 @@ paths:
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
   /stores/{storeId}/shipments/buy: { $ref: path/shipment-buy.path.yaml }
   /stores/{storeId}/shipments/rates: { $ref: path/shipment-rates.path.yaml }
+  /stores/{storeId}/shipments/{shipmentId}/documents/{documentType}:
+    { $ref: path/shipment-document.path.yaml }
   /stores/{storeId}/webhooks: { $ref: path/webhooks.path.yaml }
   /webhooks/{webhookId}: { $ref: path/webhook.path.yaml }
   /webhooks/{webhookId}/replay: { $ref: path/webhook-replay.path.yaml }
