@@ -11,11 +11,14 @@ properties:
     description: Shipment identifier
     title: Shipment ID
     type: string
+  price:
+    $ref: ./money.schema.yaml
   tracker:
     $ref: ./shipment-tracker.schema.yaml
 required:
   - id
   - documents
   - tracker
+  - price
 title: Shipment
 type: object
