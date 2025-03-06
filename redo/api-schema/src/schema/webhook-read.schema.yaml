@@ -20,14 +20,14 @@ properties:
     readonly: true
     title: ID
     type: string
-  topic:
-    $ref: ./webhook-topic.schema.yaml
-    description: Topic.
-    title: Topic
   kind:
     $ref: ./webhook-kind.schema.yaml
     description: Kind.
     title: Kind
+  topic:
+    $ref: ./webhook-topic.schema.yaml
+    description: Topic.
+    title: Topic
   updatedAt:
     description: Last time updated.
     format: date-time
