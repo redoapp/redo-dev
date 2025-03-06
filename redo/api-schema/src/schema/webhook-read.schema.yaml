@@ -20,6 +20,10 @@ properties:
     readonly: true
     title: ID
     type: string
+  kind:
+    $ref: ./webhook-kind.schema.yaml
+    description: Kind.
+    title: Kind
   topic:
     $ref: ./webhook-topic.schema.yaml
     description: Topic.

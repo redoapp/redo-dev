@@ -15,6 +15,10 @@ properties:
     description: Optional external identifier.
     title: External ID
     type: [string, "null"]
+  kind:
+    $ref: ./webhook-kind.schema.yaml
+    description: Kind.
+    title: Kind
   topic:
     $ref: ./webhook-topic.schema.yaml
     description: Topic.
