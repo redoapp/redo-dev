@@ -24,11 +24,15 @@ properties:
     $ref: ./webhook-topic.schema.yaml
     description: Topic.
     title: Topic
+  kind:
+    $ref: ./webhook-kind.schema.yaml
+    description: Kind.
+    title: Kind
   updatedAt:
     description: Last time updated.
     format: date-time
     title: Updated at.
     type: string
-required: [callback, createdAt, externalId id, updatedAt, topic]
+required: [callback, createdAt, externalId id, updatedAt, topic, kind]
 title: Webhook read
 type: object

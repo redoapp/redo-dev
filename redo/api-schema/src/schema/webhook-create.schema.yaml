@@ -19,6 +19,10 @@ properties:
     $ref: ./webhook-topic.schema.yaml
     description: Topic.
     title: Topic
+  kind:
+    $ref: ./webhook-kind.schema.yaml
+    description: Kind.
+    title: Kind
 required: [callback, topic]
 title: Webhook create
 type: object
