@@ -33,6 +33,6 @@ properties:
     format: date-time
     title: Updated at.
     type: string
-required: [callback, createdAt, externalId id, updatedAt, topic, kind]
+required: [callback, createdAt, externalId id, updatedAt, topic]
 title: Webhook read
 type: object
