@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  Return status.
+
+  * complete: The return has been completed successfully.
+  * open: Return has been approved and is awaiting shipment.
+  * flagged: A problem with return processing requires merchant action.
+  * rejected: The return has been rejected.
+  * deleted: The return has been deleted (Reset).
+enum:
+  - complete
+  - open
+  - flagged
+  - rejected
+  - deleted
+example: open
+title: Return status
+type: string

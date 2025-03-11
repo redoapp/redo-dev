@@ -2,21 +2,27 @@
 description: |
   Return status.
 
-  * manual_review: Return requires pre-shipment merchant authorization.
-  * open: Return has been approved is awaiting shipment.
-  * transit: Return shipment is in transit.
-  * delivered: Return shipment has been delievered and awaiting processing.
+  * open: Return has been approved and is awaiting shipment.
+  * in_transit: Return shipment is in transit.
+  * delivered: Return shipment has been delivered and awaiting processing.
+  * needs_review: Return requires review before further action.
+  * in_review: Return is currently being reviewed.
+  * complete: The return has been completed successfully.
+  * rejected: The return has been rejected.
   * flagged: A problem with return processing requires merchant action.
-  * cancelled: The return has been cancelled.
-  * closed: The return has been completed.
+  * pre_shipment: Return requires pre-shipment merchant authorization.
+  * deleted: The return has been deleted (Reset).
 enum:
-  - manual_review
   - open
-  - transit
+  - in_transit
   - delivered
+  - needs_review
+  - in_review
+  - complete
+  - rejected
   - flagged
-  - cancelled
-  - closed
+  - pre_shipment
+  - deleted
 example: open
 title: Return status
 type: string

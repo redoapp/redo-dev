@@ -31,7 +31,7 @@ put:
       application/json:
         schema:
           properties:
-            status: { $ref: ../schema/return-status.schema.yaml }
+            status: { $ref: ../schema/return-status-update.schema.yaml }
           required: [status]
           type: object
     required: true
