@@ -6,7 +6,7 @@ description: |
   * open: Return has been approved and is awaiting shipment.
   * flagged: A problem with return processing requires merchant action.
   * rejected: The return has been rejected.
-  * deleted: The return has been deleted (Reset).
+  * deleted: The return has been reset.
 enum:
   - complete
   - open
