@@ -1,8 +1,8 @@
-parameters:
-  - { $ref: ../param/webhook-id.param.yaml }
 delete:
-  description: Delete a webbhook.
+  description: Delete a webhook.
   operationId: Webhook delete
+  parameters:
+    - { $ref: "../param/webhook-id.param.yaml" }
   responses:
     "204":
       description: Deleted
@@ -14,6 +14,8 @@ description: Webhook.
 get:
   description: Get a webhook.
   operationId: Webhook get
+  parameters:
+    - { $ref: ../param/webhook-id.param.yaml }
   responses:
     "200":
       content:
@@ -29,6 +31,8 @@ get:
 put:
   description: Update a webhook.
   operationId: Webhook update
+  parameters:
+    - { $ref: ../param/webhook-id.param.yaml }
   requestBody:
     content:
       application/json:
