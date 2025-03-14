@@ -2,6 +2,8 @@ description: Return status.
 get:
   description: Get return status.
   operationId: Return status get
+  parameters:
+    - { $ref: ../param/return-id.param.yaml }
   responses:
     "200":
       content:
@@ -21,11 +23,11 @@ get:
     - Bearer: []
   summary: Get return status
   tags: [Returns]
-parameters:
-  - { $ref: ../param/return-id.param.yaml }
 put:
   description: Update return status.
   operationId: Return status update
+  parameters:
+    - { $ref: ../param/return-id.param.yaml }
   requestBody:
     content:
       application/json:
