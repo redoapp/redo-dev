@@ -17,6 +17,10 @@ properties:
         description: Phone number of the destination.
         title: Phone number
     type: object
+  type:
+    $ref: ./return-type.schema.yaml
+    description: Return type.
+    title: Type
   exchange:
     description: Exchange order
     properties:
