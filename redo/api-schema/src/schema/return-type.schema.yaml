@@ -1,0 +1,10 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  Return type.
+enum:
+  - claim
+  - return
+  - warranty
+example: return
+title: Return type
+type: string

@@ -198,6 +198,10 @@ properties:
     $ref: ./return-status.schema.yaml
     description: Return status.
     title: Status
+  type:
+    $ref: ./return-type.schema.yaml
+    description: Return type.
+    title: Type
   updatedAt:
     description: Time of last update.
     format: date-time
