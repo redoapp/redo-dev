@@ -1,68 +1,25 @@
 # $schema: https://json-schema.org/draft/2020-12/schema#
 additionalProperties: true
-# Different required fields based on event type
-allOf:
-  - required:
-      - eventName
-      - eventId
-      - timestamp
-  - oneOf:
-      - required: [customer]
-      - required: [anonymousId]
 description: Shopify pixel event for storefront tracking.
-# Event-specific schemas
-oneOf:
-  - properties:
-      eventName:
-        enum: [product_added_to_cart]
-    required: [cartLine, cart]
-  - properties:
-      eventName:
-        enum: [product_removed_from_cart]
-    required: [cartLine, cart]
-  - properties:
-      eventName:
-        enum: [product_viewed]
-    required: [productVariant]
-  - properties:
-      eventName:
-        enum:
-          [
-            checkout_started,
-            checkout_completed,
-            checkout_contact_info_submitted,
-          ]
-    required: [checkout]
-  - properties:
-      eventName:
-        enum: [page_viewed]
-  - properties:
-      eventName:
-        enum: [collection_viewed]
-    required: [collection]
 properties:
-  # Customer identification (either anonymousId or customer object is required)
   anonymousId:
     description: Anonymous identifier for users without account.
     type: string
-  # Cart-related fields
   cart:
     description: Cart information.
-    type: [object, "null"]
+    type: ["object", "null"]
   cartLine:
     description: Information about specific cart line item.
     type: object
-  # Checkout-related fields
   checkout:
     description: Checkout information.
     type: object
-  # Collection-related fields
   collection:
     description: Collection information.
     type: object
   customer:
     description: Customer information if available.
-    type: [object, "null"]
+    type: ["object", "null"]
   customerEmail:
     description: Customer email if available.
     format: email
@@ -85,7 +42,6 @@ properties:
       - page_viewed
       - collection_viewed
     type: string
-  # Product-related fields
   productVariant:
     description: Product variant information.
     type: object
@@ -96,9 +52,12 @@ properties:
   urlWithParams:
     description: Complete page URL with query parameters.
     type: string
-  # Page view fields
   urlWithoutParams:
     description: Page URL without query parameters.
     type: string
+required:
+  - eventName
+  - eventId
+  - timestamp
 title: Storefront Event
 type: object
