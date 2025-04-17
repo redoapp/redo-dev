@@ -8,9 +8,9 @@ inputs:
 runs:
   steps:
     - name: Install Bazel
-      uses: bazelbuild/setup-bazelisk@v2
+      uses: bazelbuild/setup-bazelisk@v3
     - name: Restore Bazel repo cache
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: ~/.cache/bazel
         key: ${{ inputs.bazel-cache-key }}/${{ github.sha }}
