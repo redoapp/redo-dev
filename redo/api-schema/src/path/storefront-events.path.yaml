@@ -1,0 +1,32 @@
+post:
+  description:
+    Processes events from storefronts using Shopify pixel event schema
+  operationId: storefrontEvent
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/storefront-event.schema.yaml"
+    required: true
+  responses:
+    "204":
+      description: Event processed successfully
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid event payload
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Receive storefront events
+  tags:
+    - Storefront
