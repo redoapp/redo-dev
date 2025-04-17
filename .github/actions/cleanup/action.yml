@@ -18,7 +18,7 @@ runs:
       shell: bash
     - name: Save Bazel cache
       if: inputs.cache-write == 'true'
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: ~/.cache/bazel
         key: ${{ inputs.bazel-cache-key }}/${{ github.sha }}
