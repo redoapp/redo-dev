@@ -1,0 +1,58 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: false
+description: Shopify pixel event for storefront tracking.
+properties:
+  cart:
+    $ref: ./storefront-cart.schema.yaml
+    description: Cart information if relevant to the event.
+  clientId:
+    description: Identifier for the client that generated the event.
+    type: string
+  customer:
+    $ref: ./storefront-customer.schema.yaml
+    description: Customer information if available.
+  customerId:
+    description: Shopify customer ID if available.
+    type: string
+  eventId:
+    description: Unique identifier for the event.
+    type: string
+  eventName:
+    description:
+      Name of the Shopify pixel event (e.g., 'product_viewed',
+      'checkout_started').
+    enum:
+      - product_viewed
+      - product_added
+      - checkout_started
+      - checkout_completed
+      - page_viewed
+    type: string
+  metadata:
+    additionalProperties: true
+    description: Additional context information.
+    type: object
+  productId:
+    description: Product ID if event is related to a specific product.
+    type: string
+  redoSelected:
+    description: Whether the Redo protection was selected in the UI.
+    type: boolean
+  shopDomain:
+    description: The Shopify shop domain.
+    type: string
+  timestamp:
+    description: ISO 8601 timestamp when the event occurred.
+    format: date-time
+    type: string
+  variantId:
+    description: Variant ID if event is related to a specific product variant.
+    type: string
+required:
+  - eventName
+  - eventId
+  - timestamp
+  - clientId
+  - shopDomain
+title: Storefront Event
+type: object
