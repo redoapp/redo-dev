@@ -2,4 +2,4 @@ description: Page size, defaults to 20
 example: 20
 in: header
 name: X-Page-Size
-schema: { type: integer }
+schema: { maximum: 500, minimum: 1, type: integer }
