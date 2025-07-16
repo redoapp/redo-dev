@@ -4,19 +4,25 @@ examples:
   - { message: "Item is worn." }
   - { image: "eJxiYAEAAAD//wMAAAYABQ==" }
 oneOf:
-  - properties:
+  - additionalProperties: false
+    properties:
       image:
         contentEncoding: base64
         description: Base64-encoded image
         title: Image
         type: string
+    required:
+      - image
     title: Image comment
     type: object
-  - properties:
+  - additionalProperties: false
+    properties:
       message:
         description: Message.
         title: Message
         type: string
+    required:
+      - message
     title: Message comment
     type: object
 title: Comment
