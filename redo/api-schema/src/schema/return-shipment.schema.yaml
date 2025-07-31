@@ -1,0 +1,29 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Return shipment tracking information
+properties:
+  carrier:
+    description: Carrier code
+    title: Carrier
+    type: string
+  status:
+    description: Status of shipment
+    enum:
+      - unknown
+      - pre_transit
+      - in_transit
+      - out_for_delivery
+      - available_for_pickup
+      - cancelled
+      - delivered
+      - error
+      - failure
+      - return_to_sender
+      - expired
+    title: Status
+    type: string
+  tracker:
+    description: Tracking number
+    title: Tracker
+    type: string
+title: Return Shipment
+type: object
