@@ -34,7 +34,17 @@ properties:
               title: Quantity
             variant:
               $ref: ./product-variant.schema.yaml
-          required: [id, quantity, product, variant]
+            price:
+              description: Price details for the exchange item
+              properties:
+                amount:
+                  type: string
+                tax:
+                  type: string
+                currency:
+                  type: string
+              type: object
+          required: [id, quantity, variant]
         title: Line items
         type: array
       order:
@@ -43,12 +53,21 @@ properties:
             description: ID of external order
             title: External ID
             type: string
-          id:
-            type: string
         type: object
       provision:
         $ref: ./exchange-provision.schema.yaml
         title: Provision
+      totalTax:
+        description: Total tax for exchange items
+        properties:
+          amount:
+            type: string
+          currency:
+            type: string
+        type: object
+      itemCount:
+        description: Total quantity of all exchange items
+        type: integer
     required: [items, provision]
     title: Exchange
     type: object
@@ -76,19 +95,22 @@ properties:
     examples: [64df65d4c5a4ca3eff4b4e43]
     title: Identifier
     type: string
+  externalOrderIds:
+    description: Array of external order IDs associated with this return
+    items:
+      type: string
+    title: External Order IDs
+    type: array
+  shopifyOrderIds:
+    description: Array of Shopify order IDs (deprecated, use externalOrderIds)
+    items:
+      type: string
+    title: Shopify Order IDs
+    type: array
   items:
     description: Return items
     items:
       properties:
-        exchangeItem:
-          properties:
-            id:
-              description: ID of exchange line item
-              title: ID
-              type: string
-          required: [string]
-          title: Exchange item
-          type: object
         id:
           description: Return item ID.
           title: ID
@@ -97,46 +119,82 @@ properties:
           description: Order line item
           properties:
             id:
-              description:
-                "Line item ID in original order. Note: There can be more than
-                return item for an original line item, with different quantity,
-                return reasons, etc."
+              description: "Line item reference ID in format: {orderId}/{lineItemIndex}"
               title: ID
               type: string
-          required: [index]
+            line_item_id:
+              description: Original Shopify line item ID
+              title: Line Item ID
+              type: string
+          required: [id]
           title: Order item
           type: object
         quantity:
-          $ref: ./item-quantity.schema.yaml
-          title: Quantity
+          description: Quantity of items being returned
+          type: integer
         reason:
-          description: Return reason
+          description: Primary return reason
           examples: [Too big, Other]
           type: string
+        reasons:
+          description: Array of return reasons
+          items:
+            type: string
+          type: array
+        reasonCode:
+          description: Return reason code
+          type: string
+        customerComment:
+          description: Customer's comment about the return
+          type: string
+        sku:
+          description: Product SKU
+          type: string
+        variantId:
+          description: Product variant ID
+          type: string
+        productId:
+          description: Product ID
+          type: string
+        greenReturn:
+          description: Whether this is a green return (no physical return required)
+          type: boolean
+        exchangeItem:
+          description: Exchange item details if this return item is being exchanged
+          properties:
+            product:
+              properties:
+                externalId:
+                  type: string
+                name:
+                  type: string
+              type: object
+            variant:
+              properties:
+                externalId:
+                  type: string
+                name:
+                  type: string
+              type: object
+            quantity:
+              type: integer
+          title: Exchange item
+          type: object
         refund:
-          description: Refund
+          description: Refund details
           properties:
             amount:
               $ref: ./money.schema.yaml
               title: Amount
-            pendingAmount:
-              $ref: ./money.schema.yaml
-              title: Planned amount
-            pendingTaxAmount:
-              $ref: ./money.schema.yaml
-              description: Taxes.
-              title: Taxes
-            taxAmount:
-              $ref: ./money.schema.yaml
-              description: Taxes.
-              title: Taxes
             type:
-              description: Refund method
-              enum: [credit, refund]
+              description: Refund strategy
               type: string
-          required: [amount, pendingAmount, pendingTaxAmount, taxAmount, type]
+          required: [amount]
           type: object
-      required: [item, quantity, reason]
+        status:
+          description: Return item status
+          type: string
+      required: [id, orderItem, quantity, reason]
       type: object
     type: array
   order:
@@ -151,28 +209,15 @@ properties:
     title: Order
     type: object
   shipment:
+    $ref: ./return-shipment.schema.yaml
     description: Shipment, if has been made
-    properties:
-      carrier:
-        description: Carrier code
-        title: Carrier
-        type: string
-      status:
-        description: Status of shipment
-        enum:
-          - pre_transit
-          - transit
-          - delivered
-          - cancelled
-          - flagged
-        title: Status
-        type: string
-      tracker:
-        description: Tracking number
-        title: Tracker
-        type: string
     title: Shipment
-    type: object
+  shipments:
+    description: Array of all shipments associated with this return
+    items:
+      $ref: ./return-shipment.schema.yaml
+    title: Shipments
+    type: array
   source:
     properties:
       emailAddress:
@@ -198,6 +243,56 @@ properties:
     $ref: ./return-status.schema.yaml
     description: Return status.
     title: Status
+  notes:
+    description: Teammembers generated notes and comments on the return
+    items:
+      properties:
+        message:
+          description: The note text
+          title: Message
+          type: string
+        image:
+          description: Optional image URL attached to the note
+          title: Image URL
+          type: string
+      required: [message]
+      type: object
+    title: Notes
+    type: array
+  totals:
+    description: Calculated totals for the return
+    properties:
+      refund:
+        description: Total refund amount excluding shipping
+        properties:
+          amount:
+            $ref: ./money.schema.yaml
+        required: [amount]
+        type: object
+      exchange:
+        description: Total value of new items in exchange
+        properties:
+          amount:
+            $ref: ./money.schema.yaml
+        required: [amount]
+        type: object
+      storeCredit:
+        description: Total store credit amount
+        properties:
+          amount:
+            $ref: ./money.schema.yaml
+        required: [amount]
+        type: object
+      charge:
+        description: The upsell amount for the exchange order
+        properties:
+          amount:
+            $ref: ./money.schema.yaml
+        required: [amount]
+        type: object
+    required: [refund, exchange, storeCredit, charge]
+    title: Totals
+    type: object
   type:
     $ref: ./return-type.schema.yaml
     description: Return type.
