@@ -11,7 +11,49 @@ post:
           properties:
             cart: { $ref: ../schema/storefront-cart.schema.yaml }
             customer: { $ref: ../schema/storefront-customer.schema.yaml }
-          required: [cart]
+            products:
+              description: Product information.
+              items:
+                properties:
+                  id:
+                    description: Identifier of the product.
+                    title: ID
+                    type: string
+                required: [id]
+                type: object
+              title: Products
+              type: array
+            variants:
+              description: Variant information.
+              items:
+                properties:
+                  height:
+                    $ref: ./length.schema.yaml
+                    description: Height of an item.
+                    title: Height
+                  id:
+                    description: Identifier of the variant.
+                    title: ID
+                    type: string
+                  length:
+                    $ref: ./length.schema.yaml
+                    description: Length of an item.
+                    title: Length
+                  title:
+                    title: Title
+                    type: string
+                  weight:
+                    $ref: ./weight.schema.yaml
+                    description: Weight of an item.
+                    title: Weight
+                  width:
+                    $ref: ./length.schema.yaml
+                    description: Width of an item.
+                    title: Width
+                required: [id]
+                type: object
+              title: Variants
+              type: array
           type: object
     required: true
   responses:

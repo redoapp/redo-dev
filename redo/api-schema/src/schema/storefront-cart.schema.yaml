@@ -36,6 +36,7 @@ properties:
           description: Product.
           properties:
             id:
+              description: Identifier of the product.
               title: ID
               type: string
           required: [id]
@@ -48,12 +49,9 @@ properties:
           description: Variant.
           properties:
             id:
+              description: Identifier of the variant.
               title: ID
               type: string
-            weight:
-              $ref: ./weight.schema.yaml
-              title: Weight
-              description: Weight of the variant.
           required: [id]
           type: object
       required: [id, quantity, product, variant, priceTotal]
