@@ -25,5 +25,9 @@ properties:
     description: Tracking number
     title: Tracker
     type: string
+  trackingUrl:
+    description: Tracking URL
+    title: Tracking URL
+    type: string
 title: Return Shipment
 type: object
