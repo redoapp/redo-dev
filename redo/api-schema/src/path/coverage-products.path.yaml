@@ -28,7 +28,7 @@ post:
               items:
                 properties:
                   height:
-                    $ref: ./length.schema.yaml
+                    $ref: ../schema/length.schema.yaml
                     description: Height of an item.
                     title: Height
                   id:
@@ -36,18 +36,18 @@ post:
                     title: ID
                     type: string
                   length:
-                    $ref: ./length.schema.yaml
+                    $ref: ../schema/length.schema.yaml
                     description: Length of an item.
                     title: Length
                   title:
                     title: Title
                     type: string
                   weight:
-                    $ref: ./weight.schema.yaml
+                    $ref: ../schema/weight.schema.yaml
                     description: Weight of an item.
                     title: Weight
                   width:
-                    $ref: ./length.schema.yaml
+                    $ref: ../schema/length.schema.yaml
                     description: Width of an item.
                     title: Width
                 required: [id]
