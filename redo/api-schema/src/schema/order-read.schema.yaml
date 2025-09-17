@@ -18,6 +18,12 @@ properties:
         title: Phone number
     required: [name]
     type: object
+  discounts:
+    $ref: ./money.schema.yaml
+    description:
+      The total amount discounted on the order before returns. This includes
+      both order and line level discounts.
+    title: Discounts
   externalId:
     description: Shopify ID
     examples: ["1073459971", "450789469"]
@@ -57,11 +63,43 @@ properties:
       required: [id, product, quantity, variant, price, fulfillmentLocationId]
     title: Line items
     type: array
+  lineItemsTotal:
+    $ref: ./money.schema.yaml
+    description:
+      Total price of all line items before discounts, shipping, and taxes.
+    title: Line Items Total
   name:
     description: Shopify name.
     examples: ["#123"]
     title: Name
     type: string
-required: [customer, id, items, name]
+  shippingCost:
+    $ref: ./money.schema.yaml
+    description:
+      The total shipping cost for the order. This includes fees and any related
+      discounts that were refunded.
+    title: Shipping Cost
+  taxes:
+    $ref: ./money.schema.yaml
+    description: Total taxes applied to the order.
+    title: Taxes
+  total:
+    $ref: ./money.schema.yaml
+    description:
+      The total price of the order, before returns. This includes taxes,
+      discounts, and shipping costs.
+    title: Total
+required:
+  [
+    customer,
+    id,
+    items,
+    name,
+    discounts,
+    lineItemsTotal,
+    shippingCost,
+    total,
+    taxes,
+  ]
 title: Order
 type: object
