@@ -20,8 +20,8 @@ properties:
     type: object
   discounts:
     $ref: ./money.schema.yaml
-    description: 
-      The total amount discounted on the order before returns. This includes 
+    description:
+      The total amount discounted on the order before returns. This includes
       both order and line level discounts.
     title: Discounts
   externalId:
@@ -65,7 +65,7 @@ properties:
     type: array
   lineItemsTotal:
     $ref: ./money.schema.yaml
-    description: 
+    description:
       Total price of all line items before discounts, shipping, and taxes.
     title: Line Items Total
   name:
@@ -76,7 +76,7 @@ properties:
   shippingCost:
     $ref: ./money.schema.yaml
     description: 
-      The total shipping cost for the order. This includes fees and any related 
+      The total shipping cost for the order. This includes fees and any related
       discounts that were refunded.
     title: Shipping Cost
   taxes:
@@ -86,10 +86,10 @@ properties:
   total:
     $ref: ./money.schema.yaml
     description: 
-      The total price of the order, before returns. This includes taxes, 
+      The total price of the order, before returns. This includes taxes,
       discounts, and shipping costs.
     title: Total
-required: 
+required:
   [
     customer,
     id,
