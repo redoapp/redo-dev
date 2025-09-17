@@ -75,7 +75,7 @@ properties:
     type: string
   shippingCost:
     $ref: ./money.schema.yaml
-    description: 
+    description:
       The total shipping cost for the order. This includes fees and any related
       discounts that were refunded.
     title: Shipping Cost
@@ -85,7 +85,7 @@ properties:
     title: Taxes
   total:
     $ref: ./money.schema.yaml
-    description: 
+    description:
       The total price of the order, before returns. This includes taxes,
       discounts, and shipping costs.
     title: Total
