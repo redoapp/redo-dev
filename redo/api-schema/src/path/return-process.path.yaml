@@ -1,4 +1,6 @@
 description: Process return.
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
 post:
   description: |
     **BETA**: This endpoint is in beta and subject to change.
@@ -9,60 +11,60 @@ post:
     content:
       application/json:
         schema:
-          type: object
-          required:
-            - products
           properties:
+            customerNotes:
+              description:
+                Notes to send to customer. These can be rejection notes or
+                processing notes.
+              type: string
+            markAsReviewed:
+              description:
+                Whether to mark the return as reviewed before processing
+              type: boolean
             products:
               description:
                 Array of products to process with their processing or rejection
                 details
-              type: array
               items:
-                type: object
-                required:
-                  - _id
                 properties:
                   _id:
-                    type: string
                     description: Product ID
                     example: "64e4d5e837572a4813b73e41"
+                    type: string
                   processInput:
-                    type: object
                     nullable: true
                     properties:
-                      restock:
-                        type: boolean
-                        description: Whether to restock the item
                       newMerchantAdjustment:
-                        type: number
-                        nullable: true
                         description:
                           Adjustment amount. This will be the amount that is
                           credited to the customer.
-            markAsReviewed:
-              type: boolean
-              description:
-                Whether to mark the return as reviewed before processing
-            customerNotes:
-              type: string
-              description:
-                Notes to send to customer. These can be rejection notes or
-                processing notes.
+                        nullable: true
+                        type: number
+                      restock:
+                        description: Whether to restock the item
+                        type: boolean
+                    type: object
+                required:
+                  - _id
+                type: object
+              type: array
+          required:
+            - products
+          type: object
     required: true
   responses:
     "200":
       content:
         application/json:
           schema:
-            type: object
             properties:
               message:
-                type: string
                 description: Status message
                 examples:
                   - "Processing triggered successfully"
                   - "Successfully prepared some products to be processed"
+                type: string
+            type: object
       description: Processing request completed
     "400":
       content:
@@ -78,6 +80,4 @@ post:
     - Bearer: []
   summary: Process return
   tags: [Returns]
-parameters:
-  - { $ref: ../param/return-id.param.yaml }
 summary: Process return
