@@ -1,0 +1,83 @@
+description: Process return.
+post:
+  description: |
+    **BETA**: This endpoint is in beta and subject to change.
+
+    Trigger processing of a return with specified products.
+  operationId: Return process
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - products
+          properties:
+            products:
+              description:
+                Array of products to process with their processing or rejection
+                details
+              type: array
+              items:
+                type: object
+                required:
+                  - _id
+                properties:
+                  _id:
+                    type: string
+                    description: Product ID
+                    example: "64e4d5e837572a4813b73e41"
+                  processInput:
+                    type: object
+                    nullable: true
+                    properties:
+                      restock:
+                        type: boolean
+                        description: Whether to restock the item
+                      newMerchantAdjustment:
+                        type: number
+                        nullable: true
+                        description:
+                          Adjustment amount. This will be the amount that is
+                          credited to the customer.
+            markAsReviewed:
+              type: boolean
+              description:
+                Whether to mark the return as reviewed before processing
+            customerNotes:
+              type: string
+              description:
+                Notes to send to customer. These can be rejection notes or
+                processing notes.
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Status message
+                examples:
+                  - "Processing triggered successfully"
+                  - "Successfully prepared some products to be processed"
+      description: Processing request completed
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Bad request (e.g., missing products array)
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Process return
+  tags: [Returns]
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
+summary: Process return
