@@ -17,33 +17,37 @@ post:
                 Notes to send to customer. These can be rejection notes or
                 processing notes.
               type: string
-            markAsReviewed:
-              description:
-                Whether to mark the return as reviewed before processing
-              type: boolean
             products:
-              description:
-                Array of products to process with their processing or rejection
-                details
+              description: Array of products to process or reject
               items:
                 properties:
                   _id:
-                    description: Product ID
+                    description: Product ID found on the return
                     example: "64e4d5e837572a4813b73e41"
                     type: string
                   processInput:
+                    description:
+                      Processing details. You may only have one of reject or
+                      processInput.
                     nullable: true
                     properties:
                       newMerchantAdjustment:
                         description:
                           Adjustment amount. This will be the amount that is
-                          credited to the customer.
+                          credited to the customer, overriding the original
+                          product value.
                         nullable: true
                         type: number
                       restock:
                         description: Whether to restock the item
                         type: boolean
                     type: object
+                  reject:
+                    default: false
+                    description:
+                      Reject this product. You may only have one of reject or
+                      processInput.
+                    type: boolean
                 required:
                   - _id
                 type: object
@@ -62,7 +66,8 @@ post:
                 description: Status message
                 examples:
                   - "Processing triggered successfully"
-                  - "Successfully prepared some products to be processed"
+                  - "Successfully prepared some products to be processed, once
+                    all products are ready, processing will be triggered"
                 type: string
             type: object
       description: Processing request completed
