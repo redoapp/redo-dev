@@ -66,7 +66,8 @@ post:
                 description: Status message
                 examples:
                   - "Processing triggered successfully"
-                  - "Successfully prepared some products to be processed"
+                  - "Successfully prepared some products to be processed, once
+                    all products are ready, processing will be triggered"
                 type: string
             type: object
       description: Processing request completed
