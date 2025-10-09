@@ -17,21 +17,18 @@ post:
                 Notes to send to customer. These can be rejection notes or
                 processing notes.
               type: string
-            markAsReviewed:
-              description:
-                Whether to mark the return as reviewed before processing
-              type: boolean
             products:
-              description:
-                Array of products to process with their processing or rejection
-                details
+              description: Array of products to process or reject
               items:
                 properties:
                   _id:
-                    description: Product ID
+                    description: Product ID found on the return.
                     example: "64e4d5e837572a4813b73e41"
                     type: string
                   processInput:
+                    description:
+                      Processing details. You may only have one of reject or
+                      processInput.
                     nullable: true
                     properties:
                       newMerchantAdjustment:
@@ -44,6 +41,12 @@ post:
                         description: Whether to restock the item
                         type: boolean
                     type: object
+                  reject:
+                    default: false
+                    description:
+                      Reject this product. You may only have one of reject or
+                      processInput.
+                    type: boolean
                 required:
                   - _id
                 type: object
