@@ -22,7 +22,7 @@ post:
               items:
                 properties:
                   _id:
-                    description: Product ID found on the return.
+                    description: Product ID found on the return
                     example: "64e4d5e837572a4813b73e41"
                     type: string
                   processInput:
@@ -34,7 +34,8 @@ post:
                       newMerchantAdjustment:
                         description:
                           Adjustment amount. This will be the amount that is
-                          credited to the customer.
+                          credited to the customer, overriding the original
+                          product value.
                         nullable: true
                         type: number
                       restock:
