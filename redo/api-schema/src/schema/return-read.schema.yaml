@@ -30,13 +30,21 @@ properties:
               title: ID
               type: string
             price:
-              description: Price details for the exchange item
+              description: Subtotal price for the exchange item including discounts
               properties:
                 amount:
                   type: string
                 currency:
                   type: string
                 tax:
+                  type: string
+              type: object
+            originalPrice:
+              description: Original price for the exchange item without discounts and taxes
+              properties:
+                amount: 
+                  type: string
+                currency:
                   type: string
               type: object
             product:
