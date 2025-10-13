@@ -1,0 +1,6 @@
+description: Shopify specific order name
+in: query
+name: shopify_order_name
+schema:
+  example: XYZ1025
+  type: string

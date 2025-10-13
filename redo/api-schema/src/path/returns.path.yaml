@@ -7,6 +7,8 @@ get:
     - { $ref: ../param/page-size.param.yaml }
     - { $ref: ../param/updated-at-max.param.yaml }
     - { $ref: ../param/updated-at-min.param.yaml }
+    - { $ref: ../param/shopify-order-name.yaml }
+    - { $ref: ../param/provider-order-name.yaml }
   responses:
     "200":
       content:
