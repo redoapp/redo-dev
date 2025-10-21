@@ -1,0 +1,15 @@
+description: Email subscription updates
+properties:
+  email:
+    description: Email address
+    format: email
+    type: string
+  subscriptions:
+    properties:
+      marketing:
+        $ref: ./subscription-status-marketing.schema.yaml
+    type: object
+required:
+  - email
+  - subscriptions
+type: object

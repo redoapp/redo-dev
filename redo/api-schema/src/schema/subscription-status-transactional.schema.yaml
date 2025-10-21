@@ -1,0 +1,15 @@
+description: Transactional subscription status (order tracking)
+properties:
+  subscriptionStatus:
+    description:
+      Subscription status. Only subscribed and unsubscribed are supported for
+      transactional.
+    enum: [subscribed, unsubscribed]
+    type: string
+  updatedAt:
+    description: ISO 8601 timestamp. If not provided, defaults to now.
+    format: date-time
+    type: string
+required:
+  - subscriptionStatus
+type: object
