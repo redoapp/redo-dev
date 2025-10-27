@@ -1,0 +1,32 @@
+description: Customer subscription update response
+properties:
+  message:
+    description: Human-readable success message
+    type: string
+  success:
+    description: Whether the operation was successful
+    type: boolean
+  updatedSubscriptions:
+    description: Details of which subscriptions were updated
+    properties:
+      email:
+        properties:
+          marketing:
+            description: Whether email marketing was updated
+            type: boolean
+        type: object
+      sms:
+        properties:
+          marketing:
+            description: Whether SMS marketing was updated
+            type: boolean
+          transactional:
+            description: Whether SMS transactional was updated
+            type: boolean
+        type: object
+    type: object
+required:
+  - success
+  - message
+  - updatedSubscriptions
+type: object

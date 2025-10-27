@@ -1,0 +1,16 @@
+description: SMS subscription updates
+properties:
+  phoneNumber:
+    description: Phone number in E.164 format (e.g., +12345678900)
+    type: string
+  subscriptions:
+    properties:
+      marketing:
+        $ref: ./subscription-status-marketing.schema.yaml
+      transactional:
+        $ref: ./subscription-status-transactional.schema.yaml
+    type: object
+required:
+  - phoneNumber
+  - subscriptions
+type: object

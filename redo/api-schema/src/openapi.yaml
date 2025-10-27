@@ -55,6 +55,8 @@ paths:
   /stores/{storeId}/coverage-products:
     { $ref: path/coverage-products.path.yaml }
   /stores/{storeId}/customer-portal: { $ref: path/customer-portal.path.yaml }
+  /stores/{storeId}/customer-subscriptions:
+    { $ref: path/customer-subscriptions.path.yaml }
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
   /stores/{storeId}/shipments/buy: { $ref: path/shipment-buy.path.yaml }
