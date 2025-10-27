@@ -4,8 +4,8 @@ description:
 post:
   description:
     Update customer subscription status for SMS and email marketing and
-    transactional messages. If the customer with that phone number or email
-    does not exist, it will be created.
+    transactional messages. If the customer with that phone number or email does
+    not exist, it will be created.
   operationId: Customer subscriptions update
   parameters:
     - $ref: ../param/store-id.param.yaml
