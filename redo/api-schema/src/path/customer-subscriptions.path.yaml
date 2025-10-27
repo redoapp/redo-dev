@@ -1,7 +1,7 @@
 description:
   Update customer subscription preferences for marketing and transactional
   messages.
-patch:
+post:
   description:
     Update customer subscription status for SMS and email marketing and
     transactional messages.
