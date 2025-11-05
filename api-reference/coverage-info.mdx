@@ -1,0 +1,160 @@
+---
+title: "Get Coverage Info"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/coverage-info"
+description: "Get information about returns coverage configuration for a store"
+---
+
+## Overview
+
+Retrieve information about your store's returns coverage configuration, including eligibility rules, pricing, and coverage options available to customers.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Response
+
+<ResponseField name="coverageEnabled" type="boolean">
+  Whether returns coverage is enabled for this store
+</ResponseField>
+
+<ResponseField name="pricing" type="object">
+  Pricing configuration for coverage products
+
+  <Expandable title="Pricing properties">
+    <ResponseField name="strategy" type="string">
+      Pricing strategy (e.g., "flat_rate", "percentage", "tiered")
+    </ResponseField>
+
+    <ResponseField name="basePrice" type="object">
+      Base price for coverage (money object)
+    </ResponseField>
+
+    <ResponseField name="percentage" type="number">
+      Percentage of order value (if applicable)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="eligibility" type="object">
+  Eligibility rules for coverage
+
+  <Expandable title="Eligibility properties">
+    <ResponseField name="minOrderValue" type="object">
+      Minimum order value to qualify for coverage (money object)
+    </ResponseField>
+
+    <ResponseField name="maxOrderValue" type="object">
+      Maximum order value for coverage (money object)
+    </ResponseField>
+
+    <ResponseField name="excludedProducts" type="array">
+      Array of product IDs that are excluded from coverage
+    </ResponseField>
+
+    <ResponseField name="excludedCollections" type="array">
+      Array of collection IDs that are excluded from coverage
+    </ResponseField>
+
+    <ResponseField name="excludedCustomers" type="array">
+      Array of customer IDs or tags that are excluded from coverage
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="benefits" type="array">
+  Array of benefits included with coverage
+
+  <Expandable title="Benefit properties">
+    <ResponseField name="name" type="string">
+      Benefit name (e.g., "Free return shipping", "Instant refunds")
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Detailed description of the benefit
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="displaySettings" type="object">
+  UI display settings for the coverage checkbox
+
+  <Expandable title="Display properties">
+    <ResponseField name="label" type="string">
+      Checkbox label text
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Description text shown to customers
+    </ResponseField>
+
+    <ResponseField name="color" type="string">
+      Brand color for UI elements
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "coverageEnabled": true,
+  "pricing": {
+    "strategy": "flat_rate",
+    "basePrice": {
+      "amount": "2.99",
+      "currency": "USD"
+    }
+  },
+  "eligibility": {
+    "minOrderValue": {
+      "amount": "25.00",
+      "currency": "USD"
+    },
+    "maxOrderValue": {
+      "amount": "500.00",
+      "currency": "USD"
+    },
+    "excludedProducts": [],
+    "excludedCollections": ["clearance-items"],
+    "excludedCustomers": []
+  },
+  "benefits": [
+    {
+      "name": "Free return shipping",
+      "description": "Get a prepaid return label when you need to return your items"
+    },
+    {
+      "name": "Instant refunds",
+      "description": "Receive your refund as soon as we receive your return"
+    }
+  ],
+  "displaySettings": {
+    "label": "Add return protection",
+    "description": "Get free return shipping and instant refunds for just $2.99",
+    "color": "#16A34A"
+  }
+}
+```
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Checkout integration">
+    Use this endpoint to determine whether to display the coverage checkbox during checkout and what pricing to show.
+  </Accordion>
+
+  <Accordion title="Product page display">
+    Check eligibility rules to determine if a specific product qualifies for coverage before showing the option to customers.
+  </Accordion>
+
+  <Accordion title="Customer support">
+    Reference coverage info when helping customers understand their coverage benefits and eligibility.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  Coverage configuration is managed through your Redo dashboard. This endpoint provides read-only access to view the current configuration.
+</Info>

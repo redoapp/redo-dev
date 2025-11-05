@@ -1,0 +1,148 @@
+---
+title: "Replay Webhook Events"
+api: "POST https://api.getredo.com/v2.2/webhooks/{webhookId}/replay"
+description: "Replay historical webhook events for a time period"
+---
+
+## Overview
+
+The webhook replay endpoint allows you to re-send historical events to your webhook endpoint. This is useful for:
+
+- Testing your webhook endpoint during development
+- Recovering from downtime or missed events
+- Backfilling data after setting up a new webhook
+- Debugging webhook processing issues
+
+## Path Parameters
+
+<ParamField path="webhookId" type="string" required>
+  The unique identifier for the webhook subscription
+</ParamField>
+
+## Request Body
+
+<ParamField body="startTime" type="string" required>
+  ISO 8601 timestamp of the start of the replay period. Events that occurred at or after this time will be replayed.
+</ParamField>
+
+<ParamField body="endTime" type="string" required>
+  ISO 8601 timestamp of the end of the replay period. Events that occurred before or at this time will be replayed.
+</ParamField>
+
+<ParamField body="topics" type="array">
+  Optional array of specific topics to replay. If not provided, all topics from the webhook subscription will be replayed.
+</ParamField>
+
+## Response
+
+<ResponseField name="replayId" type="string">
+  Unique identifier for this replay operation
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Status of the replay operation (e.g., `queued`, `processing`, `completed`)
+</ResponseField>
+
+<ResponseField name="eventsQueued" type="integer">
+  Number of events queued for replay
+</ResponseField>
+
+<ResponseField name="startTime" type="string">
+  Start time of the replay period
+</ResponseField>
+
+<ResponseField name="endTime" type="string">
+  End time of the replay period
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "startTime": "2023-08-01T00:00:00Z",
+  "endTime": "2023-08-18T23:59:59Z",
+  "topics": ["return.created", "return.updated"]
+}
+```
+
+## Example Response
+
+```json
+{
+  "replayId": "replay_abc123",
+  "status": "processing",
+  "eventsQueued": 150,
+  "startTime": "2023-08-01T00:00:00Z",
+  "endTime": "2023-08-18T23:59:59Z"
+}
+```
+
+## Behavior
+
+<AccordionGroup>
+  <Accordion title="Event ordering">
+    Replayed events are sent in chronological order, maintaining the same ordering guarantees as live events.
+  </Accordion>
+
+  <Accordion title="Event type">
+    Replayed events include `"type": "backfill"` in the payload to distinguish them from live events.
+  </Accordion>
+
+  <Accordion title="Rate limiting">
+    Replayed events are delivered at a controlled rate to avoid overwhelming your endpoint. Large replays may take some time to complete.
+  </Accordion>
+
+  <Accordion title="Retry behavior">
+    Replayed events follow the same retry logic as live events. If your endpoint returns a non-2xx status code, the event will be retried.
+  </Accordion>
+
+  <Accordion title="Maximum time range">
+    There may be limits on how far back you can replay events. Contact support if you need to replay very old events.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  Use a shorter time range (e.g., 1 day) when testing to avoid long-running replay operations.
+</Tip>
+
+## Use Cases
+
+### Testing During Development
+
+```bash
+# Replay the last day of events to test your new webhook endpoint
+curl -X POST "https://api.getredo.com/v2.2/webhooks/webhook_123/replay" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startTime": "2023-08-17T00:00:00Z",
+    "endTime": "2023-08-18T23:59:59Z"
+  }'
+```
+
+### Recovery from Downtime
+
+```bash
+# Replay events missed during a 2-hour outage
+curl -X POST "https://api.getredo.com/v2.2/webhooks/webhook_123/replay" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startTime": "2023-08-18T10:00:00Z",
+    "endTime": "2023-08-18T12:00:00Z"
+  }'
+```
+
+### Backfilling Historical Data
+
+```bash
+# Backfill all return.updated events for the past month
+curl -X POST "https://api.getredo.com/v2.2/webhooks/webhook_123/replay" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startTime": "2023-07-18T00:00:00Z",
+    "endTime": "2023-08-18T23:59:59Z",
+    "topics": ["return.updated"]
+  }'
+```

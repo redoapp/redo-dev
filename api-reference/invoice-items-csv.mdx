@@ -1,0 +1,37 @@
+---
+title: "Export Invoice Items (CSV)"
+api: "GET https://api.getredo.com/v2.2/invoices/{invoiceId}/items.csv"
+description: "Export line items for a specific invoice as CSV"
+---
+
+## Path Parameters
+
+<ParamField path="invoiceId" type="string" required>
+  The unique identifier for the invoice
+</ParamField>
+
+## Response
+
+Returns a CSV file with the following columns:
+
+- **Invoice ID** - Invoice identifier
+- **Return ID** - Associated return identifier
+- **Order ID** - Original order identifier
+- **Item Description** - Description of the invoiced item/service
+- **Quantity** - Number of items
+- **Unit Price** - Price per unit
+- **Amount** - Total amount for this line item
+- **Date** - Date of the transaction
+- **Status** - Status of the return associated with this item
+
+<Info>
+  The response `Content-Type` is `text/csv`. This endpoint is designed for downloading invoice data for accounting or reporting purposes.
+</Info>
+
+## Example Usage
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/invoices/invoice_123/items.csv" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -o invoice_items.csv
+```

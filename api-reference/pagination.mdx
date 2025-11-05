@@ -1,0 +1,84 @@
+---
+title: 'Pagination'
+description: 'How to paginate through lists of resources'
+icon: 'list'
+---
+
+## Overview
+
+List endpoints use cursor-based pagination. The cursor is returned in the `X-Page-Next` response header.
+
+## Query Parameters
+
+<ParamField query="page-size" type="integer">
+  Number of items to return per page (default varies by endpoint)
+</ParamField>
+
+<ParamField query="page-continue" type="string">
+  Cursor token from the previous response's `X-Page-Next` header
+</ParamField>
+
+## Response Headers
+
+<ResponseField name="X-Page-Next" type="string">
+  Cursor token for the next page. Present when more results are available, absent when you've reached the last page.
+</ResponseField>
+
+## Example
+
+### First Page
+
+```bash
+curl "https://api.getredo.com/v2.2/stores/store_123/returns?page-size=50" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -v
+```
+
+**Response:**
+```http
+HTTP/1.1 200 OK
+X-Page-Next: eyJjcmVhdGVkQXQiOiIyMDIzLTA4LTE4VDEyOjAwOjAwWiJ9
+
+{ "returns": [...] }
+```
+
+### Next Page
+
+```bash
+curl "https://api.getredo.com/v2.2/stores/store_123/returns?page-size=50&page-continue=eyJjcmVhdGVkQXQiOiIyMDIzLTA4LTE4VDEyOjAwOjAwWiJ9" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+### Paginating All Results
+
+```javascript
+async function getAllReturns(storeId) {
+  const allReturns = [];
+  let cursor = null;
+
+  do {
+    const url = new URL(`https://api.getredo.com/v2.2/stores/${storeId}/returns`);
+    url.searchParams.set('page-size', '100');
+    if (cursor) {
+      url.searchParams.set('page-continue', cursor);
+    }
+
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${process.env.REDO_API_SECRET}` }
+    });
+
+    const data = await response.json();
+    allReturns.push(...data.returns);
+
+    cursor = response.headers.get('X-Page-Next');
+  } while (cursor);
+
+  return allReturns;
+}
+```
+
+## Notes
+
+- Cursors are opaque tokens - don't decode or modify them
+- Use the exact value from `X-Page-Next` without modification
+- Fetch pages sequentially, not in parallel

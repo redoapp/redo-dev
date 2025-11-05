@@ -1,0 +1,245 @@
+---
+title: "Checkout Buttons UI"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/checkout-buttons-ui"
+description: "Get UI configuration for checkout coverage buttons"
+---
+
+## Overview
+
+Retrieve the UI configuration for displaying returns coverage buttons and checkboxes during checkout. This endpoint provides styling, copy, and behavior settings to ensure a consistent brand experience.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="context" type="string">
+  The checkout context to get configuration for:
+  - `cart` - Shopping cart page
+  - `checkout` - Checkout page
+  - `product` - Product detail page
+  Default: `checkout`
+</ParamField>
+
+<ParamField query="locale" type="string">
+  Locale for localized copy (e.g., `en-US`, `es-ES`, `fr-FR`). Default: `en-US`
+</ParamField>
+
+## Response
+
+<ResponseField name="enabled" type="boolean">
+  Whether the checkout button/checkbox should be displayed
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  UI element type (`checkbox`, `button`, `banner`)
+</ResponseField>
+
+<ResponseField name="copy" type="object">
+  Localized copy text for the UI element
+
+  <Expandable title="Copy properties">
+    <ResponseField name="title" type="string">
+      Main title text
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Description or subtitle text
+    </ResponseField>
+
+    <ResponseField name="cta" type="string">
+      Call-to-action button text (if applicable)
+    </ResponseField>
+
+    <ResponseField name="benefits" type="array">
+      Array of benefit text strings
+    </ResponseField>
+
+    <ResponseField name="disclaimer" type="string">
+      Optional disclaimer or terms text
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="styling" type="object">
+  Visual styling configuration
+
+  <Expandable title="Styling properties">
+    <ResponseField name="primaryColor" type="string">
+      Primary brand color (hex code)
+    </ResponseField>
+
+    <ResponseField name="secondaryColor" type="string">
+      Secondary/accent color (hex code)
+    </ResponseField>
+
+    <ResponseField name="fontFamily" type="string">
+      Font family to use
+    </ResponseField>
+
+    <ResponseField name="borderRadius" type="string">
+      Border radius (CSS value, e.g., "4px")
+    </ResponseField>
+
+    <ResponseField name="checkboxStyle" type="string">
+      Checkbox style variant (`minimal`, `outlined`, `filled`)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="behavior" type="object">
+  Behavior configuration
+
+  <Expandable title="Behavior properties">
+    <ResponseField name="defaultChecked" type="boolean">
+      Whether the checkbox should be checked by default
+    </ResponseField>
+
+    <ResponseField name="required" type="boolean">
+      Whether the customer must make a selection
+    </ResponseField>
+
+    <ResponseField name="showModal" type="boolean">
+      Whether to show a modal with more details on click
+    </ResponseField>
+
+    <ResponseField name="position" type="string">
+      Where to display the element (`above_payment`, `below_payment`, `in_summary`)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="products" type="array">
+  Array of coverage products available in this context (references to coverage products)
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "enabled": true,
+  "type": "checkbox",
+  "copy": {
+    "title": "Add return protection",
+    "description": "Get free return shipping and instant refunds for just $2.99",
+    "benefits": [
+      "Free prepaid return label",
+      "Instant refund processing",
+      "Extended 90-day return window"
+    ],
+    "disclaimer": "Coverage applies to standard returns. See terms for details."
+  },
+  "styling": {
+    "primaryColor": "#16A34A",
+    "secondaryColor": "#07C983",
+    "fontFamily": "system-ui, -apple-system, sans-serif",
+    "borderRadius": "6px",
+    "checkboxStyle": "outlined"
+  },
+  "behavior": {
+    "defaultChecked": false,
+    "required": false,
+    "showModal": true,
+    "position": "above_payment"
+  },
+  "products": [
+    {
+      "id": "coverage_basic",
+      "variantId": "shopify_variant_456",
+      "price": {
+        "amount": "2.99",
+        "currency": "USD"
+      }
+    }
+  ]
+}
+```
+
+## Integration Example
+
+### React Component
+
+```javascript
+import { useEffect, useState } from 'react';
+
+function CheckoutCoverageButton({ storeId }) {
+  const [config, setConfig] = useState(null);
+  const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    fetch(`https://api.getredo.com/v2.2/stores/${storeId}/checkout-buttons-ui?context=checkout`, {
+      headers: {
+        'Authorization': 'Bearer YOUR_API_SECRET'
+      }
+    })
+      .then(res => res.json())
+      .then(setConfig);
+  }, [storeId]);
+
+  if (!config?.enabled) return null;
+
+  const handleChange = (checked) => {
+    setSelected(checked);
+    if (checked) {
+      // Add coverage product to cart
+      addToCart(config.products[0].variantId);
+    } else {
+      // Remove coverage product from cart
+      removeFromCart(config.products[0].variantId);
+    }
+  };
+
+  return (
+    <div style={{
+      borderColor: config.styling.primaryColor,
+      borderRadius: config.styling.borderRadius
+    }}>
+      <label>
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={(e) => handleChange(e.target.checked)}
+        />
+        <div>
+          <h4>{config.copy.title}</h4>
+          <p>{config.copy.description}</p>
+        </div>
+      </label>
+      {config.copy.benefits && (
+        <ul>
+          {config.copy.benefits.map((benefit, i) => (
+            <li key={i}>{benefit}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+```
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Custom checkout integration">
+    Build a custom checkout experience that matches your brand while displaying Redo's coverage options.
+  </Accordion>
+
+  <Accordion title="Headless commerce">
+    Integrate returns coverage into headless commerce setups where you need full control over the UI.
+  </Accordion>
+
+  <Accordion title="Multi-locale support">
+    Fetch localized copy for international stores to display coverage options in the customer's language.
+  </Accordion>
+
+  <Accordion title="A/B testing">
+    Retrieve different UI configurations for testing various presentation styles and copy.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  For Shopify stores, consider using the [Shopify Web Components](/guides/shopify-web-components) for a simpler integration that handles this configuration automatically.
+</Info>

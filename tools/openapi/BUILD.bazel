@@ -1,6 +1,13 @@
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
 
 package(default_visibility = ["//visibility:public"])
+
+sh_binary(
+    name = "gen",
+    main = "gen.sh",
+    data = ["//redo/api-schema:openapi"],
+)
 
 nodejs_binary(
     name = "openapi_typescript",

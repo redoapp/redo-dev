@@ -1,0 +1,172 @@
+---
+title: "List Coverage Products"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/coverage-products"
+description: "List all coverage products available for a store"
+---
+
+## Overview
+
+Retrieve the list of returns coverage products configured for your store. Each coverage product represents a tier or variant of returns coverage that can be offered to customers.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="active" type="boolean">
+  Filter by active status. Set to `true` to only return active products, `false` for inactive products. Omit to return all.
+</ParamField>
+
+## Response
+
+<ResponseField name="products" type="array">
+  Array of coverage product objects
+
+  <Expandable title="Coverage product properties">
+    <ResponseField name="id" type="string">
+      Coverage product identifier
+    </ResponseField>
+
+    <ResponseField name="externalId" type="string">
+      External product ID (e.g., Shopify product ID)
+    </ResponseField>
+
+    <ResponseField name="variantId" type="string">
+      Product variant ID
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Product name shown to customers
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Product description
+    </ResponseField>
+
+    <ResponseField name="price" type="object">
+      Product price
+
+      <Expandable title="Money object">
+        <ResponseField name="amount" type="string">
+          Price amount (e.g., "2.99")
+        </ResponseField>
+
+        <ResponseField name="currency" type="string">
+          Currency code (e.g., "USD")
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="benefits" type="array">
+      Array of benefits included with this coverage product
+    </ResponseField>
+
+    <ResponseField name="active" type="boolean">
+      Whether this coverage product is currently active
+    </ResponseField>
+
+    <ResponseField name="displayOrder" type="integer">
+      Display order for UI presentation (lower numbers displayed first)
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of last update
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "products": [
+    {
+      "id": "coverage_basic",
+      "externalId": "shopify_product_123",
+      "variantId": "shopify_variant_456",
+      "name": "Return Protection - Basic",
+      "description": "Get free return shipping and instant refunds",
+      "price": {
+        "amount": "2.99",
+        "currency": "USD"
+      },
+      "benefits": [
+        "Free return shipping",
+        "Instant refunds",
+        "90-day return window"
+      ],
+      "active": true,
+      "displayOrder": 1,
+      "createdAt": "2023-01-15T10:00:00Z",
+      "updatedAt": "2023-08-01T14:30:00Z"
+    },
+    {
+      "id": "coverage_premium",
+      "externalId": "shopify_product_124",
+      "variantId": "shopify_variant_457",
+      "name": "Return Protection - Premium",
+      "description": "Enhanced protection with extended return window and no questions asked returns",
+      "price": {
+        "amount": "4.99",
+        "currency": "USD"
+      },
+      "benefits": [
+        "Free return shipping",
+        "Instant refunds",
+        "180-day return window",
+        "No questions asked returns",
+        "Priority support"
+      ],
+      "active": true,
+      "displayOrder": 2,
+      "createdAt": "2023-01-15T10:00:00Z",
+      "updatedAt": "2023-08-01T14:30:00Z"
+    }
+  ]
+}
+```
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Cart integration">
+    Retrieve coverage products to add them to the cart when customers opt for returns protection.
+  </Accordion>
+
+  <Accordion title="Checkout display">
+    Show available coverage tiers during checkout, allowing customers to choose their preferred level of protection.
+  </Accordion>
+
+  <Accordion title="Product catalog sync">
+    Keep your coverage product inventory synchronized between Redo and your e-commerce platform.
+  </Accordion>
+
+  <Accordion title="Pricing display">
+    Display current coverage pricing on product pages or in marketing materials.
+  </Accordion>
+</AccordionGroup>
+
+## Integration with Web Components
+
+The coverage products returned by this endpoint correspond to the products that can be added to the cart via the [Shopify Web Components](/guides/shopify-web-components):
+
+```javascript
+// When the checkbox is checked, add the coverage product to cart
+if (redoCheckbox.value) {
+  cart.items.push({
+    quantity: 1,
+    variantId: redoCheckbox.variantId // This matches variantId from this API
+  });
+}
+```
+
+<Info>
+  Coverage products are typically managed through your e-commerce platform (e.g., Shopify) and synchronized with Redo. The `externalId` and `variantId` fields link back to your platform's product catalog.
+</Info>

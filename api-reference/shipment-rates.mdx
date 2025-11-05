@@ -1,0 +1,188 @@
+---
+title: "Get Shipment Rates"
+api: "POST https://api.getredo.com/v2.2/stores/{storeId}/shipments/rates"
+description: "Get available shipping rates for a return shipment"
+---
+
+## Overview
+
+Use this endpoint to retrieve available shipping rates before purchasing a return label. This allows you to present shipping options to customers or select the most cost-effective option programmatically.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Request Body
+
+<ParamField body="returnId" type="string" required>
+  The unique identifier for the return
+</ParamField>
+
+<ParamField body="from" type="object" required>
+  Shipping origin address
+
+  <Expandable title="Address properties">
+    <ParamField body="from.line1" type="string" required>
+      Street address line 1
+    </ParamField>
+
+    <ParamField body="from.line2" type="string">
+      Street address line 2 (optional)
+    </ParamField>
+
+    <ParamField body="from.city" type="string" required>
+      City
+    </ParamField>
+
+    <ParamField body="from.province" type="string" required>
+      State/province code (e.g., "CA", "NY")
+    </ParamField>
+
+    <ParamField body="from.postalCode" type="string" required>
+      Postal/ZIP code
+    </ParamField>
+
+    <ParamField body="from.country" type="string" required>
+      Country code (ISO 3166-1 alpha-2, e.g., "US", "CA")
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="to" type="object" required>
+  Shipping destination address (same structure as `from`)
+</ParamField>
+
+<ParamField body="parcel" type="object" required>
+  Package dimensions and weight
+
+  <Expandable title="Parcel properties">
+    <ParamField body="parcel.length" type="number" required>
+      Length in inches
+    </ParamField>
+
+    <ParamField body="parcel.width" type="number" required>
+      Width in inches
+    </ParamField>
+
+    <ParamField body="parcel.height" type="number" required>
+      Height in inches
+    </ParamField>
+
+    <ParamField body="parcel.weight" type="number" required>
+      Weight in ounces
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="rates" type="array">
+  Array of available shipping rate options
+
+  <Expandable title="Rate object">
+    <ResponseField name="id" type="string">
+      Unique identifier for this rate option
+    </ResponseField>
+
+    <ResponseField name="carrier" type="string">
+      Shipping carrier (e.g., "USPS", "UPS", "FedEx")
+    </ResponseField>
+
+    <ResponseField name="service" type="string">
+      Service level (e.g., "Priority Mail", "Ground")
+    </ResponseField>
+
+    <ResponseField name="rate" type="object">
+      Rate pricing
+
+      <Expandable title="Money object">
+        <ResponseField name="amount" type="string">
+          Rate amount (e.g., "8.50")
+        </ResponseField>
+
+        <ResponseField name="currency" type="string">
+          Currency code (e.g., "USD")
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="estimatedDays" type="integer">
+      Estimated delivery time in days
+    </ResponseField>
+
+    <ResponseField name="deliveryDate" type="string">
+      Estimated delivery date (ISO 8601)
+    </ResponseField>
+
+    <ResponseField name="deliveryDateGuaranteed" type="boolean">
+      Whether the delivery date is guaranteed
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "returnId": "64df65d4c5a4ca3eff4b4e43",
+  "from": {
+    "line1": "123 Main St",
+    "city": "San Francisco",
+    "province": "CA",
+    "postalCode": "94102",
+    "country": "US"
+  },
+  "to": {
+    "line1": "456 Warehouse Rd",
+    "city": "Los Angeles",
+    "province": "CA",
+    "postalCode": "90001",
+    "country": "US"
+  },
+  "parcel": {
+    "length": 12,
+    "width": 8,
+    "height": 6,
+    "weight": 32
+  }
+}
+```
+
+## Example Response
+
+```json
+{
+  "rates": [
+    {
+      "id": "rate_usps_priority",
+      "carrier": "USPS",
+      "service": "Priority Mail",
+      "rate": {
+        "amount": "8.50",
+        "currency": "USD"
+      },
+      "estimatedDays": 2,
+      "deliveryDate": "2023-08-20T17:00:00Z",
+      "deliveryDateGuaranteed": false
+    },
+    {
+      "id": "rate_usps_ground",
+      "carrier": "USPS",
+      "service": "Ground Advantage",
+      "rate": {
+        "amount": "6.25",
+        "currency": "USD"
+      },
+      "estimatedDays": 4,
+      "deliveryDate": "2023-08-22T17:00:00Z",
+      "deliveryDateGuaranteed": false
+    }
+  ]
+}
+```
+
+<Tip>
+  Store the `rate.id` from the response to use when purchasing the shipment with the [Buy Shipment](/api-reference/shipment-buy) endpoint.
+</Tip>

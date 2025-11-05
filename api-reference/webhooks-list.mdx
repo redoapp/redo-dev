@@ -1,0 +1,107 @@
+---
+title: "Manage Webhooks"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/webhooks"
+description: "List all webhook subscriptions for a store"
+---
+
+<Tabs>
+  <Tab title="List Webhooks">
+    ## GET /stores/{storeId}/webhooks
+
+    List all webhook subscriptions configured for your store.
+
+    ### Path Parameters
+
+    <ParamField path="storeId" type="string" required>
+      The unique identifier for your store
+    </ParamField>
+
+    ### Response
+
+    <ResponseField name="webhooks" type="array">
+      Array of webhook subscription objects
+
+      <Expandable title="Webhook object">
+        <ResponseField name="id" type="string">
+          Webhook subscription identifier
+        </ResponseField>
+
+        <ResponseField name="url" type="string">
+          The HTTPS endpoint where events are sent
+        </ResponseField>
+
+        <ResponseField name="topics" type="array">
+          Array of subscribed event topics (e.g., `["return.created", "return.updated"]`)
+        </ResponseField>
+
+        <ResponseField name="kind" type="string">
+          Webhook kind/type
+        </ResponseField>
+
+        <ResponseField name="active" type="boolean">
+          Whether the webhook subscription is active
+        </ResponseField>
+
+        <ResponseField name="createdAt" type="string">
+          ISO 8601 timestamp of when the webhook was created
+        </ResponseField>
+
+        <ResponseField name="updatedAt" type="string">
+          ISO 8601 timestamp of when the webhook was last updated
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+
+  <Tab title="Create Webhook">
+    ## POST /stores/{storeId}/webhooks
+
+    Create a new webhook subscription to receive event notifications.
+
+    ### Path Parameters
+
+    <ParamField path="storeId" type="string" required>
+      The unique identifier for your store
+    </ParamField>
+
+    ### Request Body
+
+    <ParamField body="url" type="string" required>
+      The HTTPS endpoint where Redo should send webhook events. Must use HTTPS.
+    </ParamField>
+
+    <ParamField body="secret" type="string" required>
+      A secret token you generate. Redo will include this in the `Authorization` header as `Bearer {secret}` when sending events.
+    </ParamField>
+
+    <ParamField body="topics" type="array" required>
+      Array of event topics to subscribe to:
+      - `return.created` - New return created
+      - `return.updated` - Existing return updated
+    </ParamField>
+
+    <ParamField body="kind" type="string">
+      Optional webhook kind identifier
+    </ParamField>
+
+    ### Response
+
+    <ResponseField name="webhook" type="object">
+      The created webhook subscription object
+    </ResponseField>
+
+    ### Example Request
+
+    ```json
+    {
+      "url": "https://your-server.com/webhooks/redo",
+      "secret": "your-secure-secret-token-123",
+      "topics": ["return.created", "return.updated"]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Info>
+  See the [Webhooks guide](/guides/webhooks) for detailed information on handling webhook events, authentication, retry logic, and best practices.
+</Info>

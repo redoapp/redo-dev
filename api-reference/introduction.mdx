@@ -1,0 +1,55 @@
+---
+title: 'Introduction'
+description: 'Getting started with the Redo API'
+icon: 'hand-wave'
+---
+
+## Welcome to the Redo API
+
+The Redo API provides programmatic access to manage returns, exchanges, refunds, shipments, and invoices for your store.
+
+**Base URL:** `https://api.getredo.com/v2.2`
+**Version:** 2.2.1
+
+## Quick Start
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/{storeId}/returns" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Returns Management" icon="arrow-rotate-left" href="/api-reference/returns-list">
+    List, view, and process returns programmatically
+  </Card>
+
+  <Card title="Shipment Labels" icon="box-taped" href="/api-reference/shipment-rates">
+    Generate prepaid return shipping labels
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="/guides/webhooks">
+    Receive real-time notifications for return events
+  </Card>
+
+  <Card title="Coverage Products" icon="shield-check" href="/api-reference/coverage-products">
+    Integrate returns coverage into your checkout
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<Steps>
+  <Step title="Authentication">
+    Learn how to [authenticate your API requests](/api-reference/authentication)
+  </Step>
+
+  <Step title="Explore Endpoints">
+    Browse the API reference to see all available endpoints
+  </Step>
+
+  <Step title="Set Up Webhooks">
+    Configure [webhooks](/guides/webhooks) for real-time notifications
+  </Step>
+</Steps>

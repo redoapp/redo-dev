@@ -1,0 +1,129 @@
+---
+title: "Get Shipment Document"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/shipments/{shipmentId}/documents/{documentType}"
+description: "Retrieve shipping documents such as labels or proof of delivery"
+---
+
+## Overview
+
+Retrieve various documents associated with a shipment, including shipping labels, commercial invoices, and proof of delivery.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+<ParamField path="shipmentId" type="string" required>
+  The unique identifier for the shipment
+</ParamField>
+
+<ParamField path="documentType" type="string" required>
+  The type of document to retrieve:
+  - `label` - Shipping label PDF
+  - `commercial_invoice` - Commercial invoice for international shipments
+  - `proof_of_delivery` - Proof of delivery document (if available)
+  - `scan_form` - USPS SCAN form for batch pickups
+  - `manifest` - Shipping manifest
+</ParamField>
+
+## Response
+
+Returns the requested document as a binary file. The `Content-Type` header indicates the file type (typically `application/pdf`).
+
+<Info>
+  Not all document types are available for all shipments. Availability depends on the carrier, service level, and shipment status.
+</Info>
+
+## Example Usage
+
+### Download Shipping Label
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/shipments/ship_abc123/documents/label" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -o shipping_label.pdf
+```
+
+### Download Proof of Delivery
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/shipments/ship_abc123/documents/proof_of_delivery" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -o proof_of_delivery.pdf
+```
+
+### Download Commercial Invoice
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/shipments/ship_abc123/documents/commercial_invoice" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -o commercial_invoice.pdf
+```
+
+## Document Types
+
+<AccordionGroup>
+  <Accordion title="Label">
+    **label** - The shipping label PDF that can be printed and attached to the package.
+
+    - Available immediately after shipment creation
+    - Contains barcode, tracking number, addresses, and carrier information
+    - Typically valid for 90 days from creation
+  </Accordion>
+
+  <Accordion title="Commercial Invoice">
+    **commercial_invoice** - Required for international shipments.
+
+    - Only available for international shipments
+    - Contains product details, values, and customs information
+    - Generated automatically when purchasing international shipping
+  </Accordion>
+
+  <Accordion title="Proof of Delivery">
+    **proof_of_delivery** - Document confirming delivery.
+
+    - Only available after the package has been delivered
+    - May include signature, delivery location, and timestamp
+    - Availability varies by carrier and service level
+  </Accordion>
+
+  <Accordion title="SCAN Form">
+    **scan_form** - USPS SCAN (Shipment Confirmation Acceptance Notice) form.
+
+    - Only available for USPS shipments
+    - Used for batch pickup of multiple packages
+    - Generated when creating a pickup or manifesting shipments
+  </Accordion>
+
+  <Accordion title="Manifest">
+    **manifest** - Shipping manifest for pickup or drop-off.
+
+    - Lists all packages being shipped together
+    - Used by carriers for pickup verification
+    - Typically generated for batch shipments
+  </Accordion>
+</AccordionGroup>
+
+## Error Responses
+
+<ResponseField name="404" type="error">
+  Document not found. This can occur if:
+  - The document type is not available for this shipment
+  - The shipment ID is invalid
+  - The document has not been generated yet (e.g., proof of delivery before delivery)
+</ResponseField>
+
+<ResponseField name="410" type="error">
+  Document has expired. Shipping labels typically expire after 90 days.
+</ResponseField>
+
+## Integration Tips
+
+<Tip>
+  Cache shipping labels on your server or CDN to avoid repeated API calls. Labels don't change after creation.
+</Tip>
+
+<Warning>
+  Proof of delivery documents may take 24-48 hours after delivery to become available. Implement appropriate retry logic.
+</Warning>

@@ -13,6 +13,11 @@ alias(
     actual = "//tools/lint",
 )
 
+alias(
+    name = "openapi_gen",
+    actual = "//tools/openapi:gen",
+)
+
 cjs_root(
     name = "root",
     package_name = "@redotech/_root",

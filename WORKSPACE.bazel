@@ -131,6 +131,17 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
 
+# Rules Shell Extra
+
+RULES_SHELL_EXTRA_VERSION = "c3881c8b306583ddc35b8ce3272060574ca813ec"
+
+http_archive(
+    name = "rules_shell_extra",
+    sha256 = "d021702eeee687df2af6fc246781cf68414d061e5b562231c59de587d541cd94",
+    strip_prefix = "rules_shell_extra-%s" % RULES_SHELL_EXTRA_VERSION,
+    url = "https://github.com/redoapp/rules_shell_extra/archive/%s.tar.gz" % RULES_SHELL_EXTRA_VERSION,
+)
+
 # Buildtools
 
 BUILDTOOLS_VERSION = "6.0.1"

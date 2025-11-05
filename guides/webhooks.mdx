@@ -1,0 +1,353 @@
+---
+title: 'Webhooks'
+description: 'Receive real-time notifications about return events'
+icon: 'webhook'
+---
+
+## Overview
+
+Webhooks allow your application to receive real-time notifications when events occur in Redo, such as when a return is created or updated. Instead of polling the API, webhooks push event data to your specified endpoint.
+
+## How Webhooks Work
+
+1. **Subscribe**: Create a webhook subscription using the Redo API, specifying your endpoint URL and the events you want to receive
+2. **Receive**: When a subscribed event occurs, Redo sends an HTTP POST request to your endpoint with the event data
+3. **Acknowledge**: Your endpoint responds with a 2xx status code to confirm receipt
+4. **Retry**: If your endpoint doesn't respond with a 2xx, Redo will retry the delivery multiple times before discarding the event
+
+<Info>
+  Webhook events are delivered **in order** for each individual subject (e.g., return). This ensures you process events in the correct sequence.
+</Info>
+
+## Authentication
+
+Webhooks use Bearer token authentication with a secret **you provide** when creating the webhook subscription. Redo includes this secret in the `Authorization` header of every webhook delivery:
+
+```http
+POST /your-webhook-endpoint HTTP/1.1
+Authorization: Bearer your-subscriber-secret
+Host: your-server.com
+Content-Type: application/json
+```
+
+<Warning>
+  Always verify the `Authorization` header matches your expected secret before processing webhook payloads.
+</Warning>
+
+## Creating a Webhook Subscription
+
+Use the [Create Webhook endpoint](/api-reference/webhooks-list) to subscribe to events:
+
+```bash
+POST https://api.getredo.com/v2.2/stores/{storeId}/webhooks
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+
+{
+  "url": "https://your-server.com/webhooks/redo",
+  "secret": "your-subscriber-secret-123",
+  "topics": ["return.created", "return.updated"]
+}
+```
+
+### Parameters
+
+<ParamField path="url" type="string" required>
+  The HTTPS endpoint where Redo should send webhook events.
+</ParamField>
+
+<ParamField path="secret" type="string" required>
+  A secret token you generate. Redo will include this in the `Authorization` header of webhook requests.
+</ParamField>
+
+<ParamField path="topics" type="array" required>
+  Array of event topics to subscribe to. Available topics:
+  - `return.created` - A new return was created
+  - `return.updated` - An existing return was updated
+</ParamField>
+
+## Webhook Events
+
+### Return Events
+
+Return events notify you when returns are created or updated in your store.
+
+#### Event Types
+
+<ResponseField name="created" type="string">
+  A new return has been created by a customer or team member.
+</ResponseField>
+
+<ResponseField name="updated" type="string">
+  An existing return has been updated (status changed, items modified, etc.).
+</ResponseField>
+
+<ResponseField name="backfill" type="string">
+  A historical event being sent during webhook setup or replay.
+</ResponseField>
+
+#### Event Payload
+
+```json
+{
+  "type": "created",
+  "at": "2023-08-18T12:00:00Z",
+  "return": {
+    "id": "64df65d4c5a4ca3eff4b4e43",
+    "status": "pending",
+    "createdAt": "2023-08-18T12:00:00Z",
+    "updatedAt": "2023-08-18T12:00:00Z",
+    "order": {
+      "id": "shopify-order-123"
+    },
+    "items": [
+      {
+        "id": "item-1",
+        "orderItem": {
+          "id": "order-123/1"
+        },
+        "quantity": 1,
+        "reason": "Too big"
+      }
+    ],
+    "source": {
+      "emailAddress": "customer@example.com",
+      "name": {
+        "first": "Jane",
+        "last": "Doe"
+      },
+      "mailingAddress": {
+        "line1": "123 Main St",
+        "city": "San Francisco",
+        "province": "CA",
+        "postalCode": "94102",
+        "country": "US"
+      },
+      "phoneNumber": {
+        "number": "+14155551234"
+      }
+    },
+    "destination": {},
+    "giftCards": [],
+    "totals": {
+      "refund": {
+        "amount": {
+          "amount": "50.00",
+          "currency": "USD"
+        }
+      },
+      "exchange": {
+        "amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        }
+      },
+      "storeCredit": {
+        "amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        }
+      },
+      "charge": {
+        "amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        }
+      }
+    }
+  },
+  "order": {
+    "id": "shopify-order-123",
+    "items": [
+      {
+        "id": "order-123/1",
+        "quantity": 1,
+        "product": {
+          "externalId": "product-456",
+          "name": "T-Shirt"
+        },
+        "variant": {
+          "externalId": "variant-789",
+          "name": "Medium / Blue"
+        }
+      }
+    ]
+  }
+}
+```
+
+<ResponseField name="type" type="string">
+  Event type: `created`, `updated`, or `backfill`
+</ResponseField>
+
+<ResponseField name="at" type="string">
+  ISO 8601 timestamp of when the event occurred
+</ResponseField>
+
+<ResponseField name="return" type="object">
+  Complete return object. See the [Returns API reference](/api-reference/return-get) for full schema.
+</ResponseField>
+
+<ResponseField name="order" type="object">
+  Original order data associated with the return
+</ResponseField>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Return 2xx status codes quickly">
+    Respond with a 2xx status code within 5 seconds of receiving the webhook. Process the event asynchronously if needed.
+
+    ```javascript
+    app.post('/webhooks/redo', async (req, res) => {
+      // Verify authentication
+      if (req.headers.authorization !== 'Bearer your-secret') {
+        return res.status(401).send('Unauthorized');
+      }
+
+      // Return success immediately
+      res.status(200).send('OK');
+
+      // Process asynchronously
+      processWebhookAsync(req.body);
+    });
+    ```
+  </Accordion>
+
+  <Accordion title="Implement idempotency">
+    Store processed event IDs to prevent duplicate processing. Use the combination of `return.id` and `at` timestamp as a unique key.
+
+    ```javascript
+    async function processWebhook(event) {
+      const eventKey = `${event.return.id}-${event.at}`;
+
+      if (await hasProcessedEvent(eventKey)) {
+        return; // Already processed
+      }
+
+      // Process the event
+      await handleReturnEvent(event);
+
+      // Mark as processed
+      await markEventProcessed(eventKey);
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Verify the authorization header">
+    Always validate that the `Authorization` header contains your expected secret.
+
+    ```javascript
+    const WEBHOOK_SECRET = process.env.REDO_WEBHOOK_SECRET;
+
+    if (req.headers.authorization !== `Bearer ${WEBHOOK_SECRET}`) {
+      return res.status(401).send('Unauthorized');
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Handle all event types">
+    Your webhook endpoint should gracefully handle all event types, including `backfill` events sent during setup.
+
+    ```javascript
+    switch (event.type) {
+      case 'created':
+        await handleReturnCreated(event.return);
+        break;
+      case 'updated':
+        await handleReturnUpdated(event.return);
+        break;
+      case 'backfill':
+        await handleBackfill(event.return);
+        break;
+      default:
+        console.log('Unknown event type:', event.type);
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Use HTTPS endpoints">
+    Webhook URLs must use HTTPS to ensure secure transmission of data.
+  </Accordion>
+</AccordionGroup>
+
+## Testing Webhooks
+
+### Replay Events
+
+You can replay webhook events using the [Webhook Replay endpoint](/api-reference/webhook-replay):
+
+```bash
+POST https://api.getredo.com/v2.2/webhooks/{webhookId}/replay
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+
+{
+  "startTime": "2023-08-01T00:00:00Z",
+  "endTime": "2023-08-18T23:59:59Z"
+}
+```
+
+This is useful for:
+- Testing your webhook endpoint
+- Recovering from downtime
+- Backfilling historical data
+
+### Local Development
+
+For local development, use a tool like [ngrok](https://ngrok.com/) to expose your local server:
+
+```bash
+# Start ngrok
+ngrok http 3000
+
+# Use the HTTPS URL in your webhook subscription
+https://abc123.ngrok.io/webhooks/redo
+```
+
+## Managing Webhooks
+
+### List Webhooks
+
+```bash
+GET https://api.getredo.com/v2.2/stores/{storeId}/webhooks
+Authorization: Bearer YOUR_API_SECRET
+```
+
+### Update a Webhook
+
+```bash
+PATCH https://api.getredo.com/v2.2/webhooks/{webhookId}
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+
+{
+  "topics": ["return.updated"]
+}
+```
+
+### Delete a Webhook
+
+```bash
+DELETE https://api.getredo.com/v2.2/webhooks/{webhookId}
+Authorization: Bearer YOUR_API_SECRET
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Webhook deliveries are failing">
+    - Verify your endpoint returns a 2xx status code
+    - Check that your endpoint URL uses HTTPS
+    - Ensure your server is reachable from the internet
+    - Verify the Authorization header is being validated correctly
+  </Accordion>
+
+  <Accordion title="Receiving duplicate events">
+    Implement idempotency using event IDs to safely handle duplicate deliveries.
+  </Accordion>
+
+  <Accordion title="Events are out of order">
+    Events are ordered per return, but different returns may arrive in any order. Always process events based on the `at` timestamp.
+  </Accordion>
+</AccordionGroup>

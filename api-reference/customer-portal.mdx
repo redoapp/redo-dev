@@ -1,0 +1,182 @@
+---
+title: "Customer Portal Access"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/customer-portal"
+description: "Generate a single sign-on link to the customer returns portal"
+---
+
+## Overview
+
+Generate a secure, time-limited URL that provides customer access to the Redo customer portal where they can view their returns, track shipments, and manage exchanges. This endpoint is used to create seamless transitions from your store to the returns portal.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="customerId" type="string" required>
+  The unique identifier for the customer (typically their email or external ID from your e-commerce platform)
+</ParamField>
+
+<ParamField query="customerEmail" type="string" required>
+  The customer's email address
+</ParamField>
+
+<ParamField query="returnTo" type="string">
+  Optional path within the customer portal to redirect to. For example:
+  - `/returns` - Returns list (default)
+  - `/returns/{returnId}` - Specific return detail page
+  - `/returns/new` - Create new return flow
+</ParamField>
+
+<ParamField query="expiresIn" type="integer">
+  Number of seconds until the SSO link expires. Default is 300 (5 minutes). Maximum is 3600 (1 hour).
+</ParamField>
+
+<ParamField query="locale" type="string">
+  Locale for the customer portal (e.g., `en-US`, `es-ES`, `fr-FR`). Default: `en-US`
+</ParamField>
+
+## Response
+
+<ResponseField name="url" type="string">
+  The single sign-on URL to the Redo customer portal. This URL is valid for the specified expiration time.
+</ResponseField>
+
+<ResponseField name="expiresAt" type="string">
+  ISO 8601 timestamp of when the URL expires
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "url": "https://returns.getredo.com/portal/abc123xyz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresAt": "2023-08-18T12:05:00Z"
+}
+```
+
+## Example Usage
+
+### Generate Portal Link for Customer
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/customer-portal?customerId=cust_456&customerEmail=jane@example.com" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+### Generate Link to Specific Return
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/customer-portal?customerId=cust_456&customerEmail=jane@example.com&returnTo=/returns/64df65d4c5a4ca3eff4b4e43" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+### Generate Link for New Return
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/customer-portal?customerId=cust_456&customerEmail=jane@example.com&returnTo=/returns/new" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Order confirmation emails">
+    Include a "Manage Returns" link in order confirmation emails that takes customers directly to the returns portal.
+
+    ```html
+    <a href="{{ portal_url }}">
+      Manage Your Returns
+    </a>
+    ```
+  </Accordion>
+
+  <Accordion title="Account dashboard">
+    Add a "View Returns" button in your customer account dashboard.
+
+    ```javascript
+    async function openReturnsPortal(customerId, customerEmail) {
+      const response = await fetch(
+        `https://api.getredo.com/v2.2/stores/store_123/customer-portal?customerId=${customerId}&customerEmail=${customerEmail}`,
+        {
+          headers: {
+            'Authorization': 'Bearer YOUR_API_SECRET'
+          }
+        }
+      );
+      const { url } = await response.json();
+      window.location.href = url;
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Order tracking page">
+    Link to the returns portal from your order tracking page so customers can easily initiate returns.
+  </Accordion>
+
+  <Accordion title="Customer support">
+    Generate portal links for customers when they contact support about returns, providing them instant access to their return status.
+  </Accordion>
+
+  <Accordion title="Post-purchase flows">
+    Embed portal access in post-purchase flows, abandoned cart recovery, or re-engagement campaigns.
+  </Accordion>
+</AccordionGroup>
+
+## Customer Portal Features
+
+When customers access the portal, they can:
+
+- **View all returns** - See a list of all their past and current returns
+- **Track shipments** - Monitor the status of return shipments with real-time tracking
+- **Manage exchanges** - View exchange order status and tracking
+- **Initiate returns** - Start a new return for eligible orders
+- **Print labels** - Download and print prepaid return shipping labels
+- **Contact support** - Get help with their returns directly through the portal
+
+## Security Considerations
+
+<Warning>
+  Always validate the customer's identity on your backend before generating portal links. Never expose your API secret to client-side code.
+</Warning>
+
+<Info>
+  Portal SSO URLs are single-use and time-limited. For email links, use longer expiration times (30-60 minutes). For real-time redirects, shorter expiration times (5 minutes) are recommended.
+</Info>
+
+## Integration Pattern
+
+### Server-side generation (recommended)
+
+```javascript
+// Backend API route
+app.get('/api/returns-portal', authenticateUser, async (req, res) => {
+  // Verify the user is logged in
+  const user = req.user;
+
+  // Generate portal link server-side
+  const response = await fetch(
+    `https://api.getredo.com/v2.2/stores/${STORE_ID}/customer-portal?customerId=${user.id}&customerEmail=${user.email}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${REDO_API_SECRET}`
+      }
+    }
+  );
+
+  const { url } = await response.json();
+  res.json({ url });
+});
+```
+
+```javascript
+// Frontend - call your backend API
+async function goToReturns() {
+  const response = await fetch('/api/returns-portal');
+  const { url } = await response.json();
+  window.location.href = url;
+}
+```

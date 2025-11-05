@@ -1,0 +1,206 @@
+---
+title: "Buy Shipment"
+api: "POST https://api.getredo.com/v2.2/stores/{storeId}/shipments/buy"
+description: "Purchase a shipping label for a return"
+---
+
+## Overview
+
+Purchase a shipping label using a rate ID obtained from the [Get Shipment Rates](/api-reference/shipment-rates) endpoint. This creates a shipment and generates a shipping label that can be printed or emailed to the customer.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Request Body
+
+<ParamField body="returnId" type="string" required>
+  The unique identifier for the return
+</ParamField>
+
+<ParamField body="rateId" type="string" required>
+  The rate ID from the Get Shipment Rates response
+</ParamField>
+
+<ParamField body="from" type="object" required>
+  Shipping origin address and contact information
+
+  <Expandable title="Shipping contact">
+    <ParamField body="from.name" type="object" required>
+      Contact name (first, last)
+    </ParamField>
+
+    <ParamField body="from.email" type="string">
+      Email address
+    </ParamField>
+
+    <ParamField body="from.phone" type="string">
+      Phone number
+    </ParamField>
+
+    <ParamField body="from.address" type="object" required>
+      Mailing address (line1, line2, city, province, postalCode, country)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="to" type="object" required>
+  Shipping destination address and contact information (same structure as `from`)
+</ParamField>
+
+<ParamField body="parcel" type="object" required>
+  Package dimensions and weight (length, width, height in inches; weight in ounces)
+</ParamField>
+
+<ParamField body="insuranceAmount" type="object">
+  Optional insurance coverage amount
+
+  <Expandable title="Money object">
+    <ParamField body="insuranceAmount.amount" type="string">
+      Insurance amount (e.g., "100.00")
+    </ParamField>
+
+    <ParamField body="insuranceAmount.currency" type="string">
+      Currency code (e.g., "USD")
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Optional reference string to include on the label
+</ParamField>
+
+## Response
+
+<ResponseField name="shipment" type="object">
+  The created shipment object
+
+  <Expandable title="Shipment properties">
+    <ResponseField name="id" type="string">
+      Unique shipment identifier
+    </ResponseField>
+
+    <ResponseField name="returnId" type="string">
+      Associated return ID
+    </ResponseField>
+
+    <ResponseField name="carrier" type="string">
+      Shipping carrier
+    </ResponseField>
+
+    <ResponseField name="service" type="string">
+      Service level
+    </ResponseField>
+
+    <ResponseField name="trackingNumber" type="string">
+      Tracking number for the shipment
+    </ResponseField>
+
+    <ResponseField name="trackingUrl" type="string">
+      URL to track the shipment
+    </ResponseField>
+
+    <ResponseField name="labelUrl" type="string">
+      URL to download the shipping label PDF
+    </ResponseField>
+
+    <ResponseField name="rate" type="object">
+      Cost of the shipment (money object)
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Shipment status (e.g., "pending", "in_transit", "delivered")
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "returnId": "64df65d4c5a4ca3eff4b4e43",
+  "rateId": "rate_usps_priority",
+  "from": {
+    "name": {
+      "first": "Jane",
+      "last": "Doe"
+    },
+    "email": "jane@example.com",
+    "phone": "+14155551234",
+    "address": {
+      "line1": "123 Main St",
+      "city": "San Francisco",
+      "province": "CA",
+      "postalCode": "94102",
+      "country": "US"
+    }
+  },
+  "to": {
+    "name": {
+      "first": "Warehouse",
+      "last": "Manager"
+    },
+    "email": "returns@company.com",
+    "phone": "+13105551234",
+    "address": {
+      "line1": "456 Warehouse Rd",
+      "city": "Los Angeles",
+      "province": "CA",
+      "postalCode": "90001",
+      "country": "US"
+    }
+  },
+  "parcel": {
+    "length": 12,
+    "width": 8,
+    "height": 6,
+    "weight": 32
+  },
+  "insuranceAmount": {
+    "amount": "100.00",
+    "currency": "USD"
+  },
+  "reference": "RET-12345"
+}
+```
+
+## Example Response
+
+```json
+{
+  "shipment": {
+    "id": "ship_abc123",
+    "returnId": "64df65d4c5a4ca3eff4b4e43",
+    "carrier": "USPS",
+    "service": "Priority Mail",
+    "trackingNumber": "9400111899561234567890",
+    "trackingUrl": "https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111899561234567890",
+    "labelUrl": "https://api.getredo.com/labels/ship_abc123.pdf",
+    "rate": {
+      "amount": "8.50",
+      "currency": "USD"
+    },
+    "status": "pending",
+    "createdAt": "2023-08-18T12:00:00Z"
+  }
+}
+```
+
+<Info>
+  The `labelUrl` provides a PDF shipping label that can be downloaded and printed. This URL is typically valid for 90 days.
+</Info>
+
+## Next Steps
+
+After purchasing a shipment:
+
+1. **Download the label** from `labelUrl` and provide it to the customer
+2. **Track the shipment** using the `trackingNumber` or `trackingUrl`
+3. **Update the return status** when the package is in transit or delivered
+4. **Retrieve shipment documents** using the [Get Shipment Document](/api-reference/shipment-document) endpoint if needed
