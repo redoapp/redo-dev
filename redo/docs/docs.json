@@ -1,8 +1,8 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
+  "$schema": "redo/api-schema/openapi.yaml",
   "theme": "willow",
   "name": "Redo",
-  "openapi": "redo/api-schema/openapi.json",
+  "openapi": "redo/api-schema/openapi.yaml",
   "colors": {
     "primary": "#3e28ad",
     "light": "#a499dc",
