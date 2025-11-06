@@ -1,0 +1,39 @@
+---
+title: "Update Return Status"
+api: "PATCH https://api.getredo.com/v2.2/returns/{returnId}/status"
+description: "Update the status of a return"
+---
+
+## Path Parameters
+
+<ParamField path="returnId" type="string" required>
+  The unique identifier for the return
+</ParamField>
+
+## Request Body
+
+<ParamField body="status" type="string" required>
+  The new status for the return. Valid values depend on your return workflow configuration.
+
+  Common status values include:
+  - `pending` - Return has been initiated
+  - `approved` - Return has been approved
+  - `in_transit` - Items are being shipped back
+  - `received` - Items have been received
+  - `completed` - Return has been completed
+  - `cancelled` - Return has been cancelled
+</ParamField>
+
+<ParamField body="note" type="string">
+  Optional note to add when updating the status
+</ParamField>
+
+## Response
+
+<ResponseField name="return" type="object">
+  The updated return object with the new status
+</ResponseField>
+
+<ResponseField name="order" type="object">
+  The associated order object
+</ResponseField>

@@ -1,0 +1,58 @@
+---
+title: 'Errors'
+description: 'Understanding API error responses'
+icon: 'triangle-exclamation'
+---
+
+## Error Response Format
+
+Errors follow [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807) format and use the `application/problem+json` content type:
+
+```json
+{
+  "type": "about:blank",
+  "title": "Not Found",
+  "detail": "The requested return could not be found",
+  "instance": "/returns/invalid-id"
+}
+```
+
+### Error Fields
+
+<ResponseField name="type" type="string">
+  URI reference identifying the problem type
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Human-readable summary of the problem
+</ResponseField>
+
+<ResponseField name="detail" type="string">
+  Specific explanation for this error occurrence
+</ResponseField>
+
+<ResponseField name="instance" type="string">
+  URI reference to the specific occurrence (typically the request path)
+</ResponseField>
+
+## HTTP Status Codes
+
+### Success Codes
+
+- **200 OK** - Request succeeded
+- **201 Created** - Resource successfully created
+- **204 No Content** - Request succeeded with no content to return
+
+### Client Error Codes
+
+- **400 Bad Request** - Invalid request format or parameters
+- **401 Unauthorized** - Missing or invalid authentication credentials
+- **403 Forbidden** - Insufficient permissions for this resource
+- **404 Not Found** - Resource doesn't exist
+- **422 Unprocessable Entity** - Request contains semantic errors
+- **429 Too Many Requests** - Rate limit exceeded
+
+### Server Error Codes
+
+- **500 Internal Server Error** - Unexpected server error
+- **503 Service Unavailable** - API temporarily unavailable

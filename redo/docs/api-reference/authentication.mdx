@@ -1,0 +1,49 @@
+---
+title: 'Authentication'
+description: 'How to authenticate your API requests'
+icon: 'key'
+---
+
+## API Endpoints
+
+All API endpoints are authenticated using the Bearer authorization scheme with your `REDO_API_SECRET`.
+
+Include your API secret in the `Authorization` header of every request:
+
+```http
+GET /v2.2/stores/{storeId}/returns HTTP/1.1
+Authorization: Bearer 77bb7598b7a972475cc7c7e171ec33af
+Host: api.getredo.com
+```
+
+<Warning>
+  Keep your API secret secure. Never share it publicly or commit it to version control.
+</Warning>
+
+### Example Request
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/returns" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+## Webhooks
+
+Webhooks are authenticated using the Bearer authorization scheme with a secret **you provide** when creating the webhook subscription.
+
+Redo will include this secret in the `Authorization` header when delivering webhook events to your endpoint:
+
+```http
+POST /events HTTP/1.1
+Authorization: Bearer subscriberauth123
+Host: subscriber.example.com
+```
+
+**Always verify the Authorization header** in your webhook handler before processing events.
+
+### Webhook Event Delivery
+
+- Webhook events are delivered **in order** for each individual subject (e.g., return)
+- If the response is not a 2xx status code, the event will be retried multiple times before discarding it
+
+See the [Webhooks guide](/guides/webhooks) for detailed setup instructions.

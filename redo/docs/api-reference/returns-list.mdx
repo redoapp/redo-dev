@@ -1,0 +1,87 @@
+---
+title: "List Returns"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/returns"
+description: "List all returns for a store, sorted by most recent first"
+---
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="page-size" type="integer">
+  Number of returns to return per page. Maximum value may vary by endpoint.
+</ParamField>
+
+<ParamField query="page-continue" type="string">
+  Cursor token from the previous response's `X-Page-Next` header to fetch the next page
+</ParamField>
+
+<ParamField query="updated-at-min" type="string">
+  Filter returns updated after this timestamp (ISO 8601 format)
+</ParamField>
+
+<ParamField query="updated-at-max" type="string">
+  Filter returns updated before this timestamp (ISO 8601 format)
+</ParamField>
+
+## Response
+
+<ResponseField name="returns" type="array">
+  Array of return objects
+
+  <Expandable title="Return object">
+    <ResponseField name="id" type="string">
+      Return identifier (e.g., `64df65d4c5a4ca3eff4b4e43`)
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Current status of the return (e.g., `pending`, `approved`, `completed`)
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Type of return (e.g., `refund`, `exchange`)
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of when the return was created
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of when the return was last updated
+    </ResponseField>
+
+    <ResponseField name="order" type="object">
+      Original order information
+    </ResponseField>
+
+    <ResponseField name="items" type="array">
+      Array of items being returned
+    </ResponseField>
+
+    <ResponseField name="source" type="object">
+      Customer information (email, name, address, phone)
+    </ResponseField>
+
+    <ResponseField name="destination" type="object">
+      Return destination information
+    </ResponseField>
+
+    <ResponseField name="totals" type="object">
+      Calculated totals for refund, exchange, store credit, and charge amounts
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="orders" type="array">
+  Array of order objects associated with the returns
+</ResponseField>
+
+## Response Headers
+
+<ResponseField name="X-Page-Next" type="string">
+  Cursor token to fetch the next page of results. Include this in the `page-continue` query parameter of your next request.
+</ResponseField>

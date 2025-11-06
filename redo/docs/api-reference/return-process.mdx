@@ -1,0 +1,46 @@
+---
+title: "Process Return"
+api: "POST https://api.getredo.com/v2.2/returns/{returnId}/process"
+description: "Process a return, triggering refunds, exchanges, or other actions"
+---
+
+## Path Parameters
+
+<ParamField path="returnId" type="string" required>
+  The unique identifier for the return
+</ParamField>
+
+## Request Body
+
+The request body contains instructions for processing the return, including refund methods, exchange fulfillment, and other processing options.
+
+<ParamField body="refundMethod" type="string">
+  Method to use for refunds:
+  - `original_payment` - Refund to original payment method
+  - `store_credit` - Issue store credit
+  - `gift_card` - Issue gift card
+</ParamField>
+
+<ParamField body="exchangeAction" type="string">
+  Action to take for exchanges:
+  - `fulfill` - Fulfill the exchange order
+  - `hold` - Hold the exchange order for manual review
+</ParamField>
+
+<ParamField body="note" type="string">
+  Optional processing note
+</ParamField>
+
+## Response
+
+<ResponseField name="return" type="object">
+  The processed return object with updated status and processing information
+</ResponseField>
+
+<ResponseField name="order" type="object">
+  The associated order object
+</ResponseField>
+
+<ResponseField name="transactions" type="array">
+  Array of transaction objects created during processing (refunds, charges, etc.)
+</ResponseField>

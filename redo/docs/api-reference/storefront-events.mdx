@@ -1,0 +1,372 @@
+---
+title: "Storefront Events"
+api: "POST https://api.getredo.com/v2.2/stores/{storeId}/storefront/events"
+description: "Track customer interactions and events on your storefront"
+---
+
+## Overview
+
+Send storefront events to Redo to track customer behavior, product interactions, and cart activities. This data helps optimize returns coverage recommendations and improve conversion rates.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Request Body
+
+<ParamField body="eventType" type="string" required>
+  The type of event being tracked:
+  - `page_view` - Customer viewed a page
+  - `product_view` - Customer viewed a product
+  - `add_to_cart` - Product added to cart
+  - `remove_from_cart` - Product removed from cart
+  - `checkout_started` - Customer began checkout
+  - `coverage_viewed` - Customer viewed coverage option
+  - `coverage_added` - Customer added coverage to cart
+  - `coverage_removed` - Customer removed coverage from cart
+</ParamField>
+
+<ParamField body="customer" type="object">
+  Customer information (optional but recommended)
+
+  <Expandable title="Customer properties">
+    <ParamField body="customer.id" type="string">
+      Customer ID from your system
+    </ParamField>
+
+    <ParamField body="customer.email" type="string">
+      Customer email address
+    </ParamField>
+
+    <ParamField body="customer.isLoggedIn" type="boolean">
+      Whether the customer is logged in
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="cart" type="object">
+  Current cart state
+
+  <Expandable title="Cart properties">
+    <ParamField body="cart.id" type="string">
+      Cart or session ID
+    </ParamField>
+
+    <ParamField body="cart.items" type="array">
+      Array of cart items
+
+      <Expandable title="Cart item properties">
+        <ParamField body="cart.items[].productId" type="string">
+          Product ID
+        </ParamField>
+
+        <ParamField body="cart.items[].variantId" type="string">
+          Variant ID
+        </ParamField>
+
+        <ParamField body="cart.items[].quantity" type="integer">
+          Quantity in cart
+        </ParamField>
+
+        <ParamField body="cart.items[].price" type="object">
+          Item price (money object)
+        </ParamField>
+      </Expandable>
+    </ParamField>
+
+    <ParamField body="cart.subtotal" type="object">
+      Cart subtotal (money object)
+    </ParamField>
+
+    <ParamField body="cart.hasCoverage" type="boolean">
+      Whether coverage is in the cart
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="product" type="object">
+  Product information (for product-related events)
+
+  <Expandable title="Product properties">
+    <ParamField body="product.id" type="string">
+      Product ID
+    </ParamField>
+
+    <ParamField body="product.variantId" type="string">
+      Variant ID
+    </ParamField>
+
+    <ParamField body="product.name" type="string">
+      Product name
+    </ParamField>
+
+    <ParamField body="product.price" type="object">
+      Product price (money object)
+    </ParamField>
+
+    <ParamField body="product.category" type="string">
+      Product category
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="page" type="object">
+  Page context
+
+  <Expandable title="Page properties">
+    <ParamField body="page.url" type="string">
+      Current page URL
+    </ParamField>
+
+    <ParamField body="page.path" type="string">
+      Page path
+    </ParamField>
+
+    <ParamField body="page.title" type="string">
+      Page title
+    </ParamField>
+
+    <ParamField body="page.referrer" type="string">
+      Referrer URL
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="timestamp" type="string">
+  ISO 8601 timestamp of when the event occurred. If not provided, the server timestamp will be used.
+</ParamField>
+
+<ParamField body="sessionId" type="string">
+  Browser session ID for tracking user sessions
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Additional custom metadata (key-value pairs)
+</ParamField>
+
+## Response
+
+<ResponseField name="eventId" type="string">
+  Unique identifier for the tracked event
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Status of the event processing (`received`, `processed`)
+</ResponseField>
+
+## Example Requests
+
+### Track Product View
+
+```json
+{
+  "eventType": "product_view",
+  "customer": {
+    "id": "cust_456",
+    "email": "jane@example.com",
+    "isLoggedIn": true
+  },
+  "product": {
+    "id": "prod_123",
+    "variantId": "var_789",
+    "name": "Classic T-Shirt",
+    "price": {
+      "amount": "29.99",
+      "currency": "USD"
+    },
+    "category": "Apparel"
+  },
+  "page": {
+    "url": "https://store.com/products/classic-tshirt",
+    "path": "/products/classic-tshirt",
+    "title": "Classic T-Shirt | My Store"
+  },
+  "sessionId": "sess_abc123",
+  "timestamp": "2023-08-18T12:00:00Z"
+}
+```
+
+### Track Add to Cart
+
+```json
+{
+  "eventType": "add_to_cart",
+  "customer": {
+    "id": "cust_456",
+    "email": "jane@example.com",
+    "isLoggedIn": true
+  },
+  "product": {
+    "id": "prod_123",
+    "variantId": "var_789",
+    "name": "Classic T-Shirt",
+    "price": {
+      "amount": "29.99",
+      "currency": "USD"
+    }
+  },
+  "cart": {
+    "id": "cart_xyz",
+    "items": [
+      {
+        "productId": "prod_123",
+        "variantId": "var_789",
+        "quantity": 2,
+        "price": {
+          "amount": "29.99",
+          "currency": "USD"
+        }
+      }
+    ],
+    "subtotal": {
+      "amount": "59.98",
+      "currency": "USD"
+    },
+    "hasCoverage": false
+  },
+  "sessionId": "sess_abc123",
+  "timestamp": "2023-08-18T12:01:30Z"
+}
+```
+
+### Track Coverage Added
+
+```json
+{
+  "eventType": "coverage_added",
+  "customer": {
+    "id": "cust_456",
+    "email": "jane@example.com",
+    "isLoggedIn": true
+  },
+  "cart": {
+    "id": "cart_xyz",
+    "items": [
+      {
+        "productId": "prod_123",
+        "variantId": "var_789",
+        "quantity": 2,
+        "price": {
+          "amount": "29.99",
+          "currency": "USD"
+        }
+      },
+      {
+        "productId": "coverage_basic",
+        "variantId": "coverage_var",
+        "quantity": 1,
+        "price": {
+          "amount": "2.99",
+          "currency": "USD"
+        }
+      }
+    ],
+    "subtotal": {
+      "amount": "62.97",
+      "currency": "USD"
+    },
+    "hasCoverage": true
+  },
+  "sessionId": "sess_abc123",
+  "timestamp": "2023-08-18T12:02:15Z"
+}
+```
+
+## Integration Example
+
+### JavaScript SDK
+
+```javascript
+class RedoAnalytics {
+  constructor(storeId, apiSecret) {
+    this.storeId = storeId;
+    this.apiSecret = apiSecret;
+    this.sessionId = this.getOrCreateSessionId();
+  }
+
+  async trackEvent(eventType, data) {
+    const event = {
+      eventType,
+      sessionId: this.sessionId,
+      timestamp: new Date().toISOString(),
+      ...data
+    };
+
+    await fetch(
+      `https://api.getredo.com/v2.2/stores/${this.storeId}/storefront/events`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiSecret}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(event)
+      }
+    );
+  }
+
+  trackProductView(product) {
+    return this.trackEvent('product_view', { product });
+  }
+
+  trackAddToCart(product, cart) {
+    return this.trackEvent('add_to_cart', { product, cart });
+  }
+
+  trackCoverageAdded(cart) {
+    return this.trackEvent('coverage_added', { cart });
+  }
+
+  getOrCreateSessionId() {
+    let sessionId = sessionStorage.getItem('redo_session_id');
+    if (!sessionId) {
+      sessionId = 'sess_' + Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem('redo_session_id', sessionId);
+    }
+    return sessionId;
+  }
+}
+
+// Usage
+const analytics = new RedoAnalytics('store_123', 'YOUR_API_SECRET');
+
+// Track product view
+analytics.trackProductView({
+  id: 'prod_123',
+  name: 'Classic T-Shirt',
+  price: { amount: '29.99', currency: 'USD' }
+});
+
+// Track add to cart
+analytics.trackAddToCart(product, cart);
+```
+
+## Benefits
+
+<AccordionGroup>
+  <Accordion title="Optimize coverage display">
+    Event data helps Redo understand which products and customer segments are most likely to purchase coverage, allowing for smarter targeting.
+  </Accordion>
+
+  <Accordion title="Improve conversion rates">
+    Track coverage interaction events to identify opportunities to improve the presentation and timing of coverage offers.
+  </Accordion>
+
+  <Accordion title="Analytics and insights">
+    Access detailed analytics in your Redo dashboard about coverage performance, cart behavior, and customer preferences.
+  </Accordion>
+
+  <Accordion title="Personalization">
+    Event tracking enables personalized coverage recommendations based on browsing and purchase history.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  Event tracking is optional but recommended. It provides valuable insights and helps optimize the performance of returns coverage on your storefront.
+</Info>
+
+<Warning>
+  Always track events from your backend to protect your API secret. Never expose API credentials in client-side code.
+</Warning>

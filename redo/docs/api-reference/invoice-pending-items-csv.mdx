@@ -1,0 +1,46 @@
+---
+title: "Export Pending Invoice Items (CSV)"
+api: "GET https://api.getredo.com/v2.2/invoices/pending/items.csv"
+description: "Export all pending invoice items across all invoices as CSV"
+---
+
+## Query Parameters
+
+<ParamField query="storeId" type="string">
+  Optional store ID to filter pending items for a specific store
+</ParamField>
+
+## Response
+
+Returns a CSV file containing all pending invoice items that haven't been finalized yet.
+
+The CSV includes the following columns:
+
+- **Invoice ID** - Invoice identifier (may be tentative for pending items)
+- **Return ID** - Associated return identifier
+- **Order ID** - Original order identifier
+- **Item Description** - Description of the pending item/service
+- **Quantity** - Number of items
+- **Unit Price** - Price per unit
+- **Amount** - Total amount for this line item
+- **Date** - Date of the transaction
+- **Status** - Current status
+- **Expected Invoice Date** - When this item is expected to be invoiced
+
+<Info>
+  The response `Content-Type` is `text/csv`. This endpoint helps you preview upcoming charges before they're finalized on an invoice.
+</Info>
+
+## Example Usage
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/invoices/pending/items.csv?storeId=store_123" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -o pending_items.csv
+```
+
+## Use Cases
+
+- Review upcoming charges before invoice finalization
+- Export pending items for accounting forecasting
+- Verify return processing fees before they're billed

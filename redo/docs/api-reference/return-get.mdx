@@ -1,0 +1,197 @@
+---
+title: "Get Return"
+api: "GET https://api.getredo.com/v2.2/returns/{returnId}"
+description: "Retrieve details for a specific return"
+---
+
+## Path Parameters
+
+<ParamField path="returnId" type="string" required>
+  The unique identifier for the return
+</ParamField>
+
+## Response
+
+<ResponseField name="return" type="object">
+  The complete return object
+
+  <Expandable title="Properties">
+    <ResponseField name="id" type="string">
+      Return identifier (e.g., `64df65d4c5a4ca3eff4b4e43`)
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Current status of the return
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Type of return (refund, exchange, etc.)
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of last update
+    </ResponseField>
+
+    <ResponseField name="order" type="object">
+      Reference to the original order
+
+      <Expandable title="Order properties">
+        <ResponseField name="id" type="string">
+          Order identifier
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="items" type="array">
+      Items being returned
+
+      <Expandable title="Return item properties">
+        <ResponseField name="id" type="string">
+          Return item identifier
+        </ResponseField>
+
+        <ResponseField name="orderItem" type="object">
+          Reference to the original order line item
+        </ResponseField>
+
+        <ResponseField name="quantity" type="integer">
+          Number of items being returned
+        </ResponseField>
+
+        <ResponseField name="reason" type="string">
+          Primary return reason (e.g., "Too big", "Defective")
+        </ResponseField>
+
+        <ResponseField name="reasons" type="array">
+          Array of all return reasons selected
+        </ResponseField>
+
+        <ResponseField name="customerComment" type="string">
+          Customer's comment about the return
+        </ResponseField>
+
+        <ResponseField name="status" type="string">
+          Status of this specific item
+        </ResponseField>
+
+        <ResponseField name="refund" type="object">
+          Refund details for this item
+        </ResponseField>
+
+        <ResponseField name="exchangeItem" type="object">
+          Details of the item being exchanged for, if applicable
+        </ResponseField>
+
+        <ResponseField name="greenReturn" type="boolean">
+          Whether this is a green return (no physical return required)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="source" type="object">
+      Customer information
+
+      <Expandable title="Source properties">
+        <ResponseField name="emailAddress" type="string">
+          Customer email address
+        </ResponseField>
+
+        <ResponseField name="name" type="object">
+          Customer name (first, last)
+        </ResponseField>
+
+        <ResponseField name="mailingAddress" type="object">
+          Customer's mailing address
+        </ResponseField>
+
+        <ResponseField name="phoneNumber" type="object">
+          Customer's phone number
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="destination" type="object">
+      Return destination information
+    </ResponseField>
+
+    <ResponseField name="shipment" type="object">
+      Primary shipment details (deprecated - use `shipments` array)
+    </ResponseField>
+
+    <ResponseField name="shipments" type="array">
+      Array of all shipments associated with this return
+    </ResponseField>
+
+    <ResponseField name="exchange" type="object">
+      Exchange order details if this is an exchange
+
+      <Expandable title="Exchange properties">
+        <ResponseField name="items" type="array">
+          New items in the exchange order
+        </ResponseField>
+
+        <ResponseField name="itemCount" type="integer">
+          Total quantity of exchange items
+        </ResponseField>
+
+        <ResponseField name="provision" type="string">
+          When the exchange items are provided (e.g., "immediate", "after_return")
+        </ResponseField>
+
+        <ResponseField name="order" type="object">
+          External order information
+        </ResponseField>
+
+        <ResponseField name="totalTax" type="object">
+          Total tax for exchange items
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="giftCards" type="array">
+      Gift cards created for this return
+    </ResponseField>
+
+    <ResponseField name="totals" type="object">
+      Calculated totals
+
+      <Expandable title="Totals properties">
+        <ResponseField name="refund.amount" type="object">
+          Total refund amount (money object with amount and currency)
+        </ResponseField>
+
+        <ResponseField name="exchange.amount" type="object">
+          Total value of new items in exchange
+        </ResponseField>
+
+        <ResponseField name="storeCredit.amount" type="object">
+          Total store credit amount
+        </ResponseField>
+
+        <ResponseField name="charge.amount" type="object">
+          Upsell amount for exchange (if customer owes money)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="notes" type="array">
+      Internal notes and comments from team members
+    </ResponseField>
+
+    <ResponseField name="internalCreatedByName" type="string">
+      Name of team member who created this return (if created internally)
+    </ResponseField>
+
+    <ResponseField name="externalOrderIds" type="array">
+      Array of external order IDs associated with this return
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="order" type="object">
+  The complete original order data
+</ResponseField>

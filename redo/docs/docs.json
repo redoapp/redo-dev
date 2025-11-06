@@ -1,0 +1,132 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "willow",
+  "name": "Redo",
+  "openapi": "api-reference/openapi.json",
+  "colors": {
+    "primary": "#3e28ad",
+    "light": "#a499dc",
+    "dark": "#1b1b1b"
+  },
+  "favicon": "/favicon.ico",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Home",
+        "pages": ["index"]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["guides/introduction"]
+          },
+          {
+            "group": "Integrations",
+            "pages": ["guides/shopify-web-components", "guides/webhooks"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/errors",
+              "api-reference/pagination",
+              "api-reference/loop-compatible-api"
+            ]
+          },
+          {
+            "group": "Coverage",
+            "pages": [
+              "api-reference/coverage-info",
+              "api-reference/coverage-products"
+            ]
+          },
+          {
+            "group": "Invoices",
+            "pages": [
+              "api-reference/invoices-list",
+              "api-reference/invoice-items-csv",
+              "api-reference/invoice-pending-items-csv"
+            ]
+          },
+          {
+            "group": "Returns",
+            "pages": [
+              "api-reference/returns-list",
+              "api-reference/return-get",
+              "api-reference/return-comments",
+              "api-reference/return-status",
+              "api-reference/return-process"
+            ]
+          },
+          {
+            "group": "Shipments",
+            "pages": [
+              "api-reference/shipment-rates",
+              "api-reference/shipment-buy",
+              "api-reference/shipment-document"
+            ]
+          },
+          {
+            "group": "Store",
+            "pages": [
+              "api-reference/admin",
+              "api-reference/checkout-buttons-ui",
+              "api-reference/customer-portal",
+              "api-reference/storefront-events"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "api-reference/webhooks-list",
+              "api-reference/webhook-get",
+              "api-reference/webhook-replay"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@getredo.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.getredo.com"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://getredo.com"
+    }
+  }
+}

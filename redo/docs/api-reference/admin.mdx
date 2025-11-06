@@ -1,0 +1,125 @@
+---
+title: "Admin Portal Access"
+api: "GET https://api.getredo.com/v2.2/stores/{storeId}/admin"
+description: "Generate a single sign-on link to the Redo admin portal"
+---
+
+## Overview
+
+Generate a secure, time-limited URL that provides direct access to the Redo admin portal without requiring a separate login. This is useful for embedded integrations or providing seamless access to Redo from within your application.
+
+## Path Parameters
+
+<ParamField path="storeId" type="string" required>
+  The unique identifier for your store
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="returnTo" type="string">
+  Optional path within the admin portal to redirect to after login. For example:
+  - `/returns` - Returns list page
+  - `/returns/{returnId}` - Specific return detail page
+  - `/settings` - Store settings page
+  - `/analytics` - Analytics dashboard
+</ParamField>
+
+<ParamField query="expiresIn" type="integer">
+  Number of seconds until the SSO link expires. Default is 300 (5 minutes). Maximum is 3600 (1 hour).
+</ParamField>
+
+## Response
+
+<ResponseField name="url" type="string">
+  The single sign-on URL to the Redo admin portal. This URL is valid for the specified expiration time.
+</ResponseField>
+
+<ResponseField name="expiresAt" type="string">
+  ISO 8601 timestamp of when the URL expires
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "url": "https://app.getredo.com/sso/abc123xyz?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresAt": "2023-08-18T12:05:00Z"
+}
+```
+
+## Example Usage
+
+### Generate Basic Admin Link
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/admin" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+### Generate Link to Specific Return
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/admin?returnTo=/returns/64df65d4c5a4ca3eff4b4e43" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+### Generate Link with Custom Expiration
+
+```bash
+curl -X GET "https://api.getredo.com/v2.2/stores/store_123/admin?expiresIn=1800" \
+  -H "Authorization: Bearer YOUR_API_SECRET"
+```
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Embedded admin panel">
+    Create a "Manage Returns" button in your admin interface that opens the Redo portal in a new tab without requiring users to log in separately.
+
+    ```javascript
+    async function openRedoAdmin() {
+      const response = await fetch(
+        'https://api.getredo.com/v2.2/stores/store_123/admin',
+        {
+          headers: {
+            'Authorization': 'Bearer YOUR_API_SECRET'
+          }
+        }
+      );
+      const { url } = await response.json();
+      window.open(url, '_blank');
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Deep linking to specific returns">
+    Link directly to a specific return from your order management system or customer support tool.
+
+    ```javascript
+    async function viewReturnInRedo(returnId) {
+      const response = await fetch(
+        `https://api.getredo.com/v2.2/stores/store_123/admin?returnTo=/returns/${returnId}`,
+        {
+          headers: {
+            'Authorization': 'Bearer YOUR_API_SECRET'
+          }
+        }
+      );
+      const { url } = await response.json();
+      window.open(url, '_blank');
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Customer support shortcuts">
+    Provide customer support agents with quick access to the Redo portal when handling return inquiries.
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+  SSO URLs are single-use and time-limited for security. Generate a new URL each time you need to provide admin access.
+</Warning>
+
+<Info>
+  The SSO link provides full admin access to your store's Redo account. Only share these links with authorized users and ensure they expire quickly.
+</Info>

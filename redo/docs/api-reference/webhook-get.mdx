@@ -1,0 +1,118 @@
+---
+title: "Manage Webhook"
+api: "GET https://api.getredo.com/v2.2/webhooks/{webhookId}"
+description: "Get, update, or delete a specific webhook subscription"
+---
+
+<Tabs>
+  <Tab title="Get Webhook">
+    ## GET /webhooks/{webhookId}
+
+    Retrieve details for a specific webhook subscription.
+
+    ### Path Parameters
+
+    <ParamField path="webhookId" type="string" required>
+      The unique identifier for the webhook subscription
+    </ParamField>
+
+    ### Response
+
+    <ResponseField name="webhook" type="object">
+      <Expandable title="Webhook properties">
+        <ResponseField name="id" type="string">
+          Webhook subscription identifier
+        </ResponseField>
+
+        <ResponseField name="url" type="string">
+          The HTTPS endpoint where events are sent
+        </ResponseField>
+
+        <ResponseField name="topics" type="array">
+          Array of subscribed event topics
+        </ResponseField>
+
+        <ResponseField name="kind" type="string">
+          Webhook kind/type
+        </ResponseField>
+
+        <ResponseField name="active" type="boolean">
+          Whether the webhook is active
+        </ResponseField>
+
+        <ResponseField name="createdAt" type="string">
+          ISO 8601 timestamp of creation
+        </ResponseField>
+
+        <ResponseField name="updatedAt" type="string">
+          ISO 8601 timestamp of last update
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+
+  <Tab title="Update Webhook">
+    ## PATCH /webhooks/{webhookId}
+
+    Update an existing webhook subscription.
+
+    ### Path Parameters
+
+    <ParamField path="webhookId" type="string" required>
+      The unique identifier for the webhook subscription
+    </ParamField>
+
+    ### Request Body
+
+    <ParamField body="url" type="string">
+      New HTTPS endpoint URL
+    </ParamField>
+
+    <ParamField body="secret" type="string">
+      New secret token for authentication
+    </ParamField>
+
+    <ParamField body="topics" type="array">
+      Updated array of event topics to subscribe to
+    </ParamField>
+
+    <ParamField body="active" type="boolean">
+      Set to `false` to pause webhook deliveries without deleting the subscription
+    </ParamField>
+
+    ### Response
+
+    <ResponseField name="webhook" type="object">
+      The updated webhook subscription object
+    </ResponseField>
+
+    ### Example Request
+
+    ```json
+    {
+      "topics": ["return.updated"],
+      "active": true
+    }
+    ```
+  </Tab>
+
+  <Tab title="Delete Webhook">
+    ## DELETE /webhooks/{webhookId}
+
+    Delete a webhook subscription. This will stop all event deliveries.
+
+    ### Path Parameters
+
+    <ParamField path="webhookId" type="string" required>
+      The unique identifier for the webhook subscription
+    </ParamField>
+
+    ### Response
+
+    Returns a `204 No Content` status code on successful deletion.
+
+    <Warning>
+      Deletion is permanent. If you want to temporarily stop receiving events, consider setting `active: false` instead.
+    </Warning>
+  </Tab>
+</Tabs>

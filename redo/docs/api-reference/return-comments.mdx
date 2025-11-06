@@ -1,0 +1,29 @@
+---
+title: "Return Comments"
+api: "GET https://api.getredo.com/v2.2/returns/{returnId}/comments"
+description: "Get comments for a specific return"
+---
+
+## Path Parameters
+
+<ParamField path="returnId" type="string" required>
+  The unique identifier for the return
+</ParamField>
+
+## Response
+
+Returns an array of comment objects for the specified return.
+
+<ResponseField name="comments" type="array">
+  Array of comment objects
+
+  <Expandable title="Comment properties">
+    <ResponseField name="message" type="string">
+      The comment text
+    </ResponseField>
+
+    <ResponseField name="image" type="string">
+      Optional image URL attached to the comment
+    </ResponseField>
+  </Expandable>
+</ResponseField>

@@ -1,49 +1,45 @@
-# CLAUDE.md - Redo Developer Repository Guide
+---
+title: "Claude Code setup"
+description: "Configure Claude Code for your documentation workflow"
+icon: "asterisk"
+---
 
-## Commands
+Claude Code is Anthropic's official CLI tool. This guide will help you set up Claude Code to help you write and maintain your documentation.
 
-- **Build**: `bazel build //...` (all targets) or `bazel build //path/to:target`
-- **Build API Schema**: `bazel build redo/api-schema/openapi`
-- **Lint**: `bazel run //:lint` or `bazel run //tools/lint:lint`
-- **Test**: `bazel test //...` (all tests) or `bazel test //path/to:test_target`
-- **Single Test**: `bazel test //path/to:specific_test --test_output=all`
-- **YAML Lint**: `bazel run //tools/lint:yaml_lint`
-- **Prettier Lint**: `bazel run //tools/lint:prettier_lint`
+## Prerequisites
 
-## Code Style Guidelines
+- Active Claude subscription (Pro, Max, or API access)
 
-- **OpenAPI Schema**: Organize API definitions in `/redo/api-schema/src/` with
-  proper schema references
-- **Naming**: Use kebab-case for file names, camelCase for properties in schemas
-- **Types**: Use TypeScript with strict typing when available
-- **Formatting**: Use Prettier for code formatting with provided configuration
-- **Error Handling**: Follow OpenAPI error schema definitions for API responses
-- **File Structure**:
-  - API paths in `path/` directory
-  - Schemas in `schema/` directory
-  - Parameters in `param/` directory
-  - Headers in `header/` directory
+## Setup
 
-## Repository Structure
+1. Install Claude Code globally:
 
-This repository primarily contains OpenAPI schema definitions and Bazel build
-configurations for the Redo API.
+  ```bash
+  npm install -g @anthropic-ai/claude-code
+```
 
+2. Navigate to your docs directory.
+3. (Optional) Add the `CLAUDE.md` file below to your project.
+4. Run `claude` to start.
+
+## Create `CLAUDE.md`
+
+Create a `CLAUDE.md` file at the root of your documentation repository to train Claude Code on your specific documentation standards:
+
+````markdown
+# Mintlify documentation
 
 ## Working relationship
-
 - You can push back on ideas-this can lead to better documentation. Cite sources and explain your reasoning when you do so
 - ALWAYS ask for clarification rather than making assumptions
 - NEVER lie, guess, or make up information
 
 ## Project context
-
 - Format: MDX files with YAML frontmatter
-- Config: redo/docs/docs.json for navigation, theme, settings
+- Config: docs.json for navigation, theme, settings
 - Components: Mintlify components
 
 ## Content strategy
-
 - Document just enough for user success - not too much, not too little
 - Prioritize accuracy and usability of information
 - Make content evergreen when possible
@@ -52,12 +48,10 @@ configurations for the Redo API.
 - Start by making the smallest reasonable changes
 
 ## Frontmatter requirements for pages
-
 - title: Clear, descriptive page title
 - description: Concise summary for SEO/navigation
 
 ## Writing standards
-
 - Second-person voice ("you")
 - Prerequisites at start of procedural content
 - Test all code examples before publishing
@@ -68,7 +62,6 @@ configurations for the Redo API.
 - Relative paths for internal links
 
 ## Git workflow
-
 - NEVER use --no-verify when committing
 - Ask how to handle uncommitted changes before starting
 - Create a new branch when no clear branch exists for changes
@@ -76,8 +69,8 @@ configurations for the Redo API.
 - NEVER skip or disable pre-commit hooks
 
 ## Do not
-
 - Skip frontmatter on any MDX file
 - Use absolute URLs for internal links
 - Include untested code examples
 - Make assumptions - always ask for clarification
+````
