@@ -1,8 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "colors": {
-    "primary": "#3e28ad",
-    "light": "#a499dc",
+    "primary": "#FF4405",
+    "light": "#FF4405",
     "dark": "#1b1b1b"
   },
   "contextual": {
@@ -85,5 +85,5 @@
     ]
   },
   "openapi": "api-schema/openapi.yaml",
-  "theme": "willow"
+  "theme": "aspen"
 }
