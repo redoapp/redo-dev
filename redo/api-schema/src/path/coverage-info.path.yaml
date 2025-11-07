@@ -8,5 +8,5 @@ get:
     "302":
       description: Redirect
   summary: Navigate to coverage info
-  tags: [Coverage Info]
+  tags: [Coverage info]
 summary: Coverage info

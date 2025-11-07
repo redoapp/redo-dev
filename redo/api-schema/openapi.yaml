@@ -1924,7 +1924,7 @@ paths:
           description: Redirect
       summary: Navigate to coverage info
       tags:
-        - Coverage Info
+        - Coverage info
     summary: Coverage info
   /stores/{storeId}/coverage-products:
     description: Available coverage products.
@@ -2013,7 +2013,7 @@ paths:
           description: Error
       summary: Get coverage products
       tags:
-        - Coverage Products
+        - Coverage products
     summary: Coverage products
   /stores/{storeId}/customer-portal:
     description: Navigate to the customer portal.
@@ -2086,7 +2086,7 @@ paths:
         - Bearer: []
       summary: Update customer subscriptions
       tags:
-        - Customer Subscriptions
+        - Customer subscriptions
     summary: Customer subscriptions
   /stores/{storeId}/invoices:
     description: Return a list of invoices.
