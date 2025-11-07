@@ -11,7 +11,7 @@ components:
       name: documentType
       required: true
       schema:
-        $ref: "#/components/schemas/shipment-document-type.schema"
+        $ref: '#/components/schemas/shipment-document-type.schema'
     invoice-id.param:
       description: Invoice ID
       in: path
@@ -62,7 +62,7 @@ components:
         type: string
     updated-at-max.param:
       description: Maximum updated time, exclusive
-      example: "2000-02-01T00:00:00Z"
+      example: '2000-02-01T00:00:00Z'
       in: query
       name: updated_at_max
       schema:
@@ -70,7 +70,7 @@ components:
         type: string
     updated-at-min.param:
       description: Minimum updated time, inclusive
-      example: "2000-01-01T00:00:00Z"
+      example: '2000-01-01T00:00:00Z'
       in: query
       name: updated_at_min
       schema:
@@ -108,16 +108,16 @@ components:
           title: Line 1
           type: string
         line2:
-          default: ""
+          default: ''
           description: Line 2
           examples:
-            - ""
+            - ''
           title: Line 2
           type: string
         postalCode:
           description: Postal or ZIP code
           examples:
-            - "12345"
+            - '12345'
           title: Postal code
           type: string
         state:
@@ -194,7 +194,7 @@ components:
           title: ID
           type: string
         price:
-          $ref: "#/components/schemas/money.schema"
+          $ref: '#/components/schemas/money.schema'
           description: Price.
           title: Price
       required:
@@ -204,9 +204,7 @@ components:
       title: Coverage product
       type: object
     error.schema:
-      description:
-        Problem details. See [RFC 7807 Section
-        3](https://datatracker.ietf.org/doc/html/rfc7807#section-3).
+      description: Problem details. See [RFC 7807 Section 3](https://datatracker.ietf.org/doc/html/rfc7807#section-3).
       properties:
         detail:
           description: Human-readable description of the problem.
@@ -253,7 +251,7 @@ components:
                   title: Bearer
               title: Bearer authorization
               type: object
-            - type: "null"
+            - type: 'null'
           title: Authorization
         url:
           description: HTTPS callback URL.
@@ -271,7 +269,7 @@ components:
       description: Schema for an invoice.
       properties:
         charge:
-          $ref: "#/components/schemas/money.schema"
+          $ref: '#/components/schemas/money.schema'
           description: The charge that the invoice is for.
         createdAt:
           description: The time the invoice was created.
@@ -339,8 +337,8 @@ components:
       properties:
         amount:
           examples:
-            - "50.2"
-            - "1.78"
+            - '50.2'
+            - '1.78'
           title: Amount
           type: string
         currency:
@@ -362,27 +360,25 @@ components:
               title: Email address
               type: string
             name:
-              $ref: "#/components/schemas/person-name.schema"
+              $ref: '#/components/schemas/person-name.schema'
               description: Name of customer.
               title: Name
             phoneNumber:
-              $ref: "#/components/schemas/phone-number.schema"
+              $ref: '#/components/schemas/phone-number.schema'
               description: Phone number of customer.
               title: Phone number
           required:
             - name
           type: object
         discounts:
-          $ref: "#/components/schemas/money.schema"
-          description:
-            The total amount discounted on the order before returns. This
-            includes both order and line level discounts.
+          $ref: '#/components/schemas/money.schema'
+          description: The total amount discounted on the order before returns. This includes both order and line level discounts.
           title: Discounts
         externalId:
           description: Shopify ID
           examples:
-            - "1073459971"
-            - "450789469"
+            - '1073459971'
+            - '450789469'
           title: External ID
           type: string
         id:
@@ -394,29 +390,29 @@ components:
           items:
             properties:
               externalId:
-                example: "123"
+                example: '123'
                 type: string
               fulfillmentLocationId:
                 description: ID of the location where the item was be fulfilled.
-                example: "123"
+                example: '123'
                 type:
                   - string
-                  - "null"
+                  - 'null'
               id:
                 description: Line item ID
                 title: ID
                 type: string
               price:
-                $ref: "#/components/schemas/money.schema"
+                $ref: '#/components/schemas/money.schema'
                 title: Price
               product:
-                $ref: "#/components/schemas/product.schema"
+                $ref: '#/components/schemas/product.schema'
                 title: Product
               quantity:
-                $ref: "#/components/schemas/item-quantity.schema"
+                $ref: '#/components/schemas/item-quantity.schema'
                 title: Quantity
               variant:
-                $ref: "#/components/schemas/product-variant.schema"
+                $ref: '#/components/schemas/product-variant.schema'
                 title: Variant
             required:
               - id
@@ -428,31 +424,26 @@ components:
           title: Line items
           type: array
         lineItemsTotal:
-          $ref: "#/components/schemas/money.schema"
-          description:
-            Total price of all line items before discounts, shipping, and taxes.
+          $ref: '#/components/schemas/money.schema'
+          description: Total price of all line items before discounts, shipping, and taxes.
           title: Line Items Total
         name:
           description: Shopify name.
           examples:
-            - "#123"
+            - '#123'
           title: Name
           type: string
         shippingCost:
-          $ref: "#/components/schemas/money.schema"
-          description:
-            The total shipping cost for the order. This includes fees and any
-            related discounts that were refunded.
+          $ref: '#/components/schemas/money.schema'
+          description: The total shipping cost for the order. This includes fees and any related discounts that were refunded.
           title: Shipping Cost
         taxes:
-          $ref: "#/components/schemas/money.schema"
+          $ref: '#/components/schemas/money.schema'
           description: Total taxes applied to the order.
           title: Taxes
         total:
-          $ref: "#/components/schemas/money.schema"
-          description:
-            The total price of the order, before returns. This includes taxes,
-            discounts, and shipping costs.
+          $ref: '#/components/schemas/money.schema'
+          description: The total price of the order, before returns. This includes taxes, discounts, and shipping costs.
           title: Total
       required:
         - customer
@@ -478,15 +469,15 @@ components:
       description: Parcel information for shipping.
       properties:
         height:
-          $ref: "#/components/schemas/length.schema"
+          $ref: '#/components/schemas/length.schema'
         length:
-          $ref: "#/components/schemas/length.schema"
+          $ref: '#/components/schemas/length.schema'
         type:
-          $ref: "#/components/schemas/parcel-type.schema"
+          $ref: '#/components/schemas/parcel-type.schema'
         weight:
-          $ref: "#/components/schemas/shipping-weight.schema"
+          $ref: '#/components/schemas/shipping-weight.schema'
         width:
-          $ref: "#/components/schemas/length.schema"
+          $ref: '#/components/schemas/length.schema'
       required:
         - height
         - length
@@ -518,7 +509,7 @@ components:
     phone-number.schema:
       description: Phone number, in E.164 format
       examples:
-        - "+15555555555"
+        - '+15555555555'
       title: Phone number
       type: string
     product-variant.schema:
@@ -533,7 +524,7 @@ components:
           title: SKU
           type: string
         weight:
-          $ref: "#/components/schemas/weight.schema"
+          $ref: '#/components/schemas/weight.schema'
           title: Weight
       required:
         - name
@@ -565,11 +556,11 @@ components:
         destination:
           properties:
             mailingAddress:
-              $ref: "#/components/schemas/address.schema"
+              $ref: '#/components/schemas/address.schema'
               description: Mailing address to send the returned items.
               title: Mailing address
             phoneNumber:
-              $ref: "#/components/schemas/phone-number.schema"
+              $ref: '#/components/schemas/phone-number.schema'
               description: Phone number of the destination.
               title: Phone number
           type: object
@@ -586,9 +577,7 @@ components:
                     title: ID
                     type: string
                   originalPrice:
-                    description:
-                      Original price for the exchange item without discounts and
-                      taxes
+                    description: Original price for the exchange item without discounts and taxes
                     properties:
                       amount:
                         type: string
@@ -596,8 +585,7 @@ components:
                         type: string
                     type: object
                   price:
-                    description:
-                      Subtotal price for the exchange item including discounts
+                    description: Subtotal price for the exchange item including discounts
                     properties:
                       amount:
                         type: string
@@ -607,13 +595,13 @@ components:
                         type: string
                     type: object
                   product:
-                    $ref: "#/components/schemas/product.schema"
+                    $ref: '#/components/schemas/product.schema'
                     title: Product
                   quantity:
-                    $ref: "#/components/schemas/item-quantity.schema"
+                    $ref: '#/components/schemas/item-quantity.schema'
                     title: Quantity
                   variant:
-                    $ref: "#/components/schemas/product-variant.schema"
+                    $ref: '#/components/schemas/product-variant.schema'
                 required:
                   - id
                   - quantity
@@ -628,7 +616,7 @@ components:
                   type: string
               type: object
             provision:
-              $ref: "#/components/schemas/exchange-provision.schema"
+              $ref: '#/components/schemas/exchange-provision.schema'
               title: Provision
             totalTax:
               description: Total tax for exchange items
@@ -654,7 +642,7 @@ components:
           items:
             properties:
               amount:
-                $ref: "#/components/schemas/money.schema"
+                $ref: '#/components/schemas/money.schema'
                 title: Amount
               code:
                 description: Gift card 16 digit code.
@@ -689,8 +677,7 @@ components:
                 description: Customer's comment about the return
                 type: string
               exchangeItem:
-                description:
-                  Exchange item details if this return item is being exchanged
+                description: Exchange item details if this return item is being exchanged
                 properties:
                   product:
                     properties:
@@ -711,8 +698,7 @@ components:
                 title: Exchange item
                 type: object
               greenReturn:
-                description:
-                  Whether this is a green return (no physical return required)
+                description: Whether this is a green return (no physical return required)
                 type: boolean
               id:
                 description: Return item ID.
@@ -722,9 +708,7 @@ components:
                 description: Order line item
                 properties:
                   id:
-                    description:
-                      "Line item reference ID in format:
-                      {orderId}/{lineItemIndex}"
+                    description: 'Line item reference ID in format: {orderId}/{lineItemIndex}'
                     title: ID
                     type: string
                   line_item_id:
@@ -759,7 +743,7 @@ components:
                 description: Refund details
                 properties:
                   amount:
-                    $ref: "#/components/schemas/money.schema"
+                    $ref: '#/components/schemas/money.schema'
                     title: Amount
                   type:
                     description: Refund strategy
@@ -813,18 +797,17 @@ components:
           title: Order
           type: object
         shipment:
-          $ref: "#/components/schemas/return-shipment.schema"
+          $ref: '#/components/schemas/return-shipment.schema'
           description: Shipment, if has been made
           title: Shipment
         shipments:
           description: Array of all shipments associated with this return
           items:
-            $ref: "#/components/schemas/return-shipment.schema"
+            $ref: '#/components/schemas/return-shipment.schema'
           title: Shipments
           type: array
         shopifyOrderIds:
-          description:
-            Array of Shopify order IDs (deprecated, use externalOrderIds)
+          description: Array of Shopify order IDs (deprecated, use externalOrderIds)
           items:
             type: string
           title: Shopify Order IDs
@@ -837,15 +820,15 @@ components:
               title: Email address
               type: string
             mailingAddress:
-              $ref: "#/components/schemas/address.schema"
+              $ref: '#/components/schemas/address.schema'
               description: Mailing address returned items are sent from.
               title: Mailing address
             name:
-              $ref: "#/components/schemas/person-name.schema"
+              $ref: '#/components/schemas/person-name.schema'
               description: Name of returner.
               title: Name
             phoneNumber:
-              $ref: "#/components/schemas/phone-number.schema"
+              $ref: '#/components/schemas/phone-number.schema'
               description: Phone number of returner.
               title: Phone number
           required:
@@ -855,7 +838,7 @@ components:
             - phoneNumber
           type: object
         status:
-          $ref: "#/components/schemas/return-status.schema"
+          $ref: '#/components/schemas/return-status.schema'
           description: Return status.
           title: Status
         totals:
@@ -865,7 +848,7 @@ components:
               description: The upsell amount for the exchange order
               properties:
                 amount:
-                  $ref: "#/components/schemas/money.schema"
+                  $ref: '#/components/schemas/money.schema'
               required:
                 - amount
               type: object
@@ -873,7 +856,7 @@ components:
               description: Total value of new items in exchange
               properties:
                 amount:
-                  $ref: "#/components/schemas/money.schema"
+                  $ref: '#/components/schemas/money.schema'
               required:
                 - amount
               type: object
@@ -881,7 +864,7 @@ components:
               description: Total refund amount excluding shipping
               properties:
                 amount:
-                  $ref: "#/components/schemas/money.schema"
+                  $ref: '#/components/schemas/money.schema'
               required:
                 - amount
               type: object
@@ -889,7 +872,7 @@ components:
               description: Total store credit amount
               properties:
                 amount:
-                  $ref: "#/components/schemas/money.schema"
+                  $ref: '#/components/schemas/money.schema'
               required:
                 - amount
               type: object
@@ -901,7 +884,7 @@ components:
           title: Totals
           type: object
         type:
-          $ref: "#/components/schemas/return-type.schema"
+          $ref: '#/components/schemas/return-type.schema'
           description: Return type.
           title: Type
         updatedAt:
@@ -1021,7 +1004,7 @@ components:
       description: Shipping document information.
       properties:
         type:
-          $ref: "#/components/schemas/shipment-document-type.schema"
+          $ref: '#/components/schemas/shipment-document-type.schema'
       required:
         - type
       title: Shipment Document
@@ -1032,8 +1015,7 @@ components:
         carrier:
           properties:
             id:
-              description:
-                ID for the carrier account that provides the shipping rate.
+              description: ID for the carrier account that provides the shipping rate.
               title: Carrier Account ID
               type: string
             name:
@@ -1048,7 +1030,7 @@ components:
             - name
           type: object
         price:
-          $ref: "#/components/schemas/money.schema"
+          $ref: '#/components/schemas/money.schema'
         service:
           properties:
             name:
@@ -1073,7 +1055,7 @@ components:
         code:
           description: Carrier tracking code
           examples:
-            - "9400100000000000000000"
+            - '9400100000000000000000'
           title: Tracking Code
           type: string
       required:
@@ -1084,11 +1066,9 @@ components:
       description: Shipment information.
       properties:
         documents:
-          description:
-            Available shipping documents. You can access these documents using
-            the GET Shipment document endpoint.
+          description: Available shipping documents. You can access these documents using the GET Shipment document endpoint.
           items:
-            $ref: "#/components/schemas/shipment-document.schema"
+            $ref: '#/components/schemas/shipment-document.schema'
           title: Documents
           type: array
         id:
@@ -1096,9 +1076,9 @@ components:
           title: Shipment ID
           type: string
         price:
-          $ref: "#/components/schemas/money.schema"
+          $ref: '#/components/schemas/money.schema'
         tracker:
-          $ref: "#/components/schemas/shipment-tracker.schema"
+          $ref: '#/components/schemas/shipment-tracker.schema'
       required:
         - id
         - documents
@@ -1110,7 +1090,7 @@ components:
       description: Contact information for shipping.
       properties:
         address:
-          $ref: "#/components/schemas/address.schema"
+          $ref: '#/components/schemas/address.schema'
         name:
           description: Contact name
           examples:
@@ -1120,7 +1100,7 @@ components:
         phoneNumber:
           description: Contact phone number
           examples:
-            - "+12025550123"
+            - '+12025550123'
           title: Phone Number
           type: string
       required:
@@ -1170,10 +1150,8 @@ components:
                     code:
                       type: string
                     discountAmount:
-                      $ref: "#/components/schemas/money.schema"
-                      description:
-                        The amount this coupon discounts in dollars for this
-                        line item.
+                      $ref: '#/components/schemas/money.schema'
+                      description: The amount this coupon discounts in dollars for this line item.
                     id:
                       type: string
                   required:
@@ -1187,11 +1165,11 @@ components:
                 title: ID
                 type: string
               originalPrice:
-                $ref: "#/components/schemas/money.schema"
+                $ref: '#/components/schemas/money.schema'
                 description: Original price.
                 title: Original Price
               priceTotal:
-                $ref: "#/components/schemas/money.schema"
+                $ref: '#/components/schemas/money.schema'
                 description: Total price.
                 title: Price
               product:
@@ -1228,7 +1206,7 @@ components:
           title: Line items
           type: array
         priceTotal:
-          $ref: "#/components/schemas/money.schema"
+          $ref: '#/components/schemas/money.schema'
           description: Total price.
           title: Price
       required:
@@ -1257,7 +1235,7 @@ components:
           description: Cart information.
           type:
             - object
-            - "null"
+            - 'null'
         cartLine:
           description: Information about specific cart line item.
           type: object
@@ -1271,7 +1249,7 @@ components:
           description: Customer information if available.
           type:
             - object
-            - "null"
+            - 'null'
         customerEmail:
           description: Customer email if available.
           format: email
@@ -1328,7 +1306,7 @@ components:
           title: Backfill
           type: boolean
         callback:
-          $ref: "#/components/schemas/https-callback.schema"
+          $ref: '#/components/schemas/https-callback.schema'
           description: HTTPS callback to POST events.
           title: HTTPS callback
         externalId:
@@ -1337,13 +1315,13 @@ components:
           title: External ID
           type:
             - string
-            - "null"
+            - 'null'
         kind:
-          $ref: "#/components/schemas/webhook-kind.schema"
+          $ref: '#/components/schemas/webhook-kind.schema'
           description: Kind.
           title: Kind
         topic:
-          $ref: "#/components/schemas/webhook-topic.schema"
+          $ref: '#/components/schemas/webhook-topic.schema'
           description: Topic.
           title: Topic
       required:
@@ -1362,7 +1340,7 @@ components:
       description: Webhook read.
       properties:
         callback:
-          $ref: "#/components/schemas/https-callback.schema"
+          $ref: '#/components/schemas/https-callback.schema'
           description: HTTPS callback URL to POST events.
           title: Callback
         createdAt:
@@ -1376,18 +1354,18 @@ components:
           title: External ID
           type:
             - string
-            - "null"
+            - 'null'
         id:
           description: Webhook ID.
           readonly: true
           title: ID
           type: string
         kind:
-          $ref: "#/components/schemas/webhook-kind.schema"
+          $ref: '#/components/schemas/webhook-kind.schema'
           description: Kind.
           title: Kind
         topic:
-          $ref: "#/components/schemas/webhook-topic.schema"
+          $ref: '#/components/schemas/webhook-topic.schema'
           description: Topic.
           title: Topic
         updatedAt:
@@ -1413,7 +1391,7 @@ components:
       description: Webhook update.
       properties:
         callback:
-          $ref: "#/components/schemas/https-callback.schema"
+          $ref: '#/components/schemas/https-callback.schema'
           description: HTTPS callback to POST events.
           title: HTTPS callback
         externalId:
@@ -1422,7 +1400,7 @@ components:
           title: External ID
           type:
             - string
-            - "null"
+            - 'null'
       required:
         - callback
       title: Webhook update
@@ -1442,10 +1420,10 @@ components:
       type: object
   securitySchemes:
     Bearer:
-      scheme: Bearer
+      scheme: bearer
       type: http
     UserBearer:
-      scheme: Bearer
+      scheme: bearer
       type: http
 info:
   contact:
@@ -1489,7 +1467,7 @@ paths:
       description: Get an invoice as a CSV.
       operationId: Invoice pending csv get
       responses:
-        "200":
+        '200':
           content:
             text/csv:
               schema:
@@ -1500,7 +1478,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1514,9 +1492,9 @@ paths:
       description: Get an invoice as a CSV.
       operationId: Invoice csv get
       parameters:
-        - $ref: "#/components/parameters/invoice-id.param"
+        - $ref: '#/components/parameters/invoice-id.param'
       responses:
-        "200":
+        '200':
           content:
             text/csv:
               schema:
@@ -1527,7 +1505,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1541,15 +1519,15 @@ paths:
       description: Get return.
       operationId: Return get
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   order:
-                    $ref: "#/components/schemas/order-read.schema"
+                    $ref: '#/components/schemas/order-read.schema'
                   return:
-                    $ref: "#/components/schemas/return-read.schema"
+                    $ref: '#/components/schemas/return-read.schema'
                 required:
                   - return
                   - order
@@ -1559,7 +1537,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1567,7 +1545,7 @@ paths:
       tags:
         - Returns
     parameters:
-      - $ref: "#/components/parameters/return-id.param"
+      - $ref: '#/components/parameters/return-id.param'
     summary: Return
   /returns/{returnId}/comments:
     description: Return comment.
@@ -1575,7 +1553,7 @@ paths:
       description: List return comments.
       operationId: Return comments get
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -1583,7 +1561,7 @@ paths:
                   comments:
                     description: Return comments.
                     items:
-                      $ref: "#/components/schemas/comment.schema"
+                      $ref: '#/components/schemas/comment.schema'
                     title: Comments
                     type: array
                 required:
@@ -1594,7 +1572,7 @@ paths:
       tags:
         - Returns
     parameters:
-      - $ref: "#/components/parameters/return-id.param"
+      - $ref: '#/components/parameters/return-id.param'
     post:
       description: Create return comment.
       operationId: Return comment create
@@ -1604,19 +1582,19 @@ paths:
             schema:
               properties:
                 comment:
-                  $ref: "#/components/schemas/comment.schema"
+                  $ref: '#/components/schemas/comment.schema'
               required:
                 - comment
               type: object
         required: true
       responses:
-        "201":
+        '201':
           content:
             application/json:
               schema:
                 properties:
                   comment:
-                    $ref: "#/components/schemas/comment.schema"
+                    $ref: '#/components/schemas/comment.schema'
                 required:
                   - comment
                 type: object
@@ -1625,7 +1603,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1636,7 +1614,7 @@ paths:
   /returns/{returnId}/process:
     description: Process return.
     parameters:
-      - $ref: "#/components/parameters/return-id.param"
+      - $ref: '#/components/parameters/return-id.param'
     post:
       description: |
         **BETA**: This endpoint is in beta and subject to change.
@@ -1649,9 +1627,7 @@ paths:
             schema:
               properties:
                 customerNotes:
-                  description:
-                    Notes to send to customer. These can be rejection notes or
-                    processing notes.
+                  description: Notes to send to customer. These can be rejection notes or processing notes.
                   type: string
                 products:
                   description: Array of products to process or reject
@@ -1662,16 +1638,11 @@ paths:
                         example: 64e4d5e837572a4813b73e41
                         type: string
                       processInput:
-                        description:
-                          Processing details. You may only have one of reject or
-                          processInput.
+                        description: Processing details. You may only have one of reject or processInput.
                         nullable: true
                         properties:
                           newMerchantAdjustment:
-                            description:
-                              Adjustment amount. This will be the amount that is
-                              credited to the customer, overriding the original
-                              product value.
+                            description: Adjustment amount. This will be the amount that is credited to the customer, overriding the original product value.
                             nullable: true
                             type: number
                           restock:
@@ -1680,9 +1651,7 @@ paths:
                         type: object
                       reject:
                         default: false
-                        description:
-                          Reject this product. You may only have one of reject
-                          or processInput.
+                        description: Reject this product. You may only have one of reject or processInput.
                         type: boolean
                     required:
                       - _id
@@ -1693,7 +1662,7 @@ paths:
               type: object
         required: true
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -1702,23 +1671,21 @@ paths:
                     description: Status message
                     examples:
                       - Processing triggered successfully
-                      - Successfully prepared some products to be processed,
-                        once all products are ready, processing will be
-                        triggered
+                      - Successfully prepared some products to be processed, once all products are ready, processing will be triggered
                     type: string
                 type: object
           description: Processing request completed
-        "400":
+        '400':
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Bad request (e.g., missing products array)
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1732,15 +1699,15 @@ paths:
       description: Get return status.
       operationId: Return status get
       parameters:
-        - $ref: "#/components/parameters/return-id.param"
+        - $ref: '#/components/parameters/return-id.param'
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   status:
-                    $ref: "#/components/schemas/return-status.schema"
+                    $ref: '#/components/schemas/return-status.schema'
                 required:
                   - status
                 type: object
@@ -1749,7 +1716,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1760,26 +1727,26 @@ paths:
       description: Update return status.
       operationId: Return status update
       parameters:
-        - $ref: "#/components/parameters/return-id.param"
+        - $ref: '#/components/parameters/return-id.param'
       requestBody:
         content:
           application/json:
             schema:
               properties:
                 status:
-                  $ref: "#/components/schemas/return-status-update.schema"
+                  $ref: '#/components/schemas/return-status-update.schema'
               required:
                 - status
               type: object
         required: true
       responses:
-        "204":
+        '204':
           description: Updated
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -1793,9 +1760,9 @@ paths:
       description: Navigate to the merchant admin page.
       operationId: Merchant admin navigate
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
+        - $ref: '#/components/parameters/store-id.param'
       responses:
-        "302":
+        '302':
           description: Redirect
       summary: Navigate to merchant admin
       tags:
@@ -1807,17 +1774,15 @@ paths:
       description: Generate HTML and CSS for checkout buttons
       operationId: Checkout buttons UI
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
+        - $ref: '#/components/parameters/store-id.param'
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   css:
-                    description:
-                      Boilerplate checkout button CSS, plus any merchant
-                      configured styles or A/B tests.
+                    description: Boilerplate checkout button CSS, plus any merchant configured styles or A/B tests.
                     title: Checkout buttons CSS
                     type: string
                   html:
@@ -1825,9 +1790,7 @@ paths:
                     title: Checkout buttons HTML
                     type: string
           description: Success
-      summary:
-        Retrieve some rendered HTML and CSS for checkout buttons options for
-        enabling and disabling coverage
+      summary: Retrieve some rendered HTML and CSS for checkout buttons options for enabling and disabling coverage
       tags:
         - Checkout buttons
         - UI
@@ -1838,9 +1801,9 @@ paths:
       description: Navigate to the coverage info page.
       operationId: Coverage info navigate
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
+        - $ref: '#/components/parameters/store-id.param'
       responses:
-        "302":
+        '302':
           description: Redirect
       summary: Navigate to coverage info
       tags:
@@ -1852,16 +1815,16 @@ paths:
       description: Get available coverage products.
       operationId: Coverage products
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
+        - $ref: '#/components/parameters/store-id.param'
       requestBody:
         content:
           application/json:
             schema:
               properties:
                 cart:
-                  $ref: "#/components/schemas/storefront-cart.schema"
+                  $ref: '#/components/schemas/storefront-cart.schema'
                 customer:
-                  $ref: "#/components/schemas/storefront-customer.schema"
+                  $ref: '#/components/schemas/storefront-customer.schema'
                 products:
                   description: Product information.
                   items:
@@ -1880,7 +1843,7 @@ paths:
                   items:
                     properties:
                       height:
-                        $ref: "#/components/schemas/length.schema"
+                        $ref: '#/components/schemas/length.schema'
                         description: Height of an item.
                         title: Height
                       id:
@@ -1888,18 +1851,18 @@ paths:
                         title: ID
                         type: string
                       length:
-                        $ref: "#/components/schemas/length.schema"
+                        $ref: '#/components/schemas/length.schema'
                         description: Length of an item.
                         title: Length
                       title:
                         title: Title
                         type: string
                       weight:
-                        $ref: "#/components/schemas/weight.schema"
+                        $ref: '#/components/schemas/weight.schema'
                         description: Weight of an item.
                         title: Weight
                       width:
-                        $ref: "#/components/schemas/length.schema"
+                        $ref: '#/components/schemas/length.schema'
                         description: Width of an item.
                         title: Width
                     required:
@@ -1910,7 +1873,7 @@ paths:
               type: object
         required: true
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -1918,7 +1881,7 @@ paths:
                   coverageProducts:
                     description: Coverage products.
                     items:
-                      $ref: "#/components/schemas/coverage-product.schema"
+                      $ref: '#/components/schemas/coverage-product.schema'
                     title: Coverage Products
                     type: array
                 required:
@@ -1929,7 +1892,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       summary: Get coverage products
       tags:
@@ -1941,10 +1904,8 @@ paths:
       description: Navigate to the customer portal.
       operationId: Customer portal navigate
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
-        - description:
-            HMAC-SHA256 JWT of
-            {"iss":"<partnerId>","sub":"<storeId>/<customerId>"}
+        - $ref: '#/components/parameters/store-id.param'
+        - description: HMAC-SHA256 JWT of {"iss":"<partnerId>","sub":"<storeId>/<customerId>"}
           in: query
           name: token
           schema:
@@ -1955,7 +1916,7 @@ paths:
           schema:
             type: string
       responses:
-        "302":
+        '302':
           description: Redirect
       summary: Navigate to customer portal
       tags:
@@ -1967,16 +1928,16 @@ paths:
       description: Get a list of invoices.
       operationId: Invoice list
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
+        - $ref: '#/components/parameters/store-id.param'
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   invoices:
                     items:
-                      $ref: "#/components/schemas/invoice.schema"
+                      $ref: '#/components/schemas/invoice.schema'
                     type: array
                 required:
                   - invoices
@@ -1986,7 +1947,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2000,23 +1961,23 @@ paths:
       description: List returns, sorted by most recent to least recent.
       operationId: Returns list
       parameters:
-        - $ref: "#/components/parameters/page-continue.param"
-        - $ref: "#/components/parameters/page-size.param"
-        - $ref: "#/components/parameters/updated-at-max.param"
-        - $ref: "#/components/parameters/updated-at-min.param"
+        - $ref: '#/components/parameters/page-continue.param'
+        - $ref: '#/components/parameters/page-size.param'
+        - $ref: '#/components/parameters/updated-at-max.param'
+        - $ref: '#/components/parameters/updated-at-min.param'
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   orders:
                     items:
-                      $ref: "#/components/schemas/order-read.schema"
+                      $ref: '#/components/schemas/order-read.schema'
                     type: array
                   returns:
                     items:
-                      $ref: "#/components/schemas/return-read.schema"
+                      $ref: '#/components/schemas/return-read.schema'
                     type: array
                 required:
                   - orders
@@ -2025,12 +1986,12 @@ paths:
           description: Success
           headers:
             X-Page-Next:
-              $ref: "#/components/headers/page-next.header"
+              $ref: '#/components/headers/page-next.header'
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2038,16 +1999,14 @@ paths:
       tags:
         - Returns
     parameters:
-      - $ref: "#/components/parameters/store-id.param"
+      - $ref: '#/components/parameters/store-id.param'
     summary: Returns
   /stores/{storeId}/shipments/buy:
     description: Purchase a shipping label.
     parameters:
-      - $ref: "#/components/parameters/store-id.param"
+      - $ref: '#/components/parameters/store-id.param'
     post:
-      description:
-        Purchase a shipping label based on origin, destination, carrier,
-        service, and parcel information.
+      description: Purchase a shipping label based on origin, destination, carrier, service, and parcel information.
       operationId: Shipment buy
       requestBody:
         content:
@@ -2057,20 +2016,18 @@ paths:
                 carrier:
                   properties:
                     id:
-                      description:
-                        ID for the carrier account that provides the shipping
-                        rate.
+                      description: ID for the carrier account that provides the shipping rate.
                       title: Carrier Account ID
                       type: string
                   required:
                     - id
                   type: object
                 destination:
-                  $ref: "#/components/schemas/shipping-contact.schema"
+                  $ref: '#/components/schemas/shipping-contact.schema'
                 origin:
-                  $ref: "#/components/schemas/shipping-contact.schema"
+                  $ref: '#/components/schemas/shipping-contact.schema'
                 parcel:
-                  $ref: "#/components/schemas/parcel.schema"
+                  $ref: '#/components/schemas/parcel.schema'
                 service:
                   properties:
                     name:
@@ -2091,13 +2048,13 @@ paths:
               type: object
         required: true
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   shipment:
-                    $ref: "#/components/schemas/shipment.schema"
+                    $ref: '#/components/schemas/shipment.schema'
                 required:
                   - shipment
                 type: object
@@ -2106,7 +2063,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2117,11 +2074,9 @@ paths:
   /stores/{storeId}/shipments/rates:
     description: Fetch available shipping label rates.
     parameters:
-      - $ref: "#/components/parameters/store-id.param"
+      - $ref: '#/components/parameters/store-id.param'
     post:
-      description:
-        Get available shipping rates based on origin, destination, and parcel
-        information.
+      description: Get available shipping rates based on origin, destination, and parcel information.
       operationId: Shipment rates
       requestBody:
         content:
@@ -2131,19 +2086,19 @@ paths:
                 destination:
                   properties:
                     address:
-                      $ref: "#/components/schemas/address.schema"
+                      $ref: '#/components/schemas/address.schema'
                   required:
                     - address
                   type: object
                 origin:
                   properties:
                     address:
-                      $ref: "#/components/schemas/address.schema"
+                      $ref: '#/components/schemas/address.schema'
                   required:
                     - address
                   type: object
                 parcel:
-                  $ref: "#/components/schemas/parcel.schema"
+                  $ref: '#/components/schemas/parcel.schema'
               required:
                 - origin
                 - destination
@@ -2151,7 +2106,7 @@ paths:
               type: object
         required: true
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -2159,7 +2114,7 @@ paths:
                   rates:
                     description: Available shipping rates
                     items:
-                      $ref: "#/components/schemas/shipment-rate.schema"
+                      $ref: '#/components/schemas/shipment-rate.schema'
                     type: array
                 required:
                   - rates
@@ -2169,7 +2124,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2183,10 +2138,10 @@ paths:
       description: Get a shipment document (label, commercial invoice, etc).
       operationId: Shipment document download
       parameters:
-        - $ref: "#/components/parameters/shipment-id.param"
-        - $ref: "#/components/parameters/document-type.param"
+        - $ref: '#/components/parameters/shipment-id.param'
+        - $ref: '#/components/parameters/document-type.param'
       responses:
-        "200":
+        '200':
           content:
             application/pdf:
               schema:
@@ -2201,7 +2156,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2209,35 +2164,34 @@ paths:
       tags:
         - Shipping
     parameters:
-      - $ref: "#/components/parameters/store-id.param"
+      - $ref: '#/components/parameters/store-id.param'
     summary: Shipment Document
   /stores/{storeId}/storefront/events:
     post:
-      description:
-        Processes events from storefronts using Shopify pixel event schema
+      description: Processes events from storefronts using Shopify pixel event schema
       operationId: Storefront Event
       parameters:
-        - $ref: "#/components/parameters/store-id.param"
+        - $ref: '#/components/parameters/store-id.param'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/storefront-event.schema"
+              $ref: '#/components/schemas/storefront-event.schema'
         required: true
       responses:
-        "204":
+        '204':
           description: Event processed successfully
-        "400":
+        '400':
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Invalid event payload
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2250,14 +2204,14 @@ paths:
       description: List webhooks for store.
       operationId: Webhooks list
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   webhooks:
                     items:
-                      $ref: "#/components/schemas/webhook-read.schema"
+                      $ref: '#/components/schemas/webhook-read.schema'
                     type: array
                 required:
                   - webhooks
@@ -2267,17 +2221,15 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       summary: List webhooks
       tags:
         - Webhooks
     parameters:
-      - $ref: "#/components/parameters/store-id.param"
+      - $ref: '#/components/parameters/store-id.param'
     post:
-      description:
-        Create webhook for store. Or if webhook already exists with
-        `externalId`, update it.
+      description: Create webhook for store. Or if webhook already exists with `externalId`, update it.
       operationId: Webhook create
       requestBody:
         content:
@@ -2285,33 +2237,33 @@ paths:
             schema:
               properties:
                 webhook:
-                  $ref: "#/components/schemas/webhook-create.schema"
+                  $ref: '#/components/schemas/webhook-create.schema'
               type: object
         required: true
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   webhook:
-                    $ref: "#/components/schemas/webhook-read.schema"
+                    $ref: '#/components/schemas/webhook-read.schema'
                 type: object
           description: Updated
-        "201":
+        '201':
           content:
             application/json:
               schema:
                 properties:
                   webhook:
-                    $ref: "#/components/schemas/webhook-read.schema"
+                    $ref: '#/components/schemas/webhook-read.schema'
                 type: object
           description: Created
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       security:
         - Bearer: []
@@ -2324,9 +2276,9 @@ paths:
       description: Delete a webhook.
       operationId: Webhook delete
       parameters:
-        - $ref: "#/components/parameters/webhook-id.param"
+        - $ref: '#/components/parameters/webhook-id.param'
       responses:
-        "204":
+        '204':
           description: Deleted
       security:
         - Bearer: []
@@ -2338,15 +2290,15 @@ paths:
       description: Get a webhook.
       operationId: Webhook get
       parameters:
-        - $ref: "#/components/parameters/webhook-id.param"
+        - $ref: '#/components/parameters/webhook-id.param'
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 properties:
                   webhook:
-                    $ref: "#/components/schemas/webhook-read.schema"
+                    $ref: '#/components/schemas/webhook-read.schema'
                 required:
                   - webhook
                 type: object
@@ -2358,26 +2310,26 @@ paths:
       description: Update a webhook.
       operationId: Webhook update
       parameters:
-        - $ref: "#/components/parameters/webhook-id.param"
+        - $ref: '#/components/parameters/webhook-id.param'
       requestBody:
         content:
           application/json:
             schema:
               properties:
                 webhook:
-                  $ref: "#/components/schemas/webhook-update.schema"
+                  $ref: '#/components/schemas/webhook-update.schema'
               required:
                 - webhook
               type: object
         required: true
       responses:
-        "204":
+        '204':
           description: Success
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       summary: Update webhook
       tags:
@@ -2386,7 +2338,7 @@ paths:
   /webhooks/{webhookId}/replay:
     description: Webhook replay.
     parameters:
-      - $ref: "#/components/parameters/webhook-id.param"
+      - $ref: '#/components/parameters/webhook-id.param'
     post:
       description: Replay a webhook.
       operationId: Webhook replay
@@ -2403,13 +2355,13 @@ paths:
               type: object
         required: true
       responses:
-        "202":
+        '202':
           description: Success
         default:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/error.schema"
+                $ref: '#/components/schemas/error.schema'
           description: Error
       summary: Replay webhook
       tags:
@@ -2419,7 +2371,6 @@ servers:
   - url: https://api.getredo.com/v2.2
 webhooks:
   return:
-    description: Return event webhook.
     post:
       operationId: Webhook return event
       requestBody:
@@ -2434,11 +2385,11 @@ webhooks:
                   title: At
                   type: string
                 order:
-                  $ref: "#/components/schemas/order-read.schema"
+                  $ref: '#/components/schemas/order-read.schema'
                   description: Order for return.
                   title: Order
                 return:
-                  $ref: "#/components/schemas/return-read.schema"
+                  $ref: '#/components/schemas/return-read.schema'
                   description: Return.
                   title: Return
                 type:
@@ -2456,11 +2407,9 @@ webhooks:
         2XX:
           description: Success. Return a 2xx status code to indicate success.
         default:
-          description:
-            Error. The event will be retried multiple times and then discarded.
+          description: Error. The event will be retried multiple times and then discarded.
       security:
         - UserBearer: []
       summary: Return event
       tags:
         - Returns
-    summary: Return event
