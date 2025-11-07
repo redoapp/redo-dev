@@ -1924,7 +1924,7 @@ paths:
           description: Redirect
       summary: Navigate to coverage info
       tags:
-        - Coverage info
+        - Coverage Info
     summary: Coverage info
   /stores/{storeId}/coverage-products:
     description: Available coverage products.
