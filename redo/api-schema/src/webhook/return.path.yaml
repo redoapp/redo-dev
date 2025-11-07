@@ -32,7 +32,7 @@ post:
       Return event webhook.
     required: true
   responses:
-    2xx:
+    "200":
       description: Success. Return a 2xx status code to indicate success.
     default:
       description:

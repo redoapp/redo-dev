@@ -1789,6 +1789,7 @@ paths:
                     description: Boilerplate checkout button HTML
                     title: Checkout buttons HTML
                     type: string
+          description: Success
       summary: Retrieve some rendered HTML and CSS for checkout buttons options for enabling and disabling coverage
       tags:
         - Checkout buttons
@@ -1949,7 +1950,7 @@ paths:
                 $ref: '#/components/schemas/error.schema'
           description: Error
       security:
-        Bearer: []
+        - Bearer: []
       summary: Get invoice
       tags:
         - Invoice
@@ -2404,7 +2405,7 @@ webhooks:
           Return event webhook.
         required: true
       responses:
-        2xx:
+        '200':
           description: Success. Return a 2xx status code to indicate success.
         default:
           description: Error. The event will be retried multiple times and then discarded.
