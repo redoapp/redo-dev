@@ -11,7 +11,7 @@ components:
       name: documentType
       required: true
       schema:
-        $ref: "#/components/schemas/shipment-document-type.schema"
+        $ref: '#/components/schemas/shipment-document-type.schema'
     invoice-id.param:
       description: Invoice ID
       in: path
@@ -117,7 +117,7 @@ components:
         postalCode:
           description: Postal or ZIP code
           examples:
-            - "12345"
+            - '12345'
           title: Postal code
           type: string
         state:
