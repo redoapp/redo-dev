@@ -1,10 +1,10 @@
 components:
   securitySchemes:
     Bearer:
-      scheme: Bearer
+      scheme: bearer
       type: http
     UserBearer:
-      scheme: Bearer
+      scheme: bearer
       type: http
 info:
   contact:

@@ -1,4 +1,3 @@
-description: Return event webhook.
 post:
   operationId: "Webhook return event"
   requestBody:
@@ -42,4 +41,3 @@ post:
   summary: "Return event"
   tags:
     - Returns
-summary: "Return event"

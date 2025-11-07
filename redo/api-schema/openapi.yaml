@@ -1442,10 +1442,10 @@ components:
       type: object
   securitySchemes:
     Bearer:
-      scheme: Bearer
+      scheme: bearer
       type: http
     UserBearer:
-      scheme: Bearer
+      scheme: bearer
       type: http
 info:
   contact:
@@ -2419,7 +2419,6 @@ servers:
   - url: https://api.getredo.com/v2.2
 webhooks:
   return:
-    description: Return event webhook.
     post:
       operationId: Webhook return event
       requestBody:
@@ -2463,4 +2462,3 @@ webhooks:
       summary: Return event
       tags:
         - Returns
-    summary: Return event
