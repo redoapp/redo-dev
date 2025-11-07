@@ -5,7 +5,7 @@ Official documentation for the Redo returns and exchanges platform API. See
 
 ## Development
 
-See [Development](/DEVELOPMENT.mdx)
+See [Development](/DEVELOPMENT.md)
 
 ## Support
 
