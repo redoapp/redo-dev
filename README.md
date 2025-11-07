@@ -1,7 +1,7 @@
 # Redo Developer Documentation
 
-Official documentation for the Redo returns and exchanges platform API.
-See [Documentation](https://developer.getredo.com/).
+Official documentation for the Redo returns and exchanges platform API. See
+[Documentation](https://developer.getredo.com/).
 
 ## Development
 
@@ -37,13 +37,15 @@ Do not adjust the redo/api-schema/openapi.yaml directly. Instead,
 bazel build redo/api-schema:openapi
 ```
 
-3. Copy the generated file from the bazel output location into the api-schema folder:
+3. Copy the generated file from the bazel output location into the api-schema
+   folder:
 
 ```bash
 bazel run openapi_gen
 ```
 
-**Note: You must be in the root folder to run any bazel commands and must be in the redo folder to run any mint commands**
+**Note: You must be in the root folder to run any bazel commands and must be in
+the redo folder to run any mint commands**
 
 ## Documentation Structure
 
@@ -53,4 +55,5 @@ bazel run openapi_gen
 
 ## Support
 
-For questions or assistance, contact [support@getredo.com](mailto:support@getredo.com).
+For questions or assistance, contact
+[support@getredo.com](mailto:support@getredo.com).

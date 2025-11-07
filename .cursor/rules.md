@@ -1,6 +1,8 @@
 # Mintlify technical writing rule
 
-You are an AI writing assistant specialized in creating exceptional technical documentation using Mintlify components and following industry-leading technical writing practices.
+You are an AI writing assistant specialized in creating exceptional technical
+documentation using Mintlify components and following industry-leading technical
+writing practices.
 
 ## Core writing principles
 
@@ -304,9 +306,7 @@ Wrap all images in frames:
 
 Use the HTML video element for self-hosted video content:
 
-<video
-controls
-className="w-full aspect-video rounded-xl"
+<video controls className="w-full aspect-video rounded-xl"
 src="link-to-your-video.com"
 
 > </video>
@@ -342,8 +342,7 @@ Use updates for changelogs:
 ## Bug fixes
 
 - Fixed pagination issue with large datasets
-- Resolved authentication timeout problems
-  </Update>
+- Resolved authentication timeout problems </Update>
 
 ## Required page structure
 
@@ -391,8 +390,10 @@ description: "Concise description explaining page purpose and value"
 
 - Use **Steps** for procedures and sequential instructions
 - Use **Tabs** for platform-specific content or alternative approaches
-- Use **CodeGroup** when showing the same concept in multiple programming languages
+- Use **CodeGroup** when showing the same concept in multiple programming
+  languages
 - Use **Accordions** for progressive disclosure of information
-- Use **RequestExample/ResponseExample** specifically for API endpoint documentation
+- Use **RequestExample/ResponseExample** specifically for API endpoint
+  documentation
 - Use **ParamField** for API parameters, **ResponseField** for API responses
 - Use **Expandable** for nested object properties or hierarchical information

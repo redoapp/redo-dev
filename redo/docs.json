@@ -1,14 +1,46 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "willow",
-  "name": "Redo",
-  "openapi": "api-schema/openapi.yaml",
   "colors": {
     "primary": "#3e28ad",
     "light": "#a499dc",
     "dark": "#1b1b1b"
   },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
   "favicon": "/favicon.ico",
+  "footer": {
+    "socials": {
+      "website": "https://redo.com"
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "name": "Redo",
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@getredo.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.getredo.com"
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -52,38 +84,6 @@
       }
     ]
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:support@getredo.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.getredo.com"
-    }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
-  },
-  "footer": {
-    "socials": {
-      "website": "https://redo.com"
-    }
-  }
+  "openapi": "api-schema/openapi.yaml",
+  "theme": "willow"
 }
