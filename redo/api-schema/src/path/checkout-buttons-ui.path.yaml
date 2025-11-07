@@ -6,7 +6,6 @@ get:
     - { $ref: ../param/store-id.param.yaml }
   responses:
     "200":
-      description: Success
       content:
         application/json:
           schema:
@@ -21,6 +20,7 @@ get:
                 description: Boilerplate checkout button HTML
                 title: Checkout buttons HTML
                 type: string
+      description: Success
   summary:
     Retrieve some rendered HTML and CSS for checkout buttons options for
     enabling and disabling coverage
