@@ -1,0 +1,15 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "docs",
+    srcs = glob([
+        "**/*.mdx",
+        "**/*.md",
+        "**/*.json",
+        "**/*.svg",
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.ico",
+        "**/*.css",
+    ]),
+)

@@ -14,6 +14,11 @@ alias(
 )
 
 alias(
+    name = "docs",
+    actual = "//tools/mint",
+)
+
+alias(
     name = "openapi_gen",
     actual = "//tools/openapi:gen",
 )
