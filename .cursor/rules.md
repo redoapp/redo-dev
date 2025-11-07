@@ -342,7 +342,8 @@ Use updates for changelogs:
 ## Bug fixes
 
 - Fixed pagination issue with large datasets
-- Resolved authentication timeout problems </Update>
+- Resolved authentication timeout problems 
+</Update>
 
 ## Required page structure
 

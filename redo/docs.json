@@ -1,5 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
+  "background": {
+    "decoration": "windows"
+  },
   "colors": {
     "primary": "#FF4405",
     "light": "#FF4405",
@@ -17,15 +20,15 @@
       "vscode"
     ]
   },
-  "favicon": "/favicon.ico",
+  "favicon": "/docs/favicon.ico",
   "footer": {
     "socials": {
       "website": "https://redo.com"
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/docs/logo/light.svg",
+    "dark": "/docs/logo/dark.svg"
   },
   "name": "Redo",
   "navbar": {
@@ -45,18 +48,18 @@
     "tabs": [
       {
         "tab": "Home",
-        "pages": ["index"]
+        "pages": ["/docs/index"]
       },
       {
         "tab": "Guides",
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["guides/introduction"]
+            "pages": ["/docs/guides/introduction"]
           },
           {
             "group": "Integrations",
-            "pages": ["guides/shopify-web-components", "guides/webhooks"]
+            "pages": ["/docs/guides/shopify-web-components", "/docs/guides/webhooks"]
           }
         ]
       },
@@ -66,24 +69,21 @@
           {
             "group": "Getting Started",
             "pages": [
-              "api-reference/introduction",
-              "api-reference/authentication",
-              "api-reference/errors",
-              "api-reference/pagination",
-              "api-reference/loop-compatible-api"
+              "/docs/api-reference/introduction",
+              "/docs/api-reference/authentication",
+              "/docs/api-reference/errors",
+              "/docs/api-reference/pagination",
+              "/docs/api-reference/loop-compatible-api"
             ]
           },
           {
             "group": "Endpoints",
-            "openapi": {
-              "source": "api-schema/openapi.yaml",
-              "directory": "api-schema"
-            }
+            "openapi": { "source": "/api-schema/openapi.yaml" }
           }
         ]
       }
     ]
   },
-  "openapi": "api-schema/openapi.yaml",
+  "openapi": "/api-schema/openapi.yaml",
   "theme": "aspen"
 }
