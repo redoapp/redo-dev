@@ -32,6 +32,29 @@ A local preview of your documentation will be available at `http://localhost:300
 </Step>
 </Steps>
 
+View your local preview at `http://localhost:3000`.
+
+## Documentation Structure
+
+- **Home** - Welcome page and platform overview
+- **Guides** - Integration guides with code examples
+- **API Reference** - Complete API documentation with endpoints
+
+## Generating OpenAPI files
+
+Do not adjust the redo/api-schema/openapi.yaml directly. Instead,
+
+<Steps>
+<Step title="Make changes to the necessary files in api-schema/src"/>
+<Step title="Build and copy the generated file from the bazel output location into the api-schema folder">
+
+```bash
+bazel run openapi_gen
+```
+
+</Step>
+</Steps>
+
 ## Custom ports
 
 By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. For example, to run Mintlify on port 3333, use this command:
@@ -61,14 +84,6 @@ The CLI can assist with validating links in your documentation. To identify any 
 ```bash
 mint broken-links
 ```
-
-## Deployment
-
-If the deployment is successful, you should see the following:
-
-<Frame>
-  <img src="/images/checks-passed.png" alt="Screenshot of a deployment confirmation message that says All checks have passed." style={{ borderRadius: '0.5rem' }} />
-</Frame>
 
 ## Code formatting
 
