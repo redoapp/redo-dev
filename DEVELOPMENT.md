@@ -1,13 +1,11 @@
----
-title: 'Development'
-description: 'Preview changes locally to update the Redo docs'
----
+# Development
 
-<Info>
-  Prerequisites:
-  - Node.js version 19 or higher
-  - A docs repository with a `docs.json` file
-</Info>
+Preview changes locally to update the Redo docs
+
+## Prerequisites
+
+- Bazel installed and configured
+- Mintlify CLI installed globally (`npm i -g mint`)
 
 ## Documentation Structure
 
@@ -15,55 +13,38 @@ description: 'Preview changes locally to update the Redo docs'
 - **Guides** - Integration guides with code examples
 - **API Reference** - Complete API documentation with endpoints
 
-Follow these steps to install and run Mintlify on your operating system.
+## Preview Documentation Locally
 
-<Steps>
-<Step title="Install the Mintlify CLI">
-
-```bash
-npm i -g mint
-```
-</Step>
-
-<Step title="Preview locally">
-
-Navigate to your docs directory where your `docs.json` file is located, and run the following command:
+Run the following command from the repository root to start the Mintlify development server:
 
 ```bash
-mint dev
+bazel run docs
 ```
 
 A local preview of your documentation will be available at `http://localhost:3000`.
 
-</Step>
-</Steps>
-
 ## Generating OpenAPI files
 
-Do not adjust the redo/api-schema/openapi.yaml directly. Instead,
+Do not adjust the redo/api-schema/openapi.yaml directly. Instead:
 
-<Steps>
-<Step title="Make changes to the necessary files in api-schema/src"/>
-<Step title="Build and copy the generated file from the bazel output location into the api-schema folder">
+1. Make changes to the necessary files in api-schema/src
+2. Build and copy the generated file from the bazel output location into the api-schema folder:
 
 ```bash
 bazel run openapi_gen
 ```
-
-</Step>
-</Steps>
 
 ## Custom ports
 
 By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. For example, to run Mintlify on port 3333, use this command:
 
 ```bash
-mint dev --port 3333
+bazel run docs -- --port 3333
 ```
 
 If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
 
-```md
+```
 Port 3000 is already in use. Trying 3001 instead.
 ```
 
@@ -72,13 +53,13 @@ Port 3000 is already in use. Trying 3001 instead.
 Please note that each CLI release is associated with a specific version of Mintlify. If your local preview does not align with the production version, please update the CLI:
 
 ```bash
-npm mint update
+npm update -g mint
 ```
 
 ## Verify the OpenAPI file is valid to the OpenAPI specification
 
 ```bash
-mint validate-openapi redo/api-schema/openapi.yaml
+bazel run docs -- openapi-check redo/api-schema/openapi.yaml
 ```
 
 ## Validating links
@@ -86,7 +67,7 @@ mint validate-openapi redo/api-schema/openapi.yaml
 The CLI can assist with validating links in your documentation. To identify any broken links, use the following command:
 
 ```bash
-mint broken-links
+bazel run docs -- broken-links
 ```
 
 ## Code formatting
@@ -95,19 +76,18 @@ We suggest using extensions on your IDE to recognize and format MDX. If you're a
 
 ## Troubleshooting
 
-<AccordionGroup>
-  <Accordion title='Error: Could not load the "sharp" module using the darwin-arm64 runtime'>
+### Error: Could not load the "sharp" module using the darwin-arm64 runtime
 
-    This may be due to an outdated version of node. Try the following:
-    1. Remove the currently-installed version of the CLI: `npm remove -g mint`
-    2. Upgrade to Node v19 or higher.
-    3. Reinstall the CLI: `npm i -g mint`
-  </Accordion>
+This may be due to an outdated version of node. Try the following:
 
-  <Accordion title="Issue: Encountering an unknown error">
-  
-    Solution: Go to the root of your device and delete the `~/.mintlify` folder. Then run `mint dev` again.
-  </Accordion>
-</AccordionGroup>
+1. Remove the currently-installed version of the CLI: `npm remove -g mint`
+2. Upgrade to Node v19 or higher.
+3. Reinstall the CLI: `npm i -g mint`
+
+### Issue: Encountering an unknown error
+
+Solution: Go to the root of your device and delete the `~/.mintlify` folder. Then run `bazel run docs` again.
+
+---
 
 Curious about what changed in the latest CLI version? Check out the [CLI changelog](https://www.npmjs.com/package/mintlify?activeTab=versions).
