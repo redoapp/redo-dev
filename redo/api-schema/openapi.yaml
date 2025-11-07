@@ -2405,7 +2405,7 @@ webhooks:
           Return event webhook.
         required: true
       responses:
-        '200':
+        2XX:
           description: Success. Return a 2xx status code to indicate success.
         default:
           description: Error. The event will be retried multiple times and then discarded.
