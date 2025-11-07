@@ -1,0 +1,89 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "colors": {
+    "primary": "#3e28ad",
+    "light": "#a499dc",
+    "dark": "#1b1b1b"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "favicon": "/favicon.ico",
+  "footer": {
+    "socials": {
+      "website": "https://redo.com"
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "name": "Redo",
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@getredo.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.getredo.com"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Home",
+        "pages": ["index"]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["guides/introduction"]
+          },
+          {
+            "group": "Integrations",
+            "pages": ["guides/shopify-web-components", "guides/webhooks"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/errors",
+              "api-reference/pagination",
+              "api-reference/loop-compatible-api"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "openapi": {
+              "source": "api-schema/openapi.yaml",
+              "directory": "api-schema"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "openapi": "api-schema/openapi.yaml",
+  "theme": "willow"
+}

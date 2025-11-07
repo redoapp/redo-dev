@@ -1,0 +1,170 @@
+---
+title: 'Shopify Web Components'
+description: 'Integrate Redo returns coverage on your Shopify product pages'
+icon: 'shopify'
+---
+
+## Overview
+
+Redo optionally provides free return shipping to customers that purchase the Redo Shopify product with their order.
+
+To enable customers to purchase returns coverage, Redo offers frontend integration via [Web Components custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
+
+## Functionality
+
+Redo displays a checkbox on the product detail page. Redo's backend merchant configuration can optionally exclude certain customers or products.
+
+When the customer adds a product to the cart and the Redo checkbox is enabled, the Redo product is also added to the cart.
+
+<Info>
+  Only one Redo product should be added to the cart. Once it has been added to the cart, the checkbox is hidden.
+</Info>
+
+## Installation
+
+Add the following script to your Shopify theme:
+
+```html
+<script
+  async
+  src="https://shopify-extension.getredo.com/web-components.js?widget_id=<widget_id>"
+></script>
+```
+
+The parameter `widget_id` is an alphanumeric identifier corresponding to your merchant account.
+
+## Elements
+
+### redo-shopify-checkbox
+
+The `<redo-shopify-checkbox>` element displays a checkbox that allows customers to add returns coverage to their cart.
+
+#### Attributes
+
+<ParamField path="context-product-id" type="string">
+  Sets the contextProductId property. ID of the current product being viewed.
+</ParamField>
+
+<ParamField path="customer-id" type="string">
+  Sets the customerId property. ID of the currently logged-in customer.
+</ParamField>
+
+<ParamField path="in-cart" type="boolean">
+  Sets the inCart property. Whether Redo coverage is already in the cart.
+</ParamField>
+
+#### Properties
+
+<ResponseField name="contextProductId" type="number | undefined">
+  ID of the current product. Defaults to `undefined`.
+</ResponseField>
+
+<ResponseField name="customerId" type="number | undefined">
+  ID of the current customer. Defaults to `undefined`.
+</ResponseField>
+
+<ResponseField name="inCart" type="boolean">
+  Whether Redo coverage is in the cart. Defaults to `false`.
+</ResponseField>
+
+<ResponseField name="value" type="boolean | undefined">
+  Selected state of the checkbox (read-only). Returns `undefined` if not initialized.
+</ResponseField>
+
+<ResponseField name="variantId" type="number | undefined">
+  ID of the Redo product variant (read-only). Returns `undefined` if not initialized.
+</ResponseField>
+
+#### Events
+
+<ResponseField name="init" type="Event">
+  Fired when Redo has finished initializing.
+</ResponseField>
+
+<ResponseField name="change" type="Event">
+  Fired when the checkbox value changes after initialization.
+</ResponseField>
+
+## Integration Guide
+
+<Steps>
+  <Step title="Install the Redo script">
+    Add the Web Components script to your Shopify theme with your `widget_id`.
+  </Step>
+
+  <Step title="Add the checkbox element">
+    Place `<redo-shopify-checkbox></redo-shopify-checkbox>` on your product page, typically underneath the "Add to Cart" button.
+  </Step>
+
+  <Step title="Specify context (optional)">
+    Set the `context-product-id` and `customer-id` attributes to provide product and customer context.
+  </Step>
+
+  <Step title="Handle initialization">
+    Listen for the `init` event to check if the Redo variant is already in the cart.
+  </Step>
+
+  <Step title="Handle cart additions">
+    When a product is added to the cart, check the checkbox value and add the Redo product if selected.
+  </Step>
+
+  <Step title="Maintain cart state">
+    Update the `inCart` property to reflect whether Redo coverage is in the cart.
+  </Step>
+</Steps>
+
+## Example Implementation
+
+<Note>
+  This example is representative. You may prefer different patterns for integrating with your UI framework.
+</Note>
+
+### HTML
+
+```html
+<script
+  async
+  src="https://shopify-extension.getredo.com/web-component.js?widget_id=<widget_id>"
+></script>
+
+<button id="add-to-cart" type="button">Add to Cart</button>
+
+<redo-shopify-checkbox
+  context-product-id="123"
+  customer-id="456"
+  id="redo"
+></redo-shopify-checkbox>
+```
+
+### JavaScript
+
+```javascript
+const addToCart = document.getElementById("add-to-cart");
+const redo = document.getElementById("redo");
+
+const redoInCart = (cart) => {
+  return cart.items.some((item) => item.variantId == redo.variantId);
+};
+
+redo.addEventListener("init", async (e) => {
+  const cart = await getCart();
+  redo.inCart = redoInCart(cart);
+});
+
+addToCart.addEventListener("click", async () => {
+  const cart = await getCart();
+  cart.items.push({
+    quantity: selectedQuantity(),
+    variantId: selectedVariantId(),
+  });
+  if (redo.value && !redoInCart(cart)) {
+    cart.items.push({ quantity: 1, variantId: redo.variantId });
+    redo.inCart = true;
+  }
+  await setCart(cart);
+});
+```
+
+## Demo Repository
+
+For complete working examples, see our [demo repository on GitHub](https://github.com/redoapp/redo-examples).

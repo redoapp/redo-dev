@@ -22,7 +22,7 @@ get:
           schema: { $ref: ../schema/error.schema.yaml }
       description: Error
   security:
-    Bearer: []
+    - Bearer: []
   summary: Get invoice
   tags: [Invoice]
 summary: Invoice
