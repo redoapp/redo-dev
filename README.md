@@ -5,23 +5,7 @@ Official documentation for the Redo returns and exchanges platform API. See
 
 ## Development
 
-Install the Mintlify CLI:
-
-```bash
-npm i -g mint
-```
-
-CD into the root Mintlify folder
-
-```bash
-cd redo
-```
-
-Run the development server:
-
-```bash
-mint dev
-```
+See [Development]()
 
 View your local preview at `http://localhost:3000`.
 
