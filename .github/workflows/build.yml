@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Install Mintlify CLI
+        run: npm install -g mintlify
       - name: Set up
         uses: ./.github/actions/setup
         with:
