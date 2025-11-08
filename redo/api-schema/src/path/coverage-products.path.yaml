@@ -76,5 +76,5 @@ post:
           schema: { $ref: ../schema/error.schema.yaml }
       description: Error
   summary: Get coverage products
-  tags: [Coverage Products]
+  tags: [Coverage products]
 summary: Coverage products

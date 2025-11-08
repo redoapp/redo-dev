@@ -36,7 +36,7 @@ Content-Type: application/json
 
 ## Creating a Webhook Subscription
 
-Use the [Create Webhook endpoint](/api-reference/webhooks-list) to subscribe to events:
+Use the Create Webhook endpoint to subscribe to events:
 
 ```bash
 POST https://api.getredo.com/v2.2/stores/{storeId}/webhooks
@@ -185,7 +185,7 @@ Return events notify you when returns are created or updated in your store.
 </ResponseField>
 
 <ResponseField name="return" type="object">
-  Complete return object. See the [Returns API reference](/api-reference/return-get) for full schema.
+  Complete return object. See the Returns API reference for full schema.
 </ResponseField>
 
 <ResponseField name="order" type="object">
@@ -275,7 +275,7 @@ Return events notify you when returns are created or updated in your store.
 
 ### Replay Events
 
-You can replay webhook events using the [Webhook Replay endpoint](/api-reference/webhook-replay):
+You can replay webhook events using the Webhook Replay endpoint:
 
 ```bash
 POST https://api.getredo.com/v2.2/webhooks/{webhookId}/replay

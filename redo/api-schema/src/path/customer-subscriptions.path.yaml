@@ -49,5 +49,5 @@ post:
     - Bearer: []
   summary: Update customer subscriptions
   tags:
-    - Customer Subscriptions
+    - Customer subscriptions
 summary: Customer subscriptions

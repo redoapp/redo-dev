@@ -1,0 +1,12 @@
+load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+sh_binary(
+    name = "mint",
+    data = [
+        "//redo:docs.json",
+        "//redo/docs",
+    ],
+    main = "mint.sh",
+)
