@@ -7,6 +7,6 @@ get:
   responses:
     "302":
       description: Redirect
-  summary: Navigate to coverage info
-  tags: [Coverage info]
+  summary: Navigate to Coverage Info
+  tags: [Coverage Info]
 summary: Coverage info

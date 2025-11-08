@@ -19,7 +19,7 @@ get:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
       description: Error
-  summary: List webhooks
+  summary: List Webhooks
   tags: [Webhooks]
 parameters:
   - { $ref: ../param/store-id.param.yaml }
@@ -60,6 +60,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Create or update webhook
+  summary: Create or Update Webhook
   tags: [Webhooks]
 summary: Webhooks

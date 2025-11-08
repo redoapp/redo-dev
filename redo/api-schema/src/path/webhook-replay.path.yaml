@@ -23,6 +23,6 @@ post:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
       description: Error
-  summary: Replay webhook
+  summary: Replay Webhook
   tags: [Webhooks]
 summary: Webhook replay

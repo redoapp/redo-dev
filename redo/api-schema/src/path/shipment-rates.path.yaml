@@ -49,6 +49,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Get shipping rates
+  summary: Shipping Rates
   tags: [Shipping]
 summary: Shipment Rates

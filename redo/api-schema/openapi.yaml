@@ -1599,9 +1599,9 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Get pending invoice
+      summary: Pending Invoice (CSV)
       tags:
-        - Invoice
+        - Invoices
     summary: Pending invoice
   /invoices/{invoiceId}/items.csv:
     description: Return invoice CSV file.
@@ -1626,9 +1626,9 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Get invoice
+      summary: Invoice (CSV)
       tags:
-        - Invoice
+        - Invoices
     summary: Invoice
   /returns/{returnId}:
     description: Return.
@@ -1658,7 +1658,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Get return
+      summary: Return
       tags:
         - Returns
     parameters:
@@ -1685,7 +1685,7 @@ paths:
                   - comments
                 type: object
           description: Success
-      summary: List return comments
+      summary: List Return Comments
       tags:
         - Returns
     parameters:
@@ -1724,7 +1724,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Create return comment
+      summary: Create Return Comment
       tags:
         - Returns
     summary: Return comment
@@ -1806,7 +1806,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Process return
+      summary: Process Return
       tags:
         - Returns
     summary: Process return
@@ -1837,7 +1837,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Get return status
+      summary: Return Status
       tags:
         - Returns
     put:
@@ -1867,7 +1867,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Update return status
+      summary: Update Return Status
       tags:
         - Returns
     summary: Return status
@@ -1881,14 +1881,14 @@ paths:
       responses:
         '302':
           description: Redirect
-      summary: Navigate to merchant admin
+      summary: Navigate to Merchant Admin
       tags:
-        - Merchant admin
+        - Merchant Admin
     summary: Merchant admin
   /stores/{storeId}/checkout-buttons-ui:
-    description: Generate HTML and CSS for checkout buttons
+    description: Generate HTML and CSS for checkout buttons to enable or disable returns coverage.
     get:
-      description: Generate HTML and CSS for checkout buttons
+      description: Generate rendered HTML and CSS for checkout buttons.
       operationId: Checkout buttons UI
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -1907,10 +1907,9 @@ paths:
                     title: Checkout buttons HTML
                     type: string
           description: Success
-      summary: Retrieve some rendered HTML and CSS for checkout buttons options for enabling and disabling coverage
+      summary: Checkout Buttons UI
       tags:
-        - Checkout buttons
-        - UI
+        - Checkout Buttons
     summary: Checkout buttons UI
   /stores/{storeId}/coverage-info:
     description: Navigate to the coverage info page.
@@ -1922,9 +1921,9 @@ paths:
       responses:
         '302':
           description: Redirect
-      summary: Navigate to coverage info
+      summary: Navigate to Coverage Info
       tags:
-        - Coverage info
+        - Coverage Info
     summary: Coverage info
   /stores/{storeId}/coverage-products:
     description: Available coverage products.
@@ -2011,9 +2010,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/error.schema'
           description: Error
-      summary: Get coverage products
+      summary: Coverage Products
       tags:
-        - Coverage products
+        - Coverage Products
     summary: Coverage products
   /stores/{storeId}/customer-portal:
     description: Navigate to the customer portal.
@@ -2035,9 +2034,9 @@ paths:
       responses:
         '302':
           description: Redirect
-      summary: Navigate to customer portal
+      summary: Navigate to Customer Portal
       tags:
-        - Customer portal
+        - Customer Portal
     summary: Customer portal
   /stores/{storeId}/customer-subscriptions:
     description: Update customer subscription preferences for marketing and transactional messages.
@@ -2084,9 +2083,9 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Update customer subscriptions
+      summary: Update Customer Subscriptions
       tags:
-        - Customer subscriptions
+        - Customer Subscriptions
     summary: Customer subscriptions
   /stores/{storeId}/invoices:
     description: Return a list of invoices.
@@ -2117,9 +2116,9 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Get invoice
+      summary: List Invoices
       tags:
-        - Invoice
+        - Invoices
     summary: Invoice
   /stores/{storeId}/returns:
     description: List of returns for store.
@@ -2163,7 +2162,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: List returns
+      summary: List Returns
       tags:
         - Returns
     parameters:
@@ -2235,7 +2234,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Purchase shipping label
+      summary: Purchase Shipping Label
       tags:
         - Shipping
     summary: Shipment Buy
@@ -2296,7 +2295,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Get shipping rates
+      summary: Shipping Rates
       tags:
         - Shipping
     summary: Shipment Rates
@@ -2328,7 +2327,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Download shipment document
+      summary: Download Shipment Document
       tags:
         - Shipping
     parameters:
@@ -2363,7 +2362,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Receive storefront events
+      summary: Receive Storefront Events
       tags:
         - Storefront
   /stores/{storeId}/webhooks:
@@ -2391,7 +2390,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/error.schema'
           description: Error
-      summary: List webhooks
+      summary: List Webhooks
       tags:
         - Webhooks
     parameters:
@@ -2435,7 +2434,7 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Create or update webhook
+      summary: Create or Update Webhook
       tags:
         - Webhooks
     summary: Webhooks
@@ -2450,7 +2449,7 @@ paths:
           description: Deleted
       security:
         - Bearer: []
-      summary: Delete webhook
+      summary: Delete Webhook
       tags:
         - Webhooks
     description: Webhook.
@@ -2471,7 +2470,7 @@ paths:
                   - webhook
                 type: object
           description: Success
-      summary: Get webhook
+      summary: Webhook
       tags:
         - Webhooks
     put:
@@ -2499,7 +2498,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/error.schema'
           description: Error
-      summary: Update webhook
+      summary: Update Webhook
       tags:
         - Webhooks
     summary: Webhook
@@ -2531,7 +2530,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/error.schema'
           description: Error
-      summary: Replay webhook
+      summary: Replay Webhook
       tags:
         - Webhooks
     summary: Webhook replay

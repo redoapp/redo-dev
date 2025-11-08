@@ -19,6 +19,6 @@ get:
       description: Error
   security:
     - Bearer: []
-  summary: Get invoice
+  summary: Invoice (CSV)
   tags: [Invoices]
 summary: Invoice

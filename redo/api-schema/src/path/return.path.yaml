@@ -20,7 +20,7 @@ get:
       description: Error
   security:
     - Bearer: []
-  summary: Get return
+  summary: Return
   tags: [Returns]
 parameters:
   - { $ref: ../param/return-id.param.yaml }

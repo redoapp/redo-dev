@@ -27,6 +27,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Receive storefront events
+  summary: Receive Storefront Events
   tags:
     - Storefront

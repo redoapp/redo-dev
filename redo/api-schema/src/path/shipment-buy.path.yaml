@@ -55,6 +55,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Purchase shipping label
+  summary: Purchase Shipping Label
   tags: [Shipping]
 summary: Shipment Buy

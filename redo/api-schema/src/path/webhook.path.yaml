@@ -8,7 +8,7 @@ delete:
       description: Deleted
   security:
     - Bearer: []
-  summary: Delete webhook
+  summary: Delete Webhook
   tags: [Webhooks]
 description: Webhook.
 get:
@@ -26,7 +26,7 @@ get:
             required: [webhook]
             type: object
       description: Success
-  summary: Get webhook
+  summary: Webhook
   tags: [Webhooks]
 put:
   description: Update a webhook.
@@ -50,6 +50,6 @@ put:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
       description: Error
-  summary: Update webhook
+  summary: Update Webhook
   tags: [Webhooks]
 summary: Webhook

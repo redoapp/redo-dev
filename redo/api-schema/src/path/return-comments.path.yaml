@@ -16,7 +16,7 @@ get:
             required: [comments]
             type: object
       description: Success
-  summary: List return comments
+  summary: List Return Comments
   tags: [Returns]
 parameters:
   - { $ref: ../param/return-id.param.yaml }
@@ -49,6 +49,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Create return comment
+  summary: Create Return Comment
   tags: [Returns]
 summary: Return comment

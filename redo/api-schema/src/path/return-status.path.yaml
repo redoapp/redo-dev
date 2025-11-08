@@ -21,7 +21,7 @@ get:
       description: Error
   security:
     - Bearer: []
-  summary: Get return status
+  summary: Return Status
   tags: [Returns]
 put:
   description: Update return status.
@@ -47,6 +47,6 @@ put:
       description: Error
   security:
     - Bearer: []
-  summary: Update return status
+  summary: Update Return Status
   tags: [Returns]
 summary: Return status
