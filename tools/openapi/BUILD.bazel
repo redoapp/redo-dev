@@ -9,6 +9,12 @@ sh_binary(
     main = "gen.sh",
 )
 
+sh_test(
+    name = "validate_test",
+    srcs = ["validate.sh"],
+    data = ["//redo/api-schema:openapi"],
+)
+
 nodejs_binary(
     name = "openapi_typescript",
     dep = "@redotech_redodev_npm//openapi-typescript:lib",

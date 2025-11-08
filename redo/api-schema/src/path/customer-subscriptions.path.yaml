@@ -47,7 +47,7 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Update customer subscriptions
+  summary: Update Customer Subscriptions
   tags:
-    - Customer subscriptions
+    - Customer Subscriptions
 summary: Customer subscriptions

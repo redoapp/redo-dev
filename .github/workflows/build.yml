@@ -21,10 +21,31 @@ jobs:
           bazel-cache-key: bazel/${{ runner.os }}-${{ runner.arch }}/v2.2/build/lint
           cache-write: ${{ github.ref == 'refs/heads/release/2.2' }}
     timeout-minutes: 15
+  openapi:
+    name: Validate OpenAPI
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install Mintlify CLI
+        run: npm install -g mintlify
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          bazel-cache-key: bazel/${{ runner.os }}-${{ runner.arch }}/v2.2/build/openapi
+      - name: Test OpenAPI specification
+        run: bazel test tools/openapi:validate_test --test_output=errors
+      - if: always()
+        name: Clean up
+        uses: ./.github/actions/cleanup
+        with:
+          bazel-cache-key: bazel/${{ runner.os }}-${{ runner.arch }}/v2.2/build/openapi
+          cache-write: ${{ github.ref == 'refs/heads/release/2.2' }}
+    timeout-minutes: 15
   publish_docs:
     if: github.ref == 'refs/heads/release/2.2'
     name: Publish Docs
-    needs: [lint]
+    needs: [lint, openapi]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -52,7 +73,7 @@ jobs:
   publish_npm:
     if: github.ref == 'refs/heads/release/2.2'
     name: Publish Npm Package
-    needs: [lint]
+    needs: [lint, openapi]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo

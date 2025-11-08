@@ -17,6 +17,6 @@ get:
       description: Error
   security:
     - Bearer: []
-  summary: Get pending invoice
-  tags: [Invoice]
+  summary: Pending Invoice (CSV)
+  tags: [Invoices]
 summary: Pending invoice

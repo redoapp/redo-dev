@@ -7,6 +7,6 @@ get:
   responses:
     "302":
       description: Redirect
-  summary: Navigate to merchant admin
-  tags: [Merchant admin]
+  summary: Navigate to Merchant Admin
+  tags: [Merchant Admin]
 summary: Merchant admin

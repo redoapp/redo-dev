@@ -4,16 +4,29 @@
 
 - **Build**: `bazel build //...` (all targets) or `bazel build //path/to:target`
 - **Build API Schema**: `bazel build redo/api-schema/openapi`
+- **Generate OpenAPI**: `bazel run openapi_gen` (copy generated OpenAPI to
+  source)
 - **Lint**: `bazel run //:lint` or `bazel run //tools/lint:lint`
 - **Test**: `bazel test //...` (all tests) or `bazel test //path/to:test_target`
 - **Single Test**: `bazel test //path/to:specific_test --test_output=all`
 - **YAML Lint**: `bazel run //tools/lint:yaml_lint`
 - **Prettier Lint**: `bazel run //tools/lint:prettier_lint`
+- **Documentation Server**: `bazel run docs` (start Mintlify dev server)
+- **Check Broken Links**: `bazel run docs -- broken-links`
+- **OpenAPI Validation**:
+  `bazel run docs -- openapi-check api-schema/openapi.yaml`
+- **Custom Port**: `bazel run docs -- --port 3333`
 
 ## Code Style Guidelines
 
 - **OpenAPI Schema**: Organize API definitions in `/redo/api-schema/src/` with
   proper schema references
+  - **CRITICAL**: NEVER edit `redo/api-schema/openapi.yaml` directly
+  - Always make changes in `redo/api-schema/src/` files
+  - After editing, run `bazel run openapi_gen` to update the generated OpenAPI
+    file
+  - After generation, validate with
+    `bazel run docs -- openapi-check api-schema/openapi.yaml`
 - **Naming**: Use kebab-case for file names, camelCase for properties in schemas
 - **Types**: Use TypeScript with strict typing when available
 - **Formatting**: Use Prettier for code formatting with provided configuration
@@ -82,3 +95,5 @@ configurations for the Redo API.
 - Use absolute URLs for internal links
 - Include untested code examples
 - Make assumptions - always ask for clarification
+- **NEVER edit `redo/api-schema/openapi.yaml` directly** - always edit source
+  files in `redo/api-schema/src/` and run `bazel run openapi_gen`

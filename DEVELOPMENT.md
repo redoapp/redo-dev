@@ -67,7 +67,7 @@ npm update -g mint
 ## Verify the OpenAPI file is valid to the OpenAPI specification
 
 ```bash
-bazel run docs -- openapi-check redo/api-schema/openapi.yaml
+bazel run docs -- openapi-check api-schema/openapi.yaml
 ```
 
 ## Validating links

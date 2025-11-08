@@ -24,7 +24,7 @@ get:
       description: Error
   security:
     - Bearer: []
-  summary: Download shipment document
+  summary: Download Shipment Document
   tags: [Shipping]
 parameters:
   - { $ref: ../param/store-id.param.yaml }

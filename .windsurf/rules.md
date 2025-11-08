@@ -7,6 +7,40 @@
 - Navigation is configured in `docs.json`
 - We follow technical writing best practices
 
+## Project-specific commands
+
+### Bazel commands
+
+- `bazel build //...` - Build all targets
+- `bazel run openapi_gen` - Generate OpenAPI file from source (use after editing
+  API schema)
+- `bazel run //:lint` - Run all linters
+- `bazel run docs` - Start Mintlify dev server for documentation preview
+- `bazel run docs -- broken-links` - Check for broken documentation links
+- `bazel run docs -- openapi-check api-schema/openapi.yaml` - Validate OpenAPI
+  spec
+- `bazel run docs -- --port 3333` - Run docs server on custom port
+
+### OpenAPI editing workflow
+
+**CRITICAL**: NEVER edit `redo/api-schema/openapi.yaml` directly.
+
+The proper workflow is:
+
+1. Make changes in `redo/api-schema/src/` files (paths, schemas, params,
+   headers)
+2. Run `bazel run openapi_gen` to regenerate the OpenAPI file
+3. Validate the generated file with
+   `bazel run docs -- openapi-check api-schema/openapi.yaml`
+4. The generated `openapi.yaml` will be automatically updated
+
+File structure in `redo/api-schema/src/`:
+
+- `path/` - API endpoint definitions
+- `schema/` - Object schemas
+- `param/` - Parameter definitions
+- `header/` - Header definitions
+
 ## Writing standards
 
 - Use second person ("you") for instructions

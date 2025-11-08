@@ -23,6 +23,6 @@ get:
       description: Error
   security:
     - Bearer: []
-  summary: Get invoice
-  tags: [Invoice]
+  summary: List Invoices
+  tags: [Invoices]
 summary: Invoice
