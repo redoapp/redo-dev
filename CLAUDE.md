@@ -4,7 +4,8 @@
 
 - **Build**: `bazel build //...` (all targets) or `bazel build //path/to:target`
 - **Build API Schema**: `bazel build redo/api-schema/openapi`
-- **Generate OpenAPI**: `bazel run openapi_gen` (copy generated OpenAPI to source)
+- **Generate OpenAPI**: `bazel run openapi_gen` (copy generated OpenAPI to
+  source)
 - **Lint**: `bazel run //:lint` or `bazel run //tools/lint:lint`
 - **Test**: `bazel test //...` (all tests) or `bazel test //path/to:test_target`
 - **Single Test**: `bazel test //path/to:specific_test --test_output=all`
@@ -12,7 +13,8 @@
 - **Prettier Lint**: `bazel run //tools/lint:prettier_lint`
 - **Documentation Server**: `bazel run docs` (start Mintlify dev server)
 - **Check Broken Links**: `bazel run docs -- broken-links`
-- **OpenAPI Validation**: `bazel run docs -- openapi-check api-schema/openapi.yaml`
+- **OpenAPI Validation**:
+  `bazel run docs -- openapi-check api-schema/openapi.yaml`
 - **Custom Port**: `bazel run docs -- --port 3333`
 
 ## Code Style Guidelines
