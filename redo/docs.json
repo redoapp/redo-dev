@@ -23,7 +23,8 @@
   "favicon": "/docs/favicon.ico",
   "footer": {
     "socials": {
-      "website": "https://redo.com"
+      "website": "https://redo.com",
+      "linkedin": "https://www.linkedin.com/company/redo-tech"
     }
   },
   "logo": {
@@ -34,14 +35,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:support@getredo.com"
+        "label": "Dashboard",
+        "href": "https://app.getredo.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.getredo.com"
+      "label": "Get a Demo",
+      "href": "https://redo.com/en/demo"
     }
   },
   "navigation": {

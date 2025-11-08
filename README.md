@@ -6,8 +6,3 @@ Official documentation for the Redo returns and exchanges platform API. See
 ## Development
 
 See [Development](/DEVELOPMENT.md)
-
-## Support
-
-For questions or assistance, contact
-[support@getredo.com](mailto:support@getredo.com).
