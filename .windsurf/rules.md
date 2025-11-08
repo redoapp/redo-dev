@@ -30,7 +30,9 @@ The proper workflow is:
 1. Make changes in `redo/api-schema/src/` files (paths, schemas, params,
    headers)
 2. Run `bazel run openapi_gen` to regenerate the OpenAPI file
-3. The generated `openapi.yaml` will be automatically updated
+3. Validate the generated file with
+   `bazel run docs -- openapi-check redo/api-schema/openapi.yaml`
+4. The generated `openapi.yaml` will be automatically updated
 
 File structure in `redo/api-schema/src/`:
 

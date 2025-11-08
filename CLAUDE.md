@@ -23,6 +23,8 @@
   - Always make changes in `redo/api-schema/src/` files
   - After editing, run `bazel run openapi_gen` to update the generated OpenAPI
     file
+  - After generation, validate with
+    `bazel run docs -- openapi-check redo/api-schema/openapi.yaml`
 - **Naming**: Use kebab-case for file names, camelCase for properties in schemas
 - **Types**: Use TypeScript with strict typing when available
 - **Formatting**: Use Prettier for code formatting with provided configuration
