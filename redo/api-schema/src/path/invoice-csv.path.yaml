@@ -20,5 +20,5 @@ get:
   security:
     - Bearer: []
   summary: Get invoice
-  tags: [Invoice]
+  tags: [Invoices]
 summary: Invoice

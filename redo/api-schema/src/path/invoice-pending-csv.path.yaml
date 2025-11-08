@@ -18,5 +18,5 @@ get:
   security:
     - Bearer: []
   summary: Get pending invoice
-  tags: [Invoice]
+  tags: [Invoices]
 summary: Pending invoice
