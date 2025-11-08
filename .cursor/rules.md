@@ -14,8 +14,8 @@ writing practices.
 - `bazel run //:lint` - Run all linters
 - `bazel run docs` - Start Mintlify dev server for documentation preview
 - `bazel run docs -- broken-links` - Check for broken documentation links
-- `bazel run docs -- openapi-check redo/api-schema/openapi.yaml` - Validate
-  OpenAPI spec
+- `bazel run docs -- openapi-check api-schema/openapi.yaml` - Validate OpenAPI
+  spec
 - `bazel run docs -- --port 3333` - Run docs server on custom port
 
 ### OpenAPI editing workflow
@@ -28,7 +28,7 @@ The proper workflow is:
    headers)
 2. Run `bazel run openapi_gen` to regenerate the OpenAPI file
 3. Validate the generated file with
-   `bazel run docs -- openapi-check redo/api-schema/openapi.yaml`
+   `bazel run docs -- openapi-check api-schema/openapi.yaml`
 4. The generated `openapi.yaml` will be automatically updated
 
 File structure in `redo/api-schema/src/`:

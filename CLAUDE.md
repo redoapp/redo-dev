@@ -12,7 +12,7 @@
 - **Prettier Lint**: `bazel run //tools/lint:prettier_lint`
 - **Documentation Server**: `bazel run docs` (start Mintlify dev server)
 - **Check Broken Links**: `bazel run docs -- broken-links`
-- **OpenAPI Validation**: `bazel run docs -- openapi-check redo/api-schema/openapi.yaml`
+- **OpenAPI Validation**: `bazel run docs -- openapi-check api-schema/openapi.yaml`
 - **Custom Port**: `bazel run docs -- --port 3333`
 
 ## Code Style Guidelines
@@ -24,7 +24,7 @@
   - After editing, run `bazel run openapi_gen` to update the generated OpenAPI
     file
   - After generation, validate with
-    `bazel run docs -- openapi-check redo/api-schema/openapi.yaml`
+    `bazel run docs -- openapi-check api-schema/openapi.yaml`
 - **Naming**: Use kebab-case for file names, camelCase for properties in schemas
 - **Types**: Use TypeScript with strict typing when available
 - **Formatting**: Use Prettier for code formatting with provided configuration
