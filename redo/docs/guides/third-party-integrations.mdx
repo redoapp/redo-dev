@@ -17,7 +17,7 @@ Follow this flowchart to determine your integration path:
 ```mermaid
 flowchart TD
     A[Start Integration] --> B{Are you on a<br/>supported platform?}
-    B -->|No| C["Contact support for your custom integration"]
+    B -->|No| C["See our Custom Integration Guide"]
     C --> E
     B -->|Yes| D[Standard RMA Creation]
     D --> E{Do you need to create an RMA in an external system?}
@@ -29,23 +29,31 @@ flowchart TD
     I -->|No| K["Contact support"]
 
 
+    click C "/docs/guides/custom-integration"
     click H "https://app.getredo.com"
     click J "/docs/api-reference/loop-compatible-api"
 
     classDef clickable stroke:#FF4405,stroke-width:2px
     classDef transparent fill:transparent
-    class H,J clickable
+    class C,H,J clickable
     class A,B,C,D,E,F,G,H,I,J,K transparent
 ```
 
 ## Integration Paths Explained
 
-### Manual RMA Creation
+### Custom Integration
 
 If you're not using a supported platform like Shopify, CommentSold, or
-BigCommerce, contact our support team at
-[support@redo.com](mailto:support@redo.com) for assistance with setting up your
-integration
+BigCommerce, you can use our Custom Integration API to sync orders
+programmatically.
+
+<Card
+  title="Custom Integration Guide"
+  icon="code"
+  href="/docs/guides/custom-integration"
+>
+  Learn how to sync orders to Redo using our custom orders endpoint
+</Card>
 
 ### Supported Integrations
 
@@ -118,6 +126,6 @@ provides compatibility endpoints to minimize redevelopment work.
 ## Need Help?
 
 If you're unsure which integration path is right for you, contact our support
-team at [support@redo.com](mailto:support@redo.com) or check our
+team at [support@getredo.com](mailto:support@getredo.com) or check our
 [API Reference](/docs/api-reference/introduction) for detailed endpoint
 documentation.

@@ -63,7 +63,8 @@
             "pages": [
               "/docs/guides/shopify-web-components",
               "/docs/guides/webhooks",
-              "/docs/guides/third-party-integrations"
+              "/docs/guides/third-party-integrations",
+              "/docs/guides/custom-integration"
             ]
           }
         ]
