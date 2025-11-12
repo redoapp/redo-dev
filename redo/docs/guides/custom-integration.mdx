@@ -29,14 +29,14 @@ Use the custom integration orders endpoint when:
 
 ```mermaid
 flowchart TD
-    A[Order Created in Your System] --> B[Transform Order Data]
+    A[Order created/updated in your system] --> B[Transform order data]
     B --> C[POST to endpoint]
-    C --> D{Order Valid?}
-    D -->|Yes| E[Order Synced to Redo]
-    D -->|No| F[Error Response]
-    F --> G[Fix Validation Issues]
+    C --> D{Order valid?}
+    D -->|Yes| E[Order synced to Redo]
+    D -->|No| F[Error response]
+    F --> G[Fix validation issues]
     G --> C
-    E --> H[Customer Can Initiate Returns]
+    E --> H[Customer can initiate returns]
 
     classDef transparent fill:transparent
     class A,B,C,D,E,F,G,H transparent
@@ -364,8 +364,8 @@ must conform to this schema for successful synchronization.
 
 <Steps>
   <Step title="Get API Credentials">
-    Contact [support@redo.com](mailto:support@redo.com) to receive your API key
-    and endpoint URL
+    Contact [support@getredo.com](mailto:support@getredo.com) to receive your
+    API key and endpoint URL
   </Step>
   <Step title="Map Your Order Data">
     Transform your order data to match the required schema
@@ -383,6 +383,6 @@ must conform to this schema for successful synchronization.
 
 If you have questions about implementing this integration or need assistance
 with schema validation, contact our support team at
-[support@redo.com](mailto:support@redo.com) or check our
+[support@getredo.com](mailto:support@getredo.com) or check our
 [API Reference](/docs/api-reference/introduction) for additional endpoint
 documentation.
