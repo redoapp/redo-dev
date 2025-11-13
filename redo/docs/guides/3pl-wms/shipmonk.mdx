@@ -12,11 +12,13 @@ ShipMonk is a tech-enabled third-party logistics (3PL) provider offering compreh
 
 **Primary Purpose:** ShipMonk delivers end-to-end fulfillment services for e-commerce brands, combining warehousing, inventory management, order processing, and shipping with advanced technology for real-time visibility. Their platform integrates with major e-commerce platforms and provides multi-channel fulfillment capabilities for businesses that need reliable 3PL services.
 
+The platform integrates through TrackStar for standardized connectivity with returns management platforms and other e-commerce tools, ensuring seamless data flow across your tech stack.
+
 ## What Does the Integration Do?
 
-When a customer initiates a return, Redo automatically creates a Return Merchandise Authorization (RMA) in ShipMonk's system, notifying the warehouse that items are being returned. This ensures your fulfillment team knows exactly what's coming back, when to expect it, and how to process the returned items efficiently.
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in ShipMonk, notifying the warehouse that items are being returned. This ensures your fulfillment team knows exactly what's coming back, when to expect it, and how to process the returned items efficiently, with all the information they need available immediately.
 
-Products are mapped using SKUs, returns are linked to original orders for accurate tracking, and shipping information (carrier and tracking number) is sent to the warehouse to help staff identify and match incoming returns. Return reasons and processing instructions are included to guide warehouse staff on how to handle each return—whether items should be restocked, inspected for damage, or processed differently. The integration supports multiple ShipMonk fulfillment centers and multiple shipments per return, giving you flexibility as your business scales across different warehouse locations.
+Products are mapped using SKUs, returns are linked to original orders for accurate tracking, and shipping information (carrier, service, tracking number) is sent to the warehouse to help staff identify and match incoming returns. Return reasons and processing instructions are transmitted to guide warehouse staff on how to handle each return—whether items should be restocked, inspected for damage, or processed differently. The integration supports multiple ShipMonk fulfillment centers and multiple shipments per return, giving you flexibility as your business scales across different warehouse locations.
 
 ## How to Set It Up
 
@@ -31,8 +33,8 @@ Before you begin, ensure you have:
 You must have an active account with ShipMonk as your 3PL provider with fulfillment services enabled.
 </Accordion>
 
-<Accordion title="ShipMonk API Credentials" icon="key">
-You'll need your ShipMonk API key and Store ID to connect ShipMonk to Redo.
+<Accordion title="TrackStar Access Token" icon="key">
+You'll need a TrackStar access token to connect ShipMonk to Redo.
 
 [Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
 </Accordion>
@@ -44,47 +46,35 @@ Your products and orders must already be synced to ShipMonk, typically through y
 <Accordion title="Warehouse Information" icon="warehouse">
 Know which ShipMonk fulfillment center(s) handle your inventory and returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
 </Accordion>
-
-<Accordion title="Product Data Alignment" icon="database">
-Ensure your product SKUs in Redo match the SKUs configured in ShipMonk's inventory system. Products must exist in ShipMonk's inventory master before returns can be synced successfully.
-</Accordion>
 </AccordionGroup>
 
 ### Configuration Steps
 
 <Steps>
 <Step title="Navigate to Integrations">
-1. Log in to your Redo merchant dashboard
-2. Go to **Settings** > **Returns & Claims** > **Integrations**
-3. Locate the **"ShipMonk"** card in the list of available integrations
+Go to **Settings** > **Returns & Claims** > **Integrations** and locate the **"TrackStar"** card.
 </Step>
 
-<Step title="Initiate Connection">
-Click the **Connect** button on the ShipMonk integration card.
+<Step title="Select ShipMonk">
+Click **Connect** on the TrackStar card and select **"ShipMonk"** from the WMS provider list.
 </Step>
 
-<Step title="Enter Required Information">
-In the configuration form, provide the following information:
-
-<ParamField path="apiKey" type="string" required>
-Your ShipMonk API key for authentication. Keep this credential secure and never share it publicly.
+<Step title="Enter Connection Details">
+Input your TrackStar access token to connect your ShipMonk account.
 
 [Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
-</ParamField>
-
-<ParamField path="storeId" type="string" required>
-Your ShipMonk Store ID that identifies your account in the ShipMonk system.
-
-[Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
-</ParamField>
-
-<ParamField path="sandboxMode" type="boolean" default="false">
-Enable this checkbox if you're connecting to a ShipMonk sandbox/test environment. Leave unchecked for production environments.
-</ParamField>
 </Step>
 
-<Step title="Save Configuration">
-Review all settings carefully and click **Save** or **Connect**.
+<Step title="Configure Shipping Location">
+Link your shipping location to the TrackStar warehouse:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your ShipMonk fulfillment center
+3. Click to edit the location
+4. In the **TrackStar Warehouse ID** field, enter your TrackStar warehouse identifier
+5. Save the changes
+
+This ensures returns are routed to the correct ShipMonk fulfillment center based on where the original order was shipped from.
 </Step>
 
 <Step title="Test the Integration">
@@ -93,8 +83,7 @@ Create a test return to verify the integration is working correctly:
 1. Initiate a test return through your Redo return portal
 2. Generate a return shipping label
 3. Check the return timeline in the Redo dashboard for a ShipMonk RMA creation entry
-4. Log in to ShipMonk to verify the RMA was created with correct order linkage, products, quantities, and tracking information
-5. Confirm the warehouse received notification of the incoming return
+4. Verify the RMA appears in ShipMonk with correct order linkage, products, quantities, and tracking information
 </Step>
 </Steps>
 
@@ -102,51 +91,29 @@ Create a test return to verify the integration is working correctly:
 
 ### Setup Timeline
 
-<CardGroup cols={2}>
-<Card title="Initial Setup" icon="clock">
-**10-20 minutes**
+| Step               | Time              | Description                                          |
+| ------------------ | ----------------- | ---------------------------------------------------- |
+| Initial Connection | 2-5 minutes       | OAuth authentication with ShipMonk through TrackStar |
+| First Return Test  | 5-10 minutes      | Create test return and verify RMA in ShipMonk        |
+| **Total Setup**    | **10-15 minutes** | Complete setup for most merchants                    |
 
-Time to gather API credentials, warehouse identifiers, and configure the integration settings in Redo.
-</Card>
-
-<Card title="RMA Creation" icon="bolt">
-**Real-time (1-3 seconds)**
-
-RMAs are created within seconds of return submission when auto-process is enabled.
-</Card>
-
-<Card title="First Return Test" icon="vial">
-**5-10 minutes**
-
-Time to create a test return, generate a label, and verify the RMA appears in ShipMonk with correct details.
-</Card>
-
-<Card title="Warehouse Receiving" icon="warehouse">
-**1-3 business days**
-
-Depends on your ShipMonk fulfillment center operations and service level agreement. Items are typically scanned and marked received within 1-3 business days of physical arrival.
-</Card>
-</CardGroup>
-
-### Sync Timing Details
+### Operational Timing
 
 <Steps>
 <Step title="RMA Creation">
-RMAs are created **immediately** when a return is processed and a shipping label is generated.
-
-If auto-process is disabled, RMAs are created when returns are manually processed by your team.
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
 </Step>
 
-<Step title="Timeline Entries">
-Timeline entries appear in the Redo dashboard **immediately** when RMAs are created, providing instant visibility into the integration activity.
+<Step title="Return Status Updates">
+**Near real-time (within seconds)** via TrackStar webhooks when the warehouse scans items.
 </Step>
 
-<Step title="Receiving Status Updates">
-Receiving status updates are polled from ShipMonk on a scheduled basis and automatically update return status in Redo when items are scanned and received at the fulfillment center.
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days depending on your agreement with ShipMonk.
 </Step>
 
 <Step title="Inventory Reconciliation">
-Once ShipMonk marks items as received, the status syncs to Redo, allowing you to close out returns, trigger refunds or exchanges, and reconcile inventory across both platforms.
+**Automatically updated** in ShipMonk when items are received and inspected by warehouse staff.
 </Step>
 </Steps>
 
