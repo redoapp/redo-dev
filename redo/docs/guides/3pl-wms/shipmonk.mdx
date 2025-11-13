@@ -1,0 +1,120 @@
+---
+title: "ShipMonk Integration"
+description: "Connect ShipMonk to Redo for automated return processing and warehouse management"
+icon: "box-taped"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is ShipMonk?
+
+ShipMonk is a tech-enabled third-party logistics (3PL) provider offering comprehensive fulfillment services including warehousing, order fulfillment, inventory management, and shipping. With fulfillment centers strategically located across the United States, ShipMonk provides scalable e-commerce fulfillment solutions for growing brands.
+
+**Primary Purpose:** ShipMonk delivers end-to-end fulfillment services for e-commerce brands, combining warehousing, inventory management, order processing, and shipping with advanced technology for real-time visibility. Their platform integrates with major e-commerce platforms and provides multi-channel fulfillment capabilities for businesses that need reliable 3PL services.
+
+The platform integrates through TrackStar for standardized connectivity with returns management platforms and other e-commerce tools, ensuring seamless data flow across your tech stack.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in ShipMonk, notifying the warehouse that items are being returned. This ensures your fulfillment team knows exactly what's coming back, when to expect it, and how to process the returned items efficiently, with all the information they need available immediately.
+
+Products are mapped using SKUs, returns are linked to original orders for accurate tracking, and shipping information (carrier, service, tracking number) is sent to the warehouse to help staff identify and match incoming returns. Return reasons and processing instructions are transmitted to guide warehouse staff on how to handle each return—whether items should be restocked, inspected for damage, or processed differently. The integration supports multiple ShipMonk fulfillment centers and multiple shipments per return, giving you flexibility as your business scales across different warehouse locations.
+
+## How to Set It Up
+
+Follow these steps to configure the ShipMonk integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active ShipMonk Account" icon="circle-check">
+You must have an active account with ShipMonk as your 3PL provider with fulfillment services enabled.
+</Accordion>
+
+<Accordion title="TrackStar Access Token" icon="key">
+You'll need a TrackStar access token to connect ShipMonk to Redo.
+
+[Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
+</Accordion>
+
+<Accordion title="Products and Orders Synced to ShipMonk" icon="box">
+Your products and orders must already be synced to ShipMonk, typically through your e-commerce platform (Shopify, BigCommerce, etc.) or order management system (OMS). Returns cannot be created for products or orders that don't exist in ShipMonk's system.
+</Accordion>
+
+<Accordion title="Warehouse Information" icon="warehouse">
+Know which ShipMonk fulfillment center(s) handle your inventory and returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** and locate the **"TrackStar"** card.
+</Step>
+
+<Step title="Select ShipMonk">
+Click **Connect** on the TrackStar card and select **"ShipMonk"** from the WMS provider list.
+</Step>
+
+<Step title="Enter Connection Details">
+Input your TrackStar access token to connect your ShipMonk account.
+
+[Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
+</Step>
+
+<Step title="Configure Shipping Location">
+Link your shipping location to the TrackStar warehouse:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your ShipMonk fulfillment center
+3. Click to edit the location
+4. In the **TrackStar Warehouse ID** field, enter your TrackStar warehouse identifier
+5. Save the changes
+
+This ensures returns are routed to the correct ShipMonk fulfillment center based on where the original order was shipped from.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Check the return timeline in the Redo dashboard for a ShipMonk RMA creation entry
+4. Verify the RMA appears in ShipMonk with correct order linkage, products, quantities, and tracking information
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                          |
+| ------------------ | ----------------- | ---------------------------------------------------- |
+| Initial Connection | 2-5 minutes       | OAuth authentication with ShipMonk through TrackStar |
+| First Return Test  | 5-10 minutes      | Create test return and verify RMA in ShipMonk        |
+| **Total Setup**    | **10-15 minutes** | Complete setup for most merchants                    |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Status Updates">
+**Near real-time (within seconds)** via TrackStar webhooks when the warehouse scans items.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days depending on your agreement with ShipMonk.
+</Step>
+
+<Step title="Inventory Reconciliation">
+**Automatically updated** in ShipMonk when items are received and inspected by warehouse staff.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="ShipMonk" />
