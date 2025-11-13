@@ -1,0 +1,166 @@
+---
+title: "CloudX/Bergen Logistics Integration"
+description: "Connect CloudX/Bergen Logistics to Redo for automated return processing and warehouse management"
+icon: "warehouse"
+---
+
+## What is CloudX/Bergen Logistics?
+
+CloudX is a warehouse management system (WMS) operated by Bergen Logistics, designed to streamline warehouse operations, inventory management, and receiving processes for e-commerce businesses.
+
+**Primary Purpose:** CloudX provides comprehensive warehouse management capabilities, enabling efficient order fulfillment, inventory tracking, and receiving operations for businesses that use third-party fulfillment centers (3PLs) for warehousing and logistics.
+
+## What Does the Integration Do?
+
+The Redo-CloudX integration automates the returns process by creating Advanced Shipping Notices (ASNs) in CloudX when customers initiate returns through Redo. This ensures your warehouse is prepared to receive and process returned items efficiently.
+
+When a customer initiates a return, Redo automatically creates ASNs in CloudX, notifying the warehouse that a return is incoming. Each return shipment is tracked with a CloudX receiving ticket, and products are mapped to CloudX's item master using either SKU or barcode (UPC) for proper inventory reconciliation. The integration supports multiple shipments per return and routes returns to the correct warehouse location.
+
+## How to Set It Up
+
+Follow these steps to configure the CloudX/Bergen Logistics integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active CloudX/Bergen Logistics Account" icon="circle-check">
+You must have an active account with Bergen Logistics and access to the CloudX platform.
+</Accordion>
+
+<Accordion title="API Credentials" icon="key">
+Obtain your CloudX API client secret. Contact your Bergen Logistics account manager or CloudX support to receive your API credentials.
+</Accordion>
+
+<Accordion title="Warehouse Code" icon="warehouse">
+Know your warehouse code/identifier from your CloudX setup. This is typically provided during your CloudX onboarding.
+</Accordion>
+
+<Accordion title="Product Data Alignment" icon="database">
+Ensure your product SKUs or barcodes in Redo match CloudX's item master. Products must exist in CloudX before returns can be synced.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"CloudX/Bergen Logistics"** card in the list of available integrations
+</Step>
+
+<Step title="Initiate Connection">
+Click the **Connect** button on the CloudX integration card.
+</Step>
+
+<Step title="Enter Required Information">
+In the configuration form, provide the following information:
+
+<ParamField path="clientSecret" type="string" required>
+Your CloudX API authentication token (client secret). Keep this credential secure and never share it publicly.
+</ParamField>
+
+<ParamField path="warehouseCode" type="string" required>
+The warehouse identifier (plain string format) where returns should be routed. This should match your CloudX warehouse code exactly.
+
+**Example:** `BERGEN-NJ-01`
+</ParamField>
+
+<ParamField path="upcType" type="enum" required>
+Choose how products are identified in CloudX:
+
+- **`SKU`** - Use product SKU for mapping (recommended for most use cases)
+- **`Barcode`** - Use product barcode/UPC for mapping
+</ParamField>
+
+<ParamField path="testMode" type="boolean" default="false">
+Enable for testing without affecting production warehouse operations. When enabled, receiving tickets are created with type "Test" instead of "Return".
+</ParamField>
+
+<ParamField path="autoProcessReturns" type="boolean" default="true">
+When enabled, Redo will automatically sync the status of ASNs from CloudX and either flag or process your returns based on the ASN status automatically.
+
+If disabled, you will need to manually process returns based on CloudX receiving status.
+</ParamField>
+
+<ParamField path="excludedSalesChannels" type="array">
+(Optional) Specify Shopify sales channel apps to exclude from CloudX sync. Use this if certain sales channels should not route returns to this warehouse.
+
+**Example:** `["Amazon", "eBay"]`
+</ParamField>
+</Step>
+
+<Step title="Save Configuration">
+Review all settings carefully and click **Save** or **Connect**.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Check the return timeline in the Redo dashboard for a CloudX ASN creation entry
+4. Log in to CloudX to verify the receiving ticket was created
+5. Confirm the ASN contains the correct products, quantities, and tracking information
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+<CardGroup cols={2}>
+<Card title="Initial Setup" icon="clock">
+**10-15 minutes**
+
+Time to gather API credentials, warehouse codes, and configure the integration settings in Redo.
+</Card>
+
+<Card title="ASN Creation" icon="bolt">
+**Real-time (seconds)**
+
+ASNs are created within seconds of return submission when auto-process is enabled.
+</Card>
+
+<Card title="First Return Test" icon="vial">
+**5-10 minutes**
+
+Time to create a test return, generate a label, and verify the ASN appears in CloudX.
+</Card>
+
+<Card title="Warehouse Receiving" icon="warehouse">
+**Varies by warehouse**
+
+Depends on your warehouse operations. Items are typically scanned and marked received when they physically arrive at the warehouse.
+</Card>
+</CardGroup>
+
+### Sync Timing Details
+
+<Steps>
+<Step title="ASN Creation">
+ASNs are created **immediately** when a return is processed and a shipping label is generated.
+
+If auto-process is disabled, ASNs are created when returns are manually processed by your team.
+</Step>
+
+<Step title="Timeline Entries">
+Timeline entries appear in the Redo dashboard **immediately** when ASNs are created, providing instant visibility into the integration activity.
+</Step>
+
+<Step title="Receiving Status Updates">
+Receiving ticket status updates are polled from CloudX on a scheduled basis and automatically update return status in Redo.
+</Step>
+
+<Step title="Inventory Reconciliation">
+Once CloudX marks items as received, the status syncs to Redo, allowing you to close out returns and reconcile inventory.
+</Step>
+</Steps>
+
+## Support
+
+For issues with the Redo integration configuration, return processing, or data synchronization, contact **support@getredo.com**.
+
+For issues with CloudX access, API credentials, warehouse operations, or receiving tickets, contact your Bergen Logistics account manager or CloudX support team.
