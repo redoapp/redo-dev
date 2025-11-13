@@ -1,0 +1,177 @@
+---
+title: "ShipMonk Integration"
+description: "Connect ShipMonk to Redo for automated return processing and warehouse management"
+icon: "box-taped"
+---
+
+## What is ShipMonk?
+
+ShipMonk is a tech-enabled third-party logistics (3PL) provider offering comprehensive fulfillment services including warehousing, order fulfillment, inventory management, and shipping. With fulfillment centers strategically located across the United States, ShipMonk provides scalable e-commerce fulfillment solutions for growing brands.
+
+**Primary Purpose:** ShipMonk delivers end-to-end fulfillment services for e-commerce brands, combining warehousing, inventory management, order processing, and shipping with advanced technology for real-time visibility. Their platform integrates with major e-commerce platforms and provides multi-channel fulfillment capabilities for businesses that need reliable 3PL services.
+
+## What Does the Integration Do?
+
+When a customer initiates a return, Redo automatically creates a Return Merchandise Authorization (RMA) in ShipMonk's system, notifying the warehouse that items are being returned. This ensures your fulfillment team knows exactly what's coming back, when to expect it, and how to process the returned items efficiently.
+
+Products are mapped using SKUs, returns are linked to original orders for accurate tracking, and shipping information (carrier and tracking number) is sent to the warehouse to help staff identify and match incoming returns. Return reasons and processing instructions are included to guide warehouse staff on how to handle each return—whether items should be restocked, inspected for damage, or processed differently. The integration supports multiple ShipMonk fulfillment centers and multiple shipments per return, giving you flexibility as your business scales across different warehouse locations.
+
+## How to Set It Up
+
+Follow these steps to configure the ShipMonk integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active ShipMonk Account" icon="circle-check">
+You must have an active account with ShipMonk as your 3PL provider with fulfillment services enabled.
+</Accordion>
+
+<Accordion title="ShipMonk API Credentials" icon="key">
+Obtain your ShipMonk API key and credentials. Contact your ShipMonk account manager or access your API credentials through the ShipMonk platform settings under Integrations or API Access.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to ShipMonk" icon="box">
+Your products and orders must already be synced to ShipMonk, typically through your e-commerce platform (Shopify, BigCommerce, etc.) or order management system (OMS). Returns cannot be created for products or orders that don't exist in ShipMonk's system.
+</Accordion>
+
+<Accordion title="Warehouse Information" icon="warehouse">
+Know which ShipMonk fulfillment center(s) handle your inventory and returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+
+<Accordion title="Product Data Alignment" icon="database">
+Ensure your product SKUs in Redo match the SKUs configured in ShipMonk's inventory system. Products must exist in ShipMonk's inventory master before returns can be synced successfully.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"ShipMonk"** card in the list of available integrations
+</Step>
+
+<Step title="Initiate Connection">
+Click the **Connect** button on the ShipMonk integration card.
+</Step>
+
+<Step title="Enter Required Information">
+In the configuration form, provide the following information:
+
+<ParamField path="apiKey" type="string" required>
+Your ShipMonk API key for authentication. Keep this credential secure and never share it publicly.
+</ParamField>
+
+<ParamField path="warehouseId" type="string" required>
+The ShipMonk warehouse/fulfillment center identifier where returns should be routed. If you use multiple fulfillment centers, you can configure this per shipping location.
+
+**Example:** `SM-LAX-01` or `SM-NJ-02`
+</ParamField>
+
+<ParamField path="autoProcessReturns" type="boolean" default="true">
+When enabled, Redo will automatically sync the status of RMAs from ShipMonk and either flag or process your returns based on the receiving status automatically.
+
+If disabled, you will need to manually process returns based on ShipMonk receiving status.
+</ParamField>
+
+<ParamField path="notifyWarehouse" type="boolean" default="true">
+When enabled, ShipMonk will send notifications to warehouse staff when new RMAs are created, ensuring visibility into incoming returns.
+</ParamField>
+
+<ParamField path="testMode" type="boolean" default="false">
+Enable for testing without affecting production warehouse operations. When enabled, RMAs are created with a test flag and won't trigger actual warehouse workflows.
+</ParamField>
+
+<ParamField path="includeReturnInstructions" type="boolean" default="true">
+When enabled, detailed return processing instructions (refund, restock, exchange, etc.) are included in the RMA sent to ShipMonk.
+</ParamField>
+</Step>
+
+<Step title="Configure Shipping Locations">
+Link your shipping locations to ShipMonk warehouses:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your ShipMonk fulfillment center
+3. Click to edit the location
+4. In the **ShipMonk Warehouse ID** field, enter your ShipMonk fulfillment center identifier
+5. Save the changes
+
+This ensures returns are routed to the correct ShipMonk fulfillment center based on where the original order was shipped from.
+</Step>
+
+<Step title="Save Configuration">
+Review all settings carefully and click **Save** or **Connect**.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Check the return timeline in the Redo dashboard for a ShipMonk RMA creation entry
+4. Log in to ShipMonk to verify the RMA was created with correct order linkage, products, quantities, and tracking information
+5. Confirm the warehouse received notification of the incoming return
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+<CardGroup cols={2}>
+<Card title="Initial Setup" icon="clock">
+**10-20 minutes**
+
+Time to gather API credentials, warehouse identifiers, and configure the integration settings in Redo.
+</Card>
+
+<Card title="RMA Creation" icon="bolt">
+**Real-time (1-3 seconds)**
+
+RMAs are created within seconds of return submission when auto-process is enabled.
+</Card>
+
+<Card title="First Return Test" icon="vial">
+**5-10 minutes**
+
+Time to create a test return, generate a label, and verify the RMA appears in ShipMonk with correct details.
+</Card>
+
+<Card title="Warehouse Receiving" icon="warehouse">
+**1-3 business days**
+
+Depends on your ShipMonk fulfillment center operations and service level agreement. Items are typically scanned and marked received within 1-3 business days of physical arrival.
+</Card>
+</CardGroup>
+
+### Sync Timing Details
+
+<Steps>
+<Step title="RMA Creation">
+RMAs are created **immediately** when a return is processed and a shipping label is generated.
+
+If auto-process is disabled, RMAs are created when returns are manually processed by your team.
+</Step>
+
+<Step title="Timeline Entries">
+Timeline entries appear in the Redo dashboard **immediately** when RMAs are created, providing instant visibility into the integration activity.
+</Step>
+
+<Step title="Receiving Status Updates">
+Receiving status updates are polled from ShipMonk on a scheduled basis and automatically update return status in Redo when items are scanned and received at the fulfillment center.
+</Step>
+
+<Step title="Inventory Reconciliation">
+Once ShipMonk marks items as received, the status syncs to Redo, allowing you to close out returns, trigger refunds or exchanges, and reconcile inventory across both platforms.
+</Step>
+</Steps>
+
+## Support
+
+For issues with the Redo integration configuration, return processing, or data synchronization, contact **support@getredo.com**.
+
+For issues with ShipMonk access, API credentials, warehouse operations, or fulfillment center operations, contact your ShipMonk account manager or ShipMonk support team.
