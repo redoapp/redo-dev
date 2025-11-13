@@ -70,6 +70,7 @@
                 "root": "/docs/guides/3pl-wms/overview",
                 "pages": [
                   "/docs/guides/3pl-wms/overview",
+                  "/docs/guides/3pl-wms/cloudx",
                   "/docs/guides/3pl-wms/netsuite",
                   "/docs/guides/3pl-wms/shipbob"
                 ]
