@@ -32,7 +32,9 @@ You must have an active account with ShipMonk as your 3PL provider with fulfillm
 </Accordion>
 
 <Accordion title="ShipMonk API Credentials" icon="key">
-Obtain your ShipMonk API key and credentials. Contact your ShipMonk account manager or access your API credentials through the ShipMonk platform settings under Integrations or API Access.
+You'll need your ShipMonk API key and Store ID to connect ShipMonk to Redo.
+
+[Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
 </Accordion>
 
 <Accordion title="Products and Orders Synced to ShipMonk" icon="box">
@@ -66,43 +68,19 @@ In the configuration form, provide the following information:
 
 <ParamField path="apiKey" type="string" required>
 Your ShipMonk API key for authentication. Keep this credential secure and never share it publicly.
+
+[Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
 </ParamField>
 
-<ParamField path="warehouseId" type="string" required>
-The ShipMonk warehouse/fulfillment center identifier where returns should be routed. If you use multiple fulfillment centers, you can configure this per shipping location.
+<ParamField path="storeId" type="string" required>
+Your ShipMonk Store ID that identifies your account in the ShipMonk system.
 
-**Example:** `SM-LAX-01` or `SM-NJ-02`
+[Where to find these credentials?](https://trackstar.notion.site/ShipMonk-24123f01d8d2801db81fc01790177ed7)
 </ParamField>
 
-<ParamField path="autoProcessReturns" type="boolean" default="true">
-When enabled, Redo will automatically sync the status of RMAs from ShipMonk and either flag or process your returns based on the receiving status automatically.
-
-If disabled, you will need to manually process returns based on ShipMonk receiving status.
+<ParamField path="sandboxMode" type="boolean" default="false">
+Enable this checkbox if you're connecting to a ShipMonk sandbox/test environment. Leave unchecked for production environments.
 </ParamField>
-
-<ParamField path="notifyWarehouse" type="boolean" default="true">
-When enabled, ShipMonk will send notifications to warehouse staff when new RMAs are created, ensuring visibility into incoming returns.
-</ParamField>
-
-<ParamField path="testMode" type="boolean" default="false">
-Enable for testing without affecting production warehouse operations. When enabled, RMAs are created with a test flag and won't trigger actual warehouse workflows.
-</ParamField>
-
-<ParamField path="includeReturnInstructions" type="boolean" default="true">
-When enabled, detailed return processing instructions (refund, restock, exchange, etc.) are included in the RMA sent to ShipMonk.
-</ParamField>
-</Step>
-
-<Step title="Configure Shipping Locations">
-Link your shipping locations to ShipMonk warehouses:
-
-1. Go to **Settings** > **Shipping Locations**
-2. Find the shipping location that corresponds to your ShipMonk fulfillment center
-3. Click to edit the location
-4. In the **ShipMonk Warehouse ID** field, enter your ShipMonk fulfillment center identifier
-5. Save the changes
-
-This ensures returns are routed to the correct ShipMonk fulfillment center based on where the original order was shipped from.
 </Step>
 
 <Step title="Save Configuration">
