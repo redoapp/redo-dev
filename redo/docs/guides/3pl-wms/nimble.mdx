@@ -1,0 +1,133 @@
+---
+title: "Nimble Integration"
+description:
+  "Connect Nimble to Redo for automated return processing and warehouse
+  management"
+icon: "bolt"
+---
+
+## What is Nimble?
+
+Nimble is a modern warehouse management system (WMS) designed for e-commerce
+fulfillment, providing real-time inventory management and order processing
+capabilities. Built with modern technology, Nimble helps businesses scale their
+fulfillment operations efficiently.
+
+**Primary Purpose:** Nimble delivers streamlined warehouse operations and
+fulfillment for e-commerce brands using Nimble as their 3PL provider, with a
+focus on technology-driven logistics that adapt to growing business needs.
+
+The platform integrates through Trackstar for standardized connectivity with
+returns management platforms and other e-commerce tools, ensuring seamless data
+flow across your tech stack.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically
+creates an RMA (Return Merchandise Authorization) in Nimble, notifying the
+warehouse that items are being returned. This ensures your warehouse is prepared
+to receive and process returned items efficiently, with all the information they
+need available immediately.
+
+Products are mapped using SKUs, returns are linked to original Shopify orders,
+and tracking information (carrier, service, tracking number) is sent to the
+warehouse. Return reasons are transmitted to help warehouse staff understand why
+items were returned, enabling better decision-making about restocking or
+inspection. The integration includes Redo's return status and platform
+information for full traceability. Supports multiple warehouses and multiple
+shipments per return.
+
+## How to Set It Up
+
+Follow these steps to configure the Nimble integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Nimble Warehouse Account" icon="circle-check">
+You must have an active account with Nimble as your 3PL provider.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to Nimble" icon="box">
+  Your products and orders must already be synced to Nimble, typically through
+  your order management system (OMS) or Shopify integration. Returns cannot be
+  created for products or orders that don't exist in Nimble.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+  You need administrative access to your Redo merchant dashboard to configure
+  integrations.
+</Accordion>
+
+<Accordion title="Warehouse Location Information" icon="warehouse">
+Know which warehouse location(s) handle your returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** and locate the **"TrackStar"** card.
+</Step>
+
+<Step title="Select Nimble">
+  Click **Connect** on the TrackStar card and select **"Nimble"** from the WMS
+  provider list.
+</Step>
+
+<Step title="Enter Connection Details">
+  Input the necessary information and credentials to connect your Nimble account.
+</Step>
+
+<Step title="Configure Shipping Location">
+  Go to **Settings** > **Shipping Locations**, edit your warehouse location, and
+  add your TrackStar Warehouse ID.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return, generate a shipping label, and verify the RMA appears in Nimble with correct order details, products, tracking information, and return reasons.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                        |
+| ------------------ | ----------------- | -------------------------------------------------- |
+| Initial Connection | 2-5 minutes       | OAuth authentication with Nimble through Trackstar |
+| First Return Test  | 5-10 minutes      | Create test return and verify RMA in Nimble        |
+| **Total Setup**    | **10-15 minutes** | Complete setup for most merchants                  |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Status Updates">
+  **Near real-time (within seconds)** via Trackstar webhooks when the warehouse
+  scans items.
+</Step>
+
+<Step title="Warehouse Processing">
+  **Varies by warehouse SLA**, typically 1-3 business days from when items
+  arrive at the facility.
+</Step>
+
+<Step title="Inventory Updates">
+**Automatically updated** in Nimble when items are received and inspected by warehouse staff.
+</Step>
+</Steps>
+
+## Support
+
+For issues with the Redo integration configuration, return processing, or data
+synchronization, contact **support@getredo.com**.
+
+For issues with Nimble access, API credentials, or warehouse operations, contact
+your Nimble account manager or support team.
