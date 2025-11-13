@@ -70,6 +70,65 @@ configurations for the Redo API.
 - title: Clear, descriptive page title
 - description: Concise summary for SEO/navigation
 
+## Snippets
+
+Mintlify snippets are reusable content blocks stored in `redo/snippets/` (at the
+same level as `docs.json`). Use snippets to avoid duplicating content across
+multiple pages.
+
+### Integration Support Snippet
+
+When creating or updating 3PL/WMS integration guides, ALWAYS use the
+`integration-support.mdx` snippet for the Support section at the end of the
+page. This ensures consistency across all integration documentation.
+
+**Usage:**
+
+1. Import the snippet at the top of the MDX file (after frontmatter):
+
+```mdx
+---
+title: "Provider Integration"
+description: "Description"
+icon: "bolt"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+;
+```
+
+2. Use the snippet at the end of the page with the `integrationProvider` prop:
+
+```mdx
+<IntegrationSupport integrationProvider="[Provider Name]" />
+```
+
+The snippet will automatically generate a standardized support message using the
+provider name you pass in.
+
+**Complete Example:**
+
+```mdx
+---
+title: "Nimble Integration"
+description: "Connect Nimble to Redo"
+icon: "bolt"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Nimble?
+
+...
+
+## How to Set It Up
+
+...
+
+<IntegrationSupport integrationProvider="Nimble" />
+```
+
 ## Writing standards
 
 - Second-person voice ("you")
