@@ -1,0 +1,82 @@
+---
+title: "BlueBox Integration"
+description: "Connect BlueBox WMS to Redo for automated return processing"
+icon: "box-open"
+---
+
+## What is BlueBox/IDF?
+
+BlueBox is a warehouse management system (WMS) developed by IDF (I Drive Fulfillment), a fulfillment services provider. IDF offers end-to-end fulfillment solutions including warehousing, order processing, and inventory management through their BlueBox WMS platform.
+
+## What Does the Integration Do?
+
+The BlueBox integration automates your return workflow by connecting Redo directly to your BlueBox WMS:
+
+**Automatic RMA Creation** When a customer initiates a return through Redo, an RMA is automatically created in BlueBox with all the necessary details—customer information, SKUs, quantities, return reasons, and processing instructions.
+
+**Automatic Return Processing** When items are physically received in your BlueBox warehouse, the system notifies Redo, which automatically triggers the appropriate return processing:
+- **Refunds**: Issued back to the customer's original payment method
+- **Exchanges**: New orders created and sent to your fulfillment queue
+- **Store credit**: Applied to the customer's account
+
+This eliminates manual data entry and ensures your warehouse team and customer service team are always in sync.
+
+## How to Set It Up
+
+Follow these steps to connect BlueBox to your Redo account:
+
+<Steps>
+  <Step title="Navigate to Integrations Settings">
+    In your Redo dashboard, go to **Settings** → **Returns & Claims** → **Integrations**
+  </Step>
+  <Step title="Find the TrackStar Integration Tile">
+    Locate the TrackStar integration tile in your integrations list:
+
+    ![TrackStar Integration Tile](/docs/images/integrations/trackstar-tile.png)
+  </Step>
+  <Step title="Click Connect">
+    Click the **Connect** button on the TrackStar integration tile. You'll be taken to the TrackStar login screen:
+
+    ![TrackStar Login Screen](/docs/images/integrations/trackstar-login.png)
+  </Step>
+  <Step title="Search for BlueBox">
+    In the search field, type "BlueBox" to find your BlueBox integration:
+
+    ![Find BlueBox](/docs/images/integrations/bluebox/find-bluebox.png)
+  </Step>
+  <Step title="Enter Your BlueBox Credentials">
+    Enter your BlueBox API credentials in the login form:
+
+    ![BlueBox Login](/docs/images/integrations/bluebox/bluebox-login.png)
+
+    You'll need to obtain these credentials from your BlueBox account administrator.
+  </Step>
+  <Step title="Complete the Connection">
+    Once credentials are entered and validated, Redo will test the connection to ensure everything is configured correctly. You'll see a confirmation once the integration is successfully connected.
+  </Step>
+  <Step title="Configure Warehouse Location">
+    Navigate to **Settings** → **Returns & Claims** → **Shipping** and locate your IDF warehouse location. Click **Edit** and enter your TrackStar Warehouse ID:
+
+    ![TrackStar Warehouse ID](/docs/images/integrations/trackstar-warehouse-id.png)
+
+    This links your Redo warehouse location to the corresponding BlueBox/TrackStar warehouse, ensuring returns are routed correctly.
+  </Step>
+</Steps>
+
+<Info>
+  If you need help obtaining your BlueBox API credentials, TrackStar Warehouse ID, or encounter any issues during setup, contact our support team at [support@getredo.com](mailto:support@getredo.com).
+</Info>
+
+## How Long Does It Take?
+
+Once we have your BlueBox API credentials, the integration typically takes **approximately 30 minutes** to configure and test. This includes:
+- Entering and validating your credentials
+- Setting up your warehouse ID
+
+## Need Help?
+
+If you have questions about the BlueBox integration or need assistance with setup, our support team is here to help.
+
+**Email:** [support@getredo.com](mailto:support@getredo.com)
+
+You can also reach out through the chat widget in your Redo dashboard.
