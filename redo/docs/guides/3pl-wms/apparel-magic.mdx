@@ -72,16 +72,10 @@ Your ApparelMagic API authentication key. This credential should be kept secure 
 Your ApparelMagic Company ID, which identifies your specific ApparelMagic account in API requests.
 </ParamField>
 
-<ParamField path="orderNameField" type="string" required>
-The field name in ApparelMagic that stores the order identifier (typically the Shopify order name). This allows Redo to locate the correct invoice in ApparelMagic.
-
-**Common values:** `order_number`, `external_id`, `reference_number`
-</ParamField>
-
 <ParamField path="inventoryItemSkuField" type="string" required>
 The field name in ApparelMagic that stores the product SKU. This ensures products are correctly matched between systems.
 
-**Common values:** `sku`, `item_code`, `style_number`
+**Common values:** `sku_alt`, `style_concat`
 </ParamField>
 </Step>
 
@@ -93,10 +87,9 @@ Review all settings carefully and click **Save** or **Connect**.
 Create a test return to verify the integration is working correctly:
 
 1. Initiate a test return through your Redo return portal for a single-order return
-2. Generate a return shipping label
-3. Check the return timeline in Redo for an ApparelMagic RA creation entry
-4. Log in to ApparelMagic to verify the Return Authorization was created
-5. Confirm the RA contains the correct products, quantities, and references the original invoice
+2. Check the return timeline in Redo for an ApparelMagic RA creation entry
+3. Log in to ApparelMagic to verify the Return Authorization was created
+4. Confirm the RA contains the correct products, quantities, and references the original invoice
 </Step>
 </Steps>
 
@@ -115,7 +108,7 @@ Create a test return to verify the integration is working correctly:
 
 <Steps>
 <Step title="RA Creation">
-**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+**Real-time (1-3 seconds)** after return is submitted
 </Step>
 
 <Step title="Inventory Lookup">
@@ -131,16 +124,6 @@ Once the RA is created in ApparelMagic, your team can process the physical retur
 </Step>
 </Steps>
 
-## Important Limitations
-
-<Warning>
-The ApparelMagic integration currently supports **single-order returns only**. If a customer's return references multiple orders, the integration will skip creating an RA in ApparelMagic, and you will need to process this return manually.
-</Warning>
-
-<Info>
-**Green Returns:** Returns where all products are being exchanged (green returns with no refund) are automatically skipped, as they don't require inventory receiving in ApparelMagic.
-</Info>
-
 ## Troubleshooting
 
 <AccordionGroup>
@@ -149,7 +132,6 @@ This error occurs when Redo cannot locate the original order/invoice in ApparelM
 
 **Solution:**
 - Verify the order exists in ApparelMagic
-- Check that your `orderNameField` configuration matches the field where ApparelMagic stores order identifiers
 - Ensure orders are being synced from your e-commerce platform to ApparelMagic correctly
 </Accordion>
 
@@ -168,14 +150,6 @@ This error means ApparelMagic reports insufficient quantity available for return
 - Review the original invoice in ApparelMagic to verify quantities
 - Check if previous returns have already been processed against this invoice
 - Contact ApparelMagic support if quantities appear incorrect
-</Accordion>
-
-<Accordion title="Multiple Order Return Not Supported">
-Returns that combine items from multiple orders cannot be synced to ApparelMagic.
-
-**Solution:**
-- Process these returns manually in both Redo and ApparelMagic
-- Consider splitting multi-order returns into separate single-order returns when possible
 </Accordion>
 </AccordionGroup>
 

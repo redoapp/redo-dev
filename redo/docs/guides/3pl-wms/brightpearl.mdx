@@ -91,17 +91,6 @@ Your Brightpearl data center URL (without the protocol).
 <ParamField path="accountId" type="string" required>
 Your Brightpearl account identifier, typically your company name or account code.
 </ParamField>
-
-<ParamField path="shopifyOrderIdField" type="string" required>
-The field in Brightpearl sales orders that stores the Shopify order ID. This field is used to locate the original sales order when creating a sales credit.
-
-**Common values:**
-- `customerRef` (most common)
-- `reference`
-- `externalRef`
-
-**Important:** This field should contain the Shopify order ID in the format `SO{order_id}` (e.g., `SO1234567890`).
-</ParamField>
 </Step>
 
 <Step title="Save Configuration">
@@ -112,10 +101,9 @@ Review all settings carefully and click **Save** or **Connect**.
 Create a test return to verify the integration is working correctly:
 
 1. Initiate a test return through your Redo return portal
-2. Generate a return shipping label
-3. Check the return timeline in Redo for a Brightpearl sales credit creation entry
-4. Log in to Brightpearl to verify the sales credit was created
-5. Confirm the sales credit:
+2. Check the return timeline in Redo for a Brightpearl sales credit creation entry
+3. Log in to Brightpearl to verify the sales credit was created
+4. Confirm the sales credit:
    - References the correct parent sales order
    - Contains accurate products, quantities, and SKUs
    - Has correct pricing and tax calculations
@@ -138,7 +126,7 @@ Create a test return to verify the integration is working correctly:
 
 <Steps>
 <Step title="Sales Credit Creation">
-**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+**Real-time (1-3 seconds)** after return is created.
 </Step>
 
 <Step title="Sales Order Lookup">
@@ -155,15 +143,6 @@ Sales credits are immediately visible in Brightpearl's sales order list and fina
 </Steps>
 
 ## Important Considerations
-
-<Info>
-**Green Returns:** Returns where all products are being exchanged (green returns with no refund) are automatically skipped, as they don't require sales credits in Brightpearl.
-</Info>
-
-<Info>
-**Duplicate Prevention:** The integration checks if a sales credit already exists for a return before attempting to create a new one, preventing duplicate credits.
-</Info>
-
 <Warning>
 **Product Matching Required:** All returned products must exist as line items on the original Brightpearl sales order with matching SKUs. If a product cannot be matched, the sales credit creation will fail.
 </Warning>
@@ -176,7 +155,6 @@ This error occurs when Redo cannot locate the original sales order in Brightpear
 
 **Solution:**
 - Verify the order exists in Brightpearl as a sales order
-- Check that your `shopifyOrderIdField` configuration is correct
 - Ensure the field in Brightpearl contains the Shopify order ID in `SO{order_id}` format
 - Confirm orders are syncing correctly from Shopify to Brightpearl
 - Check if there's a delay in order sync between Shopify and Brightpearl
@@ -196,8 +174,7 @@ This error means a product being returned doesn't exist as a line item on the or
 This message indicates a sales credit has already been created for this return.
 
 **Solution:**
-- Check the return metadata in Redo for the existing Brightpearl sales credit ID
-- Verify the sales credit in Brightpearl using the credit ID
+- Verify that the sales credit already exists for the cooresponding sales order in BrightPearl
 - If the sales credit is incorrect, delete it in Brightpearl and retry the sync from Redo
 </Accordion>
 
@@ -209,54 +186,6 @@ API credential issues prevent the integration from connecting to Brightpearl.
 - Check that your data center URL is accurate
 - Ensure your Brightpearl account has API access enabled
 - Contact Brightpearl support to verify API permissions
-</Accordion>
-</AccordionGroup>
-
-## How It Works: Technical Details
-
-<AccordionGroup>
-<Accordion title="Sales Order Lookup Process">
-When creating a sales credit, Redo:
-
-1. Takes the Shopify order ID from the return (e.g., `1234567890`)
-2. Formats it as `SO1234567890`
-3. Searches Brightpearl sales orders using the configured field (e.g., `customerRef`)
-4. Retrieves the matching sales order with all line items
-5. Extracts customer, channel, and pricing information
-</Accordion>
-
-<Accordion title="Product Line Matching">
-For each returned product:
-
-1. Redo identifies the product SKU from the return
-2. Searches the original sales order lines for a matching SKU
-3. Retrieves the product ID, tax code, and pricing from the original line
-4. Calculates the return amount based on quantity and original pricing
-5. Preserves tax codes and customer-specific pricing
-</Accordion>
-
-<Accordion title="Sales Credit Structure">
-The sales credit created in Brightpearl includes:
-
-- **Customer ID:** From the original sales order
-- **Parent Order ID:** References the original sales order
-- **Channel ID:** Same channel as the original order
-- **Reference:** Original order reference/name
-- **Credit Lines:** One line per returned product with:
-  - Product ID and SKU
-  - Quantity being returned
-  - Net amount (excluding tax)
-  - Tax amount
-  - Tax code from original order
-</Accordion>
-
-<Accordion title="Financial Calculations">
-Return totals are calculated using Redo's return totals calculator:
-
-- Product value excludes taxes and adjustments
-- Tax amounts are calculated separately
-- Values match the original transaction proportionally
-- Ensures accurate financial reconciliation
 </Accordion>
 </AccordionGroup>
 
