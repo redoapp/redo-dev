@@ -1,0 +1,120 @@
+---
+title: "Flexport Integration"
+description: "Connect Flexport to Redo for automated return processing and warehouse management"
+icon: "ship"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Flexport?
+
+Flexport is a global freight forwarder and logistics platform that provides end-to-end supply chain services, including warehousing, fulfillment, and freight forwarding for e-commerce businesses. Built on modern technology, Flexport offers visibility and control across the entire supply chain from factory to customer.
+
+**Primary Purpose:** Flexport delivers comprehensive logistics and fulfillment services for e-commerce brands, combining freight forwarding, warehousing, and last-mile delivery. The platform provides real-time inventory visibility, order fulfillment, and warehouse management capabilities for businesses that need integrated supply chain solutions.
+
+The platform integrates through TrackStar for standardized connectivity with returns management platforms and other e-commerce tools, ensuring seamless data flow across your tech stack.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in Flexport, notifying the warehouse that items are being returned. This ensures your warehouse team knows exactly what's coming back and can prepare to receive and process the items efficiently, with all the information they need available immediately.
+
+Products are mapped using SKUs, returns are linked to original orders, and tracking information (carrier, service, tracking number) is sent to the warehouse to help staff match returns to the correct shipment. Return reasons are transmitted to help warehouse staff understand why items were returned and how to process them correctly—whether items should be restocked, inspected for damage, or handled differently. The integration supports multiple Flexport fulfillment centers and multiple shipments per return, giving you flexibility as your business scales.
+
+## How to Set It Up
+
+Follow these steps to configure the Flexport integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Flexport Account" icon="circle-check">
+You must have an active Flexport account with fulfillment services enabled.
+</Accordion>
+
+<Accordion title="TrackStar Access Token" icon="key">
+You'll need a TrackStar access token to connect Flexport to Redo.
+
+[Where to find these credentials?](https://trackstar.notion.site/Flexport-Deliverr-24123f01d8d28082b415f62869e9c393)
+</Accordion>
+
+<Accordion title="Products and Orders Synced to Flexport" icon="box">
+Your products and orders must already be synced to Flexport, typically through your order management system (OMS), Shopify, or other e-commerce platform. Returns cannot be created for products or orders that don't exist in Flexport's system.
+</Accordion>
+
+<Accordion title="Warehouse Information" icon="warehouse">
+Know which Flexport fulfillment center(s) handle your inventory and returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** and locate the **"TrackStar"** card.
+</Step>
+
+<Step title="Select Flexport">
+Click **Connect** on the TrackStar card and select **"Flexport"** from the WMS provider list.
+</Step>
+
+<Step title="Enter Connection Details">
+Input your TrackStar access token to connect your Flexport account.
+
+[Where to find these credentials?](https://trackstar.notion.site/Flexport-Deliverr-24123f01d8d28082b415f62869e9c393)
+</Step>
+
+<Step title="Configure Shipping Location">
+Link your shipping location to the TrackStar warehouse:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your Flexport fulfillment center
+3. Click to edit the location
+4. In the **TrackStar Warehouse ID** field, enter your TrackStar warehouse identifier
+5. Save the changes
+
+This ensures returns are routed to the correct Flexport fulfillment center based on where the original order was shipped from.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Check the return timeline in the Redo dashboard for a Flexport RMA creation entry
+4. Verify the RMA appears in Flexport with correct order linkage, products, quantities, and tracking information
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                           |
+| ------------------ | ----------------- | ----------------------------------------------------- |
+| Initial Connection | 2-5 minutes       | OAuth authentication with Flexport through TrackStar  |
+| First Return Test  | 5-10 minutes      | Create test return and verify RMA in Flexport         |
+| **Total Setup**    | **10-15 minutes** | Complete setup for most merchants                     |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Status Updates">
+**Near real-time (within seconds)** via TrackStar webhooks when the warehouse scans items.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days depending on your agreement with Flexport.
+</Step>
+
+<Step title="Inventory Reconciliation">
+**Automatically updated** in Flexport when items are received and inspected by warehouse staff.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Flexport" />
