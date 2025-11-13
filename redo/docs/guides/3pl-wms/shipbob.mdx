@@ -1,9 +1,120 @@
 ---
 title: "ShipBob Integration"
-description: "Connect ShipBob to Redo for automated return processing"
+description: "Connect ShipBob to Redo for automated return processing and warehouse management"
 icon: "box"
 ---
 
-<Warning>
-  This page is under construction. Check back soon for detailed setup instructions and configuration guides.
-</Warning>
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is ShipBob?
+
+ShipBob is a leading third-party logistics (3PL) provider and warehouse management system that offers fulfillment services for e-commerce businesses. With a network of fulfillment centers across North America, ShipBob provides inventory management, order fulfillment, and shipping solutions for growing brands.
+
+**Primary Purpose:** ShipBob delivers end-to-end fulfillment services, allowing brands to store inventory in strategically located warehouses and ship products quickly to customers. The integration with Redo ensures seamless return processing while keeping ShipBob as your source of truth for fulfillment and inventory management.
+
+## What Does the Integration Do?
+
+Integrating ShipBob with Redo allows ShipBob to remain your source of truth for fulfillment and inventory management. When a return is created through the Redo customer portal, an RMA (Return Merchandise Authorization) will be automatically created within ShipBob, notifying the warehouse that items are being returned.
+
+Once the item is received, inspected, and confirmed eligible for return, you'll approve the RMA within ShipBob. When that happens, ShipBob will communicate with Redo to process the return and issue any store credit/refund or create an exchange order.
+
+## How to Set It Up
+
+Follow these steps to configure the ShipBob integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active ShipBob Account" icon="circle-check">
+You must have an active account with ShipBob as your fulfillment provider.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to ShipBob" icon="box">
+Your products and orders must already be synced to ShipBob, typically through your e-commerce platform. Returns cannot be created for products or orders that don't exist in ShipBob.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="ShipBob Login Credentials" icon="lock">
+Have your ShipBob account login credentials ready for the OAuth authentication process.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **ShipBob** panel in the list of available integrations
+
+![ShipBob Integration Panel](/docs/images/integrations/shipbob/integration-panel.png)
+</Step>
+
+<Step title="Initiate Connection">
+1. Click the **Add** button on the ShipBob panel
+2. You'll be directed to a connection page to link Redo to your ShipBob account
+
+![ShipBob Connect Page](/docs/images/integrations/shipbob/connect-page.png)
+</Step>
+
+<Step title="Authenticate with ShipBob">
+1. Click the **Connect** button
+2. You'll be redirected to ShipBob's login page
+3. Log in to your ShipBob account
+4. Follow the authentication process within ShipBob to authorize Redo
+
+![ShipBob Authentication](/docs/images/integrations/shipbob/authentication.png)
+</Step>
+
+<Step title="Verify Connection">
+1. After completing authentication, you'll be redirected back to the Redo merchant dashboard
+2. The ShipBob integration panel should now display **Connected**
+
+![ShipBob Connected](/docs/images/integrations/shipbob/connected.png)
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Verify the RMA appears in ShipBob with correct order linkage and product information
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step | Time | Description |
+|------|------|-------------|
+| Initial Connection | 2-3 minutes | OAuth authentication with ShipBob |
+| First Return Test | 5-10 minutes | Create test return and verify RMA in ShipBob |
+| **Total Setup** | **10-15 minutes** | Complete setup for most merchants |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is created through the Redo customer portal.
+</Step>
+
+<Step title="Return Status Updates">
+**Manual approval required** - warehouse staff must approve the RMA in ShipBob after receiving and inspecting returned items.
+</Step>
+
+<Step title="Return Processing">
+**Automatic** - once RMA is approved in ShipBob, Redo automatically processes the refund/store credit or creates an exchange order.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days depending on your agreement with ShipBob.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="shipbob" />
