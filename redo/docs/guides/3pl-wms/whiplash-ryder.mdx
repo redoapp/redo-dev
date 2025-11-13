@@ -1,0 +1,185 @@
+---
+title: "Whiplash (Ryder) Integration"
+description:
+  "Connect Whiplash (Ryder) to Redo for automated return processing and warehouse
+  management"
+icon: "bolt"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Whiplash (Ryder)?
+
+Whiplash, powered by Ryder, is a comprehensive warehouse management system (WMS) and fulfillment solution designed for e-commerce businesses. It provides real-time inventory management, order processing, and logistics capabilities through Whiplash (Ryder)'s extensive fulfillment network.
+
+**Primary Purpose:** Whiplash (Ryder) delivers scalable warehouse operations and fulfillment for e-commerce brands using Whiplash (Ryder) as their 3PL provider, combining advanced technology with Whiplash (Ryder)'s logistics expertise to support growing business needs.
+
+The platform integrates through Trackstar for standardized connectivity with returns management platforms and other e-commerce tools, ensuring seamless data flow across your tech stack.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in Whiplash (Ryder), notifying the warehouse that items are being returned. This ensures your warehouse is prepared to receive and process returned items efficiently, with all the information they need available immediately.
+
+Products are mapped using SKUs, returns are linked to original Shopify orders, and tracking information (carrier, service, tracking number) is sent to the warehouse. Return reasons are transmitted to help warehouse staff understand why items were returned, enabling better decision-making about restocking or inspection. The integration includes Redo's return status and platform information for full traceability.
+
+## How to Set It Up
+
+Follow these steps to configure the Whiplash (Ryder) integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Whiplash (Ryder) Warehouse Account" icon="circle-check">
+You must have an active account with Whiplash (Ryder) as your 3PL provider.
+</Accordion>
+
+<Accordion title="API Credentials from Whiplash (Ryder)" icon="key">
+  You must obtain API credentials from Whiplash (Ryder). Contact your Whiplash
+  (Ryder) account manager or support team to request API credentials for the
+  Trackstar integration.
+
+  **Note:** If using sandbox credentials for testing, you will need to manually import every order and product into Whiplash (Ryder).
+</Accordion>
+
+<Accordion title="Order Lookup Feature Enabled" icon="magnifying-glass">
+  Trackstar needs to lookup orders in the Whiplash (Ryder) system using the
+  order ID. Since this is not a standard feature, you must reach out to Redo
+  support at **support@getredo.com** to enable order lookup functionality in the
+  backend before proceeding with the integration.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to Whiplash (Ryder)" icon="box">
+  Your products and orders must already be synced to Whiplash (Ryder), typically
+  through your order management system (OMS) or Shopify integration. Returns
+  cannot be created for products or orders that don't exist in Whiplash (Ryder).
+</Accordion>
+
+<Accordion title="Shopify Inventory Configuration" icon="store">
+  Ensure that Shopify has inventory configured under the Whiplash (Ryder)
+  location. This is required for proper inventory synchronization and order
+  routing between Shopify and your warehouse.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+  You need administrative access to your Redo merchant dashboard to configure
+  integrations.
+</Accordion>
+
+<Accordion title="Warehouse Location Information" icon="warehouse">
+Know which warehouse location(s) handle your returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Request API Credentials">
+  Contact your Whiplash (Ryder) account manager or support team to request API
+  credentials for the Trackstar integration.
+</Step>
+
+<Step title="Enable Order Lookup Feature">
+  Reach out to Redo support at **support@getredo.com** and request that they
+  enable the order lookup feature in the backend. This allows Trackstar to
+  lookup orders in the Whiplash (Ryder) system using the order ID, which is
+  required for the integration to function properly.
+</Step>
+
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** and locate the **"TrackStar"** card.
+</Step>
+
+<Step title="Select Whiplash (Ryder)">
+  Click **Connect** on the TrackStar card and select **"Whiplash (Ryder)"** from
+  the WMS provider list.
+</Step>
+
+<Step title="Enter Connection Details">
+  Input the API credentials provided by Whiplash (Ryder) to connect your
+  Whiplash (Ryder) account.
+</Step>
+
+<Step title="Order Sync">
+  **For Production Credentials:** The first time the Trackstar connection is
+  made, it will automatically sync existing orders from Whiplash (Ryder) into
+  Trackstar. This initial synchronization time varies depending on the number of
+  orders and other factors, and can take up to 1-2 days to fully sync all orders
+  into Trackstar. Be patient during this process. After the initial sync is
+  complete, orders will sync automatically once per hour.
+
+  **For Sandbox Credentials:** You will need to manually sync each order in
+  Whiplash (Ryder) since automatic synchronization is not available in sandbox
+  environments.
+</Step>
+
+<Step title="Configure Shipping Location">
+  Go to **Settings** > **Shipping Locations**, edit your warehouse location, and
+  add your TrackStar Warehouse ID.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return, generate a shipping label, and verify the RMA appears in Whiplash (Ryder) with correct order details, products, tracking information, and return reasons.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                       | Time                 | Description                                                                 |
+| -------------------------- | -------------------- | --------------------------------------------------------------------------- |
+| Credential Request         | 1-3 business days    | Requesting and receiving credentials from Whiplash (Ryder)                  |
+| Order Lookup Enablement    | 1-2 business days    | Redo support enables order lookup feature in backend                        |
+| Initial Connection         | 2-5 minutes          | Authentication with Whiplash (Ryder) through Trackstar                      |
+| Initial Order Sync         | Up to 1-2 days       | First-time sync of existing orders (varies by order volume)                 |
+| First Return Test          | 5-10 minutes         | Create test return and verify RMA in Whiplash (Ryder)                       |
+| **Total Initial Setup**    | **3-7 business days**| Complete setup including prerequisites and initial sync                     |
+
+### Operational Timing
+
+<Steps>
+<Step title="Order Synchronization">
+**Once per hour** after the initial sync is complete. Orders are automatically synchronized between systems.
+</Step>
+
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Status Updates">
+  **Near real-time (within seconds)** via Trackstar webhooks when the warehouse
+  scans items.
+</Step>
+
+<Step title="Warehouse Processing">
+  **Varies by warehouse SLA**, typically 1-3 business days from when items
+  arrive at the facility.
+</Step>
+
+<Step title="Inventory Updates">
+**Automatically updated** in Whiplash (Ryder) when items are received and inspected by warehouse staff.
+</Step>
+</Steps>
+
+## Sandbox vs Production
+
+### Using Sandbox Credentials
+
+If you are using sandbox credentials for testing purposes, be aware that:
+
+- You will need to **manually import every order and product** into Whiplash (Ryder)
+- The order lookup feature may have limited functionality
+- Inventory synchronization with Shopify must be manually verified
+
+### Using Production Credentials
+
+Production credentials provide:
+
+- Automatic order and product synchronization
+- Full order lookup functionality (once enabled by support)
+- Real-time inventory updates
+- Complete webhook support for status updates
+
+<IntegrationSupport providerSupport="For issues with Whiplash (Ryder) access, API credentials, order lookup feature enablement, or warehouse operations, contact your Whiplash (Ryder) account manager or support team." />
