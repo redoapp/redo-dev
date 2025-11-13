@@ -1,0 +1,127 @@
+---
+title: "ShipStream Integration"
+description: "Connect ShipStream to Redo for automated return processing and warehouse management"
+icon: "truck-ramp-box"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is ShipStream?
+
+ShipStream is a cloud-based fulfillment management software (FMS) designed for merchants and third-party logistics providers (3PLs). It provides powerful warehouse management capabilities including inventory tracking, order processing, shipping automation, and real-time visibility across fulfillment operations. ShipStream is built to handle complex fulfillment workflows for both single-warehouse operations and multi-location 3PL networks.
+
+**Primary Purpose:** ShipStream delivers enterprise-grade fulfillment management for merchants operating their own warehouses or 3PLs managing fulfillment for multiple clients. The platform provides comprehensive warehouse management, order orchestration, inventory control, and shipping automation with extensibility through plugins and integrations, enabling efficient fulfillment operations at scale.
+
+The platform integrates through TrackStar for standardized connectivity with returns management platforms and other e-commerce tools, ensuring seamless data flow across your tech stack.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in ShipStream, notifying the warehouse that items are being returned. This ensures your fulfillment team has complete visibility into incoming returns and can prepare to receive and process them according to your established workflows, with all the information they need available immediately.
+
+Products are mapped using SKUs, returns are linked to the original order for accurate tracking and inventory reconciliation, and shipping information (carrier, service, tracking number) is sent to help warehouse staff identify incoming packages. Return reasons and processing instructions are transmitted to guide warehouse staff on proper handling—whether items should be restocked to available inventory, quarantined for inspection, or processed according to specific disposition rules. The integration supports multiple warehouses and multiple shipments per return, providing flexibility for complex fulfillment networks and split returns.
+
+## How to Set It Up
+
+Follow these steps to configure the ShipStream integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active ShipStream Account" icon="circle-check">
+You must have an active ShipStream account with appropriate permissions to manage integrations and API access.
+</Accordion>
+
+<Accordion title="TrackStar Credentials for ShipStream" icon="key">
+You'll need your ShipStream API credentials (API Username, API Password, and API URL) to connect through TrackStar.
+
+[Where do I find these credentials?](https://trackstar.notion.site/ShipStream-25a23f01d8d280e886bfc0ab0cd5bd35)
+</Accordion>
+
+<Accordion title="Products and Orders Synced to ShipStream" icon="box">
+Your products and orders must already be synced to ShipStream from your e-commerce platform or order management system. Returns cannot be created for products or orders that don't exist in ShipStream's database.
+</Accordion>
+
+<Accordion title="Warehouse Configuration" icon="warehouse">
+Know which warehouse(s) in ShipStream handle your returns. Returns will be routed to the warehouse that fulfilled the original order, so warehouse configuration must be complete.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** and locate the **"TrackStar"** card.
+</Step>
+
+<Step title="Select ShipStream">
+Click **Connect** on the TrackStar card and select **"ShipStream"** from the WMS provider list.
+</Step>
+
+<Step title="Enter Connection Details">
+Input your ShipStream API credentials to connect through TrackStar:
+
+- **API Username**: Your ShipStream API username
+- **API Password**: Your ShipStream API password
+- **API URL**: Your ShipStream instance URL
+
+[Where do I find these credentials?](https://trackstar.notion.site/ShipStream-25a23f01d8d280e886bfc0ab0cd5bd35)
+</Step>
+
+<Step title="Configure Shipping Location">
+Link your shipping location to the TrackStar warehouse:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your ShipStream warehouse
+3. Click to edit the location
+4. In the **TrackStar Warehouse ID** field, enter your TrackStar warehouse identifier
+5. Save the changes
+
+This ensures returns are routed to the correct warehouse based on where the original order was fulfilled.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Check the return timeline in the Redo dashboard for a ShipStream RMA creation entry
+4. Log in to ShipStream and navigate to RMAs to verify the return was created
+5. Confirm the RMA contains correct order information, products, quantities, return reason, and tracking details
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                             |
+| ------------------ | ----------------- | ------------------------------------------------------- |
+| Initial Connection | 2-5 minutes       | Authentication with ShipStream through TrackStar        |
+| First Return Test  | 5-10 minutes      | Create test return and verify RMA in ShipStream         |
+| **Total Setup**    | **10-15 minutes** | Complete setup for most merchants                       |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-2 seconds)** after return is processed and shipping label is generated.
+
+The RMA includes all relevant order data, product information, return reason, and tracking details.
+</Step>
+
+<Step title="Return Status Updates">
+**Near real-time (within seconds)** via TrackStar webhooks when warehouse staff receive and scan items in ShipStream.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by operation**, typically 1-3 business days for returns to be physically received and scanned into ShipStream.
+</Step>
+
+<Step title="Inventory and Disposition">
+Once items are received and processed in ShipStream according to disposition rules, final status updates sync to Redo, allowing you to complete refunds, ship exchanges, and reconcile inventory.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="ShipStream" />

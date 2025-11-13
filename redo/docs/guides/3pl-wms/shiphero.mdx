@@ -1,0 +1,108 @@
+---
+title: "ShipHero Integration"
+description: "Connect ShipHero to Redo for automated return processing"
+icon: "ship"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is ShipHero?
+
+ShipHero WMS is a fully featured warehouse management system designed for direct-to-consumer (DTC) brands and 3PL providers running their own warehouse and shipping operations. It provides comprehensive inventory management, order fulfillment, and shipping capabilities.
+
+**Primary Purpose:** ShipHero delivers complete warehouse management for brands and 3PLs managing their own warehouses, enabling real-time inventory tracking, efficient order processing, and seamless returns management.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in ShipHero, notifying the warehouse that items are being returned. This ensures your warehouse is prepared to receive and process returned items efficiently.
+
+Products are mapped using SKUs, returns are linked to original orders, and tracking information is sent to the warehouse. Return reasons are transmitted to help warehouse staff understand why items were returned, enabling better decision-making about restocking or inspection.
+
+## How to Set It Up
+
+Follow these steps to configure the ShipHero integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active ShipHero Account" icon="circle-check">
+You must have an active account with ShipHero.
+</Accordion>
+
+<Accordion title="ShipHero API Credentials" icon="key">
+  You need a ShipHero refresh token to connect the integration. Follow
+  ShipHero's documentation to obtain a GraphQL API access token.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+  You need administrative access to your Redo merchant dashboard to configure
+  integrations.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Obtain ShipHero Refresh Token">
+  Follow [ShipHero's documentation](https://software-help.shiphero.com/hc/en-us/articles/4419362224781-How-to-Obtain-a-GraphQL-API-Access-Refresh-Token)
+  to obtain a GraphQL API access refresh token. Copy this token as you'll need
+  it in the next step.
+</Step>
+
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard and locate the **ShipHero** card.
+</Step>
+
+<Step title="Connect ShipHero">
+Click **Connect** on the ShipHero integration card.
+</Step>
+
+<Step title="Enter Connection Details">
+  In the configuration form, provide:
+
+  - **Refresh Token** (required): Paste your ShipHero refresh token
+  - **Customer Account ID** (optional): Only required if using an access token from a child account
+</Step>
+
+<Step title="Complete Setup">
+Click **Connect** to complete the setup.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return, generate a shipping label, and verify the RMA appears in ShipHero with correct order details, products, and tracking information.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                    | Time          | Description                                      |
+| ----------------------- | ------------- | ------------------------------------------------ |
+| Obtain Refresh Token    | 5-10 minutes  | Follow ShipHero documentation to get credentials |
+| Configure in Redo       | 2-5 minutes   | Enter credentials and save configuration         |
+| First Return Test       | 5-10 minutes  | Create test return and verify RMA in ShipHero    |
+| **Total Setup**         | **15-20 minutes** | Complete setup for most merchants            |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Status Updates">
+  **Every 15-30 minutes**. ShipHero sends updates to Redo on a scheduled basis,
+  so there may be a delay between when the warehouse updates return status in
+  ShipHero and when it appears in Redo.
+</Step>
+
+<Step title="Warehouse Processing">
+  **Varies by warehouse SLA**, typically 1-3 business days from when items
+  arrive at the facility.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="ShipHero" />
