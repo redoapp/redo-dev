@@ -1,0 +1,158 @@
+---
+title: "ApparelMagic Integration"
+description: "Connect ApparelMagic to Redo for automated return processing and inventory management"
+icon: "shirt"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is ApparelMagic?
+
+ApparelMagic is a cloud-based ERP and inventory management system designed specifically for apparel and fashion brands. It provides comprehensive tools for order management, inventory tracking, production planning, and sales operations.
+
+**Primary Purpose:** ApparelMagic delivers end-to-end business management for fashion brands, from design and production through sales and fulfillment. The platform helps brands manage their entire operation with specialized features built for the unique needs of the apparel industry.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates a Return Authorization (RA) in ApparelMagic, ensuring your inventory system stays synchronized with return activity. This enables your team to track returns, manage inventory accurately, and process refunds or exchanges efficiently.
+
+Products are mapped using SKUs, and returns are linked to the original ApparelMagic invoice. The integration validates that sufficient quantity is available for return and ensures products exist in your ApparelMagic inventory before creating the RA. Return quantities and product details are automatically synchronized, providing complete visibility into return operations within your existing ApparelMagic workflow.
+
+**Important Note:** The ApparelMagic integration currently supports returns that reference a single order. Returns spanning multiple orders are not supported at this time.
+
+## How to Set It Up
+
+Follow these steps to configure the ApparelMagic integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active ApparelMagic Account" icon="circle-check">
+You must have an active ApparelMagic subscription with API access enabled.
+</Accordion>
+
+<Accordion title="API Credentials" icon="key">
+Obtain your ApparelMagic API key and Company ID. These can be found in your ApparelMagic account settings under API Access or by contacting ApparelMagic support.
+</Accordion>
+
+<Accordion title="Orders and Products Synced to ApparelMagic" icon="box">
+Your orders must already be synced to ApparelMagic (typically through your e-commerce platform integration). Returns cannot be created for orders or products that don't exist in ApparelMagic.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="SKU Alignment" icon="database">
+Ensure product SKUs in Redo match your ApparelMagic inventory item SKUs exactly. The integration uses SKUs to map products between systems.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"ApparelMagic"** card in the list of available integrations
+</Step>
+
+<Step title="Initiate Connection">
+Click the **Connect** button on the ApparelMagic integration card.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide the following information:
+
+<ParamField path="apiKey" type="string" required>
+Your ApparelMagic API authentication key. This credential should be kept secure and never shared publicly.
+</ParamField>
+
+<ParamField path="companyId" type="string" required>
+Your ApparelMagic Company ID, which identifies your specific ApparelMagic account in API requests.
+</ParamField>
+
+<ParamField path="inventoryItemSkuField" type="string" required>
+The field name in ApparelMagic that stores the product SKU. This ensures products are correctly matched between systems.
+
+**Common values:** `sku_alt`, `style_concat`
+</ParamField>
+</Step>
+
+<Step title="Save Configuration">
+Review all settings carefully and click **Save** or **Connect**.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal for a single-order return
+2. Check the return timeline in Redo for an ApparelMagic RA creation entry
+3. Log in to ApparelMagic to verify the Return Authorization was created
+4. Confirm the RA contains the correct products, quantities, and references the original invoice
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step | Time | Description |
+|------|------|-------------|
+| Credential Gathering | 5-10 minutes | Obtain API key, Company ID, and field mappings from ApparelMagic |
+| Initial Connection | 2-5 minutes | Configure the integration in Redo with your credentials |
+| First Return Test | 5-10 minutes | Create test return and verify RA in ApparelMagic |
+| **Total Setup** | **15-25 minutes** | Complete setup for most merchants |
+
+### Operational Timing
+
+<Steps>
+<Step title="RA Creation">
+**Real-time (1-3 seconds)** after return is submitted
+</Step>
+
+<Step title="Inventory Lookup">
+**Immediate** - Redo validates products exist in ApparelMagic and have sufficient quantity available for return before creating the RA.
+</Step>
+
+<Step title="Timeline Updates">
+Timeline entries appear in the Redo dashboard **immediately** when RAs are successfully created, with the RA number displayed for reference.
+</Step>
+
+<Step title="Return Processing">
+Once the RA is created in ApparelMagic, your team can process the physical return using ApparelMagic's standard receiving workflows.
+</Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="RA Creation Failed: Order Not Found">
+This error occurs when Redo cannot locate the original order/invoice in ApparelMagic.
+
+**Solution:**
+- Verify the order exists in ApparelMagic
+- Ensure orders are being synced from your e-commerce platform to ApparelMagic correctly
+</Accordion>
+
+<Accordion title="RA Creation Failed: Product SKU Missing">
+This error occurs when a product in the return doesn't have a SKU assigned.
+
+**Solution:**
+- Ensure all products in your catalog have SKUs defined
+- Check that SKUs are syncing correctly from your e-commerce platform to Redo
+</Accordion>
+
+<Accordion title="RA Creation Failed: Insufficient Quantity">
+This error means ApparelMagic reports insufficient quantity available for return on the original invoice.
+
+**Solution:**
+- Review the original invoice in ApparelMagic to verify quantities
+- Check if previous returns have already been processed against this invoice
+- Contact ApparelMagic support if quantities appear incorrect
+</Accordion>
+</AccordionGroup>
+
+<IntegrationSupport integrationProvider="ApparelMagic" />

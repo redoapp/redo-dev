@@ -1,0 +1,194 @@
+---
+title: "Brightpearl Integration"
+description: "Connect Brightpearl to Redo for automated return processing and sales credit management"
+icon: "gem"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Brightpearl?
+
+Brightpearl is a retail operations platform and ERP system designed for multi-channel retailers and wholesalers. It provides comprehensive order management, inventory control, warehouse management, purchasing, and financial management capabilities in a single platform.
+
+**Primary Purpose:** Brightpearl delivers complete retail operations management for growing brands, handling everything from order processing and inventory tracking to accounting and reporting. Built for omnichannel retail, Brightpearl helps businesses scale their operations across multiple sales channels while maintaining accurate financial records.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates a Sales Credit in Brightpearl linked to the original sales order. This ensures accurate financial tracking, proper inventory management, and seamless integration with your accounting workflows.
+
+Products are mapped using SKUs, and returns are linked to the original Brightpearl sales order using the Shopify order ID. The integration validates that products exist on the original sales order, retrieves pricing and tax information from the original transaction, and creates a properly formatted sales credit with accurate amounts. Return values are calculated based on the original product prices, taxes, and any adjustments, ensuring financial accuracy.
+
+The sales credit references the parent sales order in Brightpearl, maintaining complete audit trails and enabling proper accounting reconciliation. Each product line in the return is matched to the corresponding line in the original sales order, preserving product IDs, tax codes, and pricing details.
+
+## How to Set It Up
+
+Follow these steps to configure the Brightpearl integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Brightpearl Account" icon="circle-check">
+You must have an active Brightpearl subscription with API access enabled.
+</Accordion>
+
+<Accordion title="Brightpearl API Credentials" icon="key">
+Obtain your Brightpearl API credentials, including:
+- Account token
+- Data center URL (e.g., `ws-use.brightpearl.com`)
+- Staff credentials (if required)
+
+Contact Brightpearl support or check your account settings to obtain these credentials.
+</Accordion>
+
+<Accordion title="Orders Synced to Brightpearl" icon="box">
+Your sales orders must already be synced to Brightpearl (typically through your e-commerce platform integration like Shopify). Returns cannot be created for orders that don't exist as sales orders in Brightpearl.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="Shopify Order ID Field Configuration" icon="database">
+Know which field in your Brightpearl sales orders contains the Shopify order ID. Common options include:
+- `customerRef` (default)
+- `reference`
+- Custom field
+
+This field must be populated with `SO{shopify_order_id}` format (e.g., `SO1234567890`).
+</Accordion>
+
+<Accordion title="Product SKUs Aligned" icon="barcode">
+Ensure product SKUs in your Brightpearl sales orders match the SKUs in Redo. The integration uses SKUs to match returned products to sales order line items.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"Brightpearl"** card in the list of available integrations
+</Step>
+
+<Step title="Initiate Connection">
+Click the **Connect** button on the Brightpearl integration card.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide the following information:
+
+<ParamField path="accountToken" type="string" required>
+Your Brightpearl account token for API authentication. This credential should be kept secure and never shared publicly.
+</ParamField>
+
+<ParamField path="dataCenterUrl" type="string" required>
+Your Brightpearl data center URL (without the protocol).
+
+**Example:** `ws-use.brightpearl.com` or `ws-eu1.brightpearl.com`
+</ParamField>
+
+<ParamField path="accountId" type="string" required>
+Your Brightpearl account identifier, typically your company name or account code.
+</ParamField>
+</Step>
+
+<Step title="Save Configuration">
+Review all settings carefully and click **Save** or **Connect**.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Check the return timeline in Redo for a Brightpearl sales credit creation entry
+3. Log in to Brightpearl to verify the sales credit was created
+4. Confirm the sales credit:
+   - References the correct parent sales order
+   - Contains accurate products, quantities, and SKUs
+   - Has correct pricing and tax calculations
+   - Shows proper linkage in Brightpearl's order hierarchy
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step | Time | Description |
+|------|------|-------------|
+| Credential Gathering | 5-10 minutes | Obtain API credentials and identify field mappings |
+| Initial Connection | 2-5 minutes | Configure the integration in Redo |
+| First Return Test | 5-10 minutes | Create test return and verify sales credit in Brightpearl |
+| **Total Setup** | **15-25 minutes** | Complete setup for most merchants |
+
+### Operational Timing
+
+<Steps>
+<Step title="Sales Credit Creation">
+**Real-time (1-3 seconds)** after return is created.
+</Step>
+
+<Step title="Sales Order Lookup">
+**Immediate** - Redo searches for the original sales order in Brightpearl using the Shopify order ID to ensure it exists before creating the sales credit.
+</Step>
+
+<Step title="Product Validation">
+**Automatic** - Each returned product is validated against the original sales order to ensure SKUs match and proper pricing/tax codes are retrieved.
+</Step>
+
+<Step title="Financial Recording">
+Sales credits are immediately visible in Brightpearl's sales order list and financial reports, enabling accurate accounting and reconciliation.
+</Step>
+</Steps>
+
+## Important Considerations
+<Warning>
+**Product Matching Required:** All returned products must exist as line items on the original Brightpearl sales order with matching SKUs. If a product cannot be matched, the sales credit creation will fail.
+</Warning>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Sales Credit Creation Failed: Original Sales Order Not Found">
+This error occurs when Redo cannot locate the original sales order in Brightpearl.
+
+**Solution:**
+- Verify the order exists in Brightpearl as a sales order
+- Ensure the field in Brightpearl contains the Shopify order ID in `SO{order_id}` format
+- Confirm orders are syncing correctly from Shopify to Brightpearl
+- Check if there's a delay in order sync between Shopify and Brightpearl
+</Accordion>
+
+<Accordion title="Sales Credit Creation Failed: Sales Order Row Not Found">
+This error means a product being returned doesn't exist as a line item on the original Brightpearl sales order, or the SKU doesn't match.
+
+**Solution:**
+- Verify the product SKU in Redo matches the SKU in the Brightpearl sales order exactly
+- Check if the product was on the original order
+- Review SKU mapping between your e-commerce platform and Brightpearl
+- Ensure no SKU changes occurred after the order was placed
+</Accordion>
+
+<Accordion title="Sales Credit Already Exists">
+This message indicates a sales credit has already been created for this return.
+
+**Solution:**
+- Verify that the sales credit already exists for the cooresponding sales order in BrightPearl
+- If the sales credit is incorrect, delete it in Brightpearl and retry the sync from Redo
+</Accordion>
+
+<Accordion title="API Authentication Failed">
+API credential issues prevent the integration from connecting to Brightpearl.
+
+**Solution:**
+- Verify your account token is correct and hasn't expired
+- Check that your data center URL is accurate
+- Ensure your Brightpearl account has API access enabled
+- Contact Brightpearl support to verify API permissions
+</Accordion>
+</AccordionGroup>
+
+<IntegrationSupport integrationProvider="Brightpearl" />
