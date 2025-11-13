@@ -72,8 +72,8 @@ configurations for the Redo API.
 
 ## Snippets
 
-Mintlify snippets are reusable content blocks stored in `redo/snippets/` (at
-the same level as `docs.json`). Use snippets to avoid duplicating content across
+Mintlify snippets are reusable content blocks stored in `redo/snippets/` (at the
+same level as `docs.json`). Use snippets to avoid duplicating content across
 multiple pages.
 
 ### Integration Support Snippet
@@ -93,7 +93,9 @@ description: "Description"
 icon: "bolt"
 ---
 
-import IntegrationSupport from '/snippets/integration-support.mdx';
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+;
 ```
 
 2. Use the snippet at the end of the page with the `integrationProvider` prop:
@@ -114,12 +116,14 @@ description: "Connect Nimble to Redo"
 icon: "bolt"
 ---
 
-import IntegrationSupport from '/snippets/integration-support.mdx';
+import IntegrationSupport from "/snippets/integration-support.mdx";
 
 ## What is Nimble?
+
 ...
 
 ## How to Set It Up
+
 ...
 
 <IntegrationSupport integrationProvider="Nimble" />
