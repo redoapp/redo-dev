@@ -96,11 +96,14 @@ icon: "bolt"
 import IntegrationSupport from '/snippets/integration-support.mdx';
 ```
 
-2. Use the snippet at the end of the page with the `providerSupport` prop:
+2. Use the snippet at the end of the page with the `integrationProvider` prop:
 
 ```mdx
-<IntegrationSupport providerSupport="For issues with [Provider Name] access, API credentials, or warehouse operations, contact your [Provider Name] account manager or support team." />
+<IntegrationSupport integrationProvider="[Provider Name]" />
 ```
+
+The snippet will automatically generate a standardized support message using the
+provider name you pass in.
 
 **Complete Example:**
 
@@ -119,7 +122,7 @@ import IntegrationSupport from '/snippets/integration-support.mdx';
 ## How to Set It Up
 ...
 
-<IntegrationSupport providerSupport="For issues with Nimble access, API credentials, or warehouse operations, contact your Nimble account manager or support team." />
+<IntegrationSupport integrationProvider="Nimble" />
 ```
 
 ## Writing standards
