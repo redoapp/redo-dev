@@ -10,21 +10,77 @@ In addition to its own native API, Redo offers a Loop Returns-compatible API.
 
 This API allows systems to leverage an existing integration with Loop into an integration with Redo, with very little work.
 
-## Documentation
+## Supported Endpoints
 
-The Loop-compatible API has the same endpoints and data formats as described in Loop's documentation: [https://docs.loopreturns.com/api-reference/getting-started](https://docs.loopreturns.com/api-reference/getting-started)
+Redo supports the following Loop-compatible endpoints. All endpoints use the same data formats as described in Loop's documentation: [https://docs.loopreturns.com/api-reference/getting-started](https://docs.loopreturns.com/api-reference/getting-started)
 
-To use this API with Redo, instead of sending requests to:
-```
-https://api.loopreturns.com
-```
-
-Send requests to:
+To use these endpoints with Redo, replace `https://api.loopreturns.com` with:
 ```
 https://loop-api.getredo.com
 ```
 
+### Return Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/warehouse/return/details` | Get details for a specific return |
+| GET | `/api/v1/warehouse/return/list` | Get a list of returns with optional filtering |
+| POST | `/api/v1/warehouse/return/:return_id/process` | Process a return |
+| POST | `/api/v1/warehouse/return/:return_id/flag` | Flag a return for review |
+| POST | `/api/v1/warehouse/return/:return_id/close` | Cancel/reject a return |
+| POST | `/api/v1/warehouse/return/:return_id/cancel` | Reset a return to initial state |
+| POST | `/api/v1/warehouse/return/:return_id/remove` | Remove specific line items from a return |
+
+#### Return Identification
+
+When making requests to endpoints with `:return_id` in the path, you can identify the return using multiple methods:
+
+1. **Loop ID (recommended for compatibility)**: Use the `id` field from the return response as the path parameter
+   ```
+   POST /api/v1/warehouse/return/12345/process
+   ```
+
+2. **Redo ID**: Use a query parameter `redo_return_id` with Redo's internal ID (the `redo_id` field from responses)
+   ```
+   POST /api/v1/warehouse/return/0/process?redo_return_id=507f1f77bcf86cd799439011
+   ```
+
+3. **Order Name**: Use a query parameter `order_name`
+   ```
+   GET /api/v1/warehouse/return/details?order_name=#1001
+   ```
+
+4. **Order ID**: Use a query parameter `order_id`
+   ```
+   GET /api/v1/warehouse/return/details?order_id=5678
+   ```
+
 <Note>
+  **Understanding Return IDs:**
+  - `id` - Loop-compatible return ID (number) for backwards compatibility
+  - `redo_id` - Redo's internal return identifier (string/ObjectId)
+
+  Both IDs are included in all return response objects, allowing you to use whichever is most convenient for your integration.
+</Note>
+
+### Notes
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/warehouse/return/:return_id/note` | Add a note to a return |
+| GET | `/api/v1/warehouse/return/:return_id/notes` | Get all notes for a return |
+
+### Reporting
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/warehouse/reporting/asn` | Get advanced shipping notice information |
+
+<Note>
+  **Important Terminology Differences:**
+  - Loop's "close" endpoint maps to Redo's cancel/reject functionality
+  - Loop's "cancel" endpoint maps to Redo's reset functionality
+
   Loop's documentation is sometimes incomplete or does not match actual Loop responses. When docs and Loop's actual behavior differ, Redo follows the actual behavior.
 </Note>
 
