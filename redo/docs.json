@@ -64,11 +64,20 @@
               "/docs/guides/shopify-web-components",
               "/docs/guides/webhooks",
               "/docs/guides/third-party-integrations",
-              "/docs/guides/custom-integration"
+              "/docs/guides/custom-integration",
+              {
+                "group": "3PL/WMS Return Integrations",
+                "root": "/docs/guides/3pl-wms/overview",
+                "pages": [
+                  "/docs/guides/3pl-wms/overview",
+                  "/docs/guides/3pl-wms/netsuite",
+                  "/docs/guides/3pl-wms/shipbob"
+                ]
+              }
             ]
           }
         ]
-      },
+      },      
       {
         "tab": "API Reference",
         "groups": [
