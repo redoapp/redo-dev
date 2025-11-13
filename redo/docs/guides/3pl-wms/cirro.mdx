@@ -1,0 +1,115 @@
+---
+title: "Cirro Integration"
+description: "Connect Cirro to Redo for automated return processing and warehouse management"
+icon: "truck-fast"
+---
+
+## What is Cirro?
+
+Cirro is a cloud-based warehouse management system (WMS) that provides real-time inventory management and fulfillment operations for e-commerce businesses. Built for modern commerce, Cirro helps brands scale their operations with technology-driven warehousing solutions.
+
+**Primary Purpose:** Cirro delivers modern, technology-driven warehousing and fulfillment for e-commerce brands using Cirro as their 3PL provider. The platform integrates through Trackstar for standardized connectivity with returns management platforms and other e-commerce tools.
+
+## What Does the Integration Do?
+
+When a customer initiates a return, Redo automatically creates an RMA (Return Merchandise Authorization) in Cirro, notifying the warehouse that items are being returned. This ensures your warehouse team knows exactly what's coming back and can prepare to receive and process the items efficiently.
+
+Products are mapped using SKUs, returns are linked to original orders, and tracking information is sent to the warehouse to help staff match returns to the correct RMA. Return reasons are included to help warehouse staff process returns correctly—whether items should be restocked, inspected, or handled differently. The integration supports multiple warehouses and multiple shipments per return, giving you flexibility as your business scales.
+
+## How to Set It Up
+
+Follow these steps to configure the Cirro integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Cirro Warehouse Account" icon="circle-check">
+You must have an active account with Cirro as your 3PL provider.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to Cirro" icon="box">
+Your products and orders must already be synced to Cirro, typically through your order management system (OMS) or Shopify. Returns cannot be created for products or orders that don't exist in Cirro.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="Warehouse Information" icon="warehouse">
+Know which warehouse(s) handle your returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"TrackStar"** card in the list of available integrations
+</Step>
+
+<Step title="Select Cirro">
+1. Click the **Connect** button on the TrackStar integration card
+2. A modal will open showing a list of WMS providers
+3. Find and select **"Cirro"** from the list
+</Step>
+
+<Step title="Enter Connection Details">
+Input the necessary information and credentials to connect your Cirro account.
+</Step>
+
+<Step title="Configure Shipping Location">
+Link your shipping location to the TrackStar warehouse:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your Cirro warehouse
+3. Click to edit the location
+4. In the **TrackStar Warehouse ID** field, enter your TrackStar warehouse identifier
+5. Save the changes
+
+This ensures returns are routed to the correct Cirro warehouse location.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Verify the RMA appears in Cirro with correct order linkage, products, and tracking information
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step | Time | Description |
+|------|------|-------------|
+| Initial Connection | 2-5 minutes | OAuth authentication with Cirro through Trackstar |
+| First Return Test | 5-10 minutes | Create test return and verify RMA in Cirro |
+| **Total Setup** | **10-15 minutes** | Complete setup for most merchants |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Status Updates">
+**Near real-time (within seconds)** via Trackstar webhooks when the warehouse scans items.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days depending on your agreement with Cirro.
+</Step>
+</Steps>
+
+## Support
+
+For issues with the Redo integration configuration, return processing, or data synchronization, contact **support@getredo.com**.
+
+For issues with Cirro access, warehouse operations, or system functionality, contact your Cirro account manager.
