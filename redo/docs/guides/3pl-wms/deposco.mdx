@@ -1,0 +1,278 @@
+---
+title: "Deposco Integration"
+description: "Connect Deposco to Redo for automated return processing and warehouse management"
+icon: "warehouse-full"
+---
+
+## What is Deposco?
+
+Deposco is a cloud-based warehouse management system (WMS) and order management platform that provides real-time inventory visibility, order orchestration, and fulfillment capabilities. Designed for omnichannel commerce, Deposco helps brands and 3PLs manage complex supply chain operations efficiently.
+
+**Primary Purpose:** Deposco delivers comprehensive supply chain management for e-commerce businesses, wholesalers, and 3PLs using Deposco as their WMS platform. The platform provides advanced capabilities for inventory management, order fulfillment, warehouse automation, and real-time visibility across multiple facilities.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in Deposco, notifying the warehouse that items are being returned. This ensures your warehouse team knows exactly what's coming back and can prepare to receive and process the items efficiently.
+
+Products are mapped using SKUs, returns are linked to original orders, and tracking information (carrier, service, tracking number) is sent to the warehouse. Return reasons are transmitted to help warehouse staff understand why items were returned, enabling better decision-making about restocking or inspection. The integration includes Redo's return status and platform information for full traceability.
+
+The integration supports multiple warehouses and multiple shipments per return, giving you flexibility as your business scales. Status updates flow automatically from Deposco back to Redo, keeping return status synchronized in real-time.
+
+## How to Set It Up
+
+Follow these steps to configure the Deposco integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Deposco Warehouse Account" icon="circle-check">
+You must have an active account with Deposco as your WMS provider or 3PL platform.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to Deposco" icon="box">
+Your products and orders must already be synced to Deposco, typically through your order management system (OMS) or Shopify integration. Returns cannot be created for products or orders that don't exist in Deposco.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="Warehouse Location Information" icon="warehouse">
+Know which warehouse location(s) handle your returns. Returns are automatically routed based on the warehouse that fulfilled the original order.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"Deposco"** card in the list of available integrations
+</Step>
+
+<Step title="Initiate Connection">
+Click the **Connect** button on the Deposco integration card.
+</Step>
+
+<Step title="Enter Connection Details">
+Input the necessary information and credentials to connect your Deposco account:
+
+<ParamField path="connectionId" type="string" required>
+Your Deposco connection identifier provided by your Deposco account manager.
+</ParamField>
+
+<ParamField path="accessToken" type="string" required>
+Your API access token for authentication. Keep this credential secure and never share it publicly.
+</ParamField>
+</Step>
+
+<Step title="Configure Shipping Location">
+Link your shipping location to your Deposco warehouse:
+
+1. Go to **Settings** > **Shipping Locations**
+2. Find the shipping location that corresponds to your Deposco warehouse
+3. Click to edit the location
+4. In the **Warehouse ID** field, enter your Deposco warehouse identifier
+5. Save the changes
+
+This ensures returns are routed to the correct Deposco warehouse location.
+</Step>
+
+<Step title="Configure Return Settings (Optional)">
+You can configure additional settings for how returns are processed:
+
+<ParamField path="returnOrderIdentifierType" type="enum">
+Choose which identifier to use when linking returns to orders:
+- **Order ID** (default): Use Shopify order ID
+- **Order Name**: Use Shopify order name (e.g., `#1001`)
+</ParamField>
+
+<ParamField path="orderLookupEnabled" type="boolean">
+Enable order validation before creating the RMA. This adds an extra validation step to ensure the order exists in Deposco.
+</ParamField>
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Generate a return shipping label
+3. Verify the RMA appears in Deposco with correct order linkage, products, tracking information, and return reasons
+4. Check that status updates from Deposco are syncing back to Redo when warehouse staff scan items
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step | Time | Description |
+|------|------|-------------|
+| Initial Connection | 2-5 minutes | Configure authentication with Deposco |
+| Warehouse Configuration | 5-10 minutes | Map shipping locations to warehouse IDs |
+| First Return Test | 5-10 minutes | Create test return and verify RMA in Deposco |
+| **Total Setup** | **15-25 minutes** | Complete setup for most merchants |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Order Validation">
+If order lookup is enabled, the system validates the order exists before creating the RMA, adding 1-2 seconds to the process.
+</Step>
+
+<Step title="Return Status Updates">
+**Near real-time (within seconds)** when the warehouse scans items and updates status in Deposco.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days depending on your agreement with Deposco.
+</Step>
+
+<Step title="Inventory Updates">
+**Automatically updated** in Deposco when items are received and inspected by warehouse staff.
+</Step>
+</Steps>
+
+## How It Works: Technical Details
+
+<AccordionGroup>
+<Accordion title="RMA Data Transmitted">
+When creating an RMA, Redo sends the following information to Deposco:
+
+**Order Information:**
+- Order identifier (ID or name based on settings)
+- Original order reference
+- Order platform (e.g., Shopify)
+
+**Product Details:**
+- SKUs and quantities for each returned item
+- Product names and descriptions
+- Return reasons for each product
+
+**Shipping Information:**
+- Tracking number
+- Carrier and service level
+- Shipment dates
+
+**Customer Information:**
+- Customer name and contact details
+- Shipping address
+
+**Warehouse Routing:**
+- Warehouse ID from shipping location configuration
+- Facility information from order fulfillment data
+</Accordion>
+
+<Accordion title="Warehouse Location Mapping">
+Returns are routed to the correct Deposco warehouse based on:
+
+1. The shipping location associated with the original order
+2. The Warehouse ID configured for that shipping location in Redo
+3. Your Deposco warehouse configuration
+
+This ensures returns go back to the facility that originally shipped the order.
+</Accordion>
+
+<Accordion title="Status Synchronization">
+The integration provides automatic status updates:
+
+- When warehouse staff scan return items in Deposco
+- When items are inspected and approved for restocking
+- When items are marked as damaged or rejected
+- When the RMA is fully processed
+
+These updates automatically flow to Redo, keeping return status synchronized in real-time.
+</Accordion>
+
+<Accordion title="Multi-Shipment Support">
+The integration supports returns with multiple shipments:
+
+- Each shipment gets its own RMA in Deposco
+- Shipments are tracked independently
+- Status updates are per-shipment
+- Returns complete when all shipments are processed
+</Accordion>
+</AccordionGroup>
+
+## Important Considerations
+
+<Info>
+**Green Returns:** Returns where all products are being exchanged (green returns with no refund) may be skipped based on your configuration, as they don't always require receiving RMAs.
+</Info>
+
+<Info>
+**Multi-Warehouse Support:** If you operate multiple warehouses through Deposco, ensure each shipping location in Redo is mapped to the correct Warehouse ID.
+</Info>
+
+<Warning>
+**Order Lookup Requirement:** If you enable order validation, the original order must exist in Deposco before RMAs can be created. This adds validation but requires proper order synchronization.
+</Warning>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="RMA Creation Failed: Authentication Error">
+Connection ID or access token is incorrect or has been revoked.
+
+**Solution:**
+- Verify your connection ID and access token are correct
+- Ensure your Deposco account is active
+- Contact Deposco support or your Redo account manager to verify credentials
+- Check if credentials have expired or been rotated
+</Accordion>
+
+<Accordion title="RMA Creation Failed: Warehouse ID Not Found">
+The Warehouse ID is not configured for the shipping location.
+
+**Solution:**
+- Go to **Settings** > **Shipping Locations** in Redo
+- Edit the relevant shipping location
+- Add the correct Warehouse ID
+- Verify the warehouse ID matches your Deposco configuration
+- Contact your Deposco account manager to confirm warehouse identifiers
+</Accordion>
+
+<Accordion title="RMA Creation Failed: Order Not Found">
+This occurs when order lookup is enabled but the order doesn't exist in Deposco.
+
+**Solution:**
+- Verify the order exists in Deposco
+- Check that orders are syncing correctly from your e-commerce platform to Deposco
+- Confirm the order identifier type setting matches how orders are stored in Deposco
+- Consider disabling order lookup if not needed for your workflow
+</Accordion>
+
+<Accordion title="Status Updates Not Syncing">
+Status updates from Deposco aren't reaching Redo.
+
+**Solution:**
+- Verify webhooks are configured correctly in your Deposco account
+- Check that webhook URLs point to Redo's endpoints
+- Contact Redo support to verify webhook receipt
+- Ensure no firewall rules are blocking webhooks from Deposco
+</Accordion>
+
+<Accordion title="Wrong Warehouse Receiving Returns">
+Returns are being routed to incorrect Deposco facilities.
+
+**Solution:**
+- Review shipping location configuration in Redo
+- Verify Warehouse IDs match the intended facilities
+- Check warehouse configuration in your Deposco account
+- Ensure orders are associated with correct shipping locations
+- Review fulfillment location data from original orders
+</Accordion>
+</AccordionGroup>
+
+## Support
+
+For issues with the Redo integration configuration, return processing, or data synchronization, contact **support@getredo.com**.
+
+For issues with Deposco warehouse operations, receiving workflows, or system functionality, contact your Deposco account manager or Deposco support.
