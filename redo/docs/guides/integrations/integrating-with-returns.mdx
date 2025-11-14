@@ -1,5 +1,5 @@
 ---
-title: "Third-Party Return Integrations"
+title: "Integrating with Returns"
 description: "Connect Redo with your WMS, 3PL, or other external systems"
 icon: "plug"
 ---
@@ -17,38 +17,39 @@ Follow this flowchart to determine your integration path:
 ```mermaid
 flowchart TD
     A[Start Integration] --> B{Are you on Shopify,<br/>BigCommerce, or CommentSold?}
-    B -->|No| C["See our Custom Integration Guide"]
-    B -->|Yes| E{Do you need to create an RMA in an external system?}
+    B -->|No| C["See our Custom Returns Integration Guide"]
+    B -->|Yes| E{Do you need to create an RMA in a third-party system?}
     E -->|No| F[You're Done!]
-    E -->|Yes| G{Do we already have an integration for this system?}
+    E -->|Yes| G{Do we already have an integration for your third-party system?}
     G -->|Yes| H[Set up the integration in your dashboard settings]
     G -->|No| I{Are you a developer building your own integration?}
-    I -->|Yes| J[See our Loop Compatible API Guide]
+    I -->|Yes| J[See our Integrating with Returns APIs guide]
     I -->|No| K["Contact support"]
 
 
-    click C "/docs/guides/integrations/custom-integration"
+    click C "/docs/guides/integrations/custom-returns-integration"
+    click G "/docs/integrations/returns/3pl-wms/overview"
     click H "https://app.getredo.com"
-    click J "/docs/api-reference/loop-compatible-api"
+    click J "/docs/guides/integrations/integrating-with-returns-apis"
 
     classDef clickable stroke:#FF4405,stroke-width:2px
     classDef transparent fill:transparent
-    class C,H,J clickable
+    class C,G,H,J clickable
     class A,B,C,E,F,G,H,I,J,K transparent
 ```
 
 ## Integration Paths Explained
 
-### Custom Integration
+### Custom Returns Integration
 
 If you're not using a supported platform like Shopify, CommentSold, or
-BigCommerce, you can use our Custom Integration API to sync orders
+BigCommerce, you can use our Custom Returns Integration API to sync orders
 programmatically.
 
 <Card
-  title="Custom Integration Guide"
+  title="Custom Returns Integration Guide"
   icon="code"
-  href="/docs/guides/integrations/custom-integration"
+  href="/docs/guides/integrations/custom-returns-integration"
 >
   Learn how to sync orders to Redo using our custom orders endpoint
 </Card>
@@ -89,7 +90,7 @@ key and other details from your provider, but typically takes just a few clicks.
 
     - **ShipStream** – Fulfillment management
 
-    - **Whiplash (Ryder)** – Omnichannel fulfillment
+    - **RyderShip** – Omnichannel fulfillment
 
   </Accordion>
 </AccordionGroup>
