@@ -52,7 +52,7 @@ configurations for the Redo API.
 ## Project context
 
 - Format: MDX files with YAML frontmatter
-- Config: redo/docs/docs.json for navigation, theme, settings
+- Config: redo/docs.json for navigation, theme, settings
 - Components: Mintlify components
 
 ## Content strategy

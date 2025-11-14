@@ -61,36 +61,51 @@
           {
             "group": "Integrations",
             "pages": [
-              "/docs/guides/shopify-web-components",
-              "/docs/guides/webhooks",
-              "/docs/guides/third-party-integrations",
-              "/docs/guides/custom-integration",
+              "/docs/guides/integrations/integrating-with-returns",
+              "/docs/guides/integrations/integrating-with-returns-apis",
+              "/docs/guides/integrations/custom-returns-integration",
+              "/docs/guides/integrations/webhooks",
+              "/docs/guides/integrations/shopify-web-components"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integrations",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["/docs/integrations/introduction"]
+          },
+          {
+            "group": "Return Integrations",
+            "pages": [
               {
-                "group": "3PL/WMS Return Integrations",
-                "root": "/docs/guides/3pl-wms/overview",
+                "group": "3PL/WMS Integrations",
+                "root": "/docs/integrations/returns/3pl-wms/overview",
                 "pages": [
-                  "/docs/guides/3pl-wms/overview",
-                  "/docs/guides/3pl-wms/apparel-magic",
-                  "/docs/guides/3pl-wms/brightpearl",
-                  "/docs/guides/3pl-wms/deposco",
-                  "/docs/guides/3pl-wms/aims360",
-                  "/docs/guides/3pl-wms/bluebox",
-                  "/docs/guides/3pl-wms/cirro",
-                  "/docs/guides/3pl-wms/cloudx",
-                  "/docs/guides/3pl-wms/flexport",
-                  "/docs/guides/3pl-wms/netsuite",
-                  "/docs/guides/3pl-wms/nimble",
-                  "/docs/guides/3pl-wms/shipbob",
-                  "/docs/guides/3pl-wms/shiphero",
-                  "/docs/guides/3pl-wms/shipmonk",
-                  "/docs/guides/3pl-wms/shipstream",
-                  "/docs/guides/3pl-wms/whiplash-ryder"
+                  "/docs/integrations/returns/3pl-wms/overview",
+                  "/docs/integrations/returns/3pl-wms/apparel-magic",
+                  "/docs/integrations/returns/3pl-wms/brightpearl",
+                  "/docs/integrations/returns/3pl-wms/deposco",
+                  "/docs/integrations/returns/3pl-wms/aims360",
+                  "/docs/integrations/returns/3pl-wms/bluebox",
+                  "/docs/integrations/returns/3pl-wms/cirro",
+                  "/docs/integrations/returns/3pl-wms/cloudx",
+                  "/docs/integrations/returns/3pl-wms/flexport",
+                  "/docs/integrations/returns/3pl-wms/netsuite",
+                  "/docs/integrations/returns/3pl-wms/nimble",
+                  "/docs/integrations/returns/3pl-wms/shipbob",
+                  "/docs/integrations/returns/3pl-wms/shiphero",
+                  "/docs/integrations/returns/3pl-wms/shipmonk",
+                  "/docs/integrations/returns/3pl-wms/shipstream",
+                  "/docs/integrations/returns/3pl-wms/whiplash-ryder"
                 ]
               }
             ]
           }
         ]
-      },      
+      },
       {
         "tab": "API Reference",
         "groups": [
