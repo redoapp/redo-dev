@@ -16,15 +16,13 @@ Follow this flowchart to determine your integration path:
 
 ```mermaid
 flowchart TD
-    A[Start Integration] --> B{Are you on a<br/>supported platform?}
+    A[Start Integration] --> B{Are you on Shopify,<br/>BigCommerce, or CommentSold?}
     B -->|No| C["See our Custom Integration Guide"]
-    C --> E
-    B -->|Yes| D[Standard RMA Creation]
-    D --> E{Do you need to create an RMA in an external system?}
+    B -->|Yes| E{Do you need to create an RMA in an external system?}
     E -->|No| F[You're Done!]
-    E -->|Yes| G{Is this an already supported integration?}
+    E -->|Yes| G{Do we already have an integration for this system?}
     G -->|Yes| H[Set up the integration in your dashboard settings]
-    G -->|No| I{Have you already built this integration with another RMS?}
+    G -->|No| I{Are you a developer building your own integration?}
     I -->|Yes| J[See our Loop Compatible API Guide]
     I -->|No| K["Contact support"]
 
@@ -36,7 +34,7 @@ flowchart TD
     classDef clickable stroke:#FF4405,stroke-width:2px
     classDef transparent fill:transparent
     class C,H,J clickable
-    class A,B,C,D,E,F,G,H,I,J,K transparent
+    class A,B,C,E,F,G,H,I,J,K transparent
 ```
 
 ## Integration Paths Explained
