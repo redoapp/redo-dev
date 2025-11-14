@@ -61,9 +61,9 @@
           {
             "group": "Integrations",
             "pages": [
-              "/docs/guides/integrations/shopify-web-components",
-              "/docs/guides/integrations/webhooks",
               "/docs/guides/integrations/third-party-integrations",
+              "/docs/guides/integrations/webhooks",
+              "/docs/guides/integrations/shopify-web-components",
               "/docs/guides/integrations/custom-integration"
             ]
           }
@@ -72,6 +72,10 @@
       {
         "tab": "Integrations",
         "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["/docs/integrations/introduction"]
+          },
           {
             "group": "Return Integrations",
             "pages": [
