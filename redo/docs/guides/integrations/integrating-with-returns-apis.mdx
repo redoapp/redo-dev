@@ -48,8 +48,8 @@ Create, retrieve, update, and manage returns throughout their lifecycle. You can
 - Process returns to trigger refunds or exchanges
 
 **Key Endpoints:**
-- [List Returns](/docs/api-reference/introduction#endpoints) - `GET /stores/{storeId}/returns`
-- [Update Return Status](/docs/api-reference/introduction#endpoints) - `POST /returns/{returnId}/status`
+- `GET /stores/{storeId}/returns` - List all returns for a store
+- `POST /returns/{returnId}/status` - Update return status
 
 ### Return Shipping
 
@@ -61,8 +61,8 @@ Generate return shipping labels and track return shipments:
 - Track return shipments back to your warehouse
 
 **Key Endpoints:**
-- [Shipping Rates](/docs/api-reference/introduction#endpoints) - `POST /stores/{storeId}/shipments/rates`
-- [Purchase Label](/docs/api-reference/introduction#endpoints) - `POST /stores/{storeId}/shipments/buy`
+- `POST /stores/{storeId}/shipments/rates` - Get shipping rates
+- `POST /stores/{storeId}/shipments/buy` - Purchase shipping label
 
 ### Invoicing
 
@@ -73,7 +73,7 @@ Access invoice data for returns processing:
 - Track invoice status and payment details
 
 **Key Endpoints:**
-- [List Invoices](/docs/api-reference/introduction#endpoints) - `GET /stores/{storeId}/invoices`
+- `GET /stores/{storeId}/invoices` - List invoices
 
 ### Webhooks
 
@@ -85,8 +85,8 @@ Set up real-time notifications for return events:
 - Monitor shipment tracking updates
 
 **Key Endpoints:**
-- [Create Webhook](/docs/api-reference/introduction#endpoints) - `POST /stores/{storeId}/webhooks`
-- [List Webhooks](/docs/api-reference/introduction#endpoints) - `GET /stores/{storeId}/webhooks`
+- `POST /stores/{storeId}/webhooks` - Create webhook subscriptions
+- `GET /stores/{storeId}/webhooks` - List webhook subscriptions
 
 <Card
   title="Webhooks Guide"
