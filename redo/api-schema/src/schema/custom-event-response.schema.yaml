@@ -1,0 +1,21 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: false
+description: Response after successfully creating a custom event.
+properties:
+  event_id:
+    description: The unique identifier for the created event.
+    type: string
+  status:
+    description: Status of the event processing.
+    enum:
+      - processed
+    type: string
+  event_name:
+    description: The name of the custom event that was created.
+    type: string
+required:
+  - event_id
+  - status
+  - event_name
+title: Custom Event Response
+type: object

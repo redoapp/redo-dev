@@ -1,0 +1,78 @@
+post:
+  description: |
+    Create a custom event to trigger flows with merchant-defined event names and properties.
+
+    Custom events allow merchants to trigger flows based on events from their own systems.
+    Events can include custom properties that are accessible in email and SMS templates.
+
+    ## Customer Matching
+    The API matches customers by email or phone number. At least one must be provided.
+
+    If no matching customer is found, the request will fail with a 404 error.
+
+    ## Rate Limiting
+    This endpoint is rate-limited to 100 requests per second per store.
+  operationId: Custom event create
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/custom-event-request.schema.yaml"
+        examples:
+          user_registered:
+            summary: User registration event
+            value:
+              event_name: "user_registered"
+              email: "customer@example.com"
+              properties:
+                plan_type: "premium"
+                referral_code: "FRIEND123"
+                source: "mobile_app"
+          purchase_milestone:
+            summary: Purchase milestone event
+            value:
+              event_name: "purchase_milestone_reached"
+              phone: "+12065551234"
+              properties:
+                milestone_type: "100th_purchase"
+                total_spent: 5000
+                vip_tier: "gold"
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-event-response.schema.yaml"
+      description: Event created successfully
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid request body or missing required customer identifier
+    "404":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Customer not found with provided identifier
+    "429":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Rate limit exceeded
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create custom event
+  tags:
+    - Custom Events
