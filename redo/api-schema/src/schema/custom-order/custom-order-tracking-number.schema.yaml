@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Tracking number information
+properties:
+  carrier:
+    description: Shipping carrier
+    title: Carrier
+    type: [string, "null"]
+  trackingNumber:
+    description: Tracking number
+    title: Tracking Number
+    type: string
+required: [trackingNumber]
+title: Tracking Number
+type: object

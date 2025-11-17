@@ -1,0 +1,36 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Shipping line for custom order integration
+properties:
+  id:
+    description: Shipping line ID
+    title: ID
+    type: string
+  title:
+    description: Shipping method title
+    title: Title
+    type: string
+  code:
+    description: Shipping method code
+    title: Code
+    type: string
+  priceSet:
+    $ref: ./money-set.schema.yaml
+    description: Shipping price (pre-tax and pre-discount)
+    title: Price Set
+  discounts:
+    default: []
+    description: Discounts applied to shipping
+    items:
+      $ref: ./discount.schema.yaml
+    title: Discounts
+    type: array
+  taxLines:
+    default: []
+    description: Tax lines for shipping
+    items:
+      $ref: ./tax-line.schema.yaml
+    title: Tax Lines
+    type: array
+required: [id, title, priceSet]
+title: Custom Order Shipping Line
+type: object

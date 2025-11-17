@@ -100,6 +100,7 @@ paths:
   # Merchant Admin
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
   # Orders
+  /stores/{storeId}/custom/orders: { $ref: path/custom-order-sync.path.yaml }
   /stores/{storeId}/orders: { $ref: path/orders.path.yaml }
   /stores/{storeId}/orders/{orderId}: { $ref: path/order.path.yaml }
   /stores/{storeId}/orders/{orderId}/fulfillments:

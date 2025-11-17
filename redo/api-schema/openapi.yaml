@@ -1066,6 +1066,60 @@ paths:
       tags:
         - Merchant Admin
     summary: Merchant admin
+  /stores/{storeId}/custom/orders:
+    post:
+      description: |
+        Sync a custom order to Redo. This endpoint is used for custom integrations
+        to push order data into the Redo system.
+
+        Important: If Redo protection is attached to this order, include a line item with:
+        - vendor: "re:do"
+        - sku: "x-redo"
+        - tags: "returns", "package protection", or "both"
+        - properties: _redo_type with value "return", "package protection", or "both"
+      operationId: Custom Order Sync
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-order-sync.schema'
+        required: true
+      responses:
+        '200':
+          description: Order synced successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  orderId:
+                    description: The ID of the synced order
+                    type: string
+                  status:
+                    description: Sync status
+                    type: string
+                required:
+                  - orderId
+                  - status
+                type: object
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid order data
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Sync Custom Order
+      tags:
+        - Custom Integration
   /stores/{storeId}/orders:
     description: Orders collection.
     post:
@@ -3842,6 +3896,649 @@ components:
         - status
         - createdAt
         - charge
+      type: object
+    custom-order-billing-address.schema:
+      description: Billing address for custom order integration (all fields nullable)
+      properties:
+        address1:
+          description: Address line 1
+          title: Address Line 1
+          type:
+            - string
+            - 'null'
+        address2:
+          description: Address line 2
+          title: Address Line 2
+          type:
+            - string
+            - 'null'
+        city:
+          description: City
+          title: City
+          type:
+            - string
+            - 'null'
+        company:
+          description: Company name
+          title: Company
+          type:
+            - string
+            - 'null'
+        firstName:
+          description: First name
+          title: First Name
+          type:
+            - string
+            - 'null'
+        lastName:
+          description: Last name
+          title: Last Name
+          type:
+            - string
+            - 'null'
+        provinceCode:
+          description: Province or state code
+          title: Province Code
+          type:
+            - string
+            - 'null'
+        zip:
+          description: Postal/ZIP code
+          title: ZIP
+          type:
+            - string
+            - 'null'
+        countryCode:
+          description: Country code (ISO)
+          title: Country Code
+          type:
+            - string
+            - 'null'
+        phone:
+          description: Phone number
+          title: Phone
+          type:
+            - string
+            - 'null'
+      title: Custom Order Billing Address
+      type:
+        - object
+        - 'null'
+    custom-order-customer.schema:
+      description: Customer information for custom order integration
+      properties:
+        email:
+          description: Customer email address
+          format: email
+          title: Email
+          type: string
+        phone:
+          description: Customer phone number
+          title: Phone
+          type:
+            - string
+            - 'null'
+        id:
+          description: Customer ID in external system
+          title: ID
+          type: string
+        firstName:
+          description: Customer first name
+          title: First Name
+          type: string
+        lastName:
+          description: Customer last name
+          title: Last Name
+          type: string
+        tags:
+          default: []
+          description: Tags associated with customer
+          items:
+            type: string
+          title: Tags
+          type: array
+      required:
+        - email
+        - firstName
+        - lastName
+      title: Custom Order Customer
+      type: object
+    money-set.schema:
+      description: Money set containing both presentment and shop currency amounts
+      properties:
+        presentmentMoney:
+          $ref: '#/components/schemas/money.schema'
+          description: Amount in presentment currency
+          title: Presentment Money
+        shopMoney:
+          $ref: '#/components/schemas/money.schema'
+          description: Amount in shop currency
+          title: Shop Money
+      required:
+        - presentmentMoney
+        - shopMoney
+      title: Money Set
+      type: object
+    custom-order-line-item-property.schema:
+      description: Property associated with a line item
+      properties:
+        name:
+          description: Property name
+          title: Name
+          type: string
+        value:
+          description: Property value
+          title: Value
+          type: string
+      required:
+        - name
+        - value
+      title: Line Item Property
+      type: object
+    custom-order-line-item-image.schema:
+      description: Image associated with a line item
+      properties:
+        url:
+          description: Image URL
+          title: URL
+          type: string
+        data:
+          description: Base64 encoded image data
+          title: Data
+          type:
+            - string
+            - 'null'
+      required:
+        - url
+      title: Line Item Image
+      type: object
+    discount.schema:
+      description: Discount applied to order or line item
+      properties:
+        amountSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Discount amount
+          title: Amount Set
+        discountId:
+          description: Unique identifier for the discount
+          title: Discount ID
+          type: string
+        discountTitle:
+          description: Title/name of the discount
+          title: Discount Title
+          type: string
+        discountCode:
+          description: Code used to apply the discount
+          title: Discount Code
+          type: string
+      required:
+        - amountSet
+        - discountId
+      title: Discount
+      type: object
+    tax-line.schema:
+      description: Tax line item
+      properties:
+        priceSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Tax amount
+          title: Price Set
+        rate:
+          description: Tax rate
+          title: Rate
+          type:
+            - string
+            - 'null'
+        title:
+          description: Tax title/name
+          title: Title
+          type: string
+      required:
+        - priceSet
+      title: Tax Line
+      type: object
+    custom-order-line-item.schema:
+      description: Line item for custom order integration
+      properties:
+        id:
+          description: Line item ID
+          title: ID
+          type: string
+        quantity:
+          description: Quantity ordered
+          title: Quantity
+          type: number
+        priceSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Line item price (pre-tax and pre-discount)
+          title: Price Set
+        returnableQuantity:
+          description: Quantity that can be returned
+          title: Returnable Quantity
+          type:
+            - number
+            - 'null'
+        title:
+          description: Line item title
+          title: Title
+          type: string
+        variantTitle:
+          description: Product variant title
+          title: Variant Title
+          type:
+            - string
+            - 'null'
+        vendor:
+          description: Product vendor (use "re:do" for Redo line items)
+          title: Vendor
+          type:
+            - string
+            - 'null'
+        fulfillmentService:
+          description: Fulfillment service
+          title: Fulfillment Service
+          type:
+            - string
+            - 'null'
+        productId:
+          description: Product ID
+          title: Product ID
+          type: string
+        variantId:
+          description: Variant ID
+          title: Variant ID
+          type:
+            - string
+            - 'null'
+        additionalProductId:
+          description: Additional product ID
+          title: Additional Product ID
+          type:
+            - string
+            - 'null'
+        sku:
+          description: SKU (use "x-redo" for Redo line items)
+          title: SKU
+          type: string
+        properties:
+          default: []
+          description: Custom properties for line item
+          items:
+            $ref: '#/components/schemas/custom-order-line-item-property.schema'
+          title: Properties
+          type: array
+        tags:
+          default: []
+          description: Tags (use "returns", "package protection", or "both" for Redo items)
+          items:
+            type: string
+          title: Tags
+          type: array
+        weight:
+          description: Item weight
+          properties:
+            value:
+              type: number
+            unit:
+              type: string
+          required:
+            - value
+            - unit
+          title: Weight
+          type:
+            - object
+            - 'null'
+        image:
+          description: Primary image URL
+          title: Image
+          type:
+            - string
+            - 'null'
+        images:
+          default: []
+          description: Additional images
+          items:
+            $ref: '#/components/schemas/custom-order-line-item-image.schema'
+          title: Images
+          type: array
+        discounts:
+          default: []
+          description: Discounts applied (should account for quantity)
+          items:
+            $ref: '#/components/schemas/discount.schema'
+          title: Discounts
+          type: array
+        taxLines:
+          default: []
+          description: Tax lines (should account for quantity)
+          items:
+            $ref: '#/components/schemas/tax-line.schema'
+          title: Tax Lines
+          type: array
+      required:
+        - id
+        - quantity
+        - priceSet
+        - title
+        - productId
+        - sku
+      title: Custom Order Line Item
+      type: object
+    custom-order-shipping-line.schema:
+      description: Shipping line for custom order integration
+      properties:
+        id:
+          description: Shipping line ID
+          title: ID
+          type: string
+        title:
+          description: Shipping method title
+          title: Title
+          type: string
+        code:
+          description: Shipping method code
+          title: Code
+          type: string
+        priceSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Shipping price (pre-tax and pre-discount)
+          title: Price Set
+        discounts:
+          default: []
+          description: Discounts applied to shipping
+          items:
+            $ref: '#/components/schemas/discount.schema'
+          title: Discounts
+          type: array
+        taxLines:
+          default: []
+          description: Tax lines for shipping
+          items:
+            $ref: '#/components/schemas/tax-line.schema'
+          title: Tax Lines
+          type: array
+      required:
+        - id
+        - title
+        - priceSet
+      title: Custom Order Shipping Line
+      type: object
+    custom-order-tracking-number.schema:
+      description: Tracking number information
+      properties:
+        carrier:
+          description: Shipping carrier
+          title: Carrier
+          type:
+            - string
+            - 'null'
+        trackingNumber:
+          description: Tracking number
+          title: Tracking Number
+          type: string
+      required:
+        - trackingNumber
+      title: Tracking Number
+      type: object
+    custom-order-fulfillment-line-item.schema:
+      description: Line item reference in fulfillment
+      properties:
+        id:
+          description: Line item ID
+          title: ID
+          type: string
+        quantity:
+          description: Quantity fulfilled
+          title: Quantity
+          type: number
+      required:
+        - id
+        - quantity
+      title: Fulfillment Line Item
+      type: object
+    custom-order-fulfillment.schema:
+      description: Fulfillment information for custom order integration
+      properties:
+        id:
+          description: Fulfillment ID
+          title: ID
+          type: string
+        trackingNumbers:
+          default: []
+          description: Tracking numbers for this fulfillment
+          items:
+            $ref: '#/components/schemas/custom-order-tracking-number.schema'
+          title: Tracking Numbers
+          type: array
+        trackingUrls:
+          default: []
+          description: Tracking URLs
+          items:
+            type: string
+          title: Tracking URLs
+          type: array
+        lineItems:
+          description: Line items included in this fulfillment
+          items:
+            $ref: '#/components/schemas/custom-order-fulfillment-line-item.schema'
+          title: Line Items
+          type: array
+        shippingDate:
+          description: Date when shipment was sent
+          title: Shipping Date
+          type:
+            - string
+            - 'null'
+        deliveryDate:
+          description: Date when shipment was delivered
+          title: Delivery Date
+          type:
+            - string
+            - 'null'
+      required:
+        - id
+        - lineItems
+      title: Custom Order Fulfillment
+      type: object
+    custom-order-address.schema:
+      description: Address for custom order integration
+      properties:
+        address1:
+          description: Address line 1
+          title: Address Line 1
+          type: string
+        address2:
+          description: Address line 2
+          title: Address Line 2
+          type:
+            - string
+            - 'null'
+        city:
+          description: City
+          title: City
+          type: string
+        company:
+          description: Company name
+          title: Company
+          type:
+            - string
+            - 'null'
+        firstName:
+          description: First name
+          title: First Name
+          type:
+            - string
+            - 'null'
+        lastName:
+          description: Last name
+          title: Last Name
+          type:
+            - string
+            - 'null'
+        provinceCode:
+          description: Province or state code
+          title: Province Code
+          type: string
+        zip:
+          description: Postal/ZIP code
+          title: ZIP
+          type: string
+        countryCode:
+          description: Country code (ISO)
+          title: Country Code
+          type: string
+        phone:
+          description: Phone number
+          title: Phone
+          type:
+            - string
+            - 'null'
+      required:
+        - address1
+        - city
+        - provinceCode
+        - zip
+        - countryCode
+      title: Custom Order Address
+      type: object
+    custom-order-transaction.schema:
+      description: Payment transaction for custom order integration
+      properties:
+        paymentId:
+          description: Payment transaction ID
+          title: Payment ID
+          type: string
+        amount:
+          description: Transaction amount
+          title: Amount
+          type: number
+        currency:
+          description: Transaction currency
+          title: Currency
+          type: string
+        createdDate:
+          description: Transaction creation date
+          title: Created Date
+          type: string
+        paymentGateway:
+          description: Payment gateway used
+          title: Payment Gateway
+          type: string
+      required:
+        - paymentId
+        - amount
+        - currency
+        - createdDate
+        - paymentGateway
+      title: Custom Order Transaction
+      type: object
+    custom-order-sync.schema:
+      description: |
+        Custom order integration schema for syncing orders to Redo.
+
+        Note: If Redo is attached to this order, you must add a single line item with:
+        - vendor: "re:do"
+        - sku: "x-redo"
+        - Include the price of Redo as the line item price
+        - In tags, include: "returns", "package protection", or "both"
+        - In properties, include _redo_type with value: "return", "package protection", or "both"
+      properties:
+        id:
+          description: Order ID in external system
+          title: ID
+          type: string
+        type:
+          description: Type of resource (must be "order")
+          enum:
+            - order
+          title: Type
+          type: string
+        billingAddress:
+          $ref: '#/components/schemas/custom-order-billing-address.schema'
+          description: Billing address
+          title: Billing Address
+        salesChannel:
+          description: Sales channel where order was placed
+          title: Sales Channel
+          type:
+            - string
+            - 'null'
+        createdAt:
+          description: Order creation timestamp
+          title: Created At
+          type: string
+        presentmentCurrency:
+          description: Currency shown to customer
+          title: Presentment Currency
+          type: string
+        shopCurrency:
+          description: Shop's base currency
+          title: Shop Currency
+          type: string
+        customer:
+          $ref: '#/components/schemas/custom-order-customer.schema'
+          description: Customer information
+          title: Customer
+        lineItems:
+          description: Order line items
+          items:
+            $ref: '#/components/schemas/custom-order-line-item.schema'
+          title: Line Items
+          type: array
+        orderDiscounts:
+          description: Order-level discounts (not line item or shipping discounts)
+          items:
+            $ref: '#/components/schemas/discount.schema'
+          title: Order Discounts
+          type: array
+        shippingLines:
+          description: Shipping methods
+          items:
+            $ref: '#/components/schemas/custom-order-shipping-line.schema'
+          title: Shipping Lines
+          type: array
+        fulfillments:
+          description: Order fulfillments
+          items:
+            $ref: '#/components/schemas/custom-order-fulfillment.schema'
+          title: Fulfillments
+          type: array
+        shippingAddress:
+          $ref: '#/components/schemas/custom-order-address.schema'
+          description: Shipping address
+          title: Shipping Address
+        tags:
+          default: []
+          description: Order tags
+          items:
+            type: string
+          title: Tags
+          type: array
+        updatedAt:
+          description: Last update timestamp
+          title: Updated At
+          type: string
+        transactions:
+          default: []
+          description: Payment transactions
+          items:
+            $ref: '#/components/schemas/custom-order-transaction.schema'
+          title: Transactions
+          type: array
+      required:
+        - id
+        - type
+        - createdAt
+        - presentmentCurrency
+        - shopCurrency
+        - customer
+        - lineItems
+        - orderDiscounts
+        - shippingLines
+        - fulfillments
+        - shippingAddress
+        - updatedAt
+      title: Custom Order Sync
       type: object
     orders-api-line-item.schema:
       description: Line item in the order.

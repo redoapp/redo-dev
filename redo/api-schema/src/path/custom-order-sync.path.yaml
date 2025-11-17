@@ -1,0 +1,51 @@
+post:
+  description: |
+    Sync a custom order to Redo. This endpoint is used for custom integrations
+    to push order data into the Redo system.
+
+    Important: If Redo protection is attached to this order, include a line item with:
+    - vendor: "re:do"
+    - sku: "x-redo"
+    - tags: "returns", "package protection", or "both"
+    - properties: _redo_type with value "return", "package protection", or "both"
+  operationId: Custom Order Sync
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/custom-order/custom-order-sync.schema.yaml"
+    required: true
+  responses:
+    "200":
+      description: Order synced successfully
+      content:
+        application/json:
+          schema:
+            properties:
+              orderId:
+                description: The ID of the synced order
+                type: string
+              status:
+                description: Sync status
+                type: string
+            required: [orderId, status]
+            type: object
+    "400":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid order data
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Sync Custom Order
+  tags:
+    - Custom Integration

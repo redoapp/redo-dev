@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Image associated with a line item
+properties:
+  url:
+    description: Image URL
+    title: URL
+    type: string
+  data:
+    description: Base64 encoded image data
+    title: Data
+    type: [string, "null"]
+required: [url]
+title: Line Item Image
+type: object

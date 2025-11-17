@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Tax line item
+properties:
+  priceSet:
+    $ref: ./money-set.schema.yaml
+    description: Tax amount
+    title: Price Set
+  rate:
+    description: Tax rate
+    title: Rate
+    type: [string, "null"]
+  title:
+    description: Tax title/name
+    title: Title
+    type: string
+required: [priceSet]
+title: Tax Line
+type: object

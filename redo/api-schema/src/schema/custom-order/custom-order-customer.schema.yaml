@@ -1,0 +1,34 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Customer information for custom order integration
+properties:
+  email:
+    description: Customer email address
+    format: email
+    title: Email
+    type: string
+  phone:
+    description: Customer phone number
+    title: Phone
+    type: [string, "null"]
+  id:
+    description: Customer ID in external system
+    title: ID
+    type: string
+  firstName:
+    description: Customer first name
+    title: First Name
+    type: string
+  lastName:
+    description: Customer last name
+    title: Last Name
+    type: string
+  tags:
+    default: []
+    description: Tags associated with customer
+    items:
+      type: string
+    title: Tags
+    type: array
+required: [email, firstName, lastName]
+title: Custom Order Customer
+type: object

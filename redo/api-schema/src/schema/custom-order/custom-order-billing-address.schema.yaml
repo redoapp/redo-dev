@@ -1,0 +1,45 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Billing address for custom order integration (all fields nullable)
+properties:
+  address1:
+    description: Address line 1
+    title: Address Line 1
+    type: [string, "null"]
+  address2:
+    description: Address line 2
+    title: Address Line 2
+    type: [string, "null"]
+  city:
+    description: City
+    title: City
+    type: [string, "null"]
+  company:
+    description: Company name
+    title: Company
+    type: [string, "null"]
+  firstName:
+    description: First name
+    title: First Name
+    type: [string, "null"]
+  lastName:
+    description: Last name
+    title: Last Name
+    type: [string, "null"]
+  provinceCode:
+    description: Province or state code
+    title: Province Code
+    type: [string, "null"]
+  zip:
+    description: Postal/ZIP code
+    title: ZIP
+    type: [string, "null"]
+  countryCode:
+    description: Country code (ISO)
+    title: Country Code
+    type: [string, "null"]
+  phone:
+    description: Phone number
+    title: Phone
+    type: [string, "null"]
+title: Custom Order Billing Address
+type: [object, "null"]

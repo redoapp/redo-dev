@@ -1,0 +1,26 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Payment transaction for custom order integration
+properties:
+  paymentId:
+    description: Payment transaction ID
+    title: Payment ID
+    type: string
+  amount:
+    description: Transaction amount
+    title: Amount
+    type: number
+  currency:
+    description: Transaction currency
+    title: Currency
+    type: string
+  createdDate:
+    description: Transaction creation date
+    title: Created Date
+    type: string
+  paymentGateway:
+    description: Payment gateway used
+    title: Payment Gateway
+    type: string
+required: [paymentId, amount, currency, createdDate, paymentGateway]
+title: Custom Order Transaction
+type: object

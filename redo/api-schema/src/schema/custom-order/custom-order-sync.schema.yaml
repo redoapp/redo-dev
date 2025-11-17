@@ -1,0 +1,107 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  Custom order integration schema for syncing orders to Redo.
+
+  Note: If Redo is attached to this order, you must add a single line item with:
+  - vendor: "re:do"
+  - sku: "x-redo"
+  - Include the price of Redo as the line item price
+  - In tags, include: "returns", "package protection", or "both"
+  - In properties, include _redo_type with value: "return", "package protection", or "both"
+properties:
+  id:
+    description: Order ID in external system
+    title: ID
+    type: string
+  type:
+    description: Type of resource (must be "order")
+    enum: [order]
+    title: Type
+    type: string
+  billingAddress:
+    $ref: ./custom-order-billing-address.schema.yaml
+    description: Billing address
+    title: Billing Address
+  salesChannel:
+    description: Sales channel where order was placed
+    title: Sales Channel
+    type: [string, "null"]
+  createdAt:
+    description: Order creation timestamp
+    title: Created At
+    type: string
+  presentmentCurrency:
+    description: Currency shown to customer
+    title: Presentment Currency
+    type: string
+  shopCurrency:
+    description: Shop's base currency
+    title: Shop Currency
+    type: string
+  customer:
+    $ref: ./custom-order-customer.schema.yaml
+    description: Customer information
+    title: Customer
+  lineItems:
+    description: Order line items
+    items:
+      $ref: ./custom-order-line-item.schema.yaml
+    title: Line Items
+    type: array
+  orderDiscounts:
+    description: Order-level discounts (not line item or shipping discounts)
+    items:
+      $ref: ./discount.schema.yaml
+    title: Order Discounts
+    type: array
+  shippingLines:
+    description: Shipping methods
+    items:
+      $ref: ./custom-order-shipping-line.schema.yaml
+    title: Shipping Lines
+    type: array
+  fulfillments:
+    description: Order fulfillments
+    items:
+      $ref: ./custom-order-fulfillment.schema.yaml
+    title: Fulfillments
+    type: array
+  shippingAddress:
+    $ref: ./custom-order-address.schema.yaml
+    description: Shipping address
+    title: Shipping Address
+  tags:
+    default: []
+    description: Order tags
+    items:
+      type: string
+    title: Tags
+    type: array
+  updatedAt:
+    description: Last update timestamp
+    title: Updated At
+    type: string
+  transactions:
+    default: []
+    description: Payment transactions
+    items:
+      $ref: ./custom-order-transaction.schema.yaml
+    title: Transactions
+    type: array
+required:
+  [
+    id,
+    type,
+    createdAt,
+    presentmentCurrency,
+    shopCurrency,
+    customer,
+    lineItems,
+    orderDiscounts,
+    shippingLines,
+    fulfillments,
+    shippingAddress,
+    updatedAt,
+  ]
+title: Custom Order Sync
+type: object

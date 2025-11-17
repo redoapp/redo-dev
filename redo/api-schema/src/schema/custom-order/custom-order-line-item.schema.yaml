@@ -1,0 +1,104 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Line item for custom order integration
+properties:
+  id:
+    description: Line item ID
+    title: ID
+    type: string
+  quantity:
+    description: Quantity ordered
+    title: Quantity
+    type: number
+  priceSet:
+    $ref: ./money-set.schema.yaml
+    description: Line item price (pre-tax and pre-discount)
+    title: Price Set
+  returnableQuantity:
+    description: Quantity that can be returned
+    title: Returnable Quantity
+    type: [number, "null"]
+  title:
+    description: Line item title
+    title: Title
+    type: string
+  variantTitle:
+    description: Product variant title
+    title: Variant Title
+    type: [string, "null"]
+  vendor:
+    description: Product vendor (use "re:do" for Redo line items)
+    title: Vendor
+    type: [string, "null"]
+  fulfillmentService:
+    description: Fulfillment service
+    title: Fulfillment Service
+    type: [string, "null"]
+  productId:
+    description: Product ID
+    title: Product ID
+    type: string
+  variantId:
+    description: Variant ID
+    title: Variant ID
+    type: [string, "null"]
+  additionalProductId:
+    description: Additional product ID
+    title: Additional Product ID
+    type: [string, "null"]
+  sku:
+    description: SKU (use "x-redo" for Redo line items)
+    title: SKU
+    type: string
+  properties:
+    default: []
+    description: Custom properties for line item
+    items:
+      $ref: ./custom-order-line-item-property.schema.yaml
+    title: Properties
+    type: array
+  tags:
+    default: []
+    description: Tags (use "returns", "package protection", or "both" for Redo items)
+    items:
+      type: string
+    title: Tags
+    type: array
+  weight:
+    description: Item weight
+    properties:
+      value:
+        type: number
+      unit:
+        type: string
+    required: [value, unit]
+    title: Weight
+    type: [object, "null"]
+  image:
+    description: Primary image URL
+    title: Image
+    type: [string, "null"]
+  images:
+    default: []
+    description: Additional images
+    items:
+      $ref: ./custom-order-line-item-image.schema.yaml
+    title: Images
+    type: array
+  discounts:
+    default: []
+    description: Discounts applied (should account for quantity)
+    items:
+      $ref: ./discount.schema.yaml
+    title: Discounts
+    type: array
+  taxLines:
+    default: []
+    description: Tax lines (should account for quantity)
+    items:
+      $ref: ./tax-line.schema.yaml
+    title: Tax Lines
+    type: array
+required:
+  [id, quantity, priceSet, title, productId, sku]
+title: Custom Order Line Item
+type: object

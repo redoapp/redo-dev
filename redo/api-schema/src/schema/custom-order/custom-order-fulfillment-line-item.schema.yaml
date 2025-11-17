@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Line item reference in fulfillment
+properties:
+  id:
+    description: Line item ID
+    title: ID
+    type: string
+  quantity:
+    description: Quantity fulfilled
+    title: Quantity
+    type: number
+required: [id, quantity]
+title: Fulfillment Line Item
+type: object
