@@ -1,0 +1,25 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: false
+description: Custom event to trigger flows with merchant-defined event names and properties.
+properties:
+  event_name:
+    description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
+    type: string
+  email:
+    description: Customer email address (one of email or phone is required).
+    type: string
+  phone:
+    description: Customer phone number (one of email or phone is required).
+    type: string
+  properties:
+    description: Custom properties for this event. Access in templates using dot notation (e.g., {{ properties.product_name }}).
+    type: object
+    additionalProperties: true
+  event_timestamp:
+    description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
+    format: date-time
+    type: string
+required:
+  - event_name
+title: Custom Event Request
+type: object
