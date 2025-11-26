@@ -1,7 +1,7 @@
 # Redo Developer Documentation
 
 Official documentation for the Redo returns and exchanges platform API. See
-[Documentation](https://developer.getredo.com/).
+[Documentation](https://developers.redo.com/).
 
 ## Development
 

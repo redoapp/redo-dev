@@ -1037,6 +1037,10 @@ components:
           description: Carrier code
           title: Carrier
           type: string
+        postageLabel:
+          description: Postage label URL
+          title: Postage Label
+          type: string
         status:
           description: Status of shipment
           enum:
