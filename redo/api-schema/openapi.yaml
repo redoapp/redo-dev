@@ -217,6 +217,52 @@ components:
         - price
       title: Coverage product
       type: object
+    custom-event-request.schema:
+      additionalProperties: false
+      description: Custom event to trigger flows with merchant-defined event names and properties.
+      properties:
+        email:
+          description: Customer email address (one of email or phone is required).
+          type: string
+        event_name:
+          description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
+          type: string
+        event_timestamp:
+          description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
+          format: date-time
+          type: string
+        phone:
+          description: Customer phone number (one of email or phone is required).
+          type: string
+        properties:
+          additionalProperties: true
+          description: Custom properties for this event. Access in templates using dot notation (e.g., {{ properties.product_name }}).
+          type: object
+      required:
+        - event_name
+      title: Custom Event Request
+      type: object
+    custom-event-response.schema:
+      additionalProperties: false
+      description: Response after successfully creating a custom event.
+      properties:
+        event_id:
+          description: The unique identifier for the created event.
+          type: string
+        event_name:
+          description: The name of the custom event that was created.
+          type: string
+        status:
+          description: Status of the event processing.
+          enum:
+            - processed
+          type: string
+      required:
+        - event_id
+        - status
+        - event_name
+      title: Custom Event Response
+      type: object
     customer-subscription-email.schema:
       description: Email subscription updates
       properties:
@@ -2087,6 +2133,85 @@ paths:
       tags:
         - Customer Subscriptions
     summary: Customer subscriptions
+  /stores/{storeId}/events:
+    post:
+      description: |
+        Create a custom event to trigger flows with merchant-defined event names and properties.
+
+        Custom events allow merchants to trigger flows based on events from their own systems.
+        Events can include custom properties that are accessible in email and SMS templates.
+
+        ## Customer Matching
+        The API matches customers by email or phone number. At least one must be provided.
+
+        If no matching customer is found, the request will fail with a 404 error.
+
+        ## Rate Limiting
+        This endpoint is rate-limited to 100 requests per second per store.
+      operationId: Custom event create
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      requestBody:
+        content:
+          application/json:
+            examples:
+              purchase_milestone:
+                summary: Purchase milestone event
+                value:
+                  event_name: purchase_milestone_reached
+                  phone: '+12065551234'
+                  properties:
+                    milestone_type: 100th_purchase
+                    total_spent: 5000
+                    vip_tier: gold
+              user_registered:
+                summary: User registration event
+                value:
+                  email: customer@example.com
+                  event_name: user_registered
+                  properties:
+                    plan_type: premium
+                    referral_code: FRIEND123
+                    source: mobile_app
+            schema:
+              $ref: '#/components/schemas/custom-event-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-event-response.schema'
+          description: Event created successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body or missing required customer identifier
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Customer not found with provided identifier
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Rate limit exceeded
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create custom event
+      tags:
+        - Custom Events
   /stores/{storeId}/invoices:
     description: Return a list of invoices.
     get:
