@@ -27,12 +27,41 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for git diff
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Mintlify CLI
         run: npm install -g mintlify
       - name: Set up
         uses: ./.github/actions/setup
         with:
           bazel-cache-key: bazel/${{ runner.os }}-${{ runner.arch }}/v2.2/build/openapi
+      - name: Generate OpenAPI file
+        run: bazel run openapi_gen
+      - name: Check if generated file changed
+        id: check-changes
+        run: |
+          if git diff --quiet redo/api-schema/openapi.yaml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Generated OpenAPI file is already up to date"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Generated OpenAPI file needs to be updated"
+            echo ""
+            echo "Changes detected:"
+            git diff --stat redo/api-schema/openapi.yaml
+          fi
+      - name: Configure Git
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git add redo/api-schema/openapi.yaml
+          git commit -m "chore: regenerate openapi.yaml from source files"
+          git push origin HEAD
       - name: Test OpenAPI specification
         run: bazel test tools/openapi:validate_test --test_output=errors
       - if: always()
@@ -114,5 +143,5 @@ name: Build
 on: [push, workflow_dispatch]
 permissions:
   actions: write
-  contents: read
+  contents: write
   id-token: write
