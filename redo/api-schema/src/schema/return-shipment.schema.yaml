@@ -29,5 +29,9 @@ properties:
     description: Tracking URL
     title: Tracking URL
     type: string
+  postageLabel:
+    description: Postage label URL
+    title: Postage Label
+    type: string
 title: Return Shipment
 type: object
