@@ -841,8 +841,7 @@ components:
                         oneOf:
                           - properties:
                               type:
-                                enum:
-                                  - short_text
+                                const: short_text
                                 type: string
                               value:
                                 description: Short text response value
@@ -854,8 +853,7 @@ components:
                             type: object
                           - properties:
                               type:
-                                enum:
-                                  - long_text
+                                const: long_text
                                 type: string
                               value:
                                 description: Long text response value
@@ -867,8 +865,7 @@ components:
                             type: object
                           - properties:
                               type:
-                                enum:
-                                  - select
+                                const: select
                                 type: string
                               value:
                                 description: Select response values (array of selected options)
@@ -882,8 +879,7 @@ components:
                             type: object
                           - properties:
                               type:
-                                enum:
-                                  - number
+                                const: number
                                 type: string
                               value:
                                 description: Number response value
@@ -895,8 +891,7 @@ components:
                             type: object
                           - properties:
                               type:
-                                enum:
-                                  - boolean
+                                const: boolean
                                 type: string
                               value:
                                 description: Boolean response value
@@ -908,8 +903,7 @@ components:
                             type: object
                           - properties:
                               type:
-                                enum:
-                                  - file_upload
+                                const: file_upload
                                 type: string
                               value:
                                 description: File upload response values (array of file URLs or identifiers)
@@ -923,8 +917,7 @@ components:
                             type: object
                           - properties:
                               type:
-                                enum:
-                                  - date
+                                const: date
                                 type: string
                               value:
                                 description: Date response value

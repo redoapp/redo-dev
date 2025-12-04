@@ -241,7 +241,7 @@ properties:
                     - title: Short Text Response
                       properties:
                         type:
-                          enum: [short_text]
+                          const: short_text
                           type: string
                         value:
                           description: Short text response value
@@ -251,7 +251,7 @@ properties:
                     - title: Long Text Response
                       properties:
                         type:
-                          enum: [long_text]
+                          const: long_text
                           type: string
                         value:
                           description: Long text response value
@@ -261,7 +261,7 @@ properties:
                     - title: Select Response
                       properties:
                         type:
-                          enum: [select]
+                          const: select
                           type: string
                         value:
                           description: Select response values (array of selected options)
@@ -273,7 +273,7 @@ properties:
                     - title: Number Response
                       properties:
                         type:
-                          enum: [number]
+                          const: number
                           type: string
                         value:
                           description: Number response value
@@ -283,7 +283,7 @@ properties:
                     - title: Boolean Response
                       properties:
                         type:
-                          enum: [boolean]
+                          const: boolean
                           type: string
                         value:
                           description: Boolean response value
@@ -293,7 +293,7 @@ properties:
                     - title: File Upload Response
                       properties:
                         type:
-                          enum: [file_upload]
+                          const: file_upload
                           type: string
                         value:
                           description: File upload response values (array of file URLs or identifiers)
@@ -305,7 +305,7 @@ properties:
                     - title: Date Response
                       properties:
                         type:
-                          enum: [date]
+                          const: date
                           type: string
                         value:
                           description: Date response value
