@@ -214,7 +214,7 @@ properties:
             type: object
           type: array
         assessments:
-          description: Assessment records for this return item
+          description: Assessment records for this return item. Only applicable for warranties.
           items:
             properties:
               assignedUser:
@@ -314,7 +314,7 @@ properties:
                       required: [type, value]
                       type: object
                 type: array
-            required: [responses]
+            required: [assignedUser, responses]
             type: object
           type: array
         refund:

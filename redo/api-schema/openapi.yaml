@@ -810,7 +810,7 @@ components:
           items:
             properties:
               assessments:
-                description: Assessment records for this return item
+                description: Assessment records for this return item. Only applicable for warranties.
                 items:
                   properties:
                     assignedUser:
@@ -930,6 +930,7 @@ components:
                             type: object
                       type: array
                   required:
+                    - assignedUser
                     - responses
                   type: object
                 type: array
