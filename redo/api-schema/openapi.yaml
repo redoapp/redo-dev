@@ -674,6 +674,16 @@ components:
     return-read.schema:
       description: Return read.
       properties:
+        compensationMethods:
+          description: Array of compensation methods available for this return
+          items:
+            enum:
+              - refund
+              - store_credit
+              - exchange
+            type: string
+          title: Compensation Methods
+          type: array
         createdAt:
           description: Time of creation.
           format: date-time
@@ -799,6 +809,137 @@ components:
           description: Return items
           items:
             properties:
+              assessments:
+                description: Assessment records for this return item
+                items:
+                  properties:
+                    assignedUser:
+                      description: User assigned to this assessment
+                      properties:
+                        email:
+                          type: string
+                        firstName:
+                          type: string
+                        id:
+                          type: string
+                        lastName:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                        - firstName
+                        - lastName
+                        - email
+                      type: object
+                    responses:
+                      description: Assessment responses
+                      items:
+                        discriminator:
+                          propertyName: type
+                        oneOf:
+                          - properties:
+                              type:
+                                enum:
+                                  - short_text
+                                type: string
+                              value:
+                                description: Short text response value
+                                type: string
+                            required:
+                              - type
+                              - value
+                            title: Short Text Response
+                            type: object
+                          - properties:
+                              type:
+                                enum:
+                                  - long_text
+                                type: string
+                              value:
+                                description: Long text response value
+                                type: string
+                            required:
+                              - type
+                              - value
+                            title: Long Text Response
+                            type: object
+                          - properties:
+                              type:
+                                enum:
+                                  - select
+                                type: string
+                              value:
+                                description: Select response values (array of selected options)
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - type
+                              - value
+                            title: Select Response
+                            type: object
+                          - properties:
+                              type:
+                                enum:
+                                  - number
+                                type: string
+                              value:
+                                description: Number response value
+                                type: number
+                            required:
+                              - type
+                              - value
+                            title: Number Response
+                            type: object
+                          - properties:
+                              type:
+                                enum:
+                                  - boolean
+                                type: string
+                              value:
+                                description: Boolean response value
+                                type: boolean
+                            required:
+                              - type
+                              - value
+                            title: Boolean Response
+                            type: object
+                          - properties:
+                              type:
+                                enum:
+                                  - file_upload
+                                type: string
+                              value:
+                                description: File upload response values (array of file URLs or identifiers)
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - type
+                              - value
+                            title: File Upload Response
+                            type: object
+                          - properties:
+                              type:
+                                enum:
+                                  - date
+                                type: string
+                              value:
+                                description: Date response value
+                                format: date-time
+                                type: string
+                            required:
+                              - type
+                              - value
+                            title: Date Response
+                            type: object
+                      type: array
+                  required:
+                    - responses
+                  type: object
+                type: array
               customerComment:
                 description: Customer's comment about the return
                 type: string
@@ -830,6 +971,21 @@ components:
                 description: Return item ID.
                 title: ID
                 type: string
+              multipleChoiceQuestions:
+                description: Multiple choice questions and answers for this return item
+                items:
+                  properties:
+                    answer:
+                      description: The selected answer
+                      type: string
+                    question:
+                      description: The question text
+                      type: string
+                  required:
+                    - question
+                    - answer
+                  type: object
+                type: array
               orderItem:
                 description: Order line item
                 properties:
@@ -845,6 +1001,9 @@ components:
                   - id
                 title: Order item
                 type: object
+              productAdjustment:
+                description: Product adjustment details
+                type: string
               productId:
                 description: Product ID
                 type: string
@@ -860,6 +1019,11 @@ components:
               reasonCode:
                 description: Return reason code
                 type: string
+              reasonCodes:
+                description: Array of return reason codes
+                items:
+                  type: string
+                type: array
               reasons:
                 description: Array of return reasons
                 items:

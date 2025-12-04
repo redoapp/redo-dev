@@ -1,6 +1,13 @@
 # $schema: https://json-schema.org/draft/2020-12/schema#
 description: Return read.
 properties:
+  compensationMethods:
+    description: Array of compensation methods available for this return
+    items:
+      enum: [refund, store_credit, exchange]
+      type: string
+    title: Compensation Methods
+    type: array
   createdAt:
     description: Time of creation.
     format: date-time
@@ -184,6 +191,131 @@ properties:
           description: Array of return reasons
           items:
             type: string
+          type: array
+        reasonCodes:
+          description: Array of return reason codes
+          items:
+            type: string
+          type: array
+        productAdjustment:
+          description: Product adjustment details
+          type: string
+        multipleChoiceQuestions:
+          description: Multiple choice questions and answers for this return item
+          items:
+            properties:
+              question:
+                description: The question text
+                type: string
+              answer:
+                description: The selected answer
+                type: string
+            required: [question, answer]
+            type: object
+          type: array
+        assessments:
+          description: Assessment records for this return item
+          items:
+            properties:
+              assignedUser:
+                description: User assigned to this assessment
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                required: [id, name, firstName, lastName, email]
+                type: object
+              responses:
+                description: Assessment responses
+                items:
+                  discriminator:
+                    propertyName: type
+                  oneOf:
+                    - title: Short Text Response
+                      properties:
+                        type:
+                          enum: [short_text]
+                          type: string
+                        value:
+                          description: Short text response value
+                          type: string
+                      required: [type, value]
+                      type: object
+                    - title: Long Text Response
+                      properties:
+                        type:
+                          enum: [long_text]
+                          type: string
+                        value:
+                          description: Long text response value
+                          type: string
+                      required: [type, value]
+                      type: object
+                    - title: Select Response
+                      properties:
+                        type:
+                          enum: [select]
+                          type: string
+                        value:
+                          description: Select response values (array of selected options)
+                          items:
+                            type: string
+                          type: array
+                      required: [type, value]
+                      type: object
+                    - title: Number Response
+                      properties:
+                        type:
+                          enum: [number]
+                          type: string
+                        value:
+                          description: Number response value
+                          type: number
+                      required: [type, value]
+                      type: object
+                    - title: Boolean Response
+                      properties:
+                        type:
+                          enum: [boolean]
+                          type: string
+                        value:
+                          description: Boolean response value
+                          type: boolean
+                      required: [type, value]
+                      type: object
+                    - title: File Upload Response
+                      properties:
+                        type:
+                          enum: [file_upload]
+                          type: string
+                        value:
+                          description: File upload response values (array of file URLs or identifiers)
+                          items:
+                            type: string
+                          type: array
+                      required: [type, value]
+                      type: object
+                    - title: Date Response
+                      properties:
+                        type:
+                          enum: [date]
+                          type: string
+                        value:
+                          description: Date response value
+                          format: date-time
+                          type: string
+                      required: [type, value]
+                      type: object
+                type: array
+            required: [responses]
+            type: object
           type: array
         refund:
           description: Refund details
