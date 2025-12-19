@@ -1499,6 +1499,7 @@ components:
           title: Price
       required:
         - lineItems
+        - priceTotal
       title: Storefront Cart
       type: object
     storefront-customer.schema:
@@ -2194,6 +2195,8 @@ paths:
                     type: object
                   title: Variants
                   type: array
+              required:
+                - cart
               type: object
         required: true
       responses:
