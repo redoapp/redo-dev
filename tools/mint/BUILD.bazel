@@ -1,10 +1,21 @@
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
 
 package(default_visibility = ["//visibility:public"])
 
+# Use nodejs_binary to get all the dependencies resolved
+nodejs_binary(
+    name = "mintlify_bin",
+    dep = "@redotech_redodev_npm//mintlify:lib",
+    main = "node_modules/@mintlify/cli/bin/cli.js",
+    visibility = ["//visibility:private"],
+)
+
+# Wrapper script to run mintlify in the correct directory
 sh_binary(
     name = "mint",
     data = [
+        ":mintlify_bin",
         "//redo:docs.json",
         "//redo/docs",
     ],
