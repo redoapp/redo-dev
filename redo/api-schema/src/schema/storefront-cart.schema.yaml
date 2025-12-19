@@ -62,6 +62,6 @@ properties:
     $ref: ./money.schema.yaml
     description: Total price.
     title: Price
-required: [lineItems]
+required: [lineItems, priceTotal]
 title: Storefront Cart
 type: object

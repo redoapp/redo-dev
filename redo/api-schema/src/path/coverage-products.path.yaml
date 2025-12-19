@@ -54,6 +54,7 @@ post:
                 type: object
               title: Variants
               type: array
+          required: [cart]
           type: object
     required: true
   responses:
