@@ -33,5 +33,19 @@ properties:
     description: Postage label URL
     title: Postage Label
     type: string
+  shipmentGroupId:
+    description: ID of the shipment group this shipment belongs to
+    title: Shipment Group ID
+    type: string
+  itemIds:
+    description: IDs of the return items included in this shipment
+    items:
+      type: string
+    title: Item IDs
+    type: array
+  externalLocationId:
+    description: External location ID for the destination of this shipment
+    title: External Location ID
+    type: string
 title: Return Shipment
 type: object

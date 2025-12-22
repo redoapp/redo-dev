@@ -1035,6 +1035,12 @@ components:
                 required:
                   - amount
                 type: object
+              shipmentGroupIds:
+                description: IDs of the shipment groups this return item belongs to
+                items:
+                  type: string
+                title: Shipment Group IDs
+                type: array
               sku:
                 description: Product SKU
                 type: string
@@ -1195,9 +1201,23 @@ components:
           description: Carrier code
           title: Carrier
           type: string
+        externalLocationId:
+          description: External location ID for the destination of this shipment
+          title: External Location ID
+          type: string
+        itemIds:
+          description: IDs of the return items included in this shipment
+          items:
+            type: string
+          title: Item IDs
+          type: array
         postageLabel:
           description: Postage label URL
           title: Postage Label
+          type: string
+        shipmentGroupId:
+          description: ID of the shipment group this shipment belongs to
+          title: Shipment Group ID
           type: string
         status:
           description: Status of shipment
