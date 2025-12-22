@@ -155,6 +155,12 @@ properties:
           description:
             Whether this is a green return (no physical return required)
           type: boolean
+        shipmentGroupIds:
+          description: IDs of the shipment groups this return item belongs to
+          items:
+            type: string
+          title: Shipment Group IDs
+          type: array
         id:
           description: Return item ID.
           title: ID
