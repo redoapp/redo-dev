@@ -2171,6 +2171,7 @@ paths:
                 customer:
                   $ref: '#/components/schemas/storefront-customer.schema'
                 products:
+                  deprecated: true
                   description: Product information.
                   items:
                     properties:
@@ -2184,6 +2185,7 @@ paths:
                   title: Products
                   type: array
                 variants:
+                  deprecated: true
                   description: Variant information.
                   items:
                     properties:

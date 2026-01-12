@@ -21,6 +21,7 @@ post:
                     type: string
                 required: [id]
                 type: object
+              deprecated: true
               title: Products
               type: array
             variants:
@@ -52,6 +53,7 @@ post:
                     title: Width
                 required: [id]
                 type: object
+              deprecated: true
               title: Variants
               type: array
           required: [cart]
