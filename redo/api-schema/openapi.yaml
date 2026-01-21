@@ -1090,7 +1090,6 @@ components:
               type: string
           required:
             - id
-            - name
           title: Order
           type: object
         shipment:

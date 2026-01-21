@@ -375,7 +375,7 @@ properties:
         examples: ["#123"]
         title: Name
         type: string
-    required: [id, name]
+    required: [id]
     title: Order
     type: object
   shipment:
