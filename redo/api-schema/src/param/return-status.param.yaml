@@ -1,0 +1,5 @@
+description: Filter returns by status
+in: query
+name: status
+schema:
+  $ref: ../schema/return-status.schema.yaml

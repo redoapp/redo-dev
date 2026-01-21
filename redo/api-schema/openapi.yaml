@@ -51,6 +51,12 @@ components:
       schema:
         example: 64e4d5e837572a4813b73e40
         type: string
+    return-status.param:
+      description: Filter returns by status
+      in: query
+      name: status
+      schema:
+        $ref: '#/components/schemas/return-status.schema'
     shipment-id.param:
       description: Shipment ID
       in: path
@@ -2450,6 +2456,7 @@ paths:
         - $ref: '#/components/parameters/updated-at-min.param'
         - $ref: '#/components/parameters/shopify-order-name'
         - $ref: '#/components/parameters/provider-order-name'
+        - $ref: '#/components/parameters/return-status.param'
       responses:
         '200':
           content:

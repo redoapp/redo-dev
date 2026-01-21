@@ -9,6 +9,7 @@ get:
     - { $ref: ../param/updated-at-min.param.yaml }
     - { $ref: ../param/shopify-order-name.yaml }
     - { $ref: ../param/provider-order-name.yaml }
+    - { $ref: ../param/return-status.param.yaml }
   responses:
     "200":
       content:
