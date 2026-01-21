@@ -1078,9 +1078,15 @@ components:
           description: Original order.
           properties:
             id:
-              description: Order ID.
-              example: abc123
+              description: Redo's internal identifier for the original order created in Redo.
+              example: 64e4da943dd822979a70bd12
               title: ID
+              type: string
+            name:
+              description: Order name from the external provider, such as the Shopify order name.
+              examples:
+                - '#123'
+              title: Name
               type: string
           required:
             - id
