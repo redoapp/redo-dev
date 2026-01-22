@@ -1143,6 +1143,22 @@ components:
           $ref: '#/components/schemas/return-status.schema'
           description: Return status.
           title: Status
+        tags:
+          description: Tags associated with this return
+          items:
+            properties:
+              name:
+                description: The tag's display name
+                type: string
+              source:
+                description: The source of the tag
+                type: string
+            required:
+              - name
+              - source
+            type: object
+          title: Tags
+          type: array
         totals:
           description: Calculated totals for the return
           properties:
