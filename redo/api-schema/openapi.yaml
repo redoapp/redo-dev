@@ -1233,6 +1233,10 @@ components:
           description: External location ID for the destination of this shipment
           title: External Location ID
           type: string
+        formLabel:
+          description: Form label URL
+          title: Form Label
+          type: string
         itemIds:
           description: IDs of the return items included in this shipment
           items:
