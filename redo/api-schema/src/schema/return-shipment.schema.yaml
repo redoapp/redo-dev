@@ -33,6 +33,10 @@ properties:
     description: Postage label URL
     title: Postage Label
     type: string
+  formLabel:
+    description: Form label URL
+    title: Form Label
+    type: string
   shipmentGroupId:
     description: ID of the shipment group this shipment belongs to
     title: Shipment Group ID
