@@ -1,0 +1,47 @@
+description: |
+  Request body for creating or updating a customer.
+
+  **Field update behavior:**
+  - Omit a field to leave it unchanged
+  - Set a field to `null` to clear it
+  - Set a field to a value to update it
+properties:
+  identifiers:
+    description:
+      Customer identifiers. At least one of email or phoneNumber is required.
+    properties:
+      email:
+        description: Customer email address
+        format: email
+        type: string
+      phoneNumber:
+        description: Customer phone number in E.164 format (e.g., +12345678900)
+        minLength: 1
+        type: string
+    type: object
+  attributes:
+    description: |
+      Customer attributes to set or update. All fields are optional.
+      Omit a field to leave it unchanged, or set to null to clear it.
+    properties:
+      firstName:
+        description: Customer first name. Omit to leave unchanged, set to null to clear.
+        oneOf:
+          - type: string
+          - type: "null"
+      lastName:
+        description: Customer last name. Omit to leave unchanged, set to null to clear.
+        oneOf:
+          - type: string
+          - type: "null"
+      customFields:
+        description: |
+          Custom field values. Must match pre-declared fields for the team.
+          Set value to null to remove a field from the customer.
+        items:
+          $ref: ./customer-custom-field-input.schema.yaml
+        type: array
+    type: object
+required:
+  - identifiers
+type: object

@@ -1,0 +1,34 @@
+description: Customer response
+properties:
+  customer:
+    description: The customer data
+    properties:
+      firstName:
+        description: Customer first name
+        oneOf:
+          - type: string
+          - type: "null"
+      lastName:
+        description: Customer last name
+        oneOf:
+          - type: string
+          - type: "null"
+      email:
+        description: Customer primary email address
+        oneOf:
+          - type: string
+          - type: "null"
+      phoneNumbers:
+        description: Customer phone numbers in E.164 format
+        type: array
+        items:
+          type: string
+      customFields:
+        description: Customer custom fields
+        items:
+          $ref: ./customer-custom-field-output.schema.yaml
+        type: array
+    type: object
+required:
+  - customer
+type: object
