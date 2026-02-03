@@ -1,0 +1,123 @@
+---
+title: "Redo MCP Server"
+description: "Connect AI coding assistants to the Redo API using the Model Context Protocol (MCP)"
+icon: "robot"
+---
+
+The Redo MCP Server allows AI coding assistants like Claude, Cursor, and GitHub Copilot to interact with the Redo API directly. This enables AI-assisted development workflows for building integrations with Redo.
+
+## Prerequisites
+
+- A Redo API Bearer token
+- Your Redo Store ID
+
+See [Authentication](/docs/api-reference/authentication) for how to get these credentials.
+
+## Server URL
+
+```
+https://mcp-server.getredo.com/mcp/redo
+```
+
+## Claude Code CLI
+
+```bash
+claude mcp add --transport http redo https://mcp-server.getredo.com/mcp/redo --header "Authorization: Bearer <your-redo-api-token>" --header "X-Redo-Store-Id: <your-store-id>"
+```
+
+## Claude Desktop App
+
+Edit your Claude Desktop config file. You can open it from the app: click your account in the bottom left → **Settings** → **Developer** → **Edit Config** → open `claude_desktop_config.json`. Or open the file directly:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add the `redo` server under `mcpServers`:
+
+```json
+{
+  "mcpServers": {
+    "redo": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp-server.getredo.com/mcp/redo",
+        "--transport",
+        "http-only",
+        "--header",
+        "Authorization:${REDO_AUTH_HEADER}",
+        "--header",
+        "X-Redo-Store-Id:${REDO_STORE_ID}"
+      ],
+      "env": {
+        "REDO_AUTH_HEADER": "Bearer <your-redo-api-token>",
+        "REDO_STORE_ID": "<your-store-id>"
+      }
+    }
+  }
+}
+```
+
+Replace `<your-redo-api-token>` and `<your-store-id>` with your Redo API token and store ID. Restart Claude Desktop after saving.
+
+## Cursor
+
+Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for global config):
+
+```json
+{
+  "mcpServers": {
+    "redo": {
+      "url": "https://mcp-server.getredo.com/mcp/redo",
+      "headers": {
+        "Authorization": "Bearer <your-redo-api-token>",
+        "X-Redo-Store-Id": "<your-store-id>"
+      }
+    }
+  }
+}
+```
+
+Restart Cursor after adding the configuration.
+
+## Windsurf
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "redo": {
+      "serverUrl": "https://mcp-server.getredo.com/mcp/redo",
+      "headers": {
+        "Authorization": "Bearer <your-redo-api-token>",
+        "X-Redo-Store-Id": "<your-store-id>"
+      }
+    }
+  }
+}
+```
+
+Restart Windsurf after adding the configuration.
+
+## VS Code (GitHub Copilot)
+
+Add to your VS Code `settings.json`:
+
+```json
+{
+  "github.copilot.chat.mcp.servers": {
+    "redo": {
+      "type": "http",
+      "url": "https://mcp-server.getredo.com/mcp/redo",
+      "headers": {
+        "Authorization": "Bearer <your-redo-api-token>",
+        "X-Redo-Store-Id": "<your-store-id>"
+      }
+    }
+  }
+}
+```
+
+Reload VS Code after adding the configuration.

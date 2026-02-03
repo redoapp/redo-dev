@@ -4,9 +4,28 @@ description: 'How to authenticate your API requests'
 icon: 'key'
 ---
 
+## Getting Your Credentials
+
+### API Token
+
+To create an API token:
+
+1. Log in to your [Redo Dashboard](https://app.getredo.com)
+2. Go to **Settings** → **Developer**
+3. Click **Add API Client**
+4. Copy the generated API secret
+
+<Warning>
+  Store your API secret securely. It will only be shown once when created.
+</Warning>
+
+### Store ID
+
+Your Store ID is displayed in the **General** section of **Settings** → **Developer** in the Redo Dashboard.
+
 ## API Endpoints
 
-All API endpoints are authenticated using the Bearer authorization scheme with your `REDO_API_SECRET`.
+All API endpoints are authenticated using the Bearer authorization scheme with your API secret.
 
 Include your API secret in the `Authorization` header of every request:
 
@@ -17,7 +36,7 @@ Host: api.getredo.com
 ```
 
 <Warning>
-  Keep your API secret secure. Never share it publicly or commit it to version control.
+  Never share your API secret publicly or commit it to version control.
 </Warning>
 
 ### Example Request
