@@ -180,6 +180,10 @@ properties:
           required: [id]
           title: Order item
           type: object
+        externalReturnLineItemId:
+          description: External return line item ID
+          title: External Return Line Item ID
+          type: string
         productId:
           description: Product ID
           type: string

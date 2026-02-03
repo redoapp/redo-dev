@@ -964,6 +964,10 @@ components:
                     type: object
                 title: Exchange item
                 type: object
+              externalReturnLineItemId:
+                description: External return line item ID
+                title: External Return Line Item ID
+                type: string
               greenReturn:
                 description: Whether this is a green return (no physical return required)
                 type: boolean
