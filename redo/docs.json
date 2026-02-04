@@ -67,6 +67,10 @@
               "/docs/guides/integrations/webhooks",
               "/docs/guides/integrations/hydrogen"
             ]
+          },
+          {
+            "group": "Developer Tools",
+            "pages": ["/docs/guides/developer-tools/redo-mcp-server"]
           }
         ]
       },
