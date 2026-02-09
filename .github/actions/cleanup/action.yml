@@ -6,6 +6,7 @@ inputs:
   cache-write:
     default: "true"
 runs:
+  using: composite
   steps:
     - name: Upload profiles
       uses: actions/upload-artifact@v4
@@ -22,4 +23,3 @@ runs:
       with:
         path: ~/.cache/bazel
         key: ${{ inputs.bazel-cache-key }}/${{ github.sha }}
-  using: composite
