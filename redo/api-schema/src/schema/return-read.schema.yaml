@@ -8,6 +8,10 @@ properties:
       type: string
     title: Compensation Methods
     type: array
+  completeWithNoAction:
+    description: Whether this return can be completed with no action
+    title: Complete With No Action
+    type: boolean
   createdAt:
     description: Time of creation.
     format: date-time
