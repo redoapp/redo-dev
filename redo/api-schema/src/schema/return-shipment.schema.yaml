@@ -51,5 +51,13 @@ properties:
     description: External location ID for the destination of this shipment
     title: External Location ID
     type: string
+  estimatedDeliveryDate:
+    description: Estimated delivery date for this shipment
+    title: Estimated Delivery Date
+    type: string
+  deliveredAt:
+    description: Date and time this shipment was delivered
+    title: Delivered At
+    type: string
 title: Return Shipment
 type: object
