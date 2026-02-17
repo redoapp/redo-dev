@@ -63,7 +63,7 @@ jobs:
           git commit -m "chore: regenerate openapi.yaml from source files"
           git push origin HEAD
       - name: Test OpenAPI specification
-        run: bazel test tools/openapi:validate_test --test_output=errors
+        run: bazel test tools/openapi:validate_test --test_output=errors --test_env=PATH
       - if: always()
         name: Clean up
         uses: ./.github/actions/cleanup
