@@ -2093,8 +2093,6 @@ paths:
       - $ref: '#/components/parameters/return-id.param'
     post:
       description: |
-        **BETA**: This endpoint is in beta and subject to change.
-
         Trigger RMA creation for a return across configured integrations.
       operationId: Return create RMA
       responses:
