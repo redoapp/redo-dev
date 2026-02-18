@@ -1,0 +1,102 @@
+---
+title: "TikTok Shop"
+description: "Connect TikTok Shop to Redo for social commerce return management"
+icon: "tiktok"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is TikTok Shop?
+
+TikTok Shop is a social commerce platform integrated directly into the TikTok app, allowing businesses to sell products through live streams, shoppable videos, and a dedicated storefront. With TikTok's massive user base and engaging content format, TikTok Shop enables brands to reach customers where they're already spending time and make purchases without leaving the app.
+
+**Primary Purpose:** TikTok Shop transforms social media engagement into direct sales by enabling seamless in-app shopping experiences, leveraging TikTok's algorithm to reach interested buyers through entertaining and authentic content.
+
+## What Does the Integration Do?
+
+The TikTok Shop integration connects your social commerce storefront to Redo's return management system, enabling professional return handling for orders placed through TikTok. Orders automatically sync from TikTok Shop to Redo, allowing customers to initiate returns through a dedicated return portal while maintaining compliance with TikTok's return policies.
+
+Order data, including products, customer information, and fulfillment details, syncs automatically from TikTok Shop. When customers request returns, Redo manages the entire return process including label generation, tracking, and refund coordination. Return data can be synced back to TikTok Shop for seller dashboard visibility and performance metrics.
+
+## How to Set It Up
+
+Follow these steps to configure the TikTok Shop integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active TikTok Shop Account" icon="circle-check">
+You must have an approved TikTok Shop seller account in good standing.
+</Accordion>
+
+<Accordion title="TikTok Shop Authorization" icon="key">
+You need the ability to authorize third-party applications to access your TikTok Shop data.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="user-shield">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="Fulfillment Method Configured" icon="truck">
+Your TikTok Shop should have a fulfillment method configured (self-fulfilled or TikTok Fulfilled).
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard.
+</Step>
+
+<Step title="Connect TikTok Shop">
+Locate the **"TikTok Shop"** card and click **Connect**.
+</Step>
+
+<Step title="Authorize the Connection">
+You'll be redirected to TikTok to authorize Redo's access to your shop data. Review the permissions and approve the connection.
+</Step>
+
+<Step title="Configure Return Policies">
+Set up return policies that comply with TikTok Shop's requirements and your business needs.
+</Step>
+
+<Step title="Test the Integration">
+Create a test order in TikTok Shop and initiate a test return through Redo to verify order data syncs correctly.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                |
+| ------------------ | ----------------- | ------------------------------------------ |
+| Initial Connection | 3-5 minutes       | OAuth authentication with TikTok Shop      |
+| Configuration      | 10-15 minutes     | Set up policies compliant with TikTok      |
+| First Return Test  | 5-10 minutes      | Create test order and verify return flow   |
+| **Total Setup**    | **20-30 minutes** | Complete setup for most merchants          |
+
+### Operational Timing
+
+<Steps>
+<Step title="Order Sync">
+**Near real-time (2-5 minutes)** - Orders sync when they're confirmed in TikTok Shop.
+</Step>
+
+<Step title="Return Creation">
+**Instant** - Returns are created immediately when customers submit through Redo.
+</Step>
+
+<Step title="Refund Processing">
+**Coordinated with TikTok** - Refunds are processed according to TikTok Shop's policies and timelines.
+</Step>
+
+<Step title="Status Updates">
+**Real-time** - Return status updates are synced back to TikTok Shop seller center.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="TikTok Shop" />

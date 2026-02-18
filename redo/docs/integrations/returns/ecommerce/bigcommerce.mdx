@@ -1,0 +1,103 @@
+---
+title: "BigCommerce"
+description: "Connect your BigCommerce store to Redo for seamless return management"
+icon: "store"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is BigCommerce?
+
+BigCommerce is a leading SaaS ecommerce platform that provides enterprise-grade features for businesses of all sizes. Known for its robust built-in features, flexibility, and scalability, BigCommerce powers online stores across various industries, from small businesses to Fortune 500 companies.
+
+**Primary Purpose:** BigCommerce delivers comprehensive ecommerce functionality including catalog management, multi-channel selling, advanced SEO capabilities, and enterprise-level performance without platform fees or revenue sharing.
+
+## What Does the Integration Do?
+
+The BigCommerce integration connects your store directly to Redo's return management system, enabling automatic synchronization of orders, products, and customer data. When a customer initiates a return through Redo, all return information is tracked and can be synced back to BigCommerce for complete operational visibility.
+
+Orders and product data automatically sync from BigCommerce to Redo, including SKUs, variants, prices, and customer information. Returns are processed through Redo's platform with the ability to trigger refunds in BigCommerce and update inventory levels. Return reasons, communications, and status updates are tracked for comprehensive reporting.
+
+## How to Set It Up
+
+Follow these steps to configure the BigCommerce integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active BigCommerce Store" icon="circle-check">
+You must have an active BigCommerce store on any plan.
+</Accordion>
+
+<Accordion title="API Access Credentials" icon="key">
+You need to create API credentials in BigCommerce with the appropriate scopes for orders, products, and customers.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="user-shield">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="Published Products" icon="box">
+Your products should be published in BigCommerce with SKUs configured for proper product mapping.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard.
+</Step>
+
+<Step title="Connect BigCommerce">
+Locate the **"BigCommerce"** card and click **Connect**.
+</Step>
+
+<Step title="Enter API Credentials">
+Input your BigCommerce store hash and API credentials. These can be generated from your BigCommerce admin panel under Advanced Settings > API Accounts.
+</Step>
+
+<Step title="Configure Return Settings">
+Configure your return policies, return window, and other return-specific settings in Redo.
+</Step>
+
+<Step title="Test the Integration">
+Create a test order in BigCommerce, then initiate a test return through Redo to verify the integration is working correctly.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                |
+| ------------------ | ----------------- | ------------------------------------------ |
+| API Setup          | 5-10 minutes      | Create API credentials in BigCommerce      |
+| Initial Connection | 2-5 minutes       | Connect Redo to BigCommerce                |
+| Configuration      | 5-10 minutes      | Set up return policies and preferences     |
+| First Return Test  | 5-10 minutes      | Create test order and verify return flow   |
+| **Total Setup**    | **20-35 minutes** | Complete setup for most merchants          |
+
+### Operational Timing
+
+<Steps>
+<Step title="Order Sync">
+**Real-time** - Orders sync automatically when created in BigCommerce.
+</Step>
+
+<Step title="Return Processing">
+**Instant** - Returns are created immediately when customers submit through Redo.
+</Step>
+
+<Step title="Refund Processing">
+**Real-time (1-5 seconds)** - Refunds can be posted back to BigCommerce when approved.
+</Step>
+
+<Step title="Inventory Updates">
+**Automatic** - Inventory can be updated in BigCommerce when items are restocked.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="BigCommerce" />
