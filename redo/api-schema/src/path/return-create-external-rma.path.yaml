@@ -1,10 +1,10 @@
-description: Create RMA for a return.
+description: Create external RMA for a return.
 parameters:
   - { $ref: ../param/return-id.param.yaml }
 post:
   description: |
-    Trigger RMA creation for a return across configured integrations.
-  operationId: Return create RMA
+    Trigger external RMA creation for a return across configured integrations.
+  operationId: Return create external RMA
   responses:
     "200":
       content:
@@ -50,6 +50,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Create RMA
+  summary: Create external RMA
   tags: [Returns]
-summary: Create RMA for a return
+summary: Create external RMA for a return
