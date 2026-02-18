@@ -1,0 +1,131 @@
+---
+title: "Custom Sites"
+description: "API integration for custom-built ecommerce platforms"
+icon: "code"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What Are Custom Site Integrations?
+
+Custom site integrations enable businesses with proprietary or custom-built ecommerce platforms to connect with Redo's return management system through our comprehensive REST API. Whether you've built your storefront from scratch, use a headless commerce architecture, or have unique business requirements that standard integrations don't address, Redo's API provides the flexibility to create a tailored integration.
+
+**Primary Purpose:** Custom integrations give developers complete control over how Redo connects with your ecommerce platform, enabling sophisticated workflows, custom business logic, and seamless integration with your existing technology stack.
+
+## What Does the Integration Do?
+
+A custom integration uses Redo's REST API to sync order data, create returns, process refunds, and manage the entire return lifecycle programmatically. Your development team builds the integration to meet your specific needs, determining which data to sync, when to sync it, and how returns should be processed within your unique business workflows.
+
+Through the API, you can push order and product data to Redo, retrieve return requests initiated by customers, update return statuses, generate shipping labels, process refunds, and receive webhook notifications for return events. The integration can be as simple or sophisticated as your requirements demand, from basic order syncing to complex multi-warehouse, multi-currency operations.
+
+## How to Set It Up
+
+Follow these steps to build a custom integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Development Resources" icon="code">
+You need a development team familiar with REST APIs and your ecommerce platform's architecture.
+</Accordion>
+
+<Accordion title="Redo API Access" icon="key">
+You need API credentials from your Redo merchant dashboard with appropriate scopes.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="user-shield">
+You need administrative access to your Redo merchant dashboard to generate API keys and configure settings.
+</Accordion>
+
+<Accordion title="Technical Documentation" icon="book">
+Review Redo's API documentation at [docs.getredo.com/api-reference](/docs/api-reference/introduction) to understand available endpoints and data structures.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Generate API Credentials">
+Go to **Settings** > **API** in your Redo dashboard and generate API credentials with the appropriate scopes for your integration needs.
+</Step>
+
+<Step title="Review API Documentation">
+Study the [API Reference](/docs/api-reference/introduction) to understand authentication, available endpoints, request/response formats, and webhook events.
+</Step>
+
+<Step title="Build the Integration">
+Develop your custom integration using your preferred programming language and framework. Implement order syncing, return creation, and any additional features you need.
+</Step>
+
+<Step title="Implement Webhooks">
+Set up webhook endpoints in your system to receive real-time notifications about return status changes, refund processing, and other events.
+</Step>
+
+<Step title="Test Thoroughly">
+Test your integration in Redo's sandbox environment before going live. Verify order syncing, return creation, refund processing, and error handling.
+</Step>
+
+<Step title="Deploy to Production">
+Once testing is complete, deploy your integration to production and monitor for any issues.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+The timeline for a custom integration varies significantly based on complexity, features, and your development team's familiarity with Redo's API.
+
+| Complexity Level | Time Estimate      | Description                                     |
+| ---------------- | ------------------ | ----------------------------------------------- |
+| Simple           | **1-2 weeks**      | Basic order sync and return creation            |
+| Moderate         | **2-4 weeks**      | Full return lifecycle, webhooks, refund handling |
+| Complex          | **4-8 weeks**      | Multi-currency, multi-warehouse, custom workflows |
+| Enterprise       | **8+ weeks**       | Advanced features, multiple integrations, custom UI |
+
+### Development Considerations
+
+<Steps>
+<Step title="API Authentication">
+Implement secure authentication using API keys and follow best practices for credential management.
+</Step>
+
+<Step title="Data Synchronization">
+Decide on sync strategy (real-time vs. batch) and implement error handling for failed syncs.
+</Step>
+
+<Step title="Webhook Processing">
+Build reliable webhook handlers that can process events, handle retries, and prevent duplicate processing.
+</Step>
+
+<Step title="Error Handling">
+Implement comprehensive error handling, logging, and monitoring to quickly identify and resolve issues.
+</Step>
+
+<Step title="Testing">
+Create thorough test cases covering normal operations, edge cases, and error scenarios.
+</Step>
+</Steps>
+
+## Need Help?
+
+Building a custom integration requires technical expertise. Redo's developer documentation provides comprehensive guides, code examples, and API references to support your development team.
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="book-open" href="/docs/api-reference/introduction">
+    Complete API documentation with endpoints and examples
+  </Card>
+  <Card title="Authentication" icon="key" href="/docs/api-reference/authentication">
+    Learn how to authenticate API requests
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/docs/guides/integrations/webhooks">
+    Set up webhooks for real-time event notifications
+  </Card>
+  <Card title="Custom Integration Guide" icon="code" href="/docs/guides/integrations/custom-returns-integration">
+    Step-by-step guide for building custom integrations
+  </Card>
+</CardGroup>
+
+<IntegrationSupport integrationProvider="custom integrations" />

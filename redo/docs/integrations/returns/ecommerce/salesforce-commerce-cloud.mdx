@@ -1,0 +1,107 @@
+---
+title: "Salesforce Commerce Cloud"
+description: "Enterprise commerce platform integration for seamless return management"
+icon: "cloud"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Salesforce Commerce Cloud?
+
+Salesforce Commerce Cloud is an enterprise-level ecommerce platform designed for large-scale businesses with complex requirements. Part of the Salesforce ecosystem, Commerce Cloud delivers advanced capabilities for B2C and B2B commerce, including AI-powered personalization, global scalability, and seamless integration with Salesforce's CRM and marketing tools.
+
+**Primary Purpose:** Commerce Cloud provides enterprise businesses with a unified commerce platform that connects customer experiences across web, mobile, social, and in-store channels, backed by powerful analytics and automation capabilities.
+
+## What Does the Integration Do?
+
+The Salesforce Commerce Cloud integration connects your enterprise commerce platform to Redo's return management system, enabling sophisticated return processing workflows that integrate with your broader Salesforce ecosystem. Order data, customer information, and product catalogs sync automatically to support seamless returns.
+
+The integration leverages Salesforce's OCAPI (Open Commerce API) to sync orders, products, and customer data. When returns are processed through Redo, the system can trigger refunds in Commerce Cloud and update inventory across multiple sites and locales. Return data can flow back to Salesforce for reporting and customer service visibility.
+
+## How to Set It Up
+
+Follow these steps to configure the Salesforce Commerce Cloud integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Commerce Cloud Instance" icon="circle-check">
+You must have an active Salesforce Commerce Cloud instance with the appropriate licensing.
+</Accordion>
+
+<Accordion title="OCAPI Configuration" icon="key">
+You need to configure OCAPI credentials with appropriate permissions for orders, products, and customers.
+</Accordion>
+
+<Accordion title="Administrative Access" icon="user-shield">
+You need administrative access to both Commerce Cloud Business Manager and your Redo merchant dashboard.
+</Accordion>
+
+<Accordion title="Product Catalog Setup" icon="box">
+Your product catalog should be configured in Commerce Cloud with SKUs and inventory locations.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Configure OCAPI Access">
+In Commerce Cloud Business Manager, navigate to Administration > Site Development > Open Commerce API Settings and configure the necessary permissions for Redo.
+</Step>
+
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard.
+</Step>
+
+<Step title="Connect Commerce Cloud">
+Locate the **"Salesforce Commerce Cloud"** card and click **Connect**.
+</Step>
+
+<Step title="Enter Connection Details">
+Input your Commerce Cloud instance URL, OCAPI client ID, and credentials.
+</Step>
+
+<Step title="Configure Return Settings">
+Set up return policies, multi-site configurations, and locale-specific return rules.
+</Step>
+
+<Step title="Test the Integration">
+Create test orders across your sites and initiate test returns to verify the integration works correctly for all configurations.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time               | Description                                |
+| ------------------ | ------------------ | ------------------------------------------ |
+| OCAPI Setup        | 15-30 minutes      | Configure API access in Business Manager   |
+| Initial Connection | 5-10 minutes       | Connect Redo to Commerce Cloud             |
+| Configuration      | 20-40 minutes      | Set up policies for multiple sites/locales |
+| Testing            | 15-30 minutes      | Comprehensive testing across sites         |
+| **Total Setup**    | **60-120 minutes** | Complete setup varies by complexity        |
+
+### Operational Timing
+
+<Steps>
+<Step title="Order Sync">
+**Near real-time (1-2 minutes)** - Orders sync via scheduled jobs or webhooks.
+</Step>
+
+<Step title="Return Processing">
+**Instant** - Returns are created immediately when customers submit through Redo.
+</Step>
+
+<Step title="Refund Processing">
+**Real-time** - Refunds are posted to Commerce Cloud when returns are approved.
+</Step>
+
+<Step title="Inventory Updates">
+**Automatic** - Inventory updates across sites and locales when items are restocked.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Salesforce Commerce Cloud" />

@@ -107,6 +107,46 @@
                   "/docs/integrations/returns/3pl-wms/shipstream",
                   "/docs/integrations/returns/3pl-wms/rydership"
                 ]
+              },
+              {
+                "group": "Ecommerce Platforms",
+                "root": "/docs/integrations/returns/ecommerce/overview",
+                "pages": [
+                  "/docs/integrations/returns/ecommerce/overview",
+                  "/docs/integrations/returns/ecommerce/shopify",
+                  "/docs/integrations/returns/ecommerce/bigcommerce",
+                  "/docs/integrations/returns/ecommerce/salesforce-commerce-cloud",
+                  "/docs/integrations/returns/ecommerce/tiktok",
+                  "/docs/integrations/returns/ecommerce/custom"
+                ]
+              },
+              {
+                "group": "Carts & Checkouts",
+                "root": "/docs/integrations/returns/carts-checkouts/overview",
+                "pages": [
+                  "/docs/integrations/returns/carts-checkouts/overview"
+                ]
+              },
+              {
+                "group": "Marketing & Loyalty",
+                "root": "/docs/integrations/returns/marketing-loyalty/overview",
+                "pages": [
+                  "/docs/integrations/returns/marketing-loyalty/overview"
+                ]
+              },
+              {
+                "group": "Returns Services",
+                "root": "/docs/integrations/returns/returns-services/overview",
+                "pages": [
+                  "/docs/integrations/returns/returns-services/overview"
+                ]
+              },
+              {
+                "group": "Other Integrations",
+                "root": "/docs/integrations/returns/other/overview",
+                "pages": [
+                  "/docs/integrations/returns/other/overview"
+                ]
               }
             ]
           }
