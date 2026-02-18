@@ -1,0 +1,26 @@
+description: Custom field output in customer profile response
+properties:
+  name:
+    description: The custom field name
+    type: string
+  dataType:
+    description: The data type of the custom field
+    enum:
+      - STRING
+      - NUMBER
+      - BOOLEAN
+      - DATE
+    type: string
+  values:
+    description: The custom field values
+    items:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+    type: array
+required:
+  - name
+  - dataType
+  - values
+type: object

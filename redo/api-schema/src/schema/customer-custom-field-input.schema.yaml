@@ -1,0 +1,19 @@
+description: Custom field input for customer profile upsert
+properties:
+  name:
+    description: The name of the custom field declaration
+    minLength: 1
+    type: string
+  value:
+    description:
+      The value for the custom field. Type must match the declared data type.
+      Set to null to remove the field from the customer.
+    oneOf:
+      - type: string
+      - type: number
+      - type: boolean
+      - type: "null"
+required:
+  - name
+  - value
+type: object
