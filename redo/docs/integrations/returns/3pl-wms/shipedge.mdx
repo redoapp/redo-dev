@@ -1,0 +1,114 @@
+---
+title: "Shipedge"
+description: "Connect Shipedge to Redo for automated return processing"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Shipedge?
+
+Shipedge is a warehouse management system (WMS) and order management system (OMS) designed for e-commerce fulfillment operations. It provides comprehensive warehouse management, inventory tracking, order processing, and returns handling capabilities.
+
+**Primary Purpose:** Shipedge delivers end-to-end warehouse and order management for brands and 3PLs, enabling real-time inventory visibility, efficient fulfillment workflows, and streamlined returns processing.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the system automatically creates an RMA (Return Merchandise Authorization) in Shipedge, notifying the warehouse that items are being returned. Products are mapped using SKUs, and return reasons are transmitted to help warehouse staff handle returned items appropriately.
+
+When the warehouse receives the returned items and marks the return as received in Shipedge, a webhook notification is sent to Redo to automatically process the return — issuing refunds, store credit, or creating exchange orders without manual intervention.
+
+## How to Set It Up
+
+Follow these steps to configure the Shipedge integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Shipedge Account" icon="circle-check">
+You must have an active account with Shipedge.
+</Accordion>
+
+<Accordion title="Shipedge API Credentials" icon="key">
+You need your Shipedge API Key, Account ID, Integration Host, and Warehouse code. These can be found in your Shipedge account's API settings.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Obtain Shipedge API Credentials">
+1. Log into your Shipedge account and navigate to API settings
+2. Generate or copy your **API Key** and **Account ID**
+3. Note your **Integration Host** — this is the subdomain of your Shipedge URL (e.g., `your-company`)
+4. Note the **Warehouse** code for the warehouse that will handle returns
+</Step>
+
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard and locate the **Shipedge** card.
+</Step>
+
+<Step title="Connect Shipedge">
+Click **Connect** on the Shipedge integration card.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide:
+
+- **Account ID** (required): Your Shipedge account ID
+- **API Key** (required): Your Shipedge API key for authentication
+- **Integration Host** (required): Your Shipedge integration host (e.g., `your-company`)
+- **Warehouse** (required): The warehouse code for returns
+</Step>
+
+<Step title="Complete Setup">
+Click **Connect** to complete the setup.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return, generate a shipping label, and verify the RMA appears in Shipedge with the correct order details, products, and tracking information.
+</Step>
+</Steps>
+
+### Webhook Setup
+
+<Warning>
+Merchants must **manually** create a webhook subscription in their Shipedge account to enable automatic return processing when items are received at the warehouse. Without this webhook, returns will not be automatically processed in Redo when Shipedge marks them as received.
+</Warning>
+
+Follow [Shipedge's documentation on adding webhooks](https://developer.shipedge.com/api-documentations/oms-apis/webhooks/adding-webhooks/) to create a webhook subscription for the `simple_returns/order_received` event. This webhook notifies Redo when returned items have been received at the warehouse, triggering automatic return processing (refund, store credit, or exchange).
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                    | Time          | Description                                       |
+| ----------------------- | ------------- | ------------------------------------------------- |
+| Obtain API Credentials  | 5-10 minutes  | Locate credentials in Shipedge API settings       |
+| Configure in Redo       | 2-5 minutes   | Enter credentials and save configuration          |
+| Configure Webhook       | 5-10 minutes  | Set up webhook in Shipedge for return processing  |
+| First Return Test       | 5-10 minutes  | Create test return and verify RMA in Shipedge     |
+| **Total Setup**         | **20-30 minutes** | Complete setup for most merchants              |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after return is processed and shipping label is generated.
+</Step>
+
+<Step title="Return Processing">
+**Automatic via webhook** — when the warehouse marks items as received in Shipedge, Redo automatically processes the return (refund, store credit, or exchange).
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days from when items arrive at the facility.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Shipedge" />
