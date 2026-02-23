@@ -1,0 +1,38 @@
+---
+title: "BlueYonder"
+description: "Offer boxless return drop-offs through BlueYonder locations"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is BlueYonder?
+
+BlueYonder is a returns service that provides **boxless returns** — customers can
+drop off their return items at a nearby BlueYonder location without needing to
+package them. This offers a more convenient return experience at a lower cost
+than traditional shipping.
+
+<Info>
+  BlueYonder is not the same as **Inmar**, which provides return dispositioning
+  and inspection services. These are separate integrations.
+</Info>
+
+## What Does the Integration Do?
+
+When a customer initiates a return with a merchant that has BlueYonder enabled,
+Redo can show a list of nearby BlueYonder drop-off locations. If the customer
+chooses a BlueYonder location:
+
+1. A label fee is still charged to the customer.
+2. Redo creates a return in BlueYonder, which generates a **QR code**.
+3. The customer takes the QR code to the drop-off location — no packaging
+   required.
+4. Redo receives webhook notifications from BlueYonder to track when the
+   customer has delivered their items.
+
+## How to Set It Up
+
+For setup instructions, contact your Redo Customer Success Manager at
+**support@getredo.com**.
+
+<IntegrationSupport integrationProvider="BlueYonder" />

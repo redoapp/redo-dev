@@ -1,0 +1,97 @@
+---
+title: "Rise.ai"
+description: "Issue return store credit as Rise.ai rewards instead of Shopify store credit"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Rise.ai?
+
+Rise.ai is a store credit and rewards platform for e-commerce merchants. It
+manages gift cards, loyalty rewards, and store credit balances for customers.
+
+## What Does the Integration Do?
+
+When Redo issues store credit for a return, it is issued as a reward to the
+customer's Rise.ai account instead of as standard Shopify store credit. This
+keeps all store credit and rewards consolidated within Rise.ai.
+
+## How to Set It Up
+
+### Prerequisites
+
+<AccordionGroup>
+<Accordion title="Rise.ai Enterprise Plan" icon="circle-check">
+  This integration is only available for merchants on a **Rise.ai Enterprise**
+  plan.
+</Accordion>
+</AccordionGroup>
+
+### Step A: Create a Workflow in Rise.ai
+
+The merchant must complete the following steps in their Rise.ai dashboard.
+
+<Steps>
+<Step title="Navigate to Loyalty & Rewards">
+  In Rise.ai, click **Loyalty & Rewards**.
+</Step>
+
+<Step title="Create a New Workflow">
+  Click **Create Workflow**, scroll down, and click **Create your own**.
+</Step>
+
+<Step title="Create a Custom Trigger">
+  On the left side, under **Custom Triggers**, click **Create your own** and
+  enter the following:
+
+  - **Name:** `Redo Return`
+  - **Description:** `Return for store credit created in Redo`
+</Step>
+
+<Step title="Configure Variables">
+  Add the following variables to the trigger:
+
+  | Variable Name  | Type   | Key              |
+  | -------------- | ------ | ---------------- |
+  | Customer Email | Email  | `customer_email` |
+  | Return Credit  | Number | `return_credit`  |
+
+  Click **Create Trigger** when finished.
+</Step>
+
+<Step title="Copy the Trigger URL">
+  On the left side, under **Custom Triggers**, click **Settings** for the
+  trigger you just created. Scroll to the bottom and **copy the URL**.
+
+  The URL will look similar to:
+  ```
+  https://workflows.rise-ai.com/execute/272d2fa4-667d-4867-834a-bb1bb0300901
+  ```
+
+  Save this URL — you will send it to Redo in the final step.
+</Step>
+
+<Step title="Configure the Action">
+  On the left side, under **Custom Triggers**, click the trigger you created.
+  Click **Add action** and select **Issue Store Credit**.
+
+  Enter the following:
+  - **Percentage:** `100%` of **Return Credit**
+</Step>
+
+<Step title="Enable and Save">
+  In the upper right, **enable** the workflow and click **Save**.
+</Step>
+
+<Step title="Send the Trigger URL to Redo">
+  Send the trigger URL you copied in Step 5 to **support@getredo.com**. The
+  Redo team will finalize the integration on our end.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+Setup takes up to **2 business days** after the merchant completes the steps
+above and sends the trigger URL to Redo.
+
+<IntegrationSupport integrationProvider="Rise.ai" />

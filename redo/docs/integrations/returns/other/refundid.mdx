@@ -1,0 +1,32 @@
+---
+title: "Refundid"
+description: "Prevent duplicate returns between Redo and Refundid"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Refundid?
+
+Refundid is a returns service that provides customers with instant refunds or
+exchanges — customers receive their funds before shipping items back. Shoppers
+create a Refundid account, initiate a return through their dashboard, and receive
+their refund within seconds.
+
+## What Does the Integration Do?
+
+The integration prevents duplicate returns across Redo and Refundid:
+
+- If an item has already been returned through Refundid, Redo will not allow it
+  to be returned again in the Redo portal.
+- During processing, Redo checks whether the item was returned in Refundid and
+  skips processing if so.
+
+This protects against scenarios where a return is processed in Redo first and the
+customer then submits the same return in Refundid (or vice versa).
+
+## How to Set It Up
+
+For setup instructions, contact your Redo Customer Success Manager at
+**support@getredo.com**.
+
+<IntegrationSupport integrationProvider="Refundid" />

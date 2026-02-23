@@ -1,0 +1,105 @@
+---
+title: "Inmar"
+description: "Automated return dispositioning through Inmar reverse logistics"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Inmar?
+
+Inmar is a reverse logistics provider (an acquisition of DHL) that handles
+return dispositioning — the process of inspecting, sorting, and routing returned
+items based on their condition. Inmar operates a network of reverse logistics
+warehouses across the country.
+
+<Info>
+  Inmar is not the same as **BlueYonder**, which provides boxless return drop-off
+  services. These are separate integrations.
+</Info>
+
+## What Does the Integration Do?
+
+When a customer submits a return through Redo, an RMA is automatically created
+in Inmar's system. Inmar then inspects the returned items at their warehouse and
+sends dispositioning updates back to Redo (e.g., return to sender, ship back to
+warehouse). These updates allow Redo to automatically process the return based
+on Inmar's inspection results.
+
+## How to Set It Up
+
+### Prerequisites
+
+Before integrating with Redo, the merchant must complete several steps with
+Inmar directly.
+
+<AccordionGroup>
+<Accordion title="Active Inmar Account" icon="circle-check">
+  The merchant must already be connected with Inmar. This includes:
+
+  - **Defining business rules** with Inmar for dispositioning (e.g., return to
+    sender when applicable, ship back to warehouse when in good condition)
+  - **Sharing master data** with Inmar — a table of product information including
+    UPC, SKU, weight, price, and other details for each item
+  - **Selecting warehouses** — deciding which of Inmar's reverse logistics
+    warehouses the merchant will use
+</Accordion>
+
+<Accordion title="Inmar Credentials" icon="key">
+  Inmar will provision the following merchant-specific credentials:
+
+  - **Merchant consumer ID**
+  - **Merchant webhook secret**
+  - **Warehouse list** — which Inmar warehouses the merchant uses
+</Accordion>
+
+<Accordion title="Product SKU/UPC Data" icon="barcode">
+  The merchant must have per-product and per-variant **SKU and UPC** for all
+  products and orders. The physical products must also have these codes present
+  on the items, as the dispositioning team scans them to verify return contents
+  match the customer's submission.
+
+  <Info>
+    Inmar is transitioning away from requiring UPCs. In the future, only SKU
+    will be required.
+  </Info>
+</Accordion>
+
+<Accordion title="Compatible Shipping Methods" icon="truck">
+  Merchants must use return shipment methods that provide a label with a unique,
+  scannable barcode (e.g., FedEx, USPS, or any carrier that provides a tracking
+  number barcode on the label).
+
+  <Warning>
+    In-store returns are **not compatible** with Inmar, since they don't generate
+    shipping labels with scannable barcodes.
+  </Warning>
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+  In the Redo merchant dashboard, go to **Return Settings** > **Integrations**.
+</Step>
+
+<Step title="Add the Inmar Integration">
+  Click to add the **Inmar** integration.
+</Step>
+
+<Step title="Enter Credentials">
+  Enter the merchant consumer ID and webhook secret provided by Inmar.
+</Step>
+
+<Step title="Configure Shipping Addresses">
+  Set up shipping addresses by tagging existing shipping location data with the
+  corresponding **Inmar location ID** for each warehouse.
+</Step>
+
+<Step title="Configure Return Automation">
+  Set up return automation settings for processing events so that returns are
+  automatically processed based on Inmar's dispositioning updates.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Inmar" />

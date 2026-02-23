@@ -125,28 +125,42 @@
                 "group": "Carts & Checkouts",
                 "root": "/docs/integrations/returns/carts-checkouts/overview",
                 "pages": [
-                  "/docs/integrations/returns/carts-checkouts/overview"
+                  "/docs/integrations/returns/carts-checkouts/overview",
+                  "/docs/integrations/returns/carts-checkouts/bolt",
+                  "/docs/integrations/returns/carts-checkouts/tapcart",
+                  "/docs/integrations/returns/carts-checkouts/vajro"
                 ]
               },
               {
                 "group": "Marketing & Loyalty",
                 "root": "/docs/integrations/returns/marketing-loyalty/overview",
                 "pages": [
-                  "/docs/integrations/returns/marketing-loyalty/overview"
+                  "/docs/integrations/returns/marketing-loyalty/overview",
+                  "/docs/integrations/returns/marketing-loyalty/klaviyo",
+                  "/docs/integrations/returns/marketing-loyalty/recharge",
+                  "/docs/integrations/returns/marketing-loyalty/rise-ai",
+                  "/docs/integrations/returns/marketing-loyalty/rivo"
                 ]
               },
               {
                 "group": "Returns Services",
                 "root": "/docs/integrations/returns/returns-services/overview",
                 "pages": [
-                  "/docs/integrations/returns/returns-services/overview"
+                  "/docs/integrations/returns/returns-services/overview",
+                  "/docs/integrations/returns/returns-services/blueyonder",
+                  "/docs/integrations/returns/returns-services/inmar"
                 ]
               },
               {
                 "group": "Other Integrations",
                 "root": "/docs/integrations/returns/other/overview",
                 "pages": [
-                  "/docs/integrations/returns/other/overview"
+                  "/docs/integrations/returns/other/overview",
+                  "/docs/integrations/returns/other/gladly",
+                  "/docs/integrations/returns/other/global-e",
+                  "/docs/integrations/returns/other/gorgias",
+                  "/docs/integrations/returns/other/refundid",
+                  "/docs/integrations/returns/other/trynow"
                 ]
               }
             ]
