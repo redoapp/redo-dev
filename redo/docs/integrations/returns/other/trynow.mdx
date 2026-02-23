@@ -1,0 +1,28 @@
+---
+title: "TryNow"
+description: "Handle returns for try-before-you-buy orders without issuing refunds"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is TryNow?
+
+TryNow is a try-before-you-buy platform for Shopify. It allows customers to
+order products without being charged upfront — they try items at home and are
+only charged for what they keep after a trial period.
+
+## What Does the Integration Do?
+
+Redo detects when an item was purchased through TryNow and the customer hasn't
+been charged for it yet. In that case, Redo skips issuing a refund and instead
+notifies TryNow not to charge the customer for the returned item.
+
+This prevents double credits — if the customer was never charged, there's nothing
+to refund.
+
+## How to Set It Up
+
+For setup instructions, contact your Redo Customer Success Manager at
+**support@getredo.com**.
+
+<IntegrationSupport integrationProvider="TryNow" />

@@ -1,0 +1,141 @@
+---
+title: "Klaviyo"
+description: "Use Redo return and order tracking events in Klaviyo marketing flows"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Klaviyo?
+
+Klaviyo is a marketing automation platform that helps merchants engage customers
+through email and SMS campaigns. The Redo integration sends return and order
+tracking events to Klaviyo, allowing merchants to use them in automated flows —
+for example, sending a personalized email when a customer creates a return.
+
+## What Does the Integration Do?
+
+Redo sends the following events to Klaviyo. Each event can be used as a trigger
+in Klaviyo flows.
+
+### Return Created
+
+Triggered when a customer submits a return.
+
+- **Metric:** Total return value
+
+| Property    | Description                         |
+| ----------- | ----------------------------------- |
+| ReturnId    | Return ID                           |
+| OrderRef    | Shopify order name                  |
+| NewOrderRef | Shopify new order name              |
+| Coverage    | `covered` or `not covered`          |
+| Delivery    | `label`, `pickup`, or `none` (green return) |
+| Quantity    | Total quantity of items returned     |
+
+### Return Created Item
+
+Triggered for each individual item in a return.
+
+- **Metric:** Return value
+
+| Property       | Description                           |
+| -------------- | ------------------------------------- |
+| ReturnId       | Return ID                             |
+| Type           | `refund`, `store_credit`, or `exchange` |
+| OrderRef       | Shopify order name                    |
+| NewOrderRef    | Shopify new order name (if exists)    |
+| Coverage       | `covered` or `not covered`            |
+| SKU            | Item SKU                              |
+| NewSKU         | Exchange item SKU (if exists)         |
+| ProductName    | Original product name                 |
+| NewProductName | Exchange product name (if exists)     |
+| VariantName    | Original variant name                 |
+| NewVariantName | Exchange variant name (if exists)     |
+| Quantity       | Item quantity                         |
+
+### Order Tracking Update
+
+Triggered on order tracking status changes. Only available if order tracking is
+enabled.
+
+| Property              | Description                                  |
+| --------------------- | -------------------------------------------- |
+| Trigger               | Tracking status (see values below)           |
+| OrderRef              | Shopify order name                           |
+| Date                  | Date of the tracking event                   |
+| TrackingPageLink      | Link to Redo's tracking page in the customer portal |
+| OrderCreatedDate      | Date the order was created                   |
+| OrderShippedDate      | Date the order was shipped (if shipped)      |
+| OrderDeliveredDate    | Date the order was delivered (if delivered)  |
+| EstimatedDeliveryDate | Estimated delivery date                      |
+
+### Order Tracking Update Item
+
+Triggered for each item in a tracking update. Only available if order tracking is
+enabled.
+
+| Property    | Description                        |
+| ----------- | ---------------------------------- |
+| Trigger     | Tracking status (see values below) |
+| OrderRef    | Shopify order name                 |
+| SKU         | Item SKU                           |
+| ProductName | Product name                       |
+| VariantName | Variant name                       |
+| Quantity    | Item quantity                      |
+
+### Tracking Status Values
+
+The `Trigger` property for order tracking events can be one of the following:
+
+`order_created`, `pre_transit`, `in_transit`, `out_for_delivery`, `delivered`,
+`available_for_pickup`, `stalled_in_transit`, `delayed`, `arriving_early`,
+`return_to_sender`, `delivery_attempted`, `failure`, `cancelled`, `error`
+
+### Other Events
+
+- **Customer Account Created** — triggered when a customer account is created
+- **Product Added to Wishlist** — triggered when a customer adds a product to
+  their wishlist from the order tracking page
+
+### Marketing Consent Syncing
+
+- If a customer signs up for SMS updates on the order tracking page and checks
+  the marketing consent box, the new subscriber is synced with Klaviyo.
+- If Redo's marketing product is enabled, email/SMS marketing sign-ups also
+  create the customer and subscription in Klaviyo.
+
+## How to Set It Up
+
+<Steps>
+<Step title="Generate a Klaviyo API Key">
+  Sign in to Klaviyo and go to **Settings** > **API Keys**. Click **Create
+  Private API Key**.
+
+  Enter a name for the key, then choose either **Full Access Token** or
+  **Custom Key**. If you choose Custom Key, grant **Full Access** to the
+  following API scopes:
+  - **Events** (required)
+  - **Profiles** (required for order tracking integration)
+</Step>
+
+<Step title="Copy the API Key">
+  After clicking **Create**, copy the generated API key from the success screen.
+
+  <Warning>
+    This is the only time you can view and copy the key. Store it securely.
+  </Warning>
+</Step>
+
+<Step title="Send the API Key to Redo">
+  Send the API key to **support@getredo.com**. The Redo team will configure the
+  integration on our end.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+Setup takes approximately **10 minutes** for the merchant to generate and send
+the API key. The Redo team will complete the configuration shortly after
+receiving it.
+
+<IntegrationSupport integrationProvider="Klaviyo" />
