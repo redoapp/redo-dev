@@ -41,6 +41,19 @@ info:
   title: Redo API
   version: 2.2.1
 openapi: 3.1.0
+tags:
+  - name: Checkout Buttons
+  - name: Coverage Info
+  - name: Coverage Products
+  - name: Custom Events
+  - name: Customer Portal
+  - name: Customer Subscriptions
+  - name: Invoices
+  - name: Merchant Admin
+  - name: Returns
+  - name: Shipping
+  - name: Storefront
+  - name: Webhooks
 paths:
   /invoices/pending/items.csv: { $ref: path/invoice-pending-csv.path.yaml }
   /invoices/{invoiceId}/items.csv: { $ref: path/invoice-csv.path.yaml }

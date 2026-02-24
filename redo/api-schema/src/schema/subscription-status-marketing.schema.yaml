@@ -16,4 +16,5 @@ properties:
     type: string
 required:
   - subscriptionStatus
+title: Subscription Status Marketing
 type: object
