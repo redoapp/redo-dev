@@ -13,6 +13,7 @@ sh_test(
     name = "validate_test",
     srcs = ["validate.sh"],
     data = ["//redo/api-schema:openapi"],
+    tags = ["local"],
 )
 
 nodejs_binary(
