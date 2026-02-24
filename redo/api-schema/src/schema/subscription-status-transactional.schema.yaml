@@ -12,4 +12,5 @@ properties:
     type: string
 required:
   - subscriptionStatus
+title: Subscription Status Transactional
 type: object

@@ -1674,6 +1674,7 @@ components:
           type: string
       required:
         - subscriptionStatus
+      title: Subscription Status Marketing
       type: object
     subscription-status-transactional.schema:
       description: Transactional subscription status (order tracking)
@@ -1690,6 +1691,7 @@ components:
           type: string
       required:
         - subscriptionStatus
+      title: Subscription Status Transactional
       type: object
     webhook-create.schema:
       description: Webhook create.
@@ -2897,6 +2899,19 @@ paths:
     summary: Webhook replay
 servers:
   - url: https://api.getredo.com/v2.2
+tags:
+  - name: Checkout Buttons
+  - name: Coverage Info
+  - name: Coverage Products
+  - name: Custom Events
+  - name: Customer Portal
+  - name: Customer Subscriptions
+  - name: Invoices
+  - name: Merchant Admin
+  - name: Returns
+  - name: Shipping
+  - name: Storefront
+  - name: Webhooks
 webhooks:
   return:
     post:

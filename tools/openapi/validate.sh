@@ -34,7 +34,7 @@ mkdir -p "$TEMP_DIR/redo/api-schema"
 cp "$OPENAPI_FILE" "$TEMP_DIR/redo/api-schema/openapi.yaml"
 
 cd "$TEMP_DIR/redo"
-if mint openapi-check api-schema/openapi.yaml 2>&1; then
+if mintlify openapi-check api-schema/openapi.yaml 2>&1; then
     echo ""
     echo "✅ SUCCESS: OpenAPI specification is valid and conforms to the OpenAPI standard."
     exit 0
