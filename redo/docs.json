@@ -136,6 +136,7 @@
                 "root": "/docs/integrations/returns/marketing-loyalty/overview",
                 "pages": [
                   "/docs/integrations/returns/marketing-loyalty/overview",
+                  "/docs/integrations/returns/marketing-loyalty/creditsyard",
                   "/docs/integrations/returns/marketing-loyalty/klaviyo",
                   "/docs/integrations/returns/marketing-loyalty/recharge",
                   "/docs/integrations/returns/marketing-loyalty/rise-ai",
@@ -159,6 +160,7 @@
                   "/docs/integrations/returns/other/gladly",
                   "/docs/integrations/returns/other/global-e",
                   "/docs/integrations/returns/other/gorgias",
+                  "/docs/integrations/returns/other/purple-dot",
                   "/docs/integrations/returns/other/refundid",
                   "/docs/integrations/returns/other/trynow"
                 ]
