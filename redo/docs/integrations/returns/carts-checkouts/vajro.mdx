@@ -1,0 +1,56 @@
+---
+title: "Vajro"
+description: "Enable Redo at checkout in the Vajro mobile app"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Vajro?
+
+Vajro is a no-code mobile app builder for Shopify stores that allows businesses
+to create native Android and iOS apps without coding. It features a
+drag-and-drop interface for customization and automatically syncs with your
+Shopify store to keep products, inventory, and customer data up to date. Key
+features include push notifications, live video selling, app-only discounts,
+multilingual support, and in-app analytics.
+
+## What Does the Integration Do?
+
+Redo does not have a direct integration with Vajro. However, if the merchant uses
+**Shopify Plus** and **Shopify Checkout** as the checkout experience within
+Vajro, Redo can appear as a widget at checkout in the Vajro mobile app.
+
+## How to Set It Up
+
+### Prerequisites
+
+<AccordionGroup>
+<Accordion title="Shopify Plus" icon="circle-check">
+  The merchant must be on a **Shopify Plus** plan. This integration is not
+  available on standard Shopify plans.
+</Accordion>
+
+<Accordion title="Shopify Checkout in Vajro" icon="cart-shopping">
+  Vajro must be configured to use **Shopify Checkout** as the checkout
+  experience (rather than Vajro's built-in checkout).
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Update Attachment Strategy">
+  Change the merchant's attachment strategy to **Checkout** in the Redo Admin
+  dashboard.
+</Step>
+
+<Step title="Add Vajro as a Sales Channel">
+  Go to Shopify, find the **Redo product**, and add **Vajro** as a sales channel.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+Setup takes approximately **2 minutes** once both prerequisites are met.
+
+<IntegrationSupport integrationProvider="Vajro" />

@@ -1,0 +1,223 @@
+---
+title: "Fulfil"
+description: "Connect Fulfil to Redo for automated return processing through Shopify"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Fulfil?
+
+Fulfil is a cloud-based ERP and warehouse management platform designed for
+e-commerce and wholesale businesses. It provides order management, inventory
+control, and fulfillment capabilities to help brands scale their operations.
+
+**Primary Purpose:** Fulfil manages warehouse operations, inventory, and order
+fulfillment for e-commerce brands, with built-in support for return merchandise
+authorization (RMA) processing.
+
+## What Does the Integration Do?
+
+Unlike direct integrations, the Redo and Fulfil integration works by passing
+return data through Shopify. When a customer initiates a return through Redo, the
+system creates a return in Shopify with the relevant details. Fulfil listens for
+webhook events from Redo to receive additional return information and
+automatically generates an RMA, enabling your warehouse to process the return
+without manual intervention.
+
+Products are mapped using Shopify order line item IDs, returns include tracking
+and label information, and return locations are used to route items to the
+correct warehouse. This approach supports standard returns, green returns (where
+no item is shipped back), and mixed returns containing both types.
+
+## How It Works
+
+### Standard Returns
+
+When a customer ships an item back:
+
+1. Customer initiates a return through Redo
+2. Redo creates a return in Shopify and sends webhook data to Fulfil
+3. Fulfil creates an RMA with location routing
+4. Redo processes the refund, but the **return stays open** in Shopify
+5. Your warehouse receives the shipment and closes the RMA in Fulfil
+6. The return closes in Shopify and inventory updates accordingly
+
+<Info>
+  The return stays open in Shopify until the warehouse confirms receipt. This
+  allows your 3PL to reconcile what they receive against the original return
+  request, including partial receives if the customer doesn't ship everything
+  back.
+</Info>
+
+### Green Returns
+
+For items that don't need to be shipped back (damage, low value, etc.):
+
+1. Customer initiates a return for a non-shippable item
+2. Redo creates a return in Shopify that is **immediately closed** without
+   restock
+3. Refund is processed
+
+Items that don't require return shipments are handled efficiently without
+blocking your warehouse from acting on other items in the same return.
+
+### Mixed Returns
+
+When a single return contains both regular items and green return items:
+
+1. Redo creates a **primary return** for items being shipped back (kept open)
+2. Redo creates a **separate return** for green items (immediately closed)
+3. Refund is processed for all items
+4. Warehouse only acts on the open return for items being shipped
+5. Once the warehouse processes the shipment, the primary return closes
+
+<Warning>
+  The separation of standard and green returns into distinct Shopify returns is
+  critical for Fulfil to properly close out returns. Make sure the required
+  automation settings are enabled.
+</Warning>
+
+## How to Set It Up
+
+Follow these steps to configure the Fulfil integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Fulfil Workspace" icon="circle-check">
+You must have an active Fulfil workspace with warehouse management configured.
+</Accordion>
+
+<Accordion title="Products and Orders Synced to Fulfil" icon="box">
+  Your products and orders must already be synced to Fulfil, typically through
+  your Shopify integration. Returns cannot be created for products or orders that
+  don't exist in Fulfil.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+  You need administrative access to your Redo merchant dashboard to configure
+  integration settings and webhooks.
+</Accordion>
+
+<Accordion title="Webhook Endpoint from Fulfil" icon="plug">
+  Contact Fulfil to obtain the webhook endpoint URL that Redo will use to send
+  return data. Fulfil must configure their system to listen for webhook updates
+  from Redo.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Configure Automation Settings">
+  Navigate to **Settings** > **Automation** and enable the following:
+
+  - **Create Shopify return for all return types**
+  - **Create separate Shopify return for green returns**
+  - **Close green Shopify returns only**
+  - **No restock in Shopify**
+
+  These settings ensure Redo updates Shopify in the format Fulfil requires.
+</Step>
+
+<Step title="Configure Return Shipping Locations">
+  Go to **Settings** > **Shipping** > **Shipping Locations** and verify your
+  return destination(s) are correctly configured. Redo uses these locations to
+  route returns to the appropriate warehouse.
+</Step>
+
+<Step title="Set Up Webhooks">
+  Navigate to **Settings** > **Developer** > **Webhooks** and add the webhook
+  endpoint URL provided by Fulfil. This allows Redo to send return data directly
+  to Fulfil for RMA creation.
+</Step>
+
+<Step title="Contact Your Redo Customer Success Manager">
+  Reach out to your Redo Customer Success Manager to complete the setup. They
+  will:
+
+  - Verify your return location configuration
+  - Enable the non-closing returns feature
+  - Confirm the webhook connection to your Fulfil workspace
+</Step>
+
+<Step title="Test the Integration">
+  Create a test return and verify:
+
+  - The RMA appears in Fulfil with the correct order details
+  - Return location routing is accurate
+  - Tracking information is transmitted correctly
+  - Green returns close immediately in Shopify
+  - Standard returns remain open until warehouse processing
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                    | Time              | Description                                                |
+| ----------------------- | ----------------- | ---------------------------------------------------------- |
+| Automation Settings     | 2-5 minutes       | Enable the required settings in Redo                       |
+| Shipping Locations      | 5-10 minutes      | Configure return destination(s)                            |
+| Webhook Configuration   | 2-5 minutes       | Add the Fulfil webhook endpoint                            |
+| CSM Enablement          | 1-2 business days | Your CSM enables the non-closing returns feature           |
+| First Return Test       | 5-10 minutes      | Create a test return and verify the RMA in Fulfil          |
+| **Total Setup**         | **1-2 days**      | Including CSM enablement; self-service steps take ~15 min  |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+  **Near real-time** after Redo creates the return in Shopify and sends the
+  webhook to Fulfil.
+</Step>
+
+<Step title="Webhook Reliability">
+  **Automatic retries** if Fulfil is temporarily unavailable. RMAs should appear
+  within a few minutes even with minor delays.
+</Step>
+
+<Step title="Warehouse Processing">
+  **Varies by warehouse SLA**, typically 1-3 business days from when items arrive
+  at the facility.
+</Step>
+
+<Step title="Return Closure">
+  **Automatic** once the warehouse marks the return as complete in Fulfil. The
+  Shopify return closes and inventory updates accordingly.
+</Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="RMA Not Created in Fulfil">
+  **Possible Cause:** Fulfil hasn't received the return information yet.
+
+  **Resolution:** Webhooks are automatically retried. RMAs should appear within a
+  few minutes. If the RMA still doesn't appear, verify the webhook endpoint is
+  correctly configured in **Settings** > **Developer** > **Webhooks** and contact
+  support.
+</Accordion>
+
+<Accordion title="Returned Items Not Matching">
+  **Possible Cause:** Return location not configured correctly in Redo.
+
+  **Resolution:** Verify return locations are set up correctly in **Settings** >
+  **Shipping** > **Shipping Locations**. Ensure the locations match what Fulfil
+  expects.
+</Accordion>
+
+<Accordion title="Return Won't Close in Shopify">
+  **Possible Cause:** Warehouse hasn't marked the return as complete.
+
+  **Resolution:** This is by design. The return stays open in Shopify until your
+  warehouse confirms receipt and processing in Fulfil. Check your Fulfil
+  dashboard for the RMA status.
+</Accordion>
+</AccordionGroup>
+
+<IntegrationSupport integrationProvider="Fulfil" />

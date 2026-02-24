@@ -1,0 +1,124 @@
+---
+title: "Shopify"
+description: "Connect your Shopify store to Redo for automated return management"
+icon: "bag-shopping"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Shopify?
+
+Shopify is a leading ecommerce platform that enables businesses of all sizes to create and manage online stores. With over 2 million merchants worldwide, Shopify provides comprehensive tools for product management, order processing, payment handling, and customer relationship management.
+
+**Compatible Plans:** The Redo integration works seamlessly with all Shopify plans, including Basic, Grow, Advanced, and Plus. While core return functionality works across all tiers, Shopify Plus merchants receive additional benefits and capabilities.
+
+## Shopify Plus Benefits
+
+If you're on Shopify Plus, you unlock enhanced capabilities beyond the standard integration:
+
+### For Redo Returns
+
+<CardGroup cols={3}>
+  <Card title="Higher Rate Limits" icon="gauge-high">
+    Shopify Plus provides higher API rate limits, enabling faster order syncing and return processing for high-volume merchants.
+  </Card>
+  <Card title="Checkout Customization" icon="square-check">
+    Add a Redo coverage checkbox directly on your checkout page as an additional attachment strategy, increasing coverage opt-in rates.
+  </Card>
+  <Card title="In-Store Pickup Control" icon="store">
+    Automatically prevent Redo coverage from appearing on orders with in-store pickup, ensuring coverage only applies to shipped orders.
+  </Card>
+</CardGroup>
+
+### For Other Redo Products
+
+**Important:** Shopify Plus is required for most Redo products beyond Returns. For example, Checkout Protection (Checkout Op) functionality is approximately 80% exclusive to Shopify Plus merchants due to the advanced checkout customization capabilities required.
+
+## What Does the Integration Do?
+
+When you connect Shopify to Redo, your order data automatically syncs to enable seamless return processing. Customers can initiate returns directly through Redo's return portal, with all return information flowing back to Shopify for complete visibility and streamlined operations.
+
+The integration automatically syncs orders, products, customer information, and inventory data. When a return is processed, Redo can trigger refunds in Shopify and update inventory levels to maintain accurate stock counts across your systems. Return reasons and customer communications are tracked in both platforms for complete transparency.
+
+## How to Set It Up
+
+Follow these steps to configure the Shopify integration with Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Shopify Store" icon="circle-check">
+You must have an active Shopify store on any plan (Basic, Grow, Advanced, or Plus).
+</Accordion>
+
+<Accordion title="Administrative Access to Shopify" icon="key">
+You need admin permissions in your Shopify store to authorize the integration.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="user-shield">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+
+<Accordion title="Published Products" icon="box">
+Your products should be published in Shopify with SKUs configured for proper product mapping.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard.
+</Step>
+
+<Step title="Connect Shopify">
+Locate the **"Shopify"** card and click **Connect**.
+</Step>
+
+<Step title="Authorize the Connection">
+You'll be redirected to Shopify to authorize Redo to access your store data. Review the permissions and click **Install**.
+</Step>
+
+<Step title="Configure Return Settings">
+Back in Redo, configure your return policies, return window, and other return-specific settings.
+</Step>
+
+<Step title="Test the Integration">
+Create a test order in Shopify, then initiate a test return through Redo to verify order data syncs correctly and returns process as expected.
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step               | Time              | Description                                |
+| ------------------ | ----------------- | ------------------------------------------ |
+| Initial Connection | 2-3 minutes       | OAuth authentication with Shopify          |
+| Configuration      | 5-10 minutes      | Set up return policies and preferences     |
+| First Return Test  | 5-10 minutes      | Create test order and verify return flow   |
+| **Total Setup**    | **15-25 minutes** | Complete setup for most merchants          |
+
+### Operational Timing
+
+<Steps>
+<Step title="Order Sync">
+**Real-time** - Orders sync immediately when created in Shopify.
+</Step>
+
+<Step title="Return Creation">
+**Instant** - Returns are created immediately when customers submit through Redo.
+</Step>
+
+<Step title="Refund Processing">
+**Real-time (1-5 seconds)** - Refunds are posted to Shopify when returns are approved.
+</Step>
+
+<Step title="Inventory Updates">
+**Automatic** - Inventory updates in Shopify when items are returned and restocked.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Shopify" />

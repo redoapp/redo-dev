@@ -1,0 +1,71 @@
+---
+title: "Bolt"
+description: "Connect Bolt's one-click checkout experience with Redo"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Bolt?
+
+Bolt is a checkout experience platform that replaces a merchant's native
+checkout with an optimized, one-click checkout solution. Bolt's Universal Shopper
+Network recognizes returning customers across any Bolt-powered store, allowing
+them to complete purchases with a single click — no forms or passwords required.
+
+Key features include:
+
+- **One-click checkout** that reduces cart abandonment and increases conversion
+- **Universal Shopper Network** with access to millions of recognized shoppers
+- **Fraud detection** powered by machine learning to approve more legitimate
+  orders
+- **Platform support** for Shopify, BigCommerce, Adobe Commerce, and custom
+  storefronts
+
+## What Does the Integration Do?
+
+Redo integrates with Bolt to add a coverage toggle to the merchant's checkout
+page. When the toggle (or Redo's existing checkout integration) is present, Bolt
+auto-detects the Redo product and enables or disables it accordingly.
+
+The integration approach depends on your e-commerce platform.
+
+## How to Set It Up
+
+### Shopify
+
+Bolt is enabled on the backend by the Redo engineering team. Once enabled, a
+toggle is added to the merchant's checkout page.
+
+<Info>
+  If a Redo In Checkout (RIC) integration or the toggle already exists on the
+  checkout page, Bolt will automatically detect the Redo product.
+</Info>
+
+To get started, contact your Redo Customer Success Manager at
+**support@getredo.com**.
+
+### BigCommerce
+
+Setup is similar to Shopify. The integration supports regular and fee products
+via Redo In Checkout (RIC) and Checkout Buttons.
+
+<Warning>
+  Custom checkout fees are **not supported** on BigCommerce. BigCommerce custom
+  checkout fees can only be added within the checkout itself, and Redo cannot
+  inject widgets there.
+</Warning>
+
+To get started, contact your Redo Customer Success Manager at
+**support@getredo.com**.
+
+### Custom Integration
+
+For cases that don't fit the standard Shopify or BigCommerce setups — such as
+custom checkout fees — a fully custom integration is required. This involves
+working directly with Redo's engineering team and may require modifications to
+Redo's public API.
+
+Contact your Redo Customer Success Manager at **support@getredo.com** to discuss
+your requirements.
+
+<IntegrationSupport integrationProvider="Bolt" />

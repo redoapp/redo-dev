@@ -1,0 +1,46 @@
+---
+title: "Global-e"
+description: "Manage cross-border returns with Global-e for international shipping and duty recovery"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Global-e?
+
+Global-e is a cross-border e-commerce platform that manages international
+shipping, taxes, duties, and currency conversion. It enables merchants to sell
+and ship internationally while handling the complexity of localized pricing,
+compliance, and logistics.
+
+## What Does the Integration Do?
+
+The Redo and Global-e integration handles several aspects of international
+returns:
+
+- **Return labels** — Redo uses Global-e's return labels (via DHL) so merchants
+  can participate in duty drawback programs to recoup duties and fees. Global-e
+  only offers this benefit when their return labels are used.
+- **Country-based return fees** — Global-e charges different return fees based on
+  the customer's country, presented in the shopper's local currency.
+- **Direct refunds** — Since payments for Global-e orders are not housed in
+  Shopify, Redo refunds directly through Global-e rather than through Shopify.
+
+<Warning>
+  Exchanges are not recommended for international orders processed through
+  Global-e. If exchanges are offered, the merchant assumes full responsibility
+  for duties and fees and loses the cost recouping benefits of processing returns
+  through Global-e.
+</Warning>
+
+<Info>
+  An order must have a status of **Dispatched** (equivalent to "fulfilled") in
+  Global-e before it can be returned.
+</Info>
+
+## How to Set It Up
+
+For setup instructions, contact your Redo Customer Success Manager at
+**support@getredo.com**. The team will work with you and Global-e to configure
+return labels, refund routing, and return fee settings.
+
+<IntegrationSupport integrationProvider="Global-e" />
