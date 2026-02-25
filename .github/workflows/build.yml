@@ -126,7 +126,7 @@ jobs:
           echo "shasum=$(shasum bazel-bin/redo/api-schema-js/package.tgz | cut -d' ' -f1)" | tee -a "$GITHUB_OUTPUT"
       - if: steps.new.outputs.shasum != steps.prev.outputs.shasum
         name: Install npm with OIDC support
-        run: npm install -g npm@11.7.0
+        run: sudo npm install -g npm@11.7.0
       - if: steps.new.outputs.shasum != steps.prev.outputs.shasum
         name: Build release package
         run: bazel build "--embed_label=$GITHUB_RUN_NUMBER" --stamp redo/api-schema-js:package
