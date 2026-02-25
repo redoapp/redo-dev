@@ -124,14 +124,15 @@ jobs:
         run: |
           bazel build "--embed_label=$PREV_VERSION" --stamp redo/api-schema-js:package
           echo "shasum=$(shasum bazel-bin/redo/api-schema-js/package.tgz | cut -d' ' -f1)" | tee -a "$GITHUB_OUTPUT"
-      - env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        if: steps.new.outputs.shasum != steps.prev.outputs.shasum
-        name: Login to npm
-        run: bazel run @better_rules_javascript//npm -- c set "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN"
+      - if: steps.new.outputs.shasum != steps.prev.outputs.shasum
+        name: Install npm with OIDC support
+        run: npm install -g npm@11.7.0
+      - if: steps.new.outputs.shasum != steps.prev.outputs.shasum
+        name: Build release package
+        run: bazel build "--embed_label=$GITHUB_RUN_NUMBER" --stamp redo/api-schema-js:package
       - if: steps.new.outputs.shasum != steps.prev.outputs.shasum
         name: Publish to npm
-        run: bazel run "--embed_label=$GITHUB_RUN_NUMBER" --stamp redo/api-schema-js:publish -- --access public
+        run: npm publish bazel-bin/redo/api-schema-js/package.tgz --access public --provenance
       - if: always()
         name: Clean up
         uses: ./.github/actions/cleanup
