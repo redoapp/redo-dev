@@ -51,7 +51,6 @@ tags:
   - name: Invoices
   - name: Merchant Admin
   - name: Returns
-  - name: Shipping
   - name: Storefront
   - name: Webhooks
 paths:
@@ -72,10 +71,6 @@ paths:
     { $ref: path/customer-subscriptions.path.yaml }
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
-  /stores/{storeId}/shipments/buy: { $ref: path/shipment-buy.path.yaml }
-  /stores/{storeId}/shipments/rates: { $ref: path/shipment-rates.path.yaml }
-  /stores/{storeId}/shipments/{shipmentId}/documents/{documentType}:
-    { $ref: path/shipment-document.path.yaml }
   /stores/{storeId}/storefront/events:
     { $ref: path/storefront-events.path.yaml }
   /stores/{storeId}/events: { $ref: path/custom-events.path.yaml }
