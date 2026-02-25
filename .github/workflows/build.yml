@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0  # Need full history for git diff
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Mintlify CLI
-        run: npm install -g mintlify
+        run: npm install -g mintlify@4.2.384 --legacy-peer-deps
       - name: Set up
         uses: ./.github/actions/setup
         with:
