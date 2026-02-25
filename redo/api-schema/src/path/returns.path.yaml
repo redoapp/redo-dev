@@ -36,6 +36,54 @@ get:
     - Bearer: []
   summary: List Returns
   tags: [Returns]
+post:
+  description: Create a return for specific order line items.
+  operationId: Return create
+  parameters:
+    - { $ref: ../param/idempotency-key.param.yaml }
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/create-return-request.schema.yaml
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/create-return-response.schema.yaml
+      description: Success (idempotent replay; existing return returned)
+    "201":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/create-return-response.schema.yaml
+      description: Created
+    "400":
+      content:
+        application/json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Invalid request body
+    "404":
+      content:
+        application/json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Order not found
+    "409":
+      content:
+        application/json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Conflict
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create Return
+  tags: [Returns]
 parameters:
   - { $ref: ../param/store-id.param.yaml }
 summary: Returns

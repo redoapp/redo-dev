@@ -1,0 +1,6 @@
+description: Optional idempotency key for safely retrying create requests.
+in: header
+name: Idempotency-Key
+required: false
+schema:
+  type: string

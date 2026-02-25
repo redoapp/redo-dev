@@ -12,6 +12,13 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/shipment-document-type.schema'
+    idempotency-key.param:
+      description: Optional idempotency key for safely retrying create requests.
+      in: header
+      name: Idempotency-Key
+      required: false
+      schema:
+        type: string
     invoice-id.param:
       description: Invoice ID
       in: path
@@ -222,6 +229,136 @@ components:
         - id
         - price
       title: Coverage product
+      type: object
+    create-return-request.schema:
+      description: Create return request body.
+      properties:
+        externalOrderId:
+          description: External order ID from the ecommerce platform.
+          type: string
+        items:
+          description: Items being returned.
+          items:
+            properties:
+              compensation:
+                description: How the customer should be compensated for this item.
+                enum:
+                  - refund
+                  - store_credit
+                type: string
+              lineItemId:
+                description: External line item ID from the order.
+                type: string
+              notes:
+                description: Customer-facing notes for this item.
+                type: string
+              quantity:
+                description: Number of units to return.
+                minimum: 1
+                type: integer
+              reason:
+                description: Customer-facing return reason.
+                type: string
+              reasonCode:
+                description: Machine-readable reason code.
+                type: string
+            required:
+              - lineItemId
+              - quantity
+              - reason
+              - compensation
+            type: object
+          minItems: 1
+          type: array
+        label:
+          description: Optional return label and tracking details.
+          properties:
+            carrier:
+              description: Carrier name.
+              type: string
+            formLabelUrl:
+              description: Commercial or form label URL.
+              type: string
+            originalShipmentId:
+              description: Provider shipment identifier to reference.
+              type: string
+            postageLabelUrl:
+              description: Postage label URL.
+              type: string
+            trackingNumber:
+              description: Carrier tracking number.
+              type: string
+            trackingUrl:
+              description: Public tracking URL.
+              type: string
+          required:
+            - trackingNumber
+          type: object
+        notes:
+          description: Internal merchant-side notes.
+          type: string
+        provider:
+          description: Ecommerce platform provider.
+          examples:
+            - shopify
+          type: string
+        shippingAddress:
+          description: Address the customer is shipping from.
+          properties:
+            city:
+              type: string
+            country:
+              description: ISO 3166-1 alpha-2 country code.
+              type: string
+            line1:
+              type: string
+            line2:
+              type: string
+            postalCode:
+              type: string
+            state:
+              type: string
+          required:
+            - line1
+            - city
+            - state
+            - postalCode
+            - country
+          type: object
+      required:
+        - provider
+        - externalOrderId
+        - items
+        - shippingAddress
+      type: object
+    create-return-response.schema:
+      description: Create return response body.
+      properties:
+        externalRMAResponses:
+          items:
+            properties:
+              errorCode:
+                description: Provider error code when external RMA creation fails.
+                type: string
+              errorMessage:
+                description: Provider error message when external RMA creation fails.
+                type: string
+              integrationProvider:
+                description: Name of the external integration provider.
+                type: string
+              success:
+                description: Whether external RMA creation succeeded.
+                type: boolean
+            required:
+              - integrationProvider
+              - success
+            type: object
+          type: array
+        return:
+          $ref: '#/components/schemas/return-read.schema'
+      required:
+        - return
+        - externalRMAResponses
       type: object
     custom-event-request.schema:
       additionalProperties: false
@@ -2530,6 +2667,59 @@ paths:
         - Returns
     parameters:
       - $ref: '#/components/parameters/store-id.param'
+    post:
+      description: Create a return for specific order line items.
+      operationId: Return create
+      parameters:
+        - $ref: '#/components/parameters/idempotency-key.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-return-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-return-response.schema'
+          description: Success (idempotent replay; existing return returned)
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-return-response.schema'
+          description: Created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Order not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Conflict
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create Return
+      tags:
+        - Returns
     summary: Returns
   /stores/{storeId}/shipments/buy:
     description: Purchase a shipping label.
