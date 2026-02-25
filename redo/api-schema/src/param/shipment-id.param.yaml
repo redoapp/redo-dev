@@ -1,7 +1,0 @@
-description: Shipment ID
-in: path
-name: shipmentId
-required: true
-schema:
-  example: 67c7e87a2c8c262c0ddc9861
-  type: string
