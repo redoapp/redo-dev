@@ -48,6 +48,7 @@ tags:
   - name: Custom Events
   - name: Customer Portal
   - name: Customer Subscriptions
+  - name: Customers
   - name: Invoices
   - name: Merchant Admin
   - name: Returns
@@ -69,6 +70,7 @@ paths:
   /stores/{storeId}/customer-portal: { $ref: path/customer-portal.path.yaml }
   /stores/{storeId}/customer-subscriptions:
     { $ref: path/customer-subscriptions.path.yaml }
+  /stores/{storeId}/customers: { $ref: path/customers.path.yaml }
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
   /stores/{storeId}/storefront/events:

@@ -1,0 +1,19 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: false
+description: Response after creating or updating a customer profile.
+properties:
+  id:
+    description: Redo customer ID
+    type: string
+  email:
+    description: Customer email address
+    type: string
+  created:
+    description: Whether a new customer was created (true) or an existing customer was updated (false).
+    type: boolean
+required:
+  - id
+  - email
+  - created
+title: Customer Upsert Response
+type: object

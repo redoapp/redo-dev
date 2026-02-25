@@ -1,0 +1,44 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Customer location information.
+properties:
+  street1:
+    description: Street address line 1
+    type: string
+  street2:
+    description: Street address line 2
+    type: string
+  city:
+    description: City name
+    type: string
+  state:
+    description: State or province name
+    examples: [Washington, Ontario]
+    type: string
+  stateCode:
+    description: State or province abbreviation
+    examples: [WA, ON]
+    type: string
+  postalCode:
+    description: Postal or ZIP code
+    examples: ["12345", "K1A 0B1"]
+    type: string
+  country:
+    description: Country name
+    examples: [United States, Canada]
+    type: string
+  countryCode:
+    description: ISO 3166-1 alpha-2 country code
+    examples: [US, CA]
+    type: string
+  ianaTimeZoneName:
+    description: IANA time zone identifier
+    examples: [America/New_York, America/Los_Angeles]
+    type: string
+  latitude:
+    description: Latitude coordinate
+    type: number
+  longitude:
+    description: Longitude coordinate
+    type: number
+title: Customer Location
+type: object
