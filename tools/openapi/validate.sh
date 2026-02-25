@@ -25,7 +25,7 @@ fi
 echo "📄 Validating: redo/api-schema/openapi.yaml"
 echo ""
 
-# Run mint openapi-check
+# Run mintlify openapi-check
 # Note: We need to create a temp directory structure for mint to work
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf $TEMP_DIR" EXIT
