@@ -334,6 +334,14 @@ components:
             - items
             - shippingAddress
           type: object
+        options:
+          description: Options controlling side effects of the return creation.
+          properties:
+            createExternalRMAs:
+              default: true
+              description: Whether to create RMAs with external integrations (e.g. ShipBob). Defaults to true.
+              type: boolean
+          type: object
       required:
         - data
       type: object
