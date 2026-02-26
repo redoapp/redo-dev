@@ -86,6 +86,6 @@ properties:
     properties:
       createExternalRMAs:
         type: boolean
-        description: Whether to create RMAs with external integrations (e.g. ShipBob). Defaults to true.
-        default: true
+        description: Whether to create RMAs with external integrations (e.g. ShipBob). Defaults to false.
+        default: false
 required: [data]
