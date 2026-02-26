@@ -5,7 +5,7 @@ Preview changes locally to update the Redo docs
 ## Prerequisites
 
 - Bazel installed and configured
-- Mintlify CLI installed globally (`npm i -g mint`)
+- Mintlify CLI installed globally (`npm i -g mintlify`)
 
 ## Documentation Structure
 
@@ -61,7 +61,7 @@ Mintlify. If your local preview does not align with the production version,
 please update the CLI:
 
 ```bash
-npm update -g mint
+npm update -g mintlify
 ```
 
 ## Verify the OpenAPI file is valid to the OpenAPI specification
@@ -94,9 +94,9 @@ for code formatting.
 
 This may be due to an outdated version of node. Try the following:
 
-1. Remove the currently-installed version of the CLI: `npm remove -g mint`
+1. Remove the currently-installed version of the CLI: `npm remove -g mintlify`
 2. Upgrade to Node v19 or higher.
-3. Reinstall the CLI: `npm i -g mint`
+3. Reinstall the CLI: `npm i -g mintlify`
 
 ### Issue: Encountering an unknown error
 

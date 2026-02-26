@@ -1,0 +1,185 @@
+description: Manage customer profiles.
+get:
+  description: |
+    Retrieve a customer profile by email address.
+
+    The response includes the customer's name, contact information, location,
+    and any custom fields associated with the profile. Custom fields are returned
+    as `{ fieldName: value }` pairs.
+  operationId: Customer get
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+    - description: Customer email address
+      in: query
+      name: email
+      required: true
+      schema:
+        format: email
+        type: string
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/customer-read.schema.yaml"
+          example:
+            id: "67bd4f1a2e3c8d001a5f9b12"
+            email: "jane@example.com"
+            firstName: "Jane"
+            lastName: "Smith"
+            phoneNumber: "+11234567890"
+            location:
+              street1: "123 Main St"
+              street2: "Suite 12"
+              city: "Seattle"
+              state: "Washington"
+              stateCode: "WA"
+              postalCode: "98101"
+              country: "United States"
+              countryCode: "US"
+              latitude: 47.6062
+              longitude: -122.3321
+            customFields:
+              pricing_plan: "com.example.yearly"
+              status: "Active"
+              subscription_source: "web"
+              loyalty_points: 1250
+              vip_member: true
+            createdAt: "2026-02-20T18:30:00.000Z"
+            updatedAt: "2026-02-24T12:15:00.000Z"
+      description: Customer found
+    "400":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Missing or invalid email parameter
+    "404":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: No customer found for that email
+    "500":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Internal server error
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get customer by email
+  tags:
+    - Customers
+put:
+  description: |
+    Create or update a customer profile. Uses the email address as the upsert
+    key — if a customer with that email exists, their profile is updated;
+    otherwise, a new customer is created.
+
+    ## Profile fields
+    - `firstName` and `lastName` are set directly on the customer. A full
+      display name is automatically generated from these fields.
+    - `phoneNumber` should be in E.164 format (e.g., `+12345678900`). If the
+      number is new, it is added to the customer's contact information.
+
+    ## Location
+    Providing `location` sets the customer's current location. Only the fields
+    you include are updated.
+
+    ## Custom fields
+    Use `customFields` to store arbitrary key-value data on the customer (e.g.,
+    `pricing_plan`, `subscription_source`). Values can be strings, numbers, or
+    booleans. If a custom field doesn't exist yet, it is created automatically.
+  operationId: Customer upsert
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/customer-upsert-request.schema.yaml"
+        examples:
+          create_customer:
+            summary: Create a new customer with custom fields
+            value:
+              email: "jane@example.com"
+              firstName: "Jane"
+              lastName: "Smith"
+              phoneNumber: "+11234567890"
+              location:
+                street1: "123 Main St"
+                street2: "Suite 12"
+                city: "Seattle"
+                state: "Washington"
+                stateCode: "WA"
+                postalCode: "98101"
+                country: "United States"
+                countryCode: "US"
+                latitude: 47.6062
+                longitude: -122.3321
+              customFields:
+                pricing_plan: "com.example.yearly"
+                status: "Active"
+                subscription_source: "web"
+                loyalty_points: 1250
+                vip_member: true
+          update_custom_fields:
+            summary: Update only custom fields for an existing customer
+            value:
+              email: "jane@example.com"
+              customFields:
+                status: "Cancelled"
+                cancellation_reason: "Too expensive"
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/customer-upsert-response.schema.yaml"
+          example:
+            id: "67bd4f1a2e3c8d001a5f9b12"
+            email: "jane@example.com"
+            created: false
+      description: Existing customer updated
+    "201":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/customer-upsert-response.schema.yaml"
+          example:
+            id: "67bd4f1a2e3c8d001a5f9b12"
+            email: "jane@example.com"
+            created: true
+      description: New customer created
+    "400":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid request body or invalid email address
+    "500":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Internal server error
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create or update customer
+  tags:
+    - Customers
+summary: Customers

@@ -1,0 +1,58 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Customer profile.
+properties:
+  id:
+    description: Redo customer ID
+    examples: [67bd4f1a2e3c8d001a5f9b12]
+    type: string
+  email:
+    description: Customer email address
+    format: email
+    examples: ["jane@example.com"]
+    type: string
+  firstName:
+    description: Customer first name
+    examples: ["Jane"]
+    type: string
+  lastName:
+    description: Customer last name
+    examples: ["Smith"]
+    type: string
+  phoneNumber:
+    description: Customer phone number in E.164 format
+    examples: ["+11234567890"]
+    type: string
+  location:
+    $ref: ./customer-location.schema.yaml
+  customFields:
+    description: Custom field values as key-value pairs, where keys are field names and values can be strings, numbers, or booleans.
+    type: object
+    additionalProperties:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+    examples:
+      - subscription_source: "web"
+        status: "Active"
+        loyalty_points: 1250
+        vip_member: true
+  createdAt:
+    description: Timestamp when the customer was created.
+    format: date-time
+    title: Created at
+    examples: ["2026-02-20T18:30:00.000Z"]
+    type: string
+  updatedAt:
+    description: Timestamp when the customer was last updated.
+    format: date-time
+    title: Updated at
+    examples: ["2026-02-24T12:15:00.000Z"]
+    type: string
+required:
+  - id
+  - email
+  - createdAt
+  - updatedAt
+title: Customer
+type: object

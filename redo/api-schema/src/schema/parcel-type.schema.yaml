@@ -1,8 +1,0 @@
-# $schema: https://json-schema.org/draft/2020-12/schema#
-description: Parcel type enum.
-enum:
-  - box
-  - envelope
-  - soft_pack
-title: Parcel Type
-type: string

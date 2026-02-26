@@ -6,8 +6,7 @@ genrule(
     name = "openapi",
     srcs = [":openapi0"],
     outs = ["openapi.yaml"],
-    cmd = '$(execpath //yaml/rules:yq) "sort_keys(..)" < $< > $@',
-    tools = ["//yaml/rules:yq"],
+    cmd = "cp $< $@",
 )
 
 openapi_bundle(

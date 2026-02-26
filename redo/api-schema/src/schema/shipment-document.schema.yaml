@@ -1,9 +1,0 @@
-# $schema: https://json-schema.org/draft/2020-12/schema#
-description: Shipping document information.
-properties:
-  type:
-    $ref: ./shipment-document-type.schema.yaml
-required:
-  - type
-title: Shipment Document
-type: object
