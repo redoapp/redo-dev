@@ -1,6 +1,6 @@
 ---
 title: "Gladly"
-description: "View Redo return data within the Gladly customer service platform"
+description: "View Redo return data directly within the Gladly agent workspace"
 ---
 
 import IntegrationSupport from '/snippets/integration-support.mdx';
@@ -14,12 +14,167 @@ tickets.
 
 ## What Does the Integration Do?
 
-The Redo integration surfaces return data within Gladly so support agents have
-visibility into a customer's return history while handling conversations.
+The Redo Returns app brings return data directly into the Gladly agent
+workspace. When an agent opens a customer's profile, the app automatically pulls
+all of that customer's returns from Redo (matched by email) and displays them in
+an expandable card.
+
+For each return, agents can see:
+
+- **Order details** — order number, status, and dates
+- **Returned items** — product name, SKU, quantity, return reason, customer
+  comments, and whether it's a green return
+- **Compensation** — refund amount, store credit, exchange value, and available
+  compensation methods
+- **Exchange orders** — new items, pricing, tax, and fulfillment status
+- **Shipping & tracking** — carrier, tracking number, status, and a clickable
+  tracking link
+- **Address info** — customer address and return destination
+- **Gift cards** — if store credit was issued as a gift card, the code and amount
+- **Notes & attachments** — any notes or images attached to the return
+
+All sections are collapsible, so agents only expand what they need.
+
+### Why It Matters
+
+- **No context-switching** — agents stay in Gladly instead of logging into Redo
+  separately
+- **Faster resolution** — all return details are immediately visible
+- **Handles complexity** — multi-item returns, exchanges, partial refunds, and
+  multiple shipments are all supported
+- **Automatic matching** — returns are looked up by customer email with no manual
+  search required
 
 ## How to Set It Up
 
-For setup instructions, contact your Redo Customer Success Manager at
-**support@getredo.com**.
+There are two ways to get set up: Redo can handle the installation for you, or
+you can install the app yourself.
+
+### Prerequisites
+
+<AccordionGroup>
+<Accordion title="Gladly Environment" icon="circle-check">
+  A Gladly environment (production or UAT) with admin access.
+</Accordion>
+
+<Accordion title="Gladly API Key" icon="key">
+  Log in to Gladly and generate an API key for your account. Save it somewhere
+  secure.
+</Accordion>
+
+<Accordion title="Redo Store ID" icon="store">
+  You can find this in your Redo dashboard, or ask your Redo account manager.
+</Accordion>
+</AccordionGroup>
+
+### Option A: Redo Handles It
+
+This is the easiest path. Send the following to your Redo account manager or to
+**support@getredo.com**:
+
+| Item                      | Where to Find It                            | Example                              |
+| ------------------------- | ------------------------------------------- | ------------------------------------ |
+| **Gladly API User Email** | The email you use to log in to Gladly       | `api-user@yourcompany.com`           |
+| **Gladly API Key**        | Generated from your Gladly account          | `gasd54654sdfas6ew65216dsfa8961352` |
+| **Redo Store ID**         | Redo dashboard or your Redo account manager | `123asdf456789010`           |
+
+Once we have these, we will:
+
+1. Contact Gladly Support to get the app framework set up in your environment.
+2. Build and install the Redo Returns app.
+3. Configure the app with your store ID and API credentials.
+4. Activate the app and confirm everything is working.
+5. Let you know when it's live.
+
+Typical turnaround is a few business days, depending on Gladly Support's
+response time.
+
+### Option B: Self-Installation
+
+If you prefer to manage the installation yourself, reach out to your Redo
+account manager to get the Redo Returns app code, then follow the steps below.
+
+<Steps>
+<Step title="Contact Gladly Support">
+  Gladly needs to enable the app framework for your environment before you can
+  install any app. Reach out to Gladly Support and let them know you'd like to
+  install the Redo Returns app.
+</Step>
+
+<Step title="Install the Gladly App CLI">
+  If you don't already have the `appcfg` CLI tool, follow Gladly's documentation
+  to install it.
+</Step>
+
+<Step title="Set Environment Variables">
+  Open a terminal and set these environment variables with your own values:
+
+  ```bash
+  export GLADLY_APP_CFG_HOST=yourcompany.us.gladly.com
+  export GLADLY_APP_CFG_USER=api-user@yourcompany.com
+  export GLADLY_APP_CFG_TOKEN=C1ueqSAcNRS6B3Tg2I9mQG18PM7NlELq
+  ```
+</Step>
+
+<Step title="Build the App">
+  Navigate to the root of the Redo Returns app code, then build:
+
+  ```bash
+  export GLADLY_APP_CFG_ROOT=<path-to-app-code>
+  appcfg build
+  ```
+
+  This produces a `.zip` file for the next step.
+</Step>
+
+<Step title="Install the App">
+  Install the built app into your Gladly environment:
+
+  ```bash
+  appcfg apps install -f <path-to-zip-file>
+  ```
+</Step>
+
+<Step title="Enable the App">
+  Contact Gladly Support and ask them to enable the application you installed.
+  The name will be **redo_returns**.
+</Step>
+
+<Step title="Configure and Activate">
+  Create the app configuration with your Redo Store ID and API token, then
+  activate:
+
+  ```bash
+  appcfg apps config create Redo/redo_returns/v1.3.0 \
+    --name redo-returns \
+    --config '{ "storeId": "<your-redo-store-id>" }' \
+    --secrets '{ "apiToken": "<your-redo-api-token>" }' \
+    --activate
+  ```
+
+  Replace `<your-redo-store-id>` with your Redo Store ID and
+  `<your-redo-api-token>` with the API token provided by your Redo account
+  manager.
+</Step>
+
+<Step title="Verify">
+  Open Gladly and confirm that the Redo Returns card is visible when navigating
+  to a customer.
+</Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="App Installation Fails">
+  Double-check that your environment variables are set correctly and that Gladly
+  Support has enabled app installation for your environment.
+</Accordion>
+
+<Accordion title="Configuration Errors">
+  Make sure your Store ID and API token are correct. The Store ID should match
+  exactly what's in your Redo dashboard.
+</Accordion>
+</AccordionGroup>
 
 <IntegrationSupport integrationProvider="Gladly" />
