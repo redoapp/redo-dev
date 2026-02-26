@@ -1,0 +1,65 @@
+---
+title: "FedEx Easy Returns"
+description: "Offer boxless return drop-offs through FedEx Easy Returns locations"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is FedEx Easy Returns?
+
+FedEx Easy Returns is a returns service that provides **boxless returns** —
+customers can drop off their return items at a nearby FedEx Easy Returns location
+without needing to package them. This offers a more convenient return experience
+at a lower cost than traditional shipping.
+
+<Info>
+  FedEx Easy Returns is not the same as **Inmar**, which provides return
+  dispositioning and inspection services. These are separate integrations.
+</Info>
+
+## What Does the Integration Do?
+
+When a customer initiates a return with a merchant that has FedEx Easy Returns
+enabled, Redo can show a list of nearby drop-off locations. If the customer
+chooses a FedEx Easy Returns location:
+
+1. A label fee is still charged to the customer.
+2. Redo creates a return in FedEx Easy Returns, which generates a **QR code**.
+3. The customer takes the QR code to the drop-off location — no packaging
+   required.
+4. Redo receives webhook notifications from FedEx Easy Returns to track when the
+   customer has delivered their items.
+
+## How to Set It Up
+
+### Phase 1: Submit Onboarding Form to FER
+
+Complete these steps to kick off account creation with the FedEx Easy Returns
+team.
+
+<Steps>
+<Step title="Download the Locations Spreadsheet">
+  Download the `.xlsx` locations template from the
+  [FER Locations Spreadsheet Template](https://docs.google.com/spreadsheets/d/1iiDHAx9RrGMbMFp9h4em3vJXOONEzmKd/edit?gid=315498498#gid=315498498).
+</Step>
+
+<Step title="Fill Out the Spreadsheet">
+  Enter the brand's **ship-to location(s)** in the spreadsheet. Fill out
+  **every column** — incomplete submissions will delay setup.
+</Step>
+
+<Step title="Submit the Onboarding Form">
+  Go to the [FedEx Easy Returns Onboarding Form](https://forms.office.com/r/MKKsgxbGhP)
+  and complete it. Attach the completed locations spreadsheet on the last
+  question of the form.
+</Step>
+</Steps>
+
+### Phase 2: Create Test Orders and Contact Redo
+
+Once you've submitted the onboarding form, create **2 test orders** in your
+store, then send the order numbers to **support@getredo.com**. The Redo team
+will use these to verify the integration is working correctly and complete the
+setup on our end.
+
+<IntegrationSupport integrationProvider="FedEx Easy Returns" />
