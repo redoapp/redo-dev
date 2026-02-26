@@ -233,103 +233,109 @@ components:
     create-return-request.schema:
       description: Create return request body.
       properties:
-        externalOrderId:
-          description: External order ID from the ecommerce platform.
-          type: string
-        items:
-          description: Items being returned.
-          items:
-            properties:
-              compensation:
-                description: How the customer should be compensated for this item.
-                enum:
-                  - refund
-                  - store_credit
-                type: string
-              lineItemId:
-                description: External line item ID from the order.
-                type: string
-              notes:
-                description: Customer-facing notes for this item.
-                type: string
-              quantity:
-                description: Number of units to return.
-                minimum: 1
-                type: integer
-              reason:
-                description: Customer-facing return reason.
-                type: string
-              reasonCode:
-                description: Machine-readable reason code.
-                type: string
-            required:
-              - lineItemId
-              - quantity
-              - reason
-              - compensation
-            type: object
-          minItems: 1
-          type: array
-        label:
-          description: Optional return label and tracking details.
+        data:
+          description: Return information payload.
           properties:
-            carrier:
-              description: Carrier name.
+            externalOrderId:
+              description: External order ID from the ecommerce platform.
               type: string
-            formLabelUrl:
-              description: Commercial or form label URL.
+            items:
+              description: Items being returned.
+              items:
+                properties:
+                  compensation:
+                    description: How the customer should be compensated for this item.
+                    enum:
+                      - refund
+                      - store_credit
+                    type: string
+                  lineItemId:
+                    description: External line item ID from the order.
+                    type: string
+                  notes:
+                    description: Customer-facing notes for this item.
+                    type: string
+                  quantity:
+                    description: Number of units to return.
+                    minimum: 1
+                    type: integer
+                  reason:
+                    description: Customer-facing return reason.
+                    type: string
+                  reasonCode:
+                    description: Machine-readable reason code.
+                    type: string
+                required:
+                  - lineItemId
+                  - quantity
+                  - reason
+                  - compensation
+                type: object
+              minItems: 1
+              type: array
+            label:
+              description: Optional return label and tracking details.
+              properties:
+                carrier:
+                  description: Carrier name.
+                  type: string
+                formLabelUrl:
+                  description: Commercial or form label URL.
+                  type: string
+                originalShipmentId:
+                  description: Provider shipment identifier to reference.
+                  type: string
+                postageLabelUrl:
+                  description: Postage label URL.
+                  type: string
+                trackingNumber:
+                  description: Carrier tracking number.
+                  type: string
+                trackingUrl:
+                  description: Public tracking URL.
+                  type: string
+              required:
+                - trackingNumber
+              type: object
+            notes:
+              description: Internal merchant-side notes.
               type: string
-            originalShipmentId:
-              description: Provider shipment identifier to reference.
+            provider:
+              description: Ecommerce platform provider.
+              examples:
+                - shopify
               type: string
-            postageLabelUrl:
-              description: Postage label URL.
-              type: string
-            trackingNumber:
-              description: Carrier tracking number.
-              type: string
-            trackingUrl:
-              description: Public tracking URL.
-              type: string
+            shippingAddress:
+              description: Address the customer is shipping from.
+              properties:
+                city:
+                  type: string
+                country:
+                  description: ISO 3166-1 alpha-2 country code.
+                  type: string
+                line1:
+                  type: string
+                line2:
+                  type: string
+                postalCode:
+                  type: string
+                state:
+                  type: string
+              required:
+                - line1
+                - city
+                - state
+                - postalCode
+                - country
+              type: object
           required:
-            - trackingNumber
-          type: object
-        notes:
-          description: Internal merchant-side notes.
-          type: string
-        provider:
-          description: Ecommerce platform provider.
-          examples:
-            - shopify
-          type: string
-        shippingAddress:
-          description: Address the customer is shipping from.
-          properties:
-            city:
-              type: string
-            country:
-              description: ISO 3166-1 alpha-2 country code.
-              type: string
-            line1:
-              type: string
-            line2:
-              type: string
-            postalCode:
-              type: string
-            state:
-              type: string
-          required:
-            - line1
-            - city
-            - state
-            - postalCode
-            - country
+            - provider
+            - externalOrderId
+            - items
+            - shippingAddress
           type: object
       required:
-        - provider
-        - externalOrderId
-        - items
-        - shippingAddress
+        - data
       type: object
     create-return-response.schema:
       description: Create return response body.
