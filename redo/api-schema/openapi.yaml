@@ -1,1638 +1,4 @@
-components:
-  headers:
-    page-next.header:
-      description: Next value for X-Page-Continue, for more results
-      schema:
-        type: string
-  parameters:
-    invoice-id.param:
-      description: Invoice ID
-      in: path
-      name: invoiceId
-      required: true
-      schema:
-        example: 64e4d5e837572a4813b73e40
-        type: string
-    page-continue.param:
-      description: Page marker, from X-Page-Next header
-      example: 64df700931a04885276c3364
-      in: header
-      name: X-Page-Continue
-      schema:
-        type: string
-    page-size.param:
-      description: Page size, defaults to 20
-      example: 20
-      in: header
-      name: X-Page-Size
-      schema:
-        maximum: 500
-        minimum: 1
-        type: integer
-    provider-order-name:
-      description: Provider specific order name
-      in: query
-      name: provider_order_name
-      schema:
-        example: XYZ1025
-        type: string
-    return-id.param:
-      description: Return ID
-      in: path
-      name: returnId
-      required: true
-      schema:
-        example: 64e4d5e837572a4813b73e40
-        type: string
-    return-status.param:
-      description: Filter returns by status
-      in: query
-      name: status
-      schema:
-        $ref: '#/components/schemas/return-status.schema'
-    shopify-order-name:
-      description: Shopify specific order name
-      in: query
-      name: shopify_order_name
-      schema:
-        example: XYZ1025
-        type: string
-    store-id.param:
-      description: Store ID
-      in: path
-      name: storeId
-      required: true
-      schema:
-        example: 64e5a8a1af49a89df37e4ee7
-        type: string
-    updated-at-max.param:
-      description: Maximum updated time, exclusive
-      example: '2000-02-01T00:00:00Z'
-      in: query
-      name: updated_at_max
-      schema:
-        format: date-time
-        type: string
-    updated-at-min.param:
-      description: Minimum updated time, inclusive
-      example: '2000-01-01T00:00:00Z'
-      in: query
-      name: updated_at_min
-      schema:
-        format: date-time
-        type: string
-    webhook-id.param:
-      description: Webhook ID
-      in: path
-      name: webhookId
-      required: true
-      schema:
-        example: 64e5a865a58eefeed7f05ea6
-        type: string
-  schemas:
-    address.schema:
-      description: Address.
-      properties:
-        city:
-          description: City name
-          examples:
-            - Anytown
-          title: City
-          type: string
-        country:
-          description: Country code
-          examples:
-            - US
-            - CA
-          title: Country
-          type: string
-        line1:
-          description: Line 1
-          examples:
-            - 123 Main St
-          title: Line 1
-          type: string
-        line2:
-          default: ''
-          description: Line 2
-          examples:
-            - ''
-          title: Line 2
-          type: string
-        postalCode:
-          description: Postal or ZIP code
-          examples:
-            - '12345'
-          title: Postal code
-          type: string
-        state:
-          description: State or province
-          examples:
-            - WA
-            - Washington
-          title: State
-          type: string
-      required:
-        - city
-        - country
-        - line1
-        - state
-        - postalCode
-      title: Address
-      type: object
-    comment.schema:
-      description: Comment with either message or image.
-      examples:
-        - message: Item is worn.
-        - image: eJxiYAEAAAD//wMAAAYABQ==
-      oneOf:
-        - additionalProperties: false
-          properties:
-            image:
-              contentEncoding: base64
-              description: Base64-encoded image
-              title: Image
-              type: string
-          required:
-            - image
-          title: Image comment
-          type: object
-        - additionalProperties: false
-          properties:
-            message:
-              description: Message.
-              title: Message
-              type: string
-          required:
-            - message
-          title: Message comment
-          type: object
-      title: Comment
-    coverage-product.schema:
-      description: Coverage product.
-      properties:
-        coverages:
-          description: Coverage.
-          items:
-            properties:
-              lineItems:
-                items:
-                  properties:
-                    id:
-                      description: Line item ID.
-                      title: ID
-                      type: string
-                  type: object
-                type: array
-              type:
-                enum:
-                  - shipping_failure
-                  - return_shipping
-                title: Coverage
-            required:
-              - lineItems
-              - type
-            type: object
-          type: array
-        id:
-          description: Coverage ID.
-          title: ID
-          type: string
-        price:
-          $ref: '#/components/schemas/money.schema'
-          description: Price.
-          title: Price
-      required:
-        - coverage
-        - id
-        - price
-      title: Coverage product
-      type: object
-    custom-event-request.schema:
-      additionalProperties: false
-      description: Custom event to trigger flows with merchant-defined event names and properties.
-      properties:
-        email:
-          description: Customer email address (one of email or phone is required).
-          type: string
-        event_name:
-          description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
-          type: string
-        event_timestamp:
-          description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
-          format: date-time
-          type: string
-        phone:
-          description: Customer phone number (one of email or phone is required).
-          type: string
-        properties:
-          additionalProperties: true
-          description: Custom properties for this event. Access in templates using dot notation (e.g., {{ properties.product_name }}).
-          type: object
-      required:
-        - event_name
-      title: Custom Event Request
-      type: object
-    custom-event-response.schema:
-      additionalProperties: false
-      description: Response after successfully creating a custom event.
-      properties:
-        event_id:
-          description: The unique identifier for the created event.
-          type: string
-        event_name:
-          description: The name of the custom event that was created.
-          type: string
-        status:
-          description: Status of the event processing.
-          enum:
-            - processed
-          type: string
-      required:
-        - event_id
-        - status
-        - event_name
-      title: Custom Event Response
-      type: object
-    customer-subscription-email.schema:
-      description: Email subscription updates
-      properties:
-        email:
-          description: Email address
-          format: email
-          type: string
-        subscriptions:
-          properties:
-            marketing:
-              $ref: '#/components/schemas/subscription-status-marketing.schema'
-          type: object
-      required:
-        - email
-        - subscriptions
-      type: object
-    customer-subscription-sms.schema:
-      description: SMS subscription updates
-      properties:
-        phoneNumber:
-          description: Phone number in E.164 format (e.g., +12345678900)
-          type: string
-        subscriptions:
-          properties:
-            marketing:
-              $ref: '#/components/schemas/subscription-status-marketing.schema'
-            transactional:
-              $ref: '#/components/schemas/subscription-status-transactional.schema'
-          type: object
-      required:
-        - phoneNumber
-        - subscriptions
-      type: object
-    customer-subscription-update-response.schema:
-      description: Customer subscription update response
-      properties:
-        message:
-          description: Human-readable success message
-          type: string
-        success:
-          description: Whether the operation was successful
-          type: boolean
-        updatedSubscriptions:
-          description: Details of which subscriptions were updated
-          properties:
-            email:
-              properties:
-                marketing:
-                  description: Whether email marketing was updated
-                  type: boolean
-              type: object
-            sms:
-              properties:
-                marketing:
-                  description: Whether SMS marketing was updated
-                  type: boolean
-                transactional:
-                  description: Whether SMS transactional was updated
-                  type: boolean
-              type: object
-          type: object
-      required:
-        - success
-        - message
-        - updatedSubscriptions
-      type: object
-    error.schema:
-      description: Problem details. See [RFC 7807 Section 3](https://datatracker.ietf.org/doc/html/rfc7807#section-3).
-      properties:
-        detail:
-          description: Human-readable description of the problem.
-          title: Detail
-          type: string
-        instance:
-          description: A URI reference that identifies this problem.
-          format: uri-reference
-          type: string
-        title:
-          description: Human-readable summary of the problem type.
-          title: Title
-          type: string
-        type:
-          default: about:blank
-          description: A URI reference that identifies the problem type.
-          format: uri-reference
-          type: string
-      title: Problem details
-      type: object
-    exchange-provision.schema:
-      enum:
-        - instant
-        - deferred
-      example: deferred
-      title: Exchang provision
-      type: string
-    https-callback.schema:
-      description: HTTPS callback
-      properties:
-        auth:
-          description: Authorization.
-          oneOf:
-            - properties:
-                bearer:
-                  description: Bearer
-                  properties:
-                    token:
-                      description: Token for Bearer authorization.
-                      example: abc123
-                      format: password
-                      title: Token
-                      type: string
-                  title: Bearer
-              title: Bearer authorization
-              type: object
-            - type: 'null'
-          title: Authorization
-        url:
-          description: HTTPS callback URL.
-          example: https://subscriber.example.org/events
-          format: uri
-          pattern: ^https://
-          title: URL
-          type: string
-      required:
-        - auth
-        - url
-      title: HTTPS callback
-      type: object
-    invoice.schema:
-      description: Schema for an invoice.
-      properties:
-        charge:
-          $ref: '#/components/schemas/money.schema'
-          description: The charge that the invoice is for.
-        createdAt:
-          description: The time the invoice was created.
-          format: date-time
-          type: string
-        id:
-          description: The ID of the charge.
-          type: string
-        status:
-          description: The status of the invoice.
-          type: string
-        store:
-          properties:
-            id:
-              description: The ID of the store.
-              type: string
-          required:
-            - id
-          type: object
-        updatedAt:
-          description: The time the invoice was last updated.
-          format: date-time
-          type: string
-      required:
-        - team
-        - updatedAt
-        - status
-        - createdAt
-        - charge
-      type: object
-    item-quantity.schema:
-      description: Item quantity.
-      example: 1
-      exclusiveMinimum: 0
-      title: Item quantity
-      type: number
-    length.schema:
-      description: Length measurement with unit.
-      properties:
-        unit:
-          description: Length unit
-          enum:
-            - in
-            - cm
-          examples:
-            - in
-            - cm
-          title: Unit
-          type: string
-        value:
-          description: Numeric length value
-          examples:
-            - 10.5
-            - 30
-          minimum: 0
-          title: Value
-          type: number
-      required:
-        - value
-        - unit
-      title: Length
-      type: object
-    money.schema:
-      description: Currency amount
-      properties:
-        amount:
-          examples:
-            - '50.2'
-            - '1.78'
-          title: Amount
-          type: string
-        currency:
-          examples:
-            - USD
-            - EUR
-          title: Currency
-          type: string
-      title: Money
-      type: object
-    order-read.schema:
-      description: Order.
-      properties:
-        customer:
-          properties:
-            emailAddress:
-              description: Email address of customer.
-              format: email
-              title: Email address
-              type: string
-            name:
-              $ref: '#/components/schemas/person-name.schema'
-              description: Name of customer.
-              title: Name
-            phoneNumber:
-              $ref: '#/components/schemas/phone-number.schema'
-              description: Phone number of customer.
-              title: Phone number
-          required:
-            - name
-          type: object
-        discounts:
-          $ref: '#/components/schemas/money.schema'
-          description: The total amount discounted on the order before returns. This includes both order and line level discounts.
-          title: Discounts
-        externalId:
-          description: Shopify ID
-          examples:
-            - '1073459971'
-            - '450789469'
-          title: External ID
-          type: string
-        id:
-          description: Order ID
-          example: 64e4da943dd822979a70bd12
-          title: ID
-          type: string
-        items:
-          items:
-            properties:
-              externalId:
-                example: '123'
-                type: string
-              fulfillmentLocationId:
-                description: ID of the location where the item was be fulfilled.
-                example: '123'
-                type:
-                  - string
-                  - 'null'
-              id:
-                description: Line item ID
-                title: ID
-                type: string
-              price:
-                $ref: '#/components/schemas/money.schema'
-                title: Price
-              product:
-                $ref: '#/components/schemas/product.schema'
-                title: Product
-              quantity:
-                $ref: '#/components/schemas/item-quantity.schema'
-                title: Quantity
-              variant:
-                $ref: '#/components/schemas/product-variant.schema'
-                title: Variant
-            required:
-              - id
-              - product
-              - quantity
-              - variant
-              - price
-              - fulfillmentLocationId
-          title: Line items
-          type: array
-        lineItemsTotal:
-          $ref: '#/components/schemas/money.schema'
-          description: Total price of all line items before discounts, shipping, and taxes.
-          title: Line Items Total
-        name:
-          description: Shopify name.
-          examples:
-            - '#123'
-          title: Name
-          type: string
-        shippingCost:
-          $ref: '#/components/schemas/money.schema'
-          description: The total shipping cost for the order. This includes fees and any related discounts that were refunded.
-          title: Shipping Cost
-        taxes:
-          $ref: '#/components/schemas/money.schema'
-          description: Total taxes applied to the order.
-          title: Taxes
-        total:
-          $ref: '#/components/schemas/money.schema'
-          description: The total price of the order, before returns. This includes taxes, discounts, and shipping costs.
-          title: Total
-      required:
-        - customer
-        - id
-        - items
-        - name
-        - discounts
-        - lineItemsTotal
-        - shippingCost
-        - total
-        - taxes
-      title: Order
-      type: object
-    person-name.schema:
-      description: Person name.
-      properties:
-        given:
-          description: Given name
-          examples:
-            - John
-            - Mary
-          type: string
-        surname:
-          description: Surname
-          examples:
-            - Smith
-            - Brown
-          type: string
-      required:
-        - given
-        - surname
-      title: Person name
-      type: object
-    phone-number.schema:
-      description: Phone number, in E.164 format
-      examples:
-        - '+15555555555'
-      title: Phone number
-      type: string
-    product-variant.schema:
-      properties:
-        externalId:
-          title: External ID
-          type: string
-        name:
-          title: Title
-          type: string
-        sku:
-          title: SKU
-          type: string
-        weight:
-          $ref: '#/components/schemas/weight.schema'
-          title: Weight
-      required:
-        - name
-      title: Product variant
-      type: object
-    product.schema:
-      description: Product.
-      properties:
-        externalId:
-          description: Product ID in external system (e.g. shopify).
-          title: External ID
-          type: string
-        name:
-          description: Product title
-          title: Name
-          type: string
-      required:
-        - name
-      title: Product
-      type: object
-    return-read.schema:
-      description: Return read.
-      properties:
-        compensationMethods:
-          description: Array of compensation methods available for this return
-          items:
-            enum:
-              - refund
-              - store_credit
-              - exchange
-            type: string
-          title: Compensation Methods
-          type: array
-        completeWithNoAction:
-          description: Whether this return can be completed with no action
-          title: Complete With No Action
-          type: boolean
-        createdAt:
-          description: Time of creation.
-          format: date-time
-          title: Created at
-          type: string
-        destination:
-          properties:
-            mailingAddress:
-              $ref: '#/components/schemas/address.schema'
-              description: Mailing address to send the returned items.
-              title: Mailing address
-            phoneNumber:
-              $ref: '#/components/schemas/phone-number.schema'
-              description: Phone number of the destination.
-              title: Phone number
-          type: object
-        exchange:
-          description: Exchange order
-          properties:
-            itemCount:
-              description: Total quantity of all exchange items
-              type: integer
-            items:
-              items:
-                properties:
-                  id:
-                    title: ID
-                    type: string
-                  originalPrice:
-                    description: Original price for the exchange item without discounts and taxes
-                    properties:
-                      amount:
-                        type: string
-                      currency:
-                        type: string
-                    type: object
-                  price:
-                    description: Subtotal price for the exchange item including discounts
-                    properties:
-                      amount:
-                        type: string
-                      currency:
-                        type: string
-                      tax:
-                        type: string
-                    type: object
-                  product:
-                    $ref: '#/components/schemas/product.schema'
-                    title: Product
-                  quantity:
-                    $ref: '#/components/schemas/item-quantity.schema'
-                    title: Quantity
-                  variant:
-                    $ref: '#/components/schemas/product-variant.schema'
-                required:
-                  - id
-                  - quantity
-                  - variant
-              title: Line items
-              type: array
-            order:
-              properties:
-                externalId:
-                  description: ID of external order
-                  title: External ID
-                  type: string
-              type: object
-            provision:
-              $ref: '#/components/schemas/exchange-provision.schema'
-              title: Provision
-            totalTax:
-              description: Total tax for exchange items
-              properties:
-                amount:
-                  type: string
-                currency:
-                  type: string
-              type: object
-          required:
-            - items
-            - provision
-          title: Exchange
-          type: object
-        externalOrderIds:
-          description: Array of external order IDs associated with this return
-          items:
-            type: string
-          title: External Order IDs
-          type: array
-        giftCards:
-          description: Gift card(s) created for return
-          items:
-            properties:
-              amount:
-                $ref: '#/components/schemas/money.schema'
-                title: Amount
-              code:
-                description: Gift card 16 digit code.
-                title: Code
-                type: string
-              externalId:
-                description: Gift card ID.
-                title: ID
-                type: string
-            required:
-              - amount
-              - code
-              - externalId
-            type: object
-          title: Gift cards
-          type: array
-        id:
-          description: Return identifier.
-          examples:
-            - 64df65d4c5a4ca3eff4b4e43
-          title: Identifier
-          type: string
-        internalCreatedByName:
-          description: Name of the internal team member who created this return
-          title: Internal Created By Name
-          type: string
-        items:
-          description: Return items
-          items:
-            properties:
-              assessments:
-                description: Assessment records for this return item. Only applicable for warranties.
-                items:
-                  properties:
-                    assignedUser:
-                      description: User assigned to this assessment
-                      properties:
-                        email:
-                          type: string
-                        firstName:
-                          type: string
-                        id:
-                          type: string
-                        lastName:
-                          type: string
-                        name:
-                          type: string
-                      required:
-                        - id
-                        - name
-                        - firstName
-                        - lastName
-                        - email
-                      type: object
-                    responses:
-                      description: Assessment responses
-                      items:
-                        discriminator:
-                          propertyName: type
-                        oneOf:
-                          - properties:
-                              type:
-                                const: short_text
-                                type: string
-                              value:
-                                description: Short text response value
-                                type: string
-                            required:
-                              - type
-                              - value
-                            title: Short Text Response
-                            type: object
-                          - properties:
-                              type:
-                                const: long_text
-                                type: string
-                              value:
-                                description: Long text response value
-                                type: string
-                            required:
-                              - type
-                              - value
-                            title: Long Text Response
-                            type: object
-                          - properties:
-                              type:
-                                const: select
-                                type: string
-                              value:
-                                description: Select response values (array of selected options)
-                                items:
-                                  type: string
-                                type: array
-                            required:
-                              - type
-                              - value
-                            title: Select Response
-                            type: object
-                          - properties:
-                              type:
-                                const: number
-                                type: string
-                              value:
-                                description: Number response value
-                                type: number
-                            required:
-                              - type
-                              - value
-                            title: Number Response
-                            type: object
-                          - properties:
-                              type:
-                                const: boolean
-                                type: string
-                              value:
-                                description: Boolean response value
-                                type: boolean
-                            required:
-                              - type
-                              - value
-                            title: Boolean Response
-                            type: object
-                          - properties:
-                              type:
-                                const: file_upload
-                                type: string
-                              value:
-                                description: File upload response values (array of file URLs or identifiers)
-                                items:
-                                  type: string
-                                type: array
-                            required:
-                              - type
-                              - value
-                            title: File Upload Response
-                            type: object
-                          - properties:
-                              type:
-                                const: date
-                                type: string
-                              value:
-                                description: Date response value
-                                format: date-time
-                                type: string
-                            required:
-                              - type
-                              - value
-                            title: Date Response
-                            type: object
-                      type: array
-                  required:
-                    - assignedUser
-                    - responses
-                  type: object
-                type: array
-              customerComment:
-                description: Customer's comment about the return
-                type: string
-              exchangeItem:
-                description: Exchange item details if this return item is being exchanged
-                properties:
-                  product:
-                    properties:
-                      externalId:
-                        type: string
-                      name:
-                        type: string
-                    type: object
-                  quantity:
-                    type: integer
-                  variant:
-                    properties:
-                      externalId:
-                        type: string
-                      name:
-                        type: string
-                    type: object
-                title: Exchange item
-                type: object
-              externalReturnLineItemId:
-                description: External return line item ID
-                title: External Return Line Item ID
-                type: string
-              greenReturn:
-                description: Whether this is a green return (no physical return required)
-                type: boolean
-              id:
-                description: Return item ID.
-                title: ID
-                type: string
-              multipleChoiceQuestions:
-                description: Multiple choice questions and answers for this return item
-                items:
-                  properties:
-                    answer:
-                      description: The selected answer
-                      type: string
-                    question:
-                      description: The question text
-                      type: string
-                  required:
-                    - question
-                    - answer
-                  type: object
-                type: array
-              orderItem:
-                description: Order line item
-                properties:
-                  id:
-                    description: 'Line item reference ID in format: {orderId}/{lineItemIndex}'
-                    title: ID
-                    type: string
-                  line_item_id:
-                    description: Original Shopify line item ID
-                    title: Line Item ID
-                    type: string
-                required:
-                  - id
-                title: Order item
-                type: object
-              productAdjustment:
-                description: Product adjustment details
-                type: string
-              productId:
-                description: Product ID
-                type: string
-              quantity:
-                description: Quantity of items being returned
-                type: integer
-              reason:
-                description: Primary return reason
-                examples:
-                  - Too big
-                  - Other
-                type: string
-              reasonCode:
-                description: Return reason code
-                type: string
-              reasonCodes:
-                description: Array of return reason codes
-                items:
-                  type: string
-                type: array
-              reasons:
-                description: Array of return reasons
-                items:
-                  type: string
-                type: array
-              refund:
-                description: Refund details
-                properties:
-                  amount:
-                    $ref: '#/components/schemas/money.schema'
-                    title: Amount
-                  type:
-                    description: Refund strategy
-                    type: string
-                required:
-                  - amount
-                type: object
-              shipmentGroupIds:
-                description: IDs of the shipment groups this return item belongs to
-                items:
-                  type: string
-                title: Shipment Group IDs
-                type: array
-              sku:
-                description: Product SKU
-                type: string
-              status:
-                description: Return item status
-                type: string
-              variantId:
-                description: Product variant ID
-                type: string
-            required:
-              - id
-              - orderItem
-              - quantity
-              - reason
-            type: object
-          type: array
-        notes:
-          description: Teammembers generated notes and comments on the return
-          items:
-            properties:
-              image:
-                description: Optional image URL attached to the note
-                title: Image URL
-                type: string
-              message:
-                description: The note text
-                title: Message
-                type: string
-            required:
-              - message
-            type: object
-          title: Notes
-          type: array
-        order:
-          description: Original order.
-          properties:
-            id:
-              description: Redo's internal identifier for the original order created in Redo.
-              example: 64e4da943dd822979a70bd12
-              title: ID
-              type: string
-            name:
-              description: Order name from the external provider, such as the Shopify order name.
-              examples:
-                - '#123'
-              title: Name
-              type: string
-          required:
-            - id
-          title: Order
-          type: object
-        shipment:
-          $ref: '#/components/schemas/return-shipment.schema'
-          description: Shipment, if has been made
-          title: Shipment
-        shipments:
-          description: Array of all shipments associated with this return
-          items:
-            $ref: '#/components/schemas/return-shipment.schema'
-          title: Shipments
-          type: array
-        shopifyOrderIds:
-          description: Array of Shopify order IDs (deprecated, use externalOrderIds)
-          items:
-            type: string
-          title: Shopify Order IDs
-          type: array
-        source:
-          properties:
-            emailAddress:
-              description: Email address.
-              format: email
-              title: Email address
-              type: string
-            mailingAddress:
-              $ref: '#/components/schemas/address.schema'
-              description: Mailing address returned items are sent from.
-              title: Mailing address
-            name:
-              $ref: '#/components/schemas/person-name.schema'
-              description: Name of returner.
-              title: Name
-            phoneNumber:
-              $ref: '#/components/schemas/phone-number.schema'
-              description: Phone number of returner.
-              title: Phone number
-          required:
-            - emailAddress
-            - mailingAddress
-            - name
-            - phoneNumber
-          type: object
-        status:
-          $ref: '#/components/schemas/return-status.schema'
-          description: Return status.
-          title: Status
-        tags:
-          description: Tags associated with this return
-          items:
-            properties:
-              name:
-                description: The tag's display name
-                type: string
-              source:
-                description: The source of the tag
-                type: string
-            required:
-              - name
-              - source
-            type: object
-          title: Tags
-          type: array
-        totals:
-          description: Calculated totals for the return
-          properties:
-            charge:
-              description: The upsell amount for the exchange order
-              properties:
-                amount:
-                  $ref: '#/components/schemas/money.schema'
-              required:
-                - amount
-              type: object
-            exchange:
-              description: Total value of new items in exchange
-              properties:
-                amount:
-                  $ref: '#/components/schemas/money.schema'
-              required:
-                - amount
-              type: object
-            refund:
-              description: Total refund amount excluding shipping
-              properties:
-                amount:
-                  $ref: '#/components/schemas/money.schema'
-              required:
-                - amount
-              type: object
-            storeCredit:
-              description: Total store credit amount
-              properties:
-                amount:
-                  $ref: '#/components/schemas/money.schema'
-              required:
-                - amount
-              type: object
-          required:
-            - refund
-            - exchange
-            - storeCredit
-            - charge
-          title: Totals
-          type: object
-        type:
-          $ref: '#/components/schemas/return-type.schema'
-          description: Return type.
-          title: Type
-        updatedAt:
-          description: Time of last update.
-          format: date-time
-          title: Updated at
-          type: string
-      required:
-        - createdAt
-        - destination
-        - giftCards
-        - source
-        - id
-        - order
-        - items
-        - status
-        - updatedAt
-      title: Return
-      type: object
-    return-shipment.schema:
-      description: Return shipment tracking information
-      properties:
-        carrier:
-          description: Carrier code
-          title: Carrier
-          type: string
-        deliveredAt:
-          description: Date and time this shipment was delivered
-          title: Delivered At
-          type: string
-        estimatedDeliveryDate:
-          description: Estimated delivery date for this shipment
-          title: Estimated Delivery Date
-          type: string
-        externalLocationId:
-          description: External location ID for the destination of this shipment
-          title: External Location ID
-          type: string
-        formLabel:
-          description: Form label URL
-          title: Form Label
-          type: string
-        itemIds:
-          description: IDs of the return items included in this shipment
-          items:
-            type: string
-          title: Item IDs
-          type: array
-        postageLabel:
-          description: Postage label URL
-          title: Postage Label
-          type: string
-        shipmentGroupId:
-          description: ID of the shipment group this shipment belongs to
-          title: Shipment Group ID
-          type: string
-        status:
-          description: Status of shipment
-          enum:
-            - unknown
-            - pre_transit
-            - in_transit
-            - out_for_delivery
-            - available_for_pickup
-            - cancelled
-            - delivered
-            - error
-            - failure
-            - return_to_sender
-            - expired
-          title: Status
-          type: string
-        tracker:
-          description: Tracking number
-          title: Tracker
-          type: string
-        trackingUrl:
-          description: Tracking URL
-          title: Tracking URL
-          type: string
-      title: Return Shipment
-      type: object
-    return-status-update.schema:
-      description: |
-        Return status.
-
-        * complete: The return has been completed successfully.
-        * open: Return has been approved and is awaiting shipment.
-        * flagged: A problem with return processing requires merchant action.
-        * rejected: The return has been rejected.
-        * deleted: The return has been reset.
-      enum:
-        - complete
-        - open
-        - flagged
-        - rejected
-        - deleted
-      example: open
-      title: Return status
-      type: string
-    return-status.schema:
-      description: |
-        Return status.
-
-        * open: Return has been approved and is awaiting shipment.
-        * in_transit: Return shipment is in transit.
-        * delivered: Return shipment has been delivered and awaiting processing.
-        * needs_review: Return requires review before further action.
-        * in_review: Return is currently being reviewed.
-        * complete: The return has been completed successfully.
-        * rejected: The return has been rejected.
-        * flagged: A problem with return processing requires merchant action.
-        * pre_shipment: Return requires pre-shipment merchant authorization.
-        * deleted: The return has been deleted (Reset).
-      enum:
-        - open
-        - in_transit
-        - delivered
-        - needs_review
-        - in_review
-        - complete
-        - rejected
-        - flagged
-        - pre_shipment
-        - deleted
-      example: open
-      title: Return status
-      type: string
-    return-type.schema:
-      description: |
-        Return type.
-      enum:
-        - claim
-        - return
-        - warranty
-      example: return
-      title: Return type
-      type: string
-    storefront-cart.schema:
-      description: Storefront cart.
-      properties:
-        lineItems:
-          description: Line items.
-          items:
-            properties:
-              coupons:
-                items:
-                  properties:
-                    code:
-                      type: string
-                    discountAmount:
-                      $ref: '#/components/schemas/money.schema'
-                      description: The amount this coupon discounts in dollars for this line item.
-                    id:
-                      type: string
-                  required:
-                    - id
-                    - code
-                    - discountAmount
-                  type: object
-                type: array
-              id:
-                description: Line item ID.
-                title: ID
-                type: string
-              originalPrice:
-                $ref: '#/components/schemas/money.schema'
-                description: Original price.
-                title: Original Price
-              priceTotal:
-                $ref: '#/components/schemas/money.schema'
-                description: Total price.
-                title: Price
-              product:
-                description: Product.
-                properties:
-                  id:
-                    description: Identifier of the product.
-                    title: ID
-                    type: string
-                required:
-                  - id
-                type: object
-              quantity:
-                description: Quantity.
-                title: Quantity
-                type: integer
-              variant:
-                description: Variant.
-                properties:
-                  id:
-                    description: Identifier of the variant.
-                    title: ID
-                    type: string
-                required:
-                  - id
-                type: object
-            required:
-              - id
-              - quantity
-              - product
-              - variant
-              - priceTotal
-            type: object
-          title: Line items
-          type: array
-        priceTotal:
-          $ref: '#/components/schemas/money.schema'
-          description: Total price.
-          title: Price
-      required:
-        - lineItems
-        - priceTotal
-      title: Storefront Cart
-      type: object
-    storefront-customer.schema:
-      description: Storefront customer.
-      properties:
-        id:
-          description: Customer ID.
-          title: ID
-          type: string
-      required:
-        - id
-      title: Storefront Customer
-      type: object
-    storefront-event.schema:
-      additionalProperties: true
-      description: Shopify pixel event for storefront tracking.
-      properties:
-        anonymousId:
-          description: Anonymous identifier for users without account.
-          type: string
-        cart:
-          description: Cart information.
-          type:
-            - object
-            - 'null'
-        cartLine:
-          description: Information about specific cart line item.
-          type: object
-        checkout:
-          description: Checkout information.
-          type: object
-        collection:
-          description: Collection information.
-          type: object
-        customer:
-          description: Customer information if available.
-          type:
-            - object
-            - 'null'
-        customerEmail:
-          description: Customer email if available.
-          format: email
-          type: string
-        customerPhone:
-          description: Customer phone if available.
-          type: string
-        eventId:
-          description: Unique identifier for the event.
-          type: string
-        eventName:
-          description: Name of the Shopify pixel event.
-          enum:
-            - product_added_to_cart
-            - product_removed_from_cart
-            - product_viewed
-            - checkout_started
-            - checkout_completed
-            - checkout_contact_info_submitted
-            - page_viewed
-            - collection_viewed
-          type: string
-        productVariant:
-          description: Product variant information.
-          type: object
-        source:
-          description: Source of the event.
-          enum:
-            - AIMERCE
-          type: string
-        timestamp:
-          description: ISO 8601 timestamp when the event occurred.
-          format: date-time
-          type: string
-        urlWithParams:
-          description: Complete page URL with query parameters.
-          type: string
-        urlWithoutParams:
-          description: Page URL without query parameters.
-          type: string
-      required:
-        - eventName
-        - eventId
-        - timestamp
-        - source
-      title: Storefront Event
-      type: object
-    subscription-status-marketing.schema:
-      description: Marketing subscription status
-      properties:
-        subscriptionStatus:
-          description: Subscription status
-          enum:
-            - subscribed
-            - confirmed
-            - unsubscribed
-          type: string
-        triggerAutomations:
-          default: false
-          description: Whether to trigger automations for this subscription change. Defaults to false.
-          type: boolean
-        updatedAt:
-          description: ISO 8601 timestamp. If not provided, defaults to now.
-          format: date-time
-          type: string
-      required:
-        - subscriptionStatus
-      title: Subscription Status Marketing
-      type: object
-    subscription-status-transactional.schema:
-      description: Transactional subscription status (order tracking)
-      properties:
-        subscriptionStatus:
-          description: Subscription status. Only subscribed and unsubscribed are supported for transactional.
-          enum:
-            - subscribed
-            - unsubscribed
-          type: string
-        updatedAt:
-          description: ISO 8601 timestamp. If not provided, defaults to now.
-          format: date-time
-          type: string
-      required:
-        - subscriptionStatus
-      title: Subscription Status Transactional
-      type: object
-    webhook-create.schema:
-      description: Webhook create.
-      properties:
-        backfill:
-          default: false
-          description: Create events for already-existing items
-          title: Backfill
-          type: boolean
-        callback:
-          $ref: '#/components/schemas/https-callback.schema'
-          description: HTTPS callback to POST events.
-          title: HTTPS callback
-        externalId:
-          default: null
-          description: Optional external identifier.
-          title: External ID
-          type:
-            - string
-            - 'null'
-        kind:
-          $ref: '#/components/schemas/webhook-kind.schema'
-          description: Kind.
-          title: Kind
-        topic:
-          $ref: '#/components/schemas/webhook-topic.schema'
-          description: Topic.
-          title: Topic
-      required:
-        - callback
-        - topic
-      title: Webhook create
-      type: object
-    webhook-kind.schema:
-      description: Webhook kind.
-      enum:
-        - redo
-        - loop
-      title: Webhook kind
-      type: string
-    webhook-read.schema:
-      description: Webhook read.
-      properties:
-        callback:
-          $ref: '#/components/schemas/https-callback.schema'
-          description: HTTPS callback URL to POST events.
-          title: Callback
-        createdAt:
-          description: Time created.
-          format: date-time
-          title: Created at.
-          type: string
-        externalId:
-          default: null
-          description: Optional external identifier.
-          title: External ID
-          type:
-            - string
-            - 'null'
-        id:
-          description: Webhook ID.
-          readonly: true
-          title: ID
-          type: string
-        kind:
-          $ref: '#/components/schemas/webhook-kind.schema'
-          description: Kind.
-          title: Kind
-        topic:
-          $ref: '#/components/schemas/webhook-topic.schema'
-          description: Topic.
-          title: Topic
-        updatedAt:
-          description: Last time updated.
-          format: date-time
-          title: Updated at.
-          type: string
-      required:
-        - callback
-        - createdAt
-        - externalId id
-        - updatedAt
-        - topic
-      title: Webhook read
-      type: object
-    webhook-topic.schema:
-      description: Webhook topic.
-      enum:
-        - return
-      title: Webhook topic
-      type: string
-    webhook-update.schema:
-      description: Webhook update.
-      properties:
-        callback:
-          $ref: '#/components/schemas/https-callback.schema'
-          description: HTTPS callback to POST events.
-          title: HTTPS callback
-        externalId:
-          default: null
-          description: Optional external identifier.
-          title: External ID
-          type:
-            - string
-            - 'null'
-      required:
-        - callback
-      title: Webhook update
-      type: object
-    weight.schema:
-      description: Weight.
-      properties:
-        kg:
-          description: Weight in kilograms
-          examples:
-            - 0.021
-            - 1.4
-          minimum: 0
-          title: Kilograms
-          type: number
-      title: Weight
-      type: object
-  securitySchemes:
-    Bearer:
-      scheme: bearer
-      type: http
-    UserBearer:
-      scheme: bearer
-      type: http
+openapi: 3.1.0
 info:
   contact:
     email: engineering-admin@getredo.com
@@ -1667,8 +33,493 @@ info:
     times before discarding it.
   title: Redo API
   version: 2.2.1
-openapi: 3.1.0
+servers:
+  - url: https://api.getredo.com/v2.2
+tags:
+  - name: Checkout Buttons
+  - name: Coverage Info
+  - name: Coverage Products
+  - name: Custom Events
+  - name: Customer Portal
+  - name: Customer Subscriptions
+  - name: Customers
+  - name: Invoices
+  - name: Merchant Admin
+  - name: Returns
+  - name: Storefront
+  - name: Webhooks
 paths:
+  /stores/{storeId}/checkout-buttons-ui:
+    description: Generate HTML and CSS for checkout buttons to enable or disable returns coverage.
+    get:
+      description: Generate rendered HTML and CSS for checkout buttons.
+      operationId: Checkout buttons UI
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  css:
+                    description: Boilerplate checkout button CSS, plus any merchant configured styles or A/B tests.
+                    title: Checkout buttons CSS
+                    type: string
+                  html:
+                    description: Boilerplate checkout button HTML
+                    title: Checkout buttons HTML
+                    type: string
+          description: Success
+      summary: Checkout Buttons UI
+      tags:
+        - Checkout Buttons
+    summary: Checkout buttons UI
+  /stores/{storeId}/coverage-info:
+    description: Navigate to the coverage info page.
+    get:
+      description: Navigate to the coverage info page.
+      operationId: Coverage info navigate
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      responses:
+        '302':
+          description: Redirect
+      summary: Navigate to Coverage Info
+      tags:
+        - Coverage Info
+    summary: Coverage info
+  /stores/{storeId}/coverage-products:
+    description: Available coverage products.
+    post:
+      description: Get available coverage products.
+      operationId: Coverage products
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                cart:
+                  $ref: '#/components/schemas/storefront-cart.schema'
+                customer:
+                  $ref: '#/components/schemas/storefront-customer.schema'
+                products:
+                  description: Product information.
+                  items:
+                    properties:
+                      id:
+                        description: Identifier of the product.
+                        title: ID
+                        type: string
+                    required:
+                      - id
+                    type: object
+                  deprecated: true
+                  title: Products
+                  type: array
+                variants:
+                  description: Variant information.
+                  items:
+                    properties:
+                      height:
+                        $ref: '#/components/schemas/length.schema'
+                        description: Height of an item.
+                        title: Height
+                      id:
+                        description: Identifier of the variant.
+                        title: ID
+                        type: string
+                      length:
+                        $ref: '#/components/schemas/length.schema'
+                        description: Length of an item.
+                        title: Length
+                      title:
+                        title: Title
+                        type: string
+                      weight:
+                        $ref: '#/components/schemas/weight.schema'
+                        description: Weight of an item.
+                        title: Weight
+                      width:
+                        $ref: '#/components/schemas/length.schema'
+                        description: Width of an item.
+                        title: Width
+                    required:
+                      - id
+                    type: object
+                  deprecated: true
+                  title: Variants
+                  type: array
+              required:
+                - cart
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  coverageProducts:
+                    description: Coverage products.
+                    items:
+                      $ref: '#/components/schemas/coverage-product.schema'
+                    title: Coverage Products
+                    type: array
+                required:
+                  - coverageProducts
+                type: object
+          description: Success
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      summary: Coverage Products
+      tags:
+        - Coverage Products
+    summary: Coverage products
+  /stores/{storeId}/events:
+    post:
+      description: |
+        Create a custom event to trigger flows with merchant-defined event names and properties.
+
+        Custom events allow merchants to trigger flows based on events from their own systems.
+        Events can include custom properties that are accessible in email and SMS templates.
+
+        ## Customer Matching
+        The API matches customers by email or phone number. At least one must be provided.
+
+        If no matching customer is found, the request will fail with a 404 error.
+
+        ## Rate Limiting
+        This endpoint is rate-limited to 100 requests per second per store.
+      operationId: Custom event create
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-event-request.schema'
+            examples:
+              user_registered:
+                summary: User registration event
+                value:
+                  event_name: user_registered
+                  email: customer@example.com
+                  properties:
+                    plan_type: premium
+                    referral_code: FRIEND123
+                    source: mobile_app
+              purchase_milestone:
+                summary: Purchase milestone event
+                value:
+                  event_name: purchase_milestone_reached
+                  phone: '+12065551234'
+                  properties:
+                    milestone_type: 100th_purchase
+                    total_spent: 5000
+                    vip_tier: gold
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-event-response.schema'
+          description: Event created successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body or missing required customer identifier
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Customer not found with provided identifier
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Rate limit exceeded
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create custom event
+      tags:
+        - Custom Events
+  /stores/{storeId}/customer-portal:
+    description: Navigate to the customer portal.
+    get:
+      description: Navigate to the customer portal.
+      operationId: Customer portal navigate
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+        - description: HMAC-SHA256 JWT of {"iss":"<partnerId>","sub":"<storeId>/<customerId>"}
+          in: query
+          name: token
+          schema:
+            type: string
+        - description: Order ID
+          in: query
+          name: order_id
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect
+      summary: Navigate to Customer Portal
+      tags:
+        - Customer Portal
+    summary: Customer portal
+  /stores/{storeId}/customer-subscriptions:
+    description: Update customer subscription preferences for marketing and transactional messages.
+    post:
+      description: Update customer subscription status for SMS and email marketing and transactional messages. If the customer with that phone number or email does not exist, it will be created.
+      operationId: Customer subscriptions update
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  $ref: '#/components/schemas/customer-subscription-email.schema'
+                sms:
+                  $ref: '#/components/schemas/customer-subscription-sms.schema'
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer-subscription-update-response.schema'
+          description: Success
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Bad Request
+        '500':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Internal Server Error
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Update Customer Subscriptions
+      tags:
+        - Customer Subscriptions
+    summary: Customer subscriptions
+  /stores/{storeId}/customers:
+    description: Manage customer profiles.
+    get:
+      description: |
+        Retrieve a customer profile by email address.
+
+        The response includes the customer's name, contact information, location,
+        and any custom fields associated with the profile. Custom fields are returned
+        as `{ fieldName: value }` pairs.
+      operationId: Customer get
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+        - description: Customer email address
+          in: query
+          name: email
+          required: true
+          schema:
+            format: email
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer-read.schema'
+              example:
+                id: 67bd4f1a2e3c8d001a5f9b12
+                email: jane@example.com
+                firstName: Jane
+                lastName: Smith
+                phoneNumber: '+11234567890'
+                location:
+                  street1: 123 Main St
+                  street2: Suite 12
+                  city: Seattle
+                  state: Washington
+                  stateCode: WA
+                  postalCode: '98101'
+                  country: United States
+                  countryCode: US
+                  latitude: 47.6062
+                  longitude: -122.3321
+                customFields:
+                  pricing_plan: com.example.yearly
+                  status: Active
+                  subscription_source: web
+                  loyalty_points: 1250
+                  vip_member: true
+                createdAt: '2026-02-20T18:30:00.000Z'
+                updatedAt: '2026-02-24T12:15:00.000Z'
+          description: Customer found
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Missing or invalid email parameter
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No customer found for that email
+        '500':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Internal server error
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Get customer by email
+      tags:
+        - Customers
+    put:
+      description: |
+        Create or update a customer profile. Uses the email address as the upsert
+        key — if a customer with that email exists, their profile is updated;
+        otherwise, a new customer is created.
+
+        ## Profile fields
+        - `firstName` and `lastName` are set directly on the customer. A full
+          display name is automatically generated from these fields.
+        - `phoneNumber` should be in E.164 format (e.g., `+12345678900`). If the
+          number is new, it is added to the customer's contact information.
+
+        ## Location
+        Providing `location` sets the customer's current location. Only the fields
+        you include are updated.
+
+        ## Custom fields
+        Use `customFields` to store arbitrary key-value data on the customer (e.g.,
+        `pricing_plan`, `subscription_source`). Values can be strings, numbers, or
+        booleans. If a custom field doesn't exist yet, it is created automatically.
+      operationId: Customer upsert
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customer-upsert-request.schema'
+            examples:
+              create_customer:
+                summary: Create a new customer with custom fields
+                value:
+                  email: jane@example.com
+                  firstName: Jane
+                  lastName: Smith
+                  phoneNumber: '+11234567890'
+                  location:
+                    street1: 123 Main St
+                    street2: Suite 12
+                    city: Seattle
+                    state: Washington
+                    stateCode: WA
+                    postalCode: '98101'
+                    country: United States
+                    countryCode: US
+                    latitude: 47.6062
+                    longitude: -122.3321
+                  customFields:
+                    pricing_plan: com.example.yearly
+                    status: Active
+                    subscription_source: web
+                    loyalty_points: 1250
+                    vip_member: true
+              update_custom_fields:
+                summary: Update only custom fields for an existing customer
+                value:
+                  email: jane@example.com
+                  customFields:
+                    status: Cancelled
+                    cancellation_reason: Too expensive
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer-upsert-response.schema'
+              example:
+                id: 67bd4f1a2e3c8d001a5f9b12
+                email: jane@example.com
+                created: false
+          description: Existing customer updated
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer-upsert-response.schema'
+              example:
+                id: 67bd4f1a2e3c8d001a5f9b12
+                email: jane@example.com
+                created: true
+          description: New customer created
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body or invalid email address
+        '500':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Internal server error
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create or update customer
+      tags:
+        - Customers
+    summary: Customers
   /invoices/pending/items.csv:
     description: Return invoice CSV file.
     get:
@@ -1721,6 +572,53 @@ paths:
       tags:
         - Invoices
     summary: Invoice
+  /stores/{storeId}/invoices:
+    description: Return a list of invoices.
+    get:
+      description: Get a list of invoices.
+      operationId: Invoice list
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  invoices:
+                    items:
+                      $ref: '#/components/schemas/invoice.schema'
+                    type: array
+                required:
+                  - invoices
+                type: object
+          description: Success
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: List Invoices
+      tags:
+        - Invoices
+    summary: Invoice
+  /stores/{storeId}/admin:
+    description: Navigate to the merchant admin page.
+    get:
+      description: Navigate to the merchant admin page.
+      operationId: Merchant admin navigate
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+      responses:
+        '302':
+          description: Redirect
+      summary: Navigate to Merchant Admin
+      tags:
+        - Merchant Admin
+    summary: Merchant admin
   /returns/{returnId}:
     description: Return.
     get:
@@ -1962,338 +860,6 @@ paths:
       tags:
         - Returns
     summary: Return status
-  /stores/{storeId}/admin:
-    description: Navigate to the merchant admin page.
-    get:
-      description: Navigate to the merchant admin page.
-      operationId: Merchant admin navigate
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      responses:
-        '302':
-          description: Redirect
-      summary: Navigate to Merchant Admin
-      tags:
-        - Merchant Admin
-    summary: Merchant admin
-  /stores/{storeId}/checkout-buttons-ui:
-    description: Generate HTML and CSS for checkout buttons to enable or disable returns coverage.
-    get:
-      description: Generate rendered HTML and CSS for checkout buttons.
-      operationId: Checkout buttons UI
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  css:
-                    description: Boilerplate checkout button CSS, plus any merchant configured styles or A/B tests.
-                    title: Checkout buttons CSS
-                    type: string
-                  html:
-                    description: Boilerplate checkout button HTML
-                    title: Checkout buttons HTML
-                    type: string
-          description: Success
-      summary: Checkout Buttons UI
-      tags:
-        - Checkout Buttons
-    summary: Checkout buttons UI
-  /stores/{storeId}/coverage-info:
-    description: Navigate to the coverage info page.
-    get:
-      description: Navigate to the coverage info page.
-      operationId: Coverage info navigate
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      responses:
-        '302':
-          description: Redirect
-      summary: Navigate to Coverage Info
-      tags:
-        - Coverage Info
-    summary: Coverage info
-  /stores/{storeId}/coverage-products:
-    description: Available coverage products.
-    post:
-      description: Get available coverage products.
-      operationId: Coverage products
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                cart:
-                  $ref: '#/components/schemas/storefront-cart.schema'
-                customer:
-                  $ref: '#/components/schemas/storefront-customer.schema'
-                products:
-                  deprecated: true
-                  description: Product information.
-                  items:
-                    properties:
-                      id:
-                        description: Identifier of the product.
-                        title: ID
-                        type: string
-                    required:
-                      - id
-                    type: object
-                  title: Products
-                  type: array
-                variants:
-                  deprecated: true
-                  description: Variant information.
-                  items:
-                    properties:
-                      height:
-                        $ref: '#/components/schemas/length.schema'
-                        description: Height of an item.
-                        title: Height
-                      id:
-                        description: Identifier of the variant.
-                        title: ID
-                        type: string
-                      length:
-                        $ref: '#/components/schemas/length.schema'
-                        description: Length of an item.
-                        title: Length
-                      title:
-                        title: Title
-                        type: string
-                      weight:
-                        $ref: '#/components/schemas/weight.schema'
-                        description: Weight of an item.
-                        title: Weight
-                      width:
-                        $ref: '#/components/schemas/length.schema'
-                        description: Width of an item.
-                        title: Width
-                    required:
-                      - id
-                    type: object
-                  title: Variants
-                  type: array
-              required:
-                - cart
-              type: object
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  coverageProducts:
-                    description: Coverage products.
-                    items:
-                      $ref: '#/components/schemas/coverage-product.schema'
-                    title: Coverage Products
-                    type: array
-                required:
-                  - coverageProducts
-                type: object
-          description: Success
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Error
-      summary: Coverage Products
-      tags:
-        - Coverage Products
-    summary: Coverage products
-  /stores/{storeId}/customer-portal:
-    description: Navigate to the customer portal.
-    get:
-      description: Navigate to the customer portal.
-      operationId: Customer portal navigate
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-        - description: HMAC-SHA256 JWT of {"iss":"<partnerId>","sub":"<storeId>/<customerId>"}
-          in: query
-          name: token
-          schema:
-            type: string
-        - description: Order ID
-          in: query
-          name: order_id
-          schema:
-            type: string
-      responses:
-        '302':
-          description: Redirect
-      summary: Navigate to Customer Portal
-      tags:
-        - Customer Portal
-    summary: Customer portal
-  /stores/{storeId}/customer-subscriptions:
-    description: Update customer subscription preferences for marketing and transactional messages.
-    post:
-      description: Update customer subscription status for SMS and email marketing and transactional messages. If the customer with that phone number or email does not exist, it will be created.
-      operationId: Customer subscriptions update
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                email:
-                  $ref: '#/components/schemas/customer-subscription-email.schema'
-                sms:
-                  $ref: '#/components/schemas/customer-subscription-sms.schema'
-              type: object
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/customer-subscription-update-response.schema'
-          description: Success
-        '400':
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Bad Request
-        '500':
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Internal Server Error
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Error
-      security:
-        - Bearer: []
-      summary: Update Customer Subscriptions
-      tags:
-        - Customer Subscriptions
-    summary: Customer subscriptions
-  /stores/{storeId}/events:
-    post:
-      description: |
-        Create a custom event to trigger flows with merchant-defined event names and properties.
-
-        Custom events allow merchants to trigger flows based on events from their own systems.
-        Events can include custom properties that are accessible in email and SMS templates.
-
-        ## Customer Matching
-        The API matches customers by email or phone number. At least one must be provided.
-
-        If no matching customer is found, the request will fail with a 404 error.
-
-        ## Rate Limiting
-        This endpoint is rate-limited to 100 requests per second per store.
-      operationId: Custom event create
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      requestBody:
-        content:
-          application/json:
-            examples:
-              purchase_milestone:
-                summary: Purchase milestone event
-                value:
-                  event_name: purchase_milestone_reached
-                  phone: '+12065551234'
-                  properties:
-                    milestone_type: 100th_purchase
-                    total_spent: 5000
-                    vip_tier: gold
-              user_registered:
-                summary: User registration event
-                value:
-                  email: customer@example.com
-                  event_name: user_registered
-                  properties:
-                    plan_type: premium
-                    referral_code: FRIEND123
-                    source: mobile_app
-            schema:
-              $ref: '#/components/schemas/custom-event-request.schema'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/custom-event-response.schema'
-          description: Event created successfully
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Invalid request body or missing required customer identifier
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Customer not found with provided identifier
-        '429':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Rate limit exceeded
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Error
-      security:
-        - Bearer: []
-      summary: Create custom event
-      tags:
-        - Custom Events
-  /stores/{storeId}/invoices:
-    description: Return a list of invoices.
-    get:
-      description: Get a list of invoices.
-      operationId: Invoice list
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  invoices:
-                    items:
-                      $ref: '#/components/schemas/invoice.schema'
-                    type: array
-                required:
-                  - invoices
-                type: object
-          description: Success
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error.schema'
-          description: Error
-      security:
-        - Bearer: []
-      summary: List Invoices
-      tags:
-        - Invoices
-    summary: Invoice
   /stores/{storeId}/returns:
     description: List of returns for store.
     get:
@@ -2544,20 +1110,6 @@ paths:
       tags:
         - Webhooks
     summary: Webhook replay
-servers:
-  - url: https://api.getredo.com/v2.2
-tags:
-  - name: Checkout Buttons
-  - name: Coverage Info
-  - name: Coverage Products
-  - name: Custom Events
-  - name: Customer Portal
-  - name: Customer Subscriptions
-  - name: Invoices
-  - name: Merchant Admin
-  - name: Returns
-  - name: Storefront
-  - name: Webhooks
 webhooks:
   return:
     post:
@@ -2602,3 +1154,1816 @@ webhooks:
       summary: Return event
       tags:
         - Returns
+components:
+  securitySchemes:
+    Bearer:
+      scheme: bearer
+      type: http
+    UserBearer:
+      scheme: bearer
+      type: http
+  parameters:
+    store-id.param:
+      description: Store ID
+      in: path
+      name: storeId
+      required: true
+      schema:
+        example: 64e5a8a1af49a89df37e4ee7
+        type: string
+    invoice-id.param:
+      description: Invoice ID
+      in: path
+      name: invoiceId
+      required: true
+      schema:
+        example: 64e4d5e837572a4813b73e40
+        type: string
+    return-id.param:
+      description: Return ID
+      in: path
+      name: returnId
+      required: true
+      schema:
+        example: 64e4d5e837572a4813b73e40
+        type: string
+    page-continue.param:
+      description: Page marker, from X-Page-Next header
+      example: 64df700931a04885276c3364
+      in: header
+      name: X-Page-Continue
+      schema:
+        type: string
+    page-size.param:
+      description: Page size, defaults to 20
+      example: 20
+      in: header
+      name: X-Page-Size
+      schema:
+        maximum: 500
+        minimum: 1
+        type: integer
+    updated-at-max.param:
+      description: Maximum updated time, exclusive
+      example: '2000-02-01T00:00:00Z'
+      in: query
+      name: updated_at_max
+      schema:
+        format: date-time
+        type: string
+    updated-at-min.param:
+      description: Minimum updated time, inclusive
+      example: '2000-01-01T00:00:00Z'
+      in: query
+      name: updated_at_min
+      schema:
+        format: date-time
+        type: string
+    shopify-order-name:
+      description: Shopify specific order name
+      in: query
+      name: shopify_order_name
+      schema:
+        example: XYZ1025
+        type: string
+    provider-order-name:
+      description: Provider specific order name
+      in: query
+      name: provider_order_name
+      schema:
+        example: XYZ1025
+        type: string
+    return-status.param:
+      description: Filter returns by status
+      in: query
+      name: status
+      schema:
+        $ref: '#/components/schemas/return-status.schema'
+    webhook-id.param:
+      description: Webhook ID
+      in: path
+      name: webhookId
+      required: true
+      schema:
+        example: 64e5a865a58eefeed7f05ea6
+        type: string
+  schemas:
+    money.schema:
+      description: Currency amount
+      properties:
+        amount:
+          examples:
+            - '50.2'
+            - '1.78'
+          title: Amount
+          type: string
+        currency:
+          examples:
+            - USD
+            - EUR
+          title: Currency
+          type: string
+      title: Money
+      type: object
+    storefront-cart.schema:
+      description: Storefront cart.
+      properties:
+        lineItems:
+          description: Line items.
+          items:
+            properties:
+              coupons:
+                items:
+                  properties:
+                    code:
+                      type: string
+                    discountAmount:
+                      $ref: '#/components/schemas/money.schema'
+                      description: The amount this coupon discounts in dollars for this line item.
+                    id:
+                      type: string
+                  required:
+                    - id
+                    - code
+                    - discountAmount
+                  type: object
+                type: array
+              id:
+                description: Line item ID.
+                title: ID
+                type: string
+              originalPrice:
+                $ref: '#/components/schemas/money.schema'
+                description: Original price.
+                title: Original Price
+              priceTotal:
+                $ref: '#/components/schemas/money.schema'
+                description: Total price.
+                title: Price
+              product:
+                description: Product.
+                properties:
+                  id:
+                    description: Identifier of the product.
+                    title: ID
+                    type: string
+                required:
+                  - id
+                type: object
+              quantity:
+                description: Quantity.
+                title: Quantity
+                type: integer
+              variant:
+                description: Variant.
+                properties:
+                  id:
+                    description: Identifier of the variant.
+                    title: ID
+                    type: string
+                required:
+                  - id
+                type: object
+            required:
+              - id
+              - quantity
+              - product
+              - variant
+              - priceTotal
+            type: object
+          title: Line items
+          type: array
+        priceTotal:
+          $ref: '#/components/schemas/money.schema'
+          description: Total price.
+          title: Price
+      required:
+        - lineItems
+        - priceTotal
+      title: Storefront Cart
+      type: object
+    storefront-customer.schema:
+      description: Storefront customer.
+      properties:
+        id:
+          description: Customer ID.
+          title: ID
+          type: string
+      required:
+        - id
+      title: Storefront Customer
+      type: object
+    length.schema:
+      description: Length measurement with unit.
+      properties:
+        unit:
+          description: Length unit
+          enum:
+            - in
+            - cm
+          examples:
+            - in
+            - cm
+          title: Unit
+          type: string
+        value:
+          description: Numeric length value
+          examples:
+            - 10.5
+            - 30
+          minimum: 0
+          title: Value
+          type: number
+      required:
+        - value
+        - unit
+      title: Length
+      type: object
+    weight.schema:
+      description: Weight.
+      properties:
+        kg:
+          description: Weight in kilograms
+          examples:
+            - 0.021
+            - 1.4
+          minimum: 0
+          title: Kilograms
+          type: number
+      title: Weight
+      type: object
+    error.schema:
+      description: Problem details. See [RFC 7807 Section 3](https://datatracker.ietf.org/doc/html/rfc7807#section-3).
+      properties:
+        detail:
+          description: Human-readable description of the problem.
+          title: Detail
+          type: string
+        instance:
+          description: A URI reference that identifies this problem.
+          format: uri-reference
+          type: string
+        title:
+          description: Human-readable summary of the problem type.
+          title: Title
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference that identifies the problem type.
+          format: uri-reference
+          type: string
+      title: Problem details
+      type: object
+    coverage-product.schema:
+      description: Coverage product.
+      properties:
+        coverages:
+          description: Coverage.
+          items:
+            properties:
+              lineItems:
+                items:
+                  properties:
+                    id:
+                      description: Line item ID.
+                      title: ID
+                      type: string
+                  type: object
+                type: array
+              type:
+                enum:
+                  - shipping_failure
+                  - return_shipping
+                title: Coverage
+            required:
+              - lineItems
+              - type
+            type: object
+          type: array
+        id:
+          description: Coverage ID.
+          title: ID
+          type: string
+        price:
+          $ref: '#/components/schemas/money.schema'
+          description: Price.
+          title: Price
+      required:
+        - coverage
+        - id
+        - price
+      title: Coverage product
+      type: object
+    custom-event-request.schema:
+      additionalProperties: false
+      description: Custom event to trigger flows with merchant-defined event names and properties.
+      properties:
+        event_name:
+          description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
+          type: string
+        email:
+          description: Customer email address (one of email or phone is required).
+          type: string
+        phone:
+          description: Customer phone number (one of email or phone is required).
+          type: string
+        properties:
+          description: Custom properties for this event. Access in templates using dot notation (e.g., {{ properties.product_name }}).
+          type: object
+          additionalProperties: true
+        event_timestamp:
+          description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
+          format: date-time
+          type: string
+      required:
+        - event_name
+      title: Custom Event Request
+      type: object
+    custom-event-response.schema:
+      additionalProperties: false
+      description: Response after successfully creating a custom event.
+      properties:
+        event_id:
+          description: The unique identifier for the created event.
+          type: string
+        status:
+          description: Status of the event processing.
+          enum:
+            - processed
+          type: string
+        event_name:
+          description: The name of the custom event that was created.
+          type: string
+      required:
+        - event_id
+        - status
+        - event_name
+      title: Custom Event Response
+      type: object
+    subscription-status-marketing.schema:
+      description: Marketing subscription status
+      properties:
+        subscriptionStatus:
+          description: Subscription status
+          enum:
+            - subscribed
+            - confirmed
+            - unsubscribed
+          type: string
+        triggerAutomations:
+          default: false
+          description: Whether to trigger automations for this subscription change. Defaults to false.
+          type: boolean
+        updatedAt:
+          description: ISO 8601 timestamp. If not provided, defaults to now.
+          format: date-time
+          type: string
+      required:
+        - subscriptionStatus
+      title: Subscription Status Marketing
+      type: object
+    customer-subscription-email.schema:
+      description: Email subscription updates
+      properties:
+        email:
+          description: Email address
+          format: email
+          type: string
+        subscriptions:
+          properties:
+            marketing:
+              $ref: '#/components/schemas/subscription-status-marketing.schema'
+          type: object
+      required:
+        - email
+        - subscriptions
+      type: object
+    subscription-status-transactional.schema:
+      description: Transactional subscription status (order tracking)
+      properties:
+        subscriptionStatus:
+          description: Subscription status. Only subscribed and unsubscribed are supported for transactional.
+          enum:
+            - subscribed
+            - unsubscribed
+          type: string
+        updatedAt:
+          description: ISO 8601 timestamp. If not provided, defaults to now.
+          format: date-time
+          type: string
+      required:
+        - subscriptionStatus
+      title: Subscription Status Transactional
+      type: object
+    customer-subscription-sms.schema:
+      description: SMS subscription updates
+      properties:
+        phoneNumber:
+          description: Phone number in E.164 format (e.g., +12345678900)
+          type: string
+        subscriptions:
+          properties:
+            marketing:
+              $ref: '#/components/schemas/subscription-status-marketing.schema'
+            transactional:
+              $ref: '#/components/schemas/subscription-status-transactional.schema'
+          type: object
+      required:
+        - phoneNumber
+        - subscriptions
+      type: object
+    customer-subscription-update-response.schema:
+      description: Customer subscription update response
+      properties:
+        message:
+          description: Human-readable success message
+          type: string
+        success:
+          description: Whether the operation was successful
+          type: boolean
+        updatedSubscriptions:
+          description: Details of which subscriptions were updated
+          properties:
+            email:
+              properties:
+                marketing:
+                  description: Whether email marketing was updated
+                  type: boolean
+              type: object
+            sms:
+              properties:
+                marketing:
+                  description: Whether SMS marketing was updated
+                  type: boolean
+                transactional:
+                  description: Whether SMS transactional was updated
+                  type: boolean
+              type: object
+          type: object
+      required:
+        - success
+        - message
+        - updatedSubscriptions
+      type: object
+    customer-location.schema:
+      description: Customer location information.
+      properties:
+        street1:
+          description: Street address line 1
+          type: string
+        street2:
+          description: Street address line 2
+          type: string
+        city:
+          description: City name
+          type: string
+        state:
+          description: State or province name
+          examples:
+            - Washington
+            - Ontario
+          type: string
+        stateCode:
+          description: State or province abbreviation
+          examples:
+            - WA
+            - 'ON'
+          type: string
+        postalCode:
+          description: Postal or ZIP code
+          examples:
+            - '12345'
+            - K1A 0B1
+          type: string
+        country:
+          description: Country name
+          examples:
+            - United States
+            - Canada
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 country code
+          examples:
+            - US
+            - CA
+          type: string
+        ianaTimeZoneName:
+          description: IANA time zone identifier
+          examples:
+            - America/New_York
+            - America/Los_Angeles
+          type: string
+        latitude:
+          description: Latitude coordinate
+          type: number
+        longitude:
+          description: Longitude coordinate
+          type: number
+      title: Customer Location
+      type: object
+    customer-read.schema:
+      description: Customer profile.
+      properties:
+        id:
+          description: Redo customer ID
+          examples:
+            - 67bd4f1a2e3c8d001a5f9b12
+          type: string
+        email:
+          description: Customer email address
+          format: email
+          examples:
+            - jane@example.com
+          type: string
+        firstName:
+          description: Customer first name
+          examples:
+            - Jane
+          type: string
+        lastName:
+          description: Customer last name
+          examples:
+            - Smith
+          type: string
+        phoneNumber:
+          description: Customer phone number in E.164 format
+          examples:
+            - '+11234567890'
+          type: string
+        location:
+          $ref: '#/components/schemas/customer-location.schema'
+        customFields:
+          description: Custom field values as key-value pairs, where keys are field names and values can be strings, numbers, or booleans.
+          type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+              - type: boolean
+          examples:
+            - subscription_source: web
+              status: Active
+              loyalty_points: 1250
+              vip_member: true
+        createdAt:
+          description: Timestamp when the customer was created.
+          format: date-time
+          title: Created at
+          examples:
+            - '2026-02-20T18:30:00.000Z'
+          type: string
+        updatedAt:
+          description: Timestamp when the customer was last updated.
+          format: date-time
+          title: Updated at
+          examples:
+            - '2026-02-24T12:15:00.000Z'
+          type: string
+      required:
+        - id
+        - email
+        - createdAt
+        - updatedAt
+      title: Customer
+      type: object
+    customer-upsert-request.schema:
+      additionalProperties: false
+      description: Request body for creating or updating a customer profile. The email address is used as the upsert key.
+      properties:
+        email:
+          description: Customer email address. Used as the upsert key to find or create the customer.
+          format: email
+          type: string
+        firstName:
+          description: Customer first name
+          type: string
+        lastName:
+          description: Customer last name
+          type: string
+        phoneNumber:
+          description: Customer phone number in E.164 format (e.g., +12345678900). Appended to the existing phone list if not already present.
+          examples:
+            - '+12345678900'
+          type: string
+        location:
+          $ref: '#/components/schemas/customer-location.schema'
+        customFields:
+          description: Custom field values as key-value pairs. Keys are field names and values can be strings, numbers, or booleans. New fields are created automatically if they don't exist yet.
+          type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+              - type: boolean
+          example:
+            subscription_source: web
+            status: Active
+            loyalty_points: 1250
+            vip_member: true
+      required:
+        - email
+      title: Customer Upsert Request
+      type: object
+    customer-upsert-response.schema:
+      additionalProperties: false
+      description: Response after creating or updating a customer profile.
+      properties:
+        id:
+          description: Redo customer ID
+          type: string
+        email:
+          description: Customer email address
+          type: string
+        created:
+          description: Whether a new customer was created (true) or an existing customer was updated (false).
+          type: boolean
+      required:
+        - id
+        - email
+        - created
+      title: Customer Upsert Response
+      type: object
+    invoice.schema:
+      description: Schema for an invoice.
+      properties:
+        charge:
+          $ref: '#/components/schemas/money.schema'
+          description: The charge that the invoice is for.
+        createdAt:
+          description: The time the invoice was created.
+          format: date-time
+          type: string
+        id:
+          description: The ID of the charge.
+          type: string
+        status:
+          description: The status of the invoice.
+          type: string
+        store:
+          properties:
+            id:
+              description: The ID of the store.
+              type: string
+          required:
+            - id
+          type: object
+        updatedAt:
+          description: The time the invoice was last updated.
+          format: date-time
+          type: string
+      required:
+        - team
+        - updatedAt
+        - status
+        - createdAt
+        - charge
+      type: object
+    person-name.schema:
+      description: Person name.
+      properties:
+        given:
+          description: Given name
+          examples:
+            - John
+            - Mary
+          type: string
+        surname:
+          description: Surname
+          examples:
+            - Smith
+            - Brown
+          type: string
+      required:
+        - given
+        - surname
+      title: Person name
+      type: object
+    phone-number.schema:
+      description: Phone number, in E.164 format
+      examples:
+        - '+15555555555'
+      title: Phone number
+      type: string
+    product.schema:
+      description: Product.
+      properties:
+        externalId:
+          description: Product ID in external system (e.g. shopify).
+          title: External ID
+          type: string
+        name:
+          description: Product title
+          title: Name
+          type: string
+      required:
+        - name
+      title: Product
+      type: object
+    item-quantity.schema:
+      description: Item quantity.
+      example: 1
+      exclusiveMinimum: 0
+      title: Item quantity
+      type: number
+    product-variant.schema:
+      properties:
+        externalId:
+          title: External ID
+          type: string
+        name:
+          title: Title
+          type: string
+        sku:
+          title: SKU
+          type: string
+        weight:
+          $ref: '#/components/schemas/weight.schema'
+          title: Weight
+      required:
+        - name
+      title: Product variant
+      type: object
+    order-read.schema:
+      description: Order.
+      properties:
+        customer:
+          properties:
+            emailAddress:
+              description: Email address of customer.
+              format: email
+              title: Email address
+              type: string
+            name:
+              $ref: '#/components/schemas/person-name.schema'
+              description: Name of customer.
+              title: Name
+            phoneNumber:
+              $ref: '#/components/schemas/phone-number.schema'
+              description: Phone number of customer.
+              title: Phone number
+          required:
+            - name
+          type: object
+        discounts:
+          $ref: '#/components/schemas/money.schema'
+          description: The total amount discounted on the order before returns. This includes both order and line level discounts.
+          title: Discounts
+        externalId:
+          description: Shopify ID
+          examples:
+            - '1073459971'
+            - '450789469'
+          title: External ID
+          type: string
+        id:
+          description: Order ID
+          example: 64e4da943dd822979a70bd12
+          title: ID
+          type: string
+        items:
+          items:
+            properties:
+              externalId:
+                example: '123'
+                type: string
+              fulfillmentLocationId:
+                description: ID of the location where the item was be fulfilled.
+                example: '123'
+                type:
+                  - string
+                  - 'null'
+              id:
+                description: Line item ID
+                title: ID
+                type: string
+              price:
+                $ref: '#/components/schemas/money.schema'
+                title: Price
+              product:
+                $ref: '#/components/schemas/product.schema'
+                title: Product
+              quantity:
+                $ref: '#/components/schemas/item-quantity.schema'
+                title: Quantity
+              variant:
+                $ref: '#/components/schemas/product-variant.schema'
+                title: Variant
+            required:
+              - id
+              - product
+              - quantity
+              - variant
+              - price
+              - fulfillmentLocationId
+          title: Line items
+          type: array
+        lineItemsTotal:
+          $ref: '#/components/schemas/money.schema'
+          description: Total price of all line items before discounts, shipping, and taxes.
+          title: Line Items Total
+        name:
+          description: Shopify name.
+          examples:
+            - '#123'
+          title: Name
+          type: string
+        shippingCost:
+          $ref: '#/components/schemas/money.schema'
+          description: The total shipping cost for the order. This includes fees and any related discounts that were refunded.
+          title: Shipping Cost
+        taxes:
+          $ref: '#/components/schemas/money.schema'
+          description: Total taxes applied to the order.
+          title: Taxes
+        total:
+          $ref: '#/components/schemas/money.schema'
+          description: The total price of the order, before returns. This includes taxes, discounts, and shipping costs.
+          title: Total
+      required:
+        - customer
+        - id
+        - items
+        - name
+        - discounts
+        - lineItemsTotal
+        - shippingCost
+        - total
+        - taxes
+      title: Order
+      type: object
+    address.schema:
+      description: Address.
+      properties:
+        city:
+          description: City name
+          examples:
+            - Anytown
+          title: City
+          type: string
+        country:
+          description: Country code
+          examples:
+            - US
+            - CA
+          title: Country
+          type: string
+        line1:
+          description: Line 1
+          examples:
+            - 123 Main St
+          title: Line 1
+          type: string
+        line2:
+          default: ''
+          description: Line 2
+          examples:
+            - ''
+          title: Line 2
+          type: string
+        postalCode:
+          description: Postal or ZIP code
+          examples:
+            - '12345'
+          title: Postal code
+          type: string
+        state:
+          description: State or province
+          examples:
+            - WA
+            - Washington
+          title: State
+          type: string
+      required:
+        - city
+        - country
+        - line1
+        - state
+        - postalCode
+      title: Address
+      type: object
+    exchange-provision.schema:
+      enum:
+        - instant
+        - deferred
+      example: deferred
+      title: Exchang provision
+      type: string
+    return-shipment.schema:
+      description: Return shipment tracking information
+      properties:
+        carrier:
+          description: Carrier code
+          title: Carrier
+          type: string
+        status:
+          description: Status of shipment
+          enum:
+            - unknown
+            - pre_transit
+            - in_transit
+            - out_for_delivery
+            - available_for_pickup
+            - cancelled
+            - delivered
+            - error
+            - failure
+            - return_to_sender
+            - expired
+          title: Status
+          type: string
+        tracker:
+          description: Tracking number
+          title: Tracker
+          type: string
+        trackingUrl:
+          description: Tracking URL
+          title: Tracking URL
+          type: string
+        postageLabel:
+          description: Postage label URL
+          title: Postage Label
+          type: string
+        formLabel:
+          description: Form label URL
+          title: Form Label
+          type: string
+        shipmentGroupId:
+          description: ID of the shipment group this shipment belongs to
+          title: Shipment Group ID
+          type: string
+        itemIds:
+          description: IDs of the return items included in this shipment
+          items:
+            type: string
+          title: Item IDs
+          type: array
+        externalLocationId:
+          description: External location ID for the destination of this shipment
+          title: External Location ID
+          type: string
+        estimatedDeliveryDate:
+          description: Estimated delivery date for this shipment
+          title: Estimated Delivery Date
+          type: string
+        deliveredAt:
+          description: Date and time this shipment was delivered
+          title: Delivered At
+          type: string
+      title: Return Shipment
+      type: object
+    return-status.schema:
+      description: |
+        Return status.
+
+        * open: Return has been approved and is awaiting shipment.
+        * in_transit: Return shipment is in transit.
+        * delivered: Return shipment has been delivered and awaiting processing.
+        * needs_review: Return requires review before further action.
+        * in_review: Return is currently being reviewed.
+        * complete: The return has been completed successfully.
+        * rejected: The return has been rejected.
+        * flagged: A problem with return processing requires merchant action.
+        * pre_shipment: Return requires pre-shipment merchant authorization.
+        * deleted: The return has been deleted (Reset).
+      enum:
+        - open
+        - in_transit
+        - delivered
+        - needs_review
+        - in_review
+        - complete
+        - rejected
+        - flagged
+        - pre_shipment
+        - deleted
+      example: open
+      title: Return status
+      type: string
+    return-type.schema:
+      description: |
+        Return type.
+      enum:
+        - claim
+        - return
+        - warranty
+      example: return
+      title: Return type
+      type: string
+    return-read.schema:
+      description: Return read.
+      properties:
+        compensationMethods:
+          description: Array of compensation methods available for this return
+          items:
+            enum:
+              - refund
+              - store_credit
+              - exchange
+            type: string
+          title: Compensation Methods
+          type: array
+        completeWithNoAction:
+          description: Whether this return can be completed with no action
+          title: Complete With No Action
+          type: boolean
+        createdAt:
+          description: Time of creation.
+          format: date-time
+          title: Created at
+          type: string
+        destination:
+          properties:
+            mailingAddress:
+              $ref: '#/components/schemas/address.schema'
+              description: Mailing address to send the returned items.
+              title: Mailing address
+            phoneNumber:
+              $ref: '#/components/schemas/phone-number.schema'
+              description: Phone number of the destination.
+              title: Phone number
+          type: object
+        exchange:
+          description: Exchange order
+          properties:
+            itemCount:
+              description: Total quantity of all exchange items
+              type: integer
+            items:
+              items:
+                properties:
+                  id:
+                    title: ID
+                    type: string
+                  originalPrice:
+                    description: Original price for the exchange item without discounts and taxes
+                    properties:
+                      amount:
+                        type: string
+                      currency:
+                        type: string
+                    type: object
+                  price:
+                    description: Subtotal price for the exchange item including discounts
+                    properties:
+                      amount:
+                        type: string
+                      currency:
+                        type: string
+                      tax:
+                        type: string
+                    type: object
+                  product:
+                    $ref: '#/components/schemas/product.schema'
+                    title: Product
+                  quantity:
+                    $ref: '#/components/schemas/item-quantity.schema'
+                    title: Quantity
+                  variant:
+                    $ref: '#/components/schemas/product-variant.schema'
+                required:
+                  - id
+                  - quantity
+                  - variant
+              title: Line items
+              type: array
+            order:
+              properties:
+                externalId:
+                  description: ID of external order
+                  title: External ID
+                  type: string
+              type: object
+            provision:
+              $ref: '#/components/schemas/exchange-provision.schema'
+              title: Provision
+            totalTax:
+              description: Total tax for exchange items
+              properties:
+                amount:
+                  type: string
+                currency:
+                  type: string
+              type: object
+          required:
+            - items
+            - provision
+          title: Exchange
+          type: object
+        externalOrderIds:
+          description: Array of external order IDs associated with this return
+          items:
+            type: string
+          title: External Order IDs
+          type: array
+        giftCards:
+          description: Gift card(s) created for return
+          items:
+            properties:
+              amount:
+                $ref: '#/components/schemas/money.schema'
+                title: Amount
+              code:
+                description: Gift card 16 digit code.
+                title: Code
+                type: string
+              externalId:
+                description: Gift card ID.
+                title: ID
+                type: string
+            required:
+              - amount
+              - code
+              - externalId
+            type: object
+          title: Gift cards
+          type: array
+        id:
+          description: Return identifier.
+          examples:
+            - 64df65d4c5a4ca3eff4b4e43
+          title: Identifier
+          type: string
+        internalCreatedByName:
+          description: Name of the internal team member who created this return
+          title: Internal Created By Name
+          type: string
+        items:
+          description: Return items
+          items:
+            properties:
+              customerComment:
+                description: Customer's comment about the return
+                type: string
+              exchangeItem:
+                description: Exchange item details if this return item is being exchanged
+                properties:
+                  product:
+                    properties:
+                      externalId:
+                        type: string
+                      name:
+                        type: string
+                    type: object
+                  quantity:
+                    type: integer
+                  variant:
+                    properties:
+                      externalId:
+                        type: string
+                      name:
+                        type: string
+                    type: object
+                title: Exchange item
+                type: object
+              greenReturn:
+                description: Whether this is a green return (no physical return required)
+                type: boolean
+              shipmentGroupIds:
+                description: IDs of the shipment groups this return item belongs to
+                items:
+                  type: string
+                title: Shipment Group IDs
+                type: array
+              id:
+                description: Return item ID.
+                title: ID
+                type: string
+              orderItem:
+                description: Order line item
+                properties:
+                  id:
+                    description: 'Line item reference ID in format: {orderId}/{lineItemIndex}'
+                    title: ID
+                    type: string
+                  line_item_id:
+                    description: Original Shopify line item ID
+                    title: Line Item ID
+                    type: string
+                required:
+                  - id
+                title: Order item
+                type: object
+              externalReturnLineItemId:
+                description: External return line item ID
+                title: External Return Line Item ID
+                type: string
+              productId:
+                description: Product ID
+                type: string
+              quantity:
+                description: Quantity of items being returned
+                type: integer
+              reason:
+                description: Primary return reason
+                examples:
+                  - Too big
+                  - Other
+                type: string
+              reasonCode:
+                description: Return reason code
+                type: string
+              reasons:
+                description: Array of return reasons
+                items:
+                  type: string
+                type: array
+              reasonCodes:
+                description: Array of return reason codes
+                items:
+                  type: string
+                type: array
+              productAdjustment:
+                description: Product adjustment details
+                type: string
+              multipleChoiceQuestions:
+                description: Multiple choice questions and answers for this return item
+                items:
+                  properties:
+                    question:
+                      description: The question text
+                      type: string
+                    answer:
+                      description: The selected answer
+                      type: string
+                  required:
+                    - question
+                    - answer
+                  type: object
+                type: array
+              assessments:
+                description: Assessment records for this return item. Only applicable for warranties.
+                items:
+                  properties:
+                    assignedUser:
+                      description: User assigned to this assessment
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        firstName:
+                          type: string
+                        lastName:
+                          type: string
+                        email:
+                          type: string
+                      required:
+                        - id
+                        - name
+                        - firstName
+                        - lastName
+                        - email
+                      type: object
+                    responses:
+                      description: Assessment responses
+                      items:
+                        discriminator:
+                          propertyName: type
+                        oneOf:
+                          - title: Short Text Response
+                            properties:
+                              type:
+                                const: short_text
+                                type: string
+                              value:
+                                description: Short text response value
+                                type: string
+                            required:
+                              - type
+                              - value
+                            type: object
+                          - title: Long Text Response
+                            properties:
+                              type:
+                                const: long_text
+                                type: string
+                              value:
+                                description: Long text response value
+                                type: string
+                            required:
+                              - type
+                              - value
+                            type: object
+                          - title: Select Response
+                            properties:
+                              type:
+                                const: select
+                                type: string
+                              value:
+                                description: Select response values (array of selected options)
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - type
+                              - value
+                            type: object
+                          - title: Number Response
+                            properties:
+                              type:
+                                const: number
+                                type: string
+                              value:
+                                description: Number response value
+                                type: number
+                            required:
+                              - type
+                              - value
+                            type: object
+                          - title: Boolean Response
+                            properties:
+                              type:
+                                const: boolean
+                                type: string
+                              value:
+                                description: Boolean response value
+                                type: boolean
+                            required:
+                              - type
+                              - value
+                            type: object
+                          - title: File Upload Response
+                            properties:
+                              type:
+                                const: file_upload
+                                type: string
+                              value:
+                                description: File upload response values (array of file URLs or identifiers)
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - type
+                              - value
+                            type: object
+                          - title: Date Response
+                            properties:
+                              type:
+                                const: date
+                                type: string
+                              value:
+                                description: Date response value
+                                format: date-time
+                                type: string
+                            required:
+                              - type
+                              - value
+                            type: object
+                      type: array
+                  required:
+                    - assignedUser
+                    - responses
+                  type: object
+                type: array
+              refund:
+                description: Refund details
+                properties:
+                  amount:
+                    $ref: '#/components/schemas/money.schema'
+                    title: Amount
+                  type:
+                    description: Refund strategy
+                    type: string
+                required:
+                  - amount
+                type: object
+              sku:
+                description: Product SKU
+                type: string
+              status:
+                description: Return item status
+                type: string
+              variantId:
+                description: Product variant ID
+                type: string
+            required:
+              - id
+              - orderItem
+              - quantity
+              - reason
+            type: object
+          type: array
+        notes:
+          description: Teammembers generated notes and comments on the return
+          items:
+            properties:
+              image:
+                description: Optional image URL attached to the note
+                title: Image URL
+                type: string
+              message:
+                description: The note text
+                title: Message
+                type: string
+            required:
+              - message
+            type: object
+          title: Notes
+          type: array
+        order:
+          description: Original order.
+          properties:
+            id:
+              description: Redo's internal identifier for the original order created in Redo.
+              example: 64e4da943dd822979a70bd12
+              title: ID
+              type: string
+            name:
+              description: Order name from the external provider, such as the Shopify order name.
+              examples:
+                - '#123'
+              title: Name
+              type: string
+          required:
+            - id
+          title: Order
+          type: object
+        shipment:
+          $ref: '#/components/schemas/return-shipment.schema'
+          description: Shipment, if has been made
+          title: Shipment
+        shipments:
+          description: Array of all shipments associated with this return
+          items:
+            $ref: '#/components/schemas/return-shipment.schema'
+          title: Shipments
+          type: array
+        shopifyOrderIds:
+          description: Array of Shopify order IDs (deprecated, use externalOrderIds)
+          items:
+            type: string
+          title: Shopify Order IDs
+          type: array
+        source:
+          properties:
+            emailAddress:
+              description: Email address.
+              format: email
+              title: Email address
+              type: string
+            mailingAddress:
+              $ref: '#/components/schemas/address.schema'
+              description: Mailing address returned items are sent from.
+              title: Mailing address
+            name:
+              $ref: '#/components/schemas/person-name.schema'
+              description: Name of returner.
+              title: Name
+            phoneNumber:
+              $ref: '#/components/schemas/phone-number.schema'
+              description: Phone number of returner.
+              title: Phone number
+          required:
+            - emailAddress
+            - mailingAddress
+            - name
+            - phoneNumber
+          type: object
+        status:
+          $ref: '#/components/schemas/return-status.schema'
+          description: Return status.
+          title: Status
+        tags:
+          description: Tags associated with this return
+          items:
+            properties:
+              name:
+                description: The tag's display name
+                type: string
+              source:
+                description: The source of the tag
+                type: string
+            required:
+              - name
+              - source
+            type: object
+          title: Tags
+          type: array
+        totals:
+          description: Calculated totals for the return
+          properties:
+            charge:
+              description: The upsell amount for the exchange order
+              properties:
+                amount:
+                  $ref: '#/components/schemas/money.schema'
+              required:
+                - amount
+              type: object
+            exchange:
+              description: Total value of new items in exchange
+              properties:
+                amount:
+                  $ref: '#/components/schemas/money.schema'
+              required:
+                - amount
+              type: object
+            refund:
+              description: Total refund amount excluding shipping
+              properties:
+                amount:
+                  $ref: '#/components/schemas/money.schema'
+              required:
+                - amount
+              type: object
+            storeCredit:
+              description: Total store credit amount
+              properties:
+                amount:
+                  $ref: '#/components/schemas/money.schema'
+              required:
+                - amount
+              type: object
+          required:
+            - refund
+            - exchange
+            - storeCredit
+            - charge
+          title: Totals
+          type: object
+        type:
+          $ref: '#/components/schemas/return-type.schema'
+          description: Return type.
+          title: Type
+        updatedAt:
+          description: Time of last update.
+          format: date-time
+          title: Updated at
+          type: string
+      required:
+        - createdAt
+        - destination
+        - giftCards
+        - source
+        - id
+        - order
+        - items
+        - status
+        - updatedAt
+      title: Return
+      type: object
+    comment.schema:
+      description: Comment with either message or image.
+      examples:
+        - message: Item is worn.
+        - image: eJxiYAEAAAD//wMAAAYABQ==
+      oneOf:
+        - additionalProperties: false
+          properties:
+            image:
+              contentEncoding: base64
+              description: Base64-encoded image
+              title: Image
+              type: string
+          required:
+            - image
+          title: Image comment
+          type: object
+        - additionalProperties: false
+          properties:
+            message:
+              description: Message.
+              title: Message
+              type: string
+          required:
+            - message
+          title: Message comment
+          type: object
+      title: Comment
+    return-status-update.schema:
+      description: |
+        Return status.
+
+        * complete: The return has been completed successfully.
+        * open: Return has been approved and is awaiting shipment.
+        * flagged: A problem with return processing requires merchant action.
+        * rejected: The return has been rejected.
+        * deleted: The return has been reset.
+      enum:
+        - complete
+        - open
+        - flagged
+        - rejected
+        - deleted
+      example: open
+      title: Return status
+      type: string
+    storefront-event.schema:
+      additionalProperties: true
+      description: Shopify pixel event for storefront tracking.
+      properties:
+        anonymousId:
+          description: Anonymous identifier for users without account.
+          type: string
+        cart:
+          description: Cart information.
+          type:
+            - object
+            - 'null'
+        cartLine:
+          description: Information about specific cart line item.
+          type: object
+        checkout:
+          description: Checkout information.
+          type: object
+        collection:
+          description: Collection information.
+          type: object
+        customer:
+          description: Customer information if available.
+          type:
+            - object
+            - 'null'
+        customerEmail:
+          description: Customer email if available.
+          format: email
+          type: string
+        customerPhone:
+          description: Customer phone if available.
+          type: string
+        eventId:
+          description: Unique identifier for the event.
+          type: string
+        eventName:
+          description: Name of the Shopify pixel event.
+          enum:
+            - product_added_to_cart
+            - product_removed_from_cart
+            - product_viewed
+            - checkout_started
+            - checkout_completed
+            - checkout_contact_info_submitted
+            - page_viewed
+            - collection_viewed
+          type: string
+        productVariant:
+          description: Product variant information.
+          type: object
+        source:
+          description: Source of the event.
+          enum:
+            - AIMERCE
+          type: string
+        timestamp:
+          description: ISO 8601 timestamp when the event occurred.
+          format: date-time
+          type: string
+        urlWithParams:
+          description: Complete page URL with query parameters.
+          type: string
+        urlWithoutParams:
+          description: Page URL without query parameters.
+          type: string
+      required:
+        - eventName
+        - eventId
+        - timestamp
+        - source
+      title: Storefront Event
+      type: object
+    https-callback.schema:
+      description: HTTPS callback
+      properties:
+        auth:
+          description: Authorization.
+          oneOf:
+            - properties:
+                bearer:
+                  description: Bearer
+                  properties:
+                    token:
+                      description: Token for Bearer authorization.
+                      example: abc123
+                      format: password
+                      title: Token
+                      type: string
+                  title: Bearer
+              title: Bearer authorization
+              type: object
+            - type: 'null'
+          title: Authorization
+        url:
+          description: HTTPS callback URL.
+          example: https://subscriber.example.org/events
+          format: uri
+          pattern: ^https://
+          title: URL
+          type: string
+      required:
+        - auth
+        - url
+      title: HTTPS callback
+      type: object
+    webhook-kind.schema:
+      description: Webhook kind.
+      enum:
+        - redo
+        - loop
+      title: Webhook kind
+      type: string
+    webhook-topic.schema:
+      description: Webhook topic.
+      enum:
+        - return
+      title: Webhook topic
+      type: string
+    webhook-read.schema:
+      description: Webhook read.
+      properties:
+        callback:
+          $ref: '#/components/schemas/https-callback.schema'
+          description: HTTPS callback URL to POST events.
+          title: Callback
+        createdAt:
+          description: Time created.
+          format: date-time
+          title: Created at.
+          type: string
+        externalId:
+          default: null
+          description: Optional external identifier.
+          title: External ID
+          type:
+            - string
+            - 'null'
+        id:
+          description: Webhook ID.
+          readonly: true
+          title: ID
+          type: string
+        kind:
+          $ref: '#/components/schemas/webhook-kind.schema'
+          description: Kind.
+          title: Kind
+        topic:
+          $ref: '#/components/schemas/webhook-topic.schema'
+          description: Topic.
+          title: Topic
+        updatedAt:
+          description: Last time updated.
+          format: date-time
+          title: Updated at.
+          type: string
+      required:
+        - callback
+        - createdAt
+        - externalId id
+        - updatedAt
+        - topic
+      title: Webhook read
+      type: object
+    webhook-create.schema:
+      description: Webhook create.
+      properties:
+        backfill:
+          default: false
+          description: Create events for already-existing items
+          title: Backfill
+          type: boolean
+        callback:
+          $ref: '#/components/schemas/https-callback.schema'
+          description: HTTPS callback to POST events.
+          title: HTTPS callback
+        externalId:
+          default: null
+          description: Optional external identifier.
+          title: External ID
+          type:
+            - string
+            - 'null'
+        kind:
+          $ref: '#/components/schemas/webhook-kind.schema'
+          description: Kind.
+          title: Kind
+        topic:
+          $ref: '#/components/schemas/webhook-topic.schema'
+          description: Topic.
+          title: Topic
+      required:
+        - callback
+        - topic
+      title: Webhook create
+      type: object
+    webhook-update.schema:
+      description: Webhook update.
+      properties:
+        callback:
+          $ref: '#/components/schemas/https-callback.schema'
+          description: HTTPS callback to POST events.
+          title: HTTPS callback
+        externalId:
+          default: null
+          description: Optional external identifier.
+          title: External ID
+          type:
+            - string
+            - 'null'
+      required:
+        - callback
+      title: Webhook update
+      type: object
+  headers:
+    page-next.header:
+      description: Next value for X-Page-Continue, for more results
+      schema:
+        type: string

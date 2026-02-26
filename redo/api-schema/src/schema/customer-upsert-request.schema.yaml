@@ -1,0 +1,37 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: false
+description: Request body for creating or updating a customer profile. The email address is used as the upsert key.
+properties:
+  email:
+    description: Customer email address. Used as the upsert key to find or create the customer.
+    format: email
+    type: string
+  firstName:
+    description: Customer first name
+    type: string
+  lastName:
+    description: Customer last name
+    type: string
+  phoneNumber:
+    description: Customer phone number in E.164 format (e.g., +12345678900). Appended to the existing phone list if not already present.
+    examples: ["+12345678900"]
+    type: string
+  location:
+    $ref: ./customer-location.schema.yaml
+  customFields:
+    description: Custom field values as key-value pairs. Keys are field names and values can be strings, numbers, or booleans. New fields are created automatically if they don't exist yet.
+    type: object
+    additionalProperties:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+    example:
+      subscription_source: "web"
+      status: "Active"
+      loyalty_points: 1250
+      vip_member: true
+required:
+  - email
+title: Customer Upsert Request
+type: object

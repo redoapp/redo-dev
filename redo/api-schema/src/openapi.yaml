@@ -48,32 +48,46 @@ tags:
   - name: Custom Events
   - name: Customer Portal
   - name: Customer Subscriptions
+  - name: Customers
   - name: Invoices
   - name: Merchant Admin
   - name: Returns
   - name: Storefront
   - name: Webhooks
 paths:
+  # Checkout Buttons
+  /stores/{storeId}/checkout-buttons-ui:
+    { $ref: path/checkout-buttons-ui.path.yaml }
+  # Coverage Info
+  /stores/{storeId}/coverage-info: { $ref: path/coverage-info.path.yaml }
+  # Coverage Products
+  /stores/{storeId}/coverage-products:
+    { $ref: path/coverage-products.path.yaml }
+  # Custom Events
+  /stores/{storeId}/events: { $ref: path/custom-events.path.yaml }
+  # Customer Portal
+  /stores/{storeId}/customer-portal: { $ref: path/customer-portal.path.yaml }
+  # Customer Subscriptions
+  /stores/{storeId}/customer-subscriptions:
+    { $ref: path/customer-subscriptions.path.yaml }
+  # Customers
+  /stores/{storeId}/customers: { $ref: path/customers.path.yaml }
+  # Invoices
   /invoices/pending/items.csv: { $ref: path/invoice-pending-csv.path.yaml }
   /invoices/{invoiceId}/items.csv: { $ref: path/invoice-csv.path.yaml }
+  /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
+  # Merchant Admin
+  /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
+  # Returns
   /returns/{returnId}: { $ref: path/return.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
   /returns/{returnId}/process: { $ref: path/return-process.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
-  /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
-  /stores/{storeId}/checkout-buttons-ui:
-    { $ref: path/checkout-buttons-ui.path.yaml }
-  /stores/{storeId}/coverage-info: { $ref: path/coverage-info.path.yaml }
-  /stores/{storeId}/coverage-products:
-    { $ref: path/coverage-products.path.yaml }
-  /stores/{storeId}/customer-portal: { $ref: path/customer-portal.path.yaml }
-  /stores/{storeId}/customer-subscriptions:
-    { $ref: path/customer-subscriptions.path.yaml }
-  /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
+  # Storefront
   /stores/{storeId}/storefront/events:
     { $ref: path/storefront-events.path.yaml }
-  /stores/{storeId}/events: { $ref: path/custom-events.path.yaml }
+  # Webhooks
   /stores/{storeId}/webhooks: { $ref: path/webhooks.path.yaml }
   /webhooks/{webhookId}: { $ref: path/webhook.path.yaml }
   /webhooks/{webhookId}/replay: { $ref: path/webhook-replay.path.yaml }
