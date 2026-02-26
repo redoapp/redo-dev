@@ -1,0 +1,24 @@
+type: object
+description: Create return response body.
+properties:
+  return:
+    $ref: ./return-read.schema.yaml
+  externalRMAResponses:
+    type: array
+    items:
+      type: object
+      properties:
+        integrationProvider:
+          type: string
+          description: Name of the external integration provider.
+        success:
+          type: boolean
+          description: Whether external RMA creation succeeded.
+        errorCode:
+          type: string
+          description: Provider error code when external RMA creation fails.
+        errorMessage:
+          type: string
+          description: Provider error message when external RMA creation fails.
+      required: [integrationProvider, success]
+required: [return, externalRMAResponses]

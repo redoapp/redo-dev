@@ -906,6 +906,59 @@ paths:
       summary: List Returns
       tags:
         - Returns
+    post:
+      description: Create a return for specific order line items.
+      operationId: Return create
+      parameters:
+        - $ref: '#/components/parameters/idempotency-key.param'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-return-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-return-response.schema'
+          description: Success (idempotent replay; existing return returned)
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-return-response.schema'
+          description: Created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Order not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Conflict
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create Return
+      tags:
+        - Returns
     parameters:
       - $ref: '#/components/parameters/store-id.param'
     summary: Returns
@@ -1239,6 +1292,13 @@ components:
       name: status
       schema:
         $ref: '#/components/schemas/return-status.schema'
+    idempotency-key.param:
+      description: Optional idempotency key for safely retrying create requests.
+      in: header
+      name: Idempotency-Key
+      required: false
+      schema:
+        type: string
     webhook-id.param:
       description: Webhook ID
       in: path
@@ -2748,6 +2808,150 @@ components:
       example: open
       title: Return status
       type: string
+    create-return-request.schema:
+      type: object
+      description: Create return request body.
+      properties:
+        data:
+          type: object
+          description: Return information payload.
+          properties:
+            provider:
+              type: string
+              description: Ecommerce platform provider.
+              examples:
+                - shopify
+            externalOrderId:
+              type: string
+              description: External order ID from the ecommerce platform.
+            items:
+              type: array
+              minItems: 1
+              description: Items being returned.
+              items:
+                type: object
+                properties:
+                  lineItemId:
+                    type: string
+                    description: External line item ID from the order.
+                  quantity:
+                    type: integer
+                    minimum: 1
+                    description: Number of units to return.
+                  reason:
+                    type: string
+                    description: Customer-facing return reason.
+                  reasonCode:
+                    type: string
+                    description: Machine-readable reason code.
+                  compensation:
+                    type: string
+                    enum:
+                      - refund
+                      - store_credit
+                    description: How the customer should be compensated for this item.
+                  notes:
+                    type: string
+                    description: Customer-facing notes for this item.
+                required:
+                  - lineItemId
+                  - quantity
+                  - reason
+                  - compensation
+            shippingAddress:
+              type: object
+              description: Address the customer is shipping from.
+              properties:
+                line1:
+                  type: string
+                line2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                postalCode:
+                  type: string
+                country:
+                  type: string
+                  description: ISO 3166-1 alpha-2 country code.
+              required:
+                - line1
+                - city
+                - state
+                - postalCode
+                - country
+            label:
+              type: object
+              description: Optional return label and tracking details.
+              properties:
+                trackingNumber:
+                  type: string
+                  description: Carrier tracking number.
+                carrier:
+                  type: string
+                  description: Carrier name.
+                trackingUrl:
+                  type: string
+                  description: Public tracking URL.
+                postageLabelUrl:
+                  type: string
+                  description: Postage label URL.
+                formLabelUrl:
+                  type: string
+                  description: Commercial or form label URL.
+                originalShipmentId:
+                  type: string
+                  description: Provider shipment identifier to reference.
+              required:
+                - trackingNumber
+            notes:
+              type: string
+              description: Internal merchant-side notes.
+          required:
+            - provider
+            - externalOrderId
+            - items
+            - shippingAddress
+        options:
+          type: object
+          description: Options controlling side effects of the return creation.
+          properties:
+            createExternalRMAs:
+              type: boolean
+              description: Whether to create RMAs with external integrations (e.g. ShipBob). Defaults to false.
+              default: false
+      required:
+        - data
+    create-return-response.schema:
+      type: object
+      description: Create return response body.
+      properties:
+        return:
+          $ref: '#/components/schemas/return-read.schema'
+        externalRMAResponses:
+          type: array
+          items:
+            type: object
+            properties:
+              integrationProvider:
+                type: string
+                description: Name of the external integration provider.
+              success:
+                type: boolean
+                description: Whether external RMA creation succeeded.
+              errorCode:
+                type: string
+                description: Provider error code when external RMA creation fails.
+              errorMessage:
+                type: string
+                description: Provider error message when external RMA creation fails.
+            required:
+              - integrationProvider
+              - success
+      required:
+        - return
+        - externalRMAResponses
     storefront-event.schema:
       additionalProperties: true
       description: Shopify pixel event for storefront tracking.
