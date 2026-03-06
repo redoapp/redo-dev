@@ -830,7 +830,13 @@ paths:
       tags:
         - Returns
     put:
-      description: Update return status.
+      description: |
+        Update return status.
+
+        Certain status transitions trigger additional side effects to maintain data consistency:
+
+        - Setting status to **complete** will also mark all return items as complete.
+        - Setting status to **open** from **complete** or **rejected** will reopen the return, resetting all processed/rejected items back to open, clearing pending processing info, resetting the expiration date, and marking the return as reopened. **Note:** Reopening a processed return does not reverse any refunds, exchanges, or other actions that were performed during processing.
       operationId: Return status update
       parameters:
         - $ref: '#/components/parameters/return-id.param'
