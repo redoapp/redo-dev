@@ -96,6 +96,14 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
   **Every 15-30 minutes**. ShipHero sends updates to Redo on a scheduled basis,
   so there may be a delay between when the warehouse updates return status in
   ShipHero and when it appears in Redo.
+
+  <Warning>
+    Redo will only process the Redo return once the ShipHero return has reached
+    **"Complete"** status. This is **not** the same as **"Warehouse Complete"**
+    — a return marked as Warehouse Complete has been received and inspected by
+    the warehouse, but has not yet been fully finalized in ShipHero. The Redo
+    return will not be processed until the status advances to **Complete**.
+  </Warning>
 </Step>
 
 <Step title="Warehouse Processing">
