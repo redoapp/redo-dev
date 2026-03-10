@@ -1,0 +1,73 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  A product family containing one or more variants.
+
+  Matching priority for existing product families:
+  1. `product_family_id` — Redo product family ID (direct lookup)
+  2. `external_id` — ID from your external system
+  3. SKU — Matched via variant SKUs
+  If no match is found, a new product family is created.
+properties:
+  product_family_id:
+    description: Redo product family ID. Highest-priority match for updating an existing product family.
+    maxLength: 255
+    title: Product Family ID
+    type: string
+  external_id:
+    description: Product family ID in your external system. Second-priority match.
+    maxLength: 255
+    title: External ID
+    type: string
+  title:
+    description: Product family title.
+    maxLength: 500
+    minLength: 1
+    title: Title
+    type: string
+  description:
+    description: Product family description.
+    maxLength: 5000
+    title: Description
+    type: string
+  vendor:
+    description: Vendor or manufacturer name.
+    maxLength: 255
+    title: Vendor
+    type: string
+  tags:
+    default: []
+    description: Tags for categorization.
+    items:
+      maxLength: 255
+      type: string
+    title: Tags
+    type: array
+  kind:
+    default: SELLABLE
+    description: Whether the product is sellable or non-sellable.
+    enum: [SELLABLE, NON_SELLABLE]
+    title: Kind
+    type: string
+  options:
+    description: Product options (e.g. Size, Color) with their possible values.
+    items:
+      $ref: ./bulk-product-family-option.schema.yaml
+    title: Options
+    type: array
+  images:
+    description: Images for the product family.
+    items:
+      $ref: ./bulk-product-family-image.schema.yaml
+    title: Images
+    type: array
+  variants:
+    description: Product variants. At least 1 and up to 100 per product family.
+    items:
+      $ref: ./bulk-variant.schema.yaml
+    maxItems: 100
+    minItems: 1
+    title: Variants
+    type: array
+required: [title, variants]
+title: Bulk Product Family
+type: object

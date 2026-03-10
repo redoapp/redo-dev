@@ -51,6 +51,7 @@ tags:
   - name: Customers
   - name: Invoices
   - name: Merchant Admin
+  - name: Products
   - name: Returns
   - name: Storefront
   - name: Webhooks
@@ -78,6 +79,9 @@ paths:
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   # Merchant Admin
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
+  # Products
+  /stores/{storeId}/products/bulk-upload:
+    { $ref: path/products-bulk-upload.path.yaml }
   # Returns
   /returns/{returnId}: { $ref: path/return.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
