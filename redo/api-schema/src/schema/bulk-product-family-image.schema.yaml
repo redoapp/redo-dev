@@ -1,0 +1,16 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: An image associated with a product family or variant.
+properties:
+  url:
+    description: URL of the image.
+    format: uri
+    title: URL
+    type: string
+  alt_text:
+    description: Alt text for the image.
+    maxLength: 1000
+    title: Alt Text
+    type: string
+required: [url, alt_text]
+title: Product Family Image
+type: object

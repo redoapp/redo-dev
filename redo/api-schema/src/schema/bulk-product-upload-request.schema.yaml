@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Request body for bulk uploading product families and their variants.
+properties:
+  products:
+    description: Product families to create or update. Between 1 and 1000 per request.
+    items:
+      $ref: ./bulk-product-family.schema.yaml
+    maxItems: 1000
+    minItems: 1
+    title: Products
+    type: array
+required: [products]
+title: Bulk Product Upload Request
+type: object

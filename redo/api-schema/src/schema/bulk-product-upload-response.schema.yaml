@@ -1,0 +1,68 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Response from a bulk product upload operation.
+properties:
+  total_count:
+    description: Total number of product families in the request.
+    title: Total Count
+    type: integer
+  processed_count:
+    description: Number of product families processed successfully.
+    title: Processed Count
+    type: integer
+  error_count:
+    description: Number of product families that failed to process.
+    title: Error Count
+    type: integer
+  results:
+    description: Per-product-family results.
+    items:
+      oneOf:
+        - description: A product family that was created or updated successfully.
+          properties:
+            status:
+              description: Whether the product family was created or updated.
+              enum: [created, updated]
+              title: Status
+              type: string
+            product_family_id:
+              description: Redo product family ID.
+              title: Product Family ID
+              type: string
+            products:
+              description: Variant results within this product family.
+              items:
+                properties:
+                  id:
+                    description: Redo product ID.
+                    title: ID
+                    type: string
+                  sku:
+                    description: Product SKU.
+                    title: SKU
+                    type: string
+                required: [id, sku]
+                type: object
+              title: Products
+              type: array
+          required: [status, product_family_id, products]
+          title: Success Result
+          type: object
+        - description: A product family that failed to process.
+          properties:
+            status:
+              const: error
+              description: Indicates an error occurred.
+              title: Status
+              type: string
+            error:
+              description: Error message describing what went wrong.
+              title: Error
+              type: string
+          required: [status, error]
+          title: Error Result
+          type: object
+    title: Results
+    type: array
+required: [total_count, processed_count, error_count, results]
+title: Bulk Product Upload Response
+type: object

@@ -1,0 +1,98 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A product variant within a product family.
+properties:
+  id:
+    description: Redo variant ID. Used for matching to an existing variant.
+    maxLength: 255
+    title: ID
+    type: string
+  external_id:
+    description: Variant ID in your external system. Used for matching if `id` is not provided.
+    maxLength: 255
+    title: External ID
+    type: string
+  title:
+    description: Variant title (e.g. "Small / Blue").
+    maxLength: 500
+    title: Title
+    type: string
+  sku:
+    description: Stock keeping unit. Required. Used for matching if neither `id` nor `external_id` are provided.
+    maxLength: 255
+    minLength: 1
+    title: SKU
+    type: string
+  upc:
+    description: Universal product code.
+    maxLength: 50
+    title: UPC
+    type: string
+  barcodes:
+    description: Additional barcodes for this variant.
+    items:
+      maxLength: 255
+      type: string
+    title: Barcodes
+    type: array
+  price:
+    description: Price in the smallest currency unit (e.g. cents for USD).
+    minimum: 0
+    title: Price
+    type: integer
+  currency:
+    description: Currency code (e.g. "USD").
+    maxLength: 10
+    title: Currency
+    type: string
+  weight:
+    description: Weight of the variant.
+    title: Weight
+    type: number
+  weight_unit:
+    description: Unit of weight measurement.
+    enum: [g, kg, lb, oz, t]
+    title: Weight Unit
+    type: string
+  width:
+    description: Width of the variant.
+    title: Width
+    type: number
+  length:
+    description: Length of the variant.
+    title: Length
+    type: number
+  height:
+    description: Height of the variant.
+    title: Height
+    type: number
+  dimension_unit:
+    description: Unit of dimension measurement.
+    enum: [in, cm]
+    title: Dimension Unit
+    type: string
+  hs_code:
+    description: Harmonized System code for customs.
+    maxLength: 50
+    title: HS Code
+    type: string
+  origin_country:
+    description: Country of origin as an ISO 3166-1 alpha-2 code (e.g. "US").
+    pattern: "^[A-Z]{2}$"
+    title: Origin Country
+    type: string
+  option_values:
+    description: Values for each option defined on the product family, in the same order.
+    items:
+      maxLength: 255
+      type: string
+    title: Option Values
+    type: array
+  images:
+    description: Images specific to this variant.
+    items:
+      $ref: ./bulk-product-family-image.schema.yaml
+    title: Images
+    type: array
+required: [sku, price, currency]
+title: Bulk Variant
+type: object

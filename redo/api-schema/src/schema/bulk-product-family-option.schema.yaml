@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A product option (e.g. Size, Color) with its possible values.
+properties:
+  name:
+    description: Option name (e.g. "Size", "Color").
+    maxLength: 255
+    title: Name
+    type: string
+  values:
+    description: Possible values for this option (e.g. ["Small", "Medium", "Large"]).
+    items:
+      maxLength: 255
+      type: string
+    title: Values
+    type: array
+required: [name, values]
+title: Product Family Option
+type: object
