@@ -133,6 +133,6 @@ post:
       description: Error
   security:
     - Bearer: []
-  summary: Bulk upload products
+  summary: Bulk upload products (Beta)
   tags:
     - Products
