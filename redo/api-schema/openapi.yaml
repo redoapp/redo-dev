@@ -375,7 +375,6 @@ paths:
                   postalCode: '98101'
                   country: United States
                   countryCode: US
-                  ianaTimeZoneName: America/Los_Angeles
                   latitude: 47.6062
                   longitude: -122.3321
                 customFields:
@@ -429,9 +428,8 @@ paths:
           number is new, it is added to the customer's contact information.
 
         ## Location
-        Providing `location` sets the customer's current location. The entire
-        location object is replaced — omitted fields are not preserved from the
-        previous value.
+        Providing `location` sets the customer's current location. Only the fields
+        you include are updated.
 
         ## Custom fields
         Use `customFields` to store arbitrary key-value data on the customer (e.g.,
@@ -462,7 +460,6 @@ paths:
                     postalCode: '98101'
                     country: United States
                     countryCode: US
-                    ianaTimeZoneName: America/Los_Angeles
                     latitude: 47.6062
                     longitude: -122.3321
                   customFields:
@@ -1960,19 +1957,23 @@ components:
               vip_member: true
               signup_date: '2026-02-24T12:15:00.000Z'
         createdAt:
-          description: Timestamp when the customer was created.
+          description: Timestamp when the customer was created. May be null for older customers created before this field was tracked.
           format: date-time
           title: Created at
           examples:
             - '2026-02-20T18:30:00.000Z'
-          type: string
+          type:
+            - string
+            - 'null'
         updatedAt:
-          description: Timestamp when the customer was last updated.
+          description: Timestamp when the customer was last updated. May be null for older customers created before this field was tracked.
           format: date-time
           title: Updated at
           examples:
             - '2026-02-24T12:15:00.000Z'
-          type: string
+          type:
+            - string
+            - 'null'
       required:
         - id
         - email
