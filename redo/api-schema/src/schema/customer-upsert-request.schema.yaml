@@ -19,7 +19,25 @@ properties:
   location:
     $ref: ./customer-location.schema.yaml
   customFields:
-    description: Custom field values as key-value pairs. Keys are field names and values can be strings, numbers, or booleans. New fields are created automatically if they don't exist yet.
+    description: >-
+      Custom field values as key-value pairs. Keys are field names and values
+      can be strings, numbers, or booleans. The field type is determined
+      automatically based on the value:
+
+      - String values → STRING custom field
+
+      - Number values → NUMBER custom field
+
+      - Boolean values → BOOLEAN custom field
+
+      - ISO 8601 datetime strings (e.g., "2026-02-24T12:15:00.000Z") → DATE
+      custom field (auto-detected)
+
+
+      If a field name does not already have a declaration, one is created
+      automatically. For STRING fields, unique values are tracked as options
+      (used for segment filtering dropdowns). NUMBER, BOOLEAN, and DATE fields
+      do not track options.
     type: object
     additionalProperties:
       oneOf:
@@ -31,6 +49,7 @@ properties:
       status: "Active"
       loyalty_points: 1250
       vip_member: true
+      signup_date: "2026-02-24T12:15:00.000Z"
 required:
   - email
 title: Customer Upsert Request

@@ -25,7 +25,11 @@ properties:
   location:
     $ref: ./customer-location.schema.yaml
   customFields:
-    description: Custom field values as key-value pairs, where keys are field names and values can be strings, numbers, or booleans.
+    description: >-
+      Custom field values as key-value pairs, where keys are field names and
+      values can be strings, numbers, or booleans. DATE custom field values
+      are returned as ISO 8601 datetime strings (e.g.,
+      "2026-01-15T12:00:00.000Z"), not Date objects.
     type: object
     additionalProperties:
       oneOf:
@@ -37,22 +41,25 @@ properties:
         status: "Active"
         loyalty_points: 1250
         vip_member: true
+        signup_date: "2026-02-24T12:15:00.000Z"
   createdAt:
-    description: Timestamp when the customer was created.
+    description: Timestamp when the customer was created. May be null for older customers created before this field was tracked.
     format: date-time
     title: Created at
     examples: ["2026-02-20T18:30:00.000Z"]
-    type: string
+    type:
+      - string
+      - "null"
   updatedAt:
-    description: Timestamp when the customer was last updated.
+    description: Timestamp when the customer was last updated. May be null for older customers created before this field was tracked.
     format: date-time
     title: Updated at
     examples: ["2026-02-24T12:15:00.000Z"]
-    type: string
+    type:
+      - string
+      - "null"
 required:
   - id
   - email
-  - createdAt
-  - updatedAt
 title: Customer
 type: object
