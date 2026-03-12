@@ -375,6 +375,7 @@ paths:
                   postalCode: '98101'
                   country: United States
                   countryCode: US
+                  ianaTimeZoneName: America/Los_Angeles
                   latitude: 47.6062
                   longitude: -122.3321
                 customFields:
@@ -428,8 +429,9 @@ paths:
           number is new, it is added to the customer's contact information.
 
         ## Location
-        Providing `location` sets the customer's current location. Only the fields
-        you include are updated.
+        Providing `location` sets the customer's current location. The entire
+        location object is replaced — omitted fields are not preserved from the
+        previous value.
 
         ## Custom fields
         Use `customFields` to store arbitrary key-value data on the customer (e.g.,
@@ -460,6 +462,7 @@ paths:
                     postalCode: '98101'
                     country: United States
                     countryCode: US
+                    ianaTimeZoneName: America/Los_Angeles
                     latitude: 47.6062
                     longitude: -122.3321
                   customFields:
@@ -1943,7 +1946,7 @@ components:
         location:
           $ref: '#/components/schemas/customer-location.schema'
         customFields:
-          description: Custom field values as key-value pairs, where keys are field names and values can be strings, numbers, or booleans.
+          description: Custom field values as key-value pairs, where keys are field names and values can be strings, numbers, or booleans. DATE custom field values are returned as ISO 8601 datetime strings (e.g., "2026-01-15T12:00:00.000Z"), not Date objects.
           type: object
           additionalProperties:
             oneOf:
@@ -1955,6 +1958,7 @@ components:
               status: Active
               loyalty_points: 1250
               vip_member: true
+              signup_date: '2026-02-24T12:15:00.000Z'
         createdAt:
           description: Timestamp when the customer was created.
           format: date-time
@@ -1972,8 +1976,6 @@ components:
       required:
         - id
         - email
-        - createdAt
-        - updatedAt
       title: Customer
       type: object
     customer-upsert-request.schema:
@@ -1998,7 +2000,14 @@ components:
         location:
           $ref: '#/components/schemas/customer-location.schema'
         customFields:
-          description: Custom field values as key-value pairs. Keys are field names and values can be strings, numbers, or booleans. New fields are created automatically if they don't exist yet.
+          description: |-
+            Custom field values as key-value pairs. Keys are field names and values can be strings, numbers, or booleans. The field type is determined automatically based on the value:
+            - String values → STRING custom field
+            - Number values → NUMBER custom field
+            - Boolean values → BOOLEAN custom field
+            - ISO 8601 datetime strings (e.g., "2026-02-24T12:15:00.000Z") → DATE custom field (auto-detected)
+
+            If a field name does not already have a declaration, one is created automatically. For STRING fields, unique values are tracked as options (used for segment filtering dropdowns). NUMBER, BOOLEAN, and DATE fields do not track options.
           type: object
           additionalProperties:
             oneOf:
@@ -2010,6 +2019,7 @@ components:
             status: Active
             loyalty_points: 1250
             vip_member: true
+            signup_date: '2026-02-24T12:15:00.000Z'
       required:
         - email
       title: Customer Upsert Request
