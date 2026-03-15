@@ -157,7 +157,6 @@ The Redo MCP Server provides tools for return and claim management:
 |---|---|
 | **list_returns** | Search returns by order name, customer email, status, or date range. Supports pagination. |
 | **get_return** | Get full return details including items, status, compensation totals, and order info. |
-| **get_return_status** | Lightweight status check for a return without full details. |
 | **process_return** | Accept or reject each item in a return, with options for restocking and grading. |
 | **update_return_status** | Change a return's status (in_transit, delivered, needs_review, in_review, flagged, pre-shipment). |
 | **reopen_return** | Reopen a completed or rejected return, resetting items back to open. |
@@ -167,13 +166,21 @@ The Redo MCP Server provides tools for return and claim management:
 
 ## Usage Examples
 
-### Look up a return by order number
+### Search for returns by status
 
 **Prompt:**
 
-> What's the status of the return for order #1234?
+> Show me all open returns.
 
-The AI will call `list_returns` to find returns for order #1234, then call `get_return` to fetch full details including item statuses, compensation amounts, and tracking information.
+The AI will call `list_returns` with a status filter to find all open returns and display a summary of each.
+
+### Get details about a return
+
+**Prompt:**
+
+> Get me the details about the return for order #1234.
+
+The AI will call `get_return` to fetch full details including item statuses, compensation amounts, and order information.
 
 ### Process a return
 
@@ -182,22 +189,6 @@ The AI will call `list_returns` to find returns for order #1234, then call `get_
 > Process the return for order #5678 — accept all items.
 
 The AI will call `get_return` to retrieve the return's items and their IDs, confirm the details with you, then call `process_return` to accept each item.
-
-### Reopen a completed return
-
-**Prompt:**
-
-> Reopen the return for order #9012. The customer sent back the wrong item.
-
-The AI will call `reopen_return` to reset the return's items back to open, clear processing info, and reset the expiration date. It will confirm with you first, and note that reopening does not reverse any refunds or exchanges that were already issued.
-
-### Search for returns by status
-
-**Prompt:**
-
-> Show me all open returns.
-
-The AI will call `list_returns` with a status filter to find all open returns and display a summary of each.
 
 ### Ask a question about your Redo account
 
