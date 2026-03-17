@@ -162,7 +162,8 @@ The Redo MCP Server provides tools for return and claim management:
 | **reopen_return** | Reopen a completed or rejected return, resetting items back to open. |
 | **close_return** | Close a return without processing — marks all items as complete with no further action. |
 | **create_return_comment** | Add a comment to a return's timeline. |
-| **message_send** | Send a message to the Redo support AI about your account and receive a response. |
+| **approve_return** | Approve a return so the customer can proceed with shipping items back. |
+| **ask_redo** | Ask the Redo support AI any question about your account, settings, policies, or platform features. |
 
 ## Usage Examples
 
@@ -194,9 +195,9 @@ The AI will call `get_return` to retrieve the return's items and their IDs, conf
 
 **Prompt:**
 
-> How do I set up automated return approvals?
+> Ask Redo how many days customers have to initiate a return on my store.
 
-The AI will call `message_send` to ask the Redo support AI, which has full knowledge of your account's configuration and Redo's features.
+The AI will call `ask_redo` to ask the Redo support AI, which has full knowledge of your account's configuration and Redo's features.
 
 ## Rate Limits
 
