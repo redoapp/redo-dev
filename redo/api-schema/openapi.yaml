@@ -2691,6 +2691,30 @@ components:
           type: string
       title: Return Shipment
       type: object
+    return-dropoff.schema:
+      description: Dropoff entry for returns using QR-code-based drop-off methods (e.g. BlueYonder/FedEx Easy Returns)
+      properties:
+        shipmentGroupId:
+          description: ID of the shipment group this dropoff belongs to
+          title: Shipment Group ID
+          type: string
+        provider:
+          description: Dropoff provider name (e.g. "FedEx Easy Returns", "Virtual")
+          title: Provider
+          type: string
+        qrCode:
+          description: Raw QR code data
+          title: QR Code
+          type: string
+        qrCodeUrl:
+          description: URL to a rendered QR code image
+          title: QR Code URL
+          type: string
+      required:
+        - shipmentGroupId
+        - provider
+      title: Return Dropoff
+      type: object
     return-status.schema:
       description: |
         Return status.
@@ -3167,6 +3191,12 @@ components:
           items:
             $ref: '#/components/schemas/return-shipment.schema'
           title: Shipments
+          type: array
+        dropoffs:
+          description: Array of QR-code-based dropoff entries for returns using drop-off methods such as BlueYonder/FedEx Easy Returns. Empty for standard label-based returns.
+          items:
+            $ref: '#/components/schemas/return-dropoff.schema'
+          title: Dropoffs
           type: array
         shopifyOrderIds:
           description: Array of Shopify order IDs (deprecated, use externalOrderIds)

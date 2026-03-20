@@ -396,6 +396,12 @@ properties:
       $ref: ./return-shipment.schema.yaml
     title: Shipments
     type: array
+  dropoffs:
+    description: Array of QR-code-based dropoff entries for returns using drop-off methods such as BlueYonder/FedEx Easy Returns. Empty for standard label-based returns.
+    items:
+      $ref: ./return-dropoff.schema.yaml
+    title: Dropoffs
+    type: array
   shopifyOrderIds:
     description: Array of Shopify order IDs (deprecated, use externalOrderIds)
     items:
