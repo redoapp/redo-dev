@@ -2179,7 +2179,7 @@ components:
           title: Shipment Group ID
           type: string
         provider:
-          description: Merchant-facing dropoff provider name (e.g. "FedEx Easy Returns", "Virtual")
+          description: Dropoff provider name (e.g. "FedEx Easy Returns", "Virtual")
           title: Provider
           type: string
         qrCode:
