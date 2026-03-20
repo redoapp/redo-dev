@@ -6,7 +6,7 @@ properties:
     title: Shipment Group ID
     type: string
   provider:
-    description: Dropoff provider identifier (e.g. "blueyonder", "VIRTUAL")
+    description: Merchant-facing dropoff provider name (e.g. "FedEx Easy Returns", "Virtual")
     title: Provider
     type: string
   qrCode:
