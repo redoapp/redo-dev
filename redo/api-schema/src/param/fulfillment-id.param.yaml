@@ -1,0 +1,6 @@
+description: Unique fulfillment identifier.
+in: path
+name: fulfillmentId
+required: true
+schema:
+  type: string

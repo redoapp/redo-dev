@@ -45,6 +45,7 @@ tags:
   - name: Customers
   - name: Invoices
   - name: Merchant Admin
+  - name: Orders
   - name: Products
   - name: Returns
   - name: Storefront
@@ -620,6 +621,240 @@ paths:
       tags:
         - Merchant Admin
     summary: Merchant admin
+  /stores/{storeId}/orders:
+    description: Orders collection.
+    post:
+      description: Create a new order in the system with line items, customer information, and shipping details.
+      operationId: Order create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orders-api-create-order-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-create-order-response.schema'
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Bad Request (validation error)
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Unauthorized (invalid or missing API token)
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Conflict (duplicate order ID)
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create Order
+      tags:
+        - Orders
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Orders
+  /stores/{storeId}/orders/{orderId}:
+    description: Single order operations.
+    get:
+      description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      operationId: Order get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-get-order-response.schema'
+          description: Success
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Unauthorized (invalid or missing API token)
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Order not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Get Order
+      tags:
+        - Orders
+    delete:
+      description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      operationId: Order delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-delete-order-response.schema'
+          description: Success
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Unauthorized (invalid or missing API token)
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Order not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Delete Order
+      tags:
+        - Orders
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/order-id.param'
+    summary: Order
+  /stores/{storeId}/orders/{orderId}/fulfillments:
+    description: Order fulfillments collection.
+    post:
+      description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      operationId: Fulfillment create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orders-api-create-fulfillment-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-fulfillment-response.schema'
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Bad Request (validation error)
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Unauthorized (invalid or missing API token)
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Order not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create Fulfillment
+      tags:
+        - Orders
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/order-id.param'
+    summary: Order Fulfillments
+  /stores/{storeId}/orders/{orderId}/fulfillments/{fulfillmentId}/shipment-status:
+    description: Update fulfillment shipment status.
+    post:
+      description: |
+        Post a shipment status update or trigger an automation event for a fulfillment.
+
+        The status field accepts two types of values:
+
+        **Statuses** (e.g., `in_transit`, `delivered`): Real carrier tracking statuses that update the shipment's current status. When you send these, the fulfillment's current status is updated to reflect the new state. Triggers any configured automations for that status.
+
+        **Events** (e.g., `stalled_in_transit`, `delayed`, `arriving_early`): Special event types that trigger automations without changing the current shipment status. The status field remains unchanged, but you can still update estimated delivery date and add tracking history entries. Use these to trigger event-based automations.
+
+        Both statuses and events can update other fields like estimated delivery date and tracking history.
+      operationId: Fulfillment status update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orders-api-update-fulfillment-status-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-fulfillment-response.schema'
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Bad Request (validation error)
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Unauthorized (invalid or missing API token)
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders-api-error.schema'
+          description: Fulfillment not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Update Fulfillment Status
+      tags:
+        - Orders
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/order-id.param'
+      - $ref: '#/components/parameters/fulfillment-id.param'
+    summary: Fulfillment Shipment Status
   /stores/{storeId}/products/bulk-upload:
     post:
       description: |
@@ -1389,6 +1624,20 @@ components:
       schema:
         example: 64e4d5e837572a4813b73e40
         type: string
+    order-id.param:
+      description: Order ID. Can be either the external order ID provided when creating the order, or the internal Redo order ID.
+      in: path
+      name: orderId
+      required: true
+      schema:
+        type: string
+    fulfillment-id.param:
+      description: Unique fulfillment identifier.
+      in: path
+      name: fulfillmentId
+      required: true
+      schema:
+        type: string
     return-id.param:
       description: Return ID
       in: path
@@ -2078,6 +2327,513 @@ components:
         - status
         - createdAt
         - charge
+      type: object
+    orders-api-line-item.schema:
+      description: Line item in the order.
+      properties:
+        id:
+          description: Unique identifier for the line item.
+          type: string
+        productId:
+          description: Identifier for the product.
+          type: string
+        variantId:
+          description: Identifier for the product variant.
+          type:
+            - string
+            - 'null'
+        title:
+          description: Title/name of the product.
+          type: string
+        sku:
+          description: SKU of the product.
+          type:
+            - string
+            - 'null'
+        quantity:
+          description: Quantity of the product ordered.
+          minimum: 1
+          maximum: 1000
+          type: integer
+        price:
+          description: Price per unit of the product.
+          minimum: 0
+          type:
+            - number
+            - 'null'
+      required:
+        - id
+        - productId
+        - title
+        - quantity
+      type: object
+    orders-api-customer.schema:
+      description: Customer information.
+      properties:
+        id:
+          description: Customer ID from the external system.
+          type:
+            - string
+            - 'null'
+        email:
+          description: Customer email address.
+          type:
+            - string
+            - 'null'
+        phoneNumber:
+          description: Customer phone number.
+          type:
+            - string
+            - 'null'
+        name:
+          description: Customer full name.
+          type:
+            - string
+            - 'null'
+        firstName:
+          description: Customer first name.
+          type:
+            - string
+            - 'null'
+        lastName:
+          description: Customer last name.
+          type:
+            - string
+            - 'null'
+      type: object
+    orders-api-shipping-address.schema:
+      description: Shipping address.
+      properties:
+        address1:
+          description: Primary address line.
+          type:
+            - string
+            - 'null'
+        address2:
+          description: Secondary address line.
+          type:
+            - string
+            - 'null'
+        city:
+          description: City.
+          type:
+            - string
+            - 'null'
+        province:
+          description: State or province.
+          type:
+            - string
+            - 'null'
+        country:
+          description: Country.
+          type:
+            - string
+            - 'null'
+        postalCode:
+          description: Postal or zip code.
+          type:
+            - string
+            - 'null'
+      type: object
+    orders-api-shipping.schema:
+      description: Shipping information.
+      properties:
+        method:
+          description: Shipping method name.
+          type:
+            - string
+            - 'null'
+        cost:
+          description: Shipping cost.
+          minimum: 0
+          type:
+            - number
+            - 'null'
+        address:
+          $ref: '#/components/schemas/orders-api-shipping-address.schema'
+      type: object
+    orders-api-create-order-request.schema:
+      description: Request body for creating an order.
+      properties:
+        orderId:
+          description: Unique identifier for the order.
+          type: string
+        createdAt:
+          description: ISO 8601 date string for when the order was created.
+          format: date-time
+          type: string
+        lineItems:
+          description: List of line items in the order.
+          items:
+            $ref: '#/components/schemas/orders-api-line-item.schema'
+          minItems: 1
+          type: array
+        customer:
+          $ref: '#/components/schemas/orders-api-customer.schema'
+        shipping:
+          $ref: '#/components/schemas/orders-api-shipping.schema'
+        totalPrice:
+          description: Total order price including tax and shipping.
+          minimum: 0
+          type:
+            - number
+            - 'null'
+        subtotalPrice:
+          description: Subtotal price excluding tax and shipping.
+          minimum: 0
+          type:
+            - number
+            - 'null'
+        totalTax:
+          description: Total tax amount.
+          minimum: 0
+          type:
+            - number
+            - 'null'
+        tags:
+          description: Optional tags associated with the order.
+          items:
+            type: string
+          type:
+            - array
+            - 'null'
+        currencyCode:
+          description: Currency code from the ISO 4217 standard (e.g., USD, EUR, GBP).
+          type:
+            - string
+            - 'null'
+      required:
+        - orderId
+        - createdAt
+        - lineItems
+      type: object
+    orders-api-create-order-response.schema:
+      description: Successful order creation response.
+      properties:
+        orderId:
+          description: Internal Redo order ID.
+          type: string
+        externalOrderId:
+          description: Original external order ID provided in the request.
+          type: string
+      required:
+        - orderId
+        - externalOrderId
+      type: object
+    orders-api-error.schema:
+      description: Orders API error response.
+      properties:
+        error:
+          description: Error message describing what went wrong.
+          type: string
+      required:
+        - error
+      type: object
+    orders-api-fulfillment-line-item.schema:
+      description: Fulfilled line item details.
+      properties:
+        id:
+          description: Line item ID that was fulfilled.
+          type: string
+        quantity:
+          description: Quantity fulfilled for this line item.
+          minimum: 1
+          maximum: 1000
+          type: integer
+        title:
+          description: Title/name of the product.
+          type: string
+        productId:
+          description: Product ID.
+          type: string
+        variantId:
+          description: Product variant ID.
+          type:
+            - string
+            - 'null'
+        sku:
+          description: SKU of the product.
+          type:
+            - string
+            - 'null'
+      required:
+        - id
+        - quantity
+        - title
+        - productId
+      type: object
+    orders-api-tracking-location.schema:
+      description: Location information for a tracking event.
+      properties:
+        city:
+          type:
+            - string
+            - 'null'
+        state:
+          type:
+            - string
+            - 'null'
+        country:
+          type:
+            - string
+            - 'null'
+        postalCode:
+          type:
+            - string
+            - 'null'
+      type: object
+    orders-api-tracking-event.schema:
+      description: Tracking event details.
+      properties:
+        message:
+          description: Tracking event message.
+          type: string
+        status:
+          description: Status at this tracking event.
+          type: string
+        datetime:
+          description: ISO 8601 timestamp of the tracking event.
+          format: date-time
+          type: string
+        location:
+          $ref: '#/components/schemas/orders-api-tracking-location.schema'
+      required:
+        - message
+        - status
+        - datetime
+      type: object
+    orders-api-fulfillment.schema:
+      description: Fulfillment information.
+      properties:
+        id:
+          description: Unique fulfillment ID.
+          type: string
+        createdAt:
+          description: ISO 8601 date string for when the fulfillment was created.
+          format: date-time
+          type: string
+        lineItems:
+          description: List of line items in this fulfillment.
+          items:
+            $ref: '#/components/schemas/orders-api-fulfillment-line-item.schema'
+          type: array
+        trackingCompany:
+          description: Shipping carrier name (e.g., FedEx, UPS).
+          type:
+            - string
+            - 'null'
+        trackingNumber:
+          description: Tracking number for the shipment.
+          type:
+            - string
+            - 'null'
+        status:
+          description: Current shipment status.
+          enum:
+            - pre_transit
+            - unknown
+            - in_transit
+            - out_for_delivery
+            - available_for_pickup
+            - delivered
+            - return_to_sender
+            - failure
+            - cancelled
+            - error
+          type: string
+        trackingHistory:
+          description: List of tracking events in chronological order.
+          items:
+            $ref: '#/components/schemas/orders-api-tracking-event.schema'
+          type: array
+      required:
+        - id
+        - createdAt
+        - lineItems
+        - status
+        - trackingHistory
+      type: object
+    orders-api-get-order-response.schema:
+      description: Response for getting an order, including fulfillments.
+      allOf:
+        - $ref: '#/components/schemas/orders-api-create-order-request.schema'
+        - properties:
+            fulfillments:
+              description: List of fulfillments for this order.
+              items:
+                $ref: '#/components/schemas/orders-api-fulfillment.schema'
+              type: array
+          required:
+            - fulfillments
+          type: object
+    orders-api-delete-order-response.schema:
+      description: Successful order deletion response.
+      properties:
+        success:
+          description: Indicates successful deletion.
+          type: boolean
+        orderId:
+          description: Internal Redo order ID.
+          type: string
+        externalOrderId:
+          description: External order ID that was deleted.
+          type: string
+      required:
+        - success
+        - orderId
+        - externalOrderId
+      type: object
+    orders-api-create-fulfillment-request.schema:
+      description: Request body for creating a fulfillment.
+      properties:
+        fulfillmentId:
+          description: Unique identifier for the fulfillment. If not provided, will be auto-generated.
+          type: string
+        lineItems:
+          description: List of line items to fulfill.
+          items:
+            description: Line item fulfillment details.
+            properties:
+              id:
+                description: Line item ID to fulfill.
+                type: string
+              quantity:
+                description: Quantity to fulfill for this line item.
+                minimum: 1
+                maximum: 1000
+                type: integer
+            required:
+              - id
+              - quantity
+            type: object
+          minItems: 1
+          type: array
+        tracking:
+          description: Optional tracking information for the shipment.
+          properties:
+            carrier:
+              description: Name of the shipping carrier (e.g., FedEx, UPS, USPS).
+              type: string
+            code:
+              description: Tracking number/code for the shipment.
+              type: string
+          required:
+            - carrier
+            - code
+          type:
+            - object
+            - 'null'
+        useDummyTracking:
+          description: If true, creates a dummy tracker for testing without calling external tracking APIs. Useful for development and testing the fulfillment status update endpoint.
+          type: boolean
+        initialTracking:
+          description: Initial tracking information for the dummy tracker. Only used when useDummyTracking is true. If not specified, defaults to status "pre_transit".
+          properties:
+            status:
+              description: Initial shipment status for the dummy tracker. Only actual statuses are allowed (not automation events).
+              enum:
+                - pre_transit
+                - unknown
+                - in_transit
+                - out_for_delivery
+                - available_for_pickup
+                - delivered
+                - return_to_sender
+                - failure
+                - cancelled
+                - error
+              type: string
+            estimatedDeliveryDate:
+              description: Estimated delivery date in ISO 8601 format.
+              format: date-time
+              type:
+                - string
+                - 'null'
+            message:
+              description: Tracking event message.
+              type:
+                - string
+                - 'null'
+            datetime:
+              description: Timestamp of the tracking event in ISO 8601 format.
+              format: date-time
+              type:
+                - string
+                - 'null'
+            location:
+              $ref: '#/components/schemas/orders-api-tracking-location.schema'
+          required:
+            - status
+          type: object
+      required:
+        - lineItems
+      type: object
+    orders-api-fulfillment-response.schema:
+      description: Successful fulfillment operation response.
+      properties:
+        success:
+          const: true
+          type: boolean
+        fulfillment:
+          $ref: '#/components/schemas/orders-api-fulfillment.schema'
+      required:
+        - success
+        - fulfillment
+      type: object
+    orders-api-update-fulfillment-status-request.schema:
+      description: |
+        Request body for updating a fulfillment's tracking status.
+
+        The status field accepts two types of values:
+        - **Statuses** (e.g., `in_transit`, `delivered`): Update the shipment's current status and trigger configured automations.
+        - **Events** (e.g., `stalled_in_transit`, `delayed`, `arriving_early`): Trigger automations without changing the current shipment status.
+
+        Both can update other fields like estimated delivery date and tracking history.
+      properties:
+        status:
+          description: |
+            Shipment status or automation event.
+
+            Statuses update the current shipment status and trigger automations:
+            `pre_transit`, `in_transit`, `out_for_delivery`, `available_for_pickup`, `delivered`, `return_to_sender`, `failure`, `cancelled`, `error`.
+
+            Events trigger automations without changing the current status:
+            `stalled_in_transit`, `delayed`, `arriving_early`.
+          enum:
+            - pre_transit
+            - in_transit
+            - out_for_delivery
+            - available_for_pickup
+            - delivered
+            - return_to_sender
+            - failure
+            - cancelled
+            - error
+            - stalled_in_transit
+            - delayed
+            - arriving_early
+          type: string
+        estimatedDeliveryDate:
+          description: Estimated delivery date in ISO 8601 format.
+          format: date-time
+          type:
+            - string
+            - 'null'
+        message:
+          description: Tracking event message (e.g., "Departed shipping partner facility").
+          type:
+            - string
+            - 'null'
+        datetime:
+          description: Timestamp of the tracking event in ISO 8601 format.
+          format: date-time
+          type:
+            - string
+            - 'null'
+        location:
+          $ref: '#/components/schemas/orders-api-tracking-location.schema'
+      required:
+        - status
       type: object
     bulk-product-family-option.schema:
       description: A product option (e.g. Size, Color) with its possible values.

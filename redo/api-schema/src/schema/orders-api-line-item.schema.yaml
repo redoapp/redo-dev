@@ -1,0 +1,38 @@
+description: Line item in the order.
+properties:
+  id:
+    description: Unique identifier for the line item.
+    type: string
+  productId:
+    description: Identifier for the product.
+    type: string
+  variantId:
+    description: Identifier for the product variant.
+    type:
+      - string
+      - "null"
+  title:
+    description: Title/name of the product.
+    type: string
+  sku:
+    description: SKU of the product.
+    type:
+      - string
+      - "null"
+  quantity:
+    description: Quantity of the product ordered.
+    minimum: 1
+    maximum: 1000
+    type: integer
+  price:
+    description: Price per unit of the product.
+    minimum: 0
+    type:
+      - number
+      - "null"
+required:
+  - id
+  - productId
+  - title
+  - quantity
+type: object

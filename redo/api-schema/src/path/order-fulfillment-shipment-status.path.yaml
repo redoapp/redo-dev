@@ -1,0 +1,55 @@
+description: Update fulfillment shipment status.
+post:
+  description: |
+    Post a shipment status update or trigger an automation event for a fulfillment.
+
+    The status field accepts two types of values:
+
+    **Statuses** (e.g., `in_transit`, `delivered`): Real carrier tracking statuses that update the shipment's current status. When you send these, the fulfillment's current status is updated to reflect the new state. Triggers any configured automations for that status.
+
+    **Events** (e.g., `stalled_in_transit`, `delayed`, `arriving_early`): Special event types that trigger automations without changing the current shipment status. The status field remains unchanged, but you can still update estimated delivery date and add tracking history entries. Use these to trigger event-based automations.
+
+    Both statuses and events can update other fields like estimated delivery date and tracking history.
+  operationId: Fulfillment status update
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/orders-api-update-fulfillment-status-request.schema.yaml
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/orders-api-fulfillment-response.schema.yaml
+      description: Success
+    "400":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Bad Request (validation error)
+    "401":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Unauthorized (invalid or missing API token)
+    "404":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Fulfillment not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Update Fulfillment Status
+  tags: [Orders]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/order-id.param.yaml }
+  - { $ref: ../param/fulfillment-id.param.yaml }
+summary: Fulfillment Shipment Status

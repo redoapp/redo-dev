@@ -1,0 +1,50 @@
+description: Fulfillment information.
+properties:
+  id:
+    description: Unique fulfillment ID.
+    type: string
+  createdAt:
+    description: ISO 8601 date string for when the fulfillment was created.
+    format: date-time
+    type: string
+  lineItems:
+    description: List of line items in this fulfillment.
+    items:
+      $ref: ./orders-api-fulfillment-line-item.schema.yaml
+    type: array
+  trackingCompany:
+    description: Shipping carrier name (e.g., FedEx, UPS).
+    type:
+      - string
+      - "null"
+  trackingNumber:
+    description: Tracking number for the shipment.
+    type:
+      - string
+      - "null"
+  status:
+    description: Current shipment status.
+    enum:
+      - pre_transit
+      - unknown
+      - in_transit
+      - out_for_delivery
+      - available_for_pickup
+      - delivered
+      - return_to_sender
+      - failure
+      - cancelled
+      - error
+    type: string
+  trackingHistory:
+    description: List of tracking events in chronological order.
+    items:
+      $ref: ./orders-api-tracking-event.schema.yaml
+    type: array
+required:
+  - id
+  - createdAt
+  - lineItems
+  - status
+  - trackingHistory
+type: object

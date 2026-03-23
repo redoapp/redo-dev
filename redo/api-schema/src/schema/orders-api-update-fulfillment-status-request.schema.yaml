@@ -1,0 +1,54 @@
+description: |
+  Request body for updating a fulfillment's tracking status.
+
+  The status field accepts two types of values:
+  - **Statuses** (e.g., `in_transit`, `delivered`): Update the shipment's current status and trigger configured automations.
+  - **Events** (e.g., `stalled_in_transit`, `delayed`, `arriving_early`): Trigger automations without changing the current shipment status.
+
+  Both can update other fields like estimated delivery date and tracking history.
+properties:
+  status:
+    description: |
+      Shipment status or automation event.
+
+      Statuses update the current shipment status and trigger automations:
+      `pre_transit`, `in_transit`, `out_for_delivery`, `available_for_pickup`, `delivered`, `return_to_sender`, `failure`, `cancelled`, `error`.
+
+      Events trigger automations without changing the current status:
+      `stalled_in_transit`, `delayed`, `arriving_early`.
+    enum:
+      - pre_transit
+      - in_transit
+      - out_for_delivery
+      - available_for_pickup
+      - delivered
+      - return_to_sender
+      - failure
+      - cancelled
+      - error
+      - stalled_in_transit
+      - delayed
+      - arriving_early
+    type: string
+  estimatedDeliveryDate:
+    description: Estimated delivery date in ISO 8601 format.
+    format: date-time
+    type:
+      - string
+      - "null"
+  message:
+    description: Tracking event message (e.g., "Departed shipping partner facility").
+    type:
+      - string
+      - "null"
+  datetime:
+    description: Timestamp of the tracking event in ISO 8601 format.
+    format: date-time
+    type:
+      - string
+      - "null"
+  location:
+    $ref: ./orders-api-tracking-location.schema.yaml
+required:
+  - status
+type: object

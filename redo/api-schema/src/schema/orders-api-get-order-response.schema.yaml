@@ -1,0 +1,12 @@
+description: Response for getting an order, including fulfillments.
+allOf:
+  - $ref: ./orders-api-create-order-request.schema.yaml
+  - properties:
+      fulfillments:
+        description: List of fulfillments for this order.
+        items:
+          $ref: ./orders-api-fulfillment.schema.yaml
+        type: array
+    required:
+      - fulfillments
+    type: object

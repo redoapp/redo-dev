@@ -1,0 +1,54 @@
+description: Request body for creating an order.
+properties:
+  orderId:
+    description: Unique identifier for the order.
+    type: string
+  createdAt:
+    description: ISO 8601 date string for when the order was created.
+    format: date-time
+    type: string
+  lineItems:
+    description: List of line items in the order.
+    items:
+      $ref: ./orders-api-line-item.schema.yaml
+    minItems: 1
+    type: array
+  customer:
+    $ref: ./orders-api-customer.schema.yaml
+  shipping:
+    $ref: ./orders-api-shipping.schema.yaml
+  totalPrice:
+    description: Total order price including tax and shipping.
+    minimum: 0
+    type:
+      - number
+      - "null"
+  subtotalPrice:
+    description: Subtotal price excluding tax and shipping.
+    minimum: 0
+    type:
+      - number
+      - "null"
+  totalTax:
+    description: Total tax amount.
+    minimum: 0
+    type:
+      - number
+      - "null"
+  tags:
+    description: Optional tags associated with the order.
+    items:
+      type: string
+    type:
+      - array
+      - "null"
+  currencyCode:
+    description: "Currency code from the ISO 4217 standard (e.g., USD, EUR, GBP)."
+    type:
+      - string
+      - "null"
+required:
+  - orderId
+  - createdAt
+  - lineItems
+type: object

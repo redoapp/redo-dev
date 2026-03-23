@@ -1,0 +1,84 @@
+description: Request body for creating a fulfillment.
+properties:
+  fulfillmentId:
+    description: Unique identifier for the fulfillment. If not provided, will be auto-generated.
+    type: string
+  lineItems:
+    description: List of line items to fulfill.
+    items:
+      description: Line item fulfillment details.
+      properties:
+        id:
+          description: Line item ID to fulfill.
+          type: string
+        quantity:
+          description: Quantity to fulfill for this line item.
+          minimum: 1
+          maximum: 1000
+          type: integer
+      required:
+        - id
+        - quantity
+      type: object
+    minItems: 1
+    type: array
+  tracking:
+    description: Optional tracking information for the shipment.
+    properties:
+      carrier:
+        description: Name of the shipping carrier (e.g., FedEx, UPS, USPS).
+        type: string
+      code:
+        description: Tracking number/code for the shipment.
+        type: string
+    required:
+      - carrier
+      - code
+    type:
+      - object
+      - "null"
+  useDummyTracking:
+    description: If true, creates a dummy tracker for testing without calling external tracking APIs. Useful for development and testing the fulfillment status update endpoint.
+    type: boolean
+  initialTracking:
+    description: Initial tracking information for the dummy tracker. Only used when useDummyTracking is true. If not specified, defaults to status "pre_transit".
+    properties:
+      status:
+        description: Initial shipment status for the dummy tracker. Only actual statuses are allowed (not automation events).
+        enum:
+          - pre_transit
+          - unknown
+          - in_transit
+          - out_for_delivery
+          - available_for_pickup
+          - delivered
+          - return_to_sender
+          - failure
+          - cancelled
+          - error
+        type: string
+      estimatedDeliveryDate:
+        description: Estimated delivery date in ISO 8601 format.
+        format: date-time
+        type:
+          - string
+          - "null"
+      message:
+        description: Tracking event message.
+        type:
+          - string
+          - "null"
+      datetime:
+        description: Timestamp of the tracking event in ISO 8601 format.
+        format: date-time
+        type:
+          - string
+          - "null"
+      location:
+        $ref: ./orders-api-tracking-location.schema.yaml
+    required:
+      - status
+    type: object
+required:
+  - lineItems
+type: object

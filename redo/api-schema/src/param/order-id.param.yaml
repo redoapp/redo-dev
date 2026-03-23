@@ -1,0 +1,6 @@
+description: Order ID. Can be either the external order ID provided when creating the order, or the internal Redo order ID.
+in: path
+name: orderId
+required: true
+schema:
+  type: string

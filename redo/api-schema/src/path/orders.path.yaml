@@ -1,0 +1,44 @@
+description: Orders collection.
+post:
+  description: Create a new order in the system with line items, customer information, and shipping details.
+  operationId: Order create
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/orders-api-create-order-request.schema.yaml
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/orders-api-create-order-response.schema.yaml
+      description: Success
+    "400":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Bad Request (validation error)
+    "401":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Unauthorized (invalid or missing API token)
+    "409":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Conflict (duplicate order ID)
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create Order
+  tags: [Orders]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Orders

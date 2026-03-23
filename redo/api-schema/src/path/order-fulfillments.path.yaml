@@ -1,0 +1,45 @@
+description: Order fulfillments collection.
+post:
+  description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+  operationId: Fulfillment create
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/orders-api-create-fulfillment-request.schema.yaml
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/orders-api-fulfillment-response.schema.yaml
+      description: Success
+    "400":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Bad Request (validation error)
+    "401":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Unauthorized (invalid or missing API token)
+    "404":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Order not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create Fulfillment
+  tags: [Orders]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/order-id.param.yaml }
+summary: Order Fulfillments
