@@ -1,0 +1,8 @@
+description: Orders API error response.
+properties:
+  error:
+    description: Error message describing what went wrong.
+    type: string
+required:
+  - error
+type: object

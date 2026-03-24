@@ -1,0 +1,16 @@
+description: Shipping information.
+properties:
+  method:
+    description: Shipping method name.
+    type:
+      - string
+      - "null"
+  cost:
+    description: Shipping cost.
+    minimum: 0
+    type:
+      - number
+      - "null"
+  address:
+    $ref: ./orders-api-shipping-address.schema.yaml
+type: object

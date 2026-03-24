@@ -1,0 +1,19 @@
+description: Location information for a tracking event.
+properties:
+  city:
+    type:
+      - string
+      - "null"
+  state:
+    type:
+      - string
+      - "null"
+  country:
+    type:
+      - string
+      - "null"
+  postalCode:
+    type:
+      - string
+      - "null"
+type: object

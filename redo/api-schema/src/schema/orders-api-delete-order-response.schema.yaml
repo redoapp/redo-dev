@@ -1,0 +1,16 @@
+description: Successful order deletion response.
+properties:
+  success:
+    description: Indicates successful deletion.
+    type: boolean
+  orderId:
+    description: Internal Redo order ID.
+    type: string
+  externalOrderId:
+    description: External order ID that was deleted.
+    type: string
+required:
+  - success
+  - orderId
+  - externalOrderId
+type: object

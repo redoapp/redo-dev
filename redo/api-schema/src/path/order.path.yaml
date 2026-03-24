@@ -1,0 +1,63 @@
+description: Single order operations.
+get:
+  description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+  operationId: Order get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/orders-api-get-order-response.schema.yaml
+      description: Success
+    "401":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Unauthorized (invalid or missing API token)
+    "404":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Order not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get Order
+  tags: [Orders]
+delete:
+  description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+  operationId: Order delete
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/orders-api-delete-order-response.schema.yaml
+      description: Success
+    "401":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Unauthorized (invalid or missing API token)
+    "404":
+      content:
+        application/json:
+          schema: { $ref: ../schema/orders-api-error.schema.yaml }
+      description: Order not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Delete Order
+  tags: [Orders]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/order-id.param.yaml }
+summary: Order

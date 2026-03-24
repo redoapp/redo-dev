@@ -1,0 +1,19 @@
+description: Tracking event details.
+properties:
+  message:
+    description: Tracking event message.
+    type: string
+  status:
+    description: Status at this tracking event.
+    type: string
+  datetime:
+    description: ISO 8601 timestamp of the tracking event.
+    format: date-time
+    type: string
+  location:
+    $ref: ./orders-api-tracking-location.schema.yaml
+required:
+  - message
+  - status
+  - datetime
+type: object

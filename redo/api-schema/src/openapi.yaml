@@ -51,6 +51,7 @@ tags:
   - name: Customers
   - name: Invoices
   - name: Merchant Admin
+  - name: Orders
   - name: Products
   - name: Returns
   - name: Storefront
@@ -79,6 +80,13 @@ paths:
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   # Merchant Admin
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
+  # Orders
+  /stores/{storeId}/orders: { $ref: path/orders.path.yaml }
+  /stores/{storeId}/orders/{orderId}: { $ref: path/order.path.yaml }
+  /stores/{storeId}/orders/{orderId}/fulfillments:
+    { $ref: path/order-fulfillments.path.yaml }
+  /stores/{storeId}/orders/{orderId}/fulfillments/{fulfillmentId}/shipment-status:
+    { $ref: path/order-fulfillment-shipment-status.path.yaml }
   # Products
   /stores/{storeId}/products/bulk-upload:
     { $ref: path/products-bulk-upload.path.yaml }

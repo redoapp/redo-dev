@@ -1,0 +1,12 @@
+description: Successful order creation response.
+properties:
+  orderId:
+    description: Internal Redo order ID.
+    type: string
+  externalOrderId:
+    description: Original external order ID provided in the request.
+    type: string
+required:
+  - orderId
+  - externalOrderId
+type: object

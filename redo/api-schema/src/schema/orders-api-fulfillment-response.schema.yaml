@@ -1,0 +1,11 @@
+description: Successful fulfillment operation response.
+properties:
+  success:
+    const: true
+    type: boolean
+  fulfillment:
+    $ref: ./orders-api-fulfillment.schema.yaml
+required:
+  - success
+  - fulfillment
+type: object
