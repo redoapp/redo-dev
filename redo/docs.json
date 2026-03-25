@@ -99,7 +99,14 @@
                   "/docs/integrations/returns/3pl-wms/cirro",
                   "/docs/integrations/returns/3pl-wms/cloudx",
                   "/docs/integrations/returns/3pl-wms/flexport",
-                  "/docs/integrations/returns/3pl-wms/netsuite",
+                  {
+                    "group": "NetSuite",
+                    "root": "/docs/integrations/returns/3pl-wms/netsuite",
+                    "pages": [
+                      "/docs/integrations/returns/3pl-wms/netsuite",
+                      "/docs/integrations/returns/3pl-wms/netsuite-manual-setup"
+                    ]
+                  },
                   "/docs/integrations/returns/3pl-wms/nimble",
                   "/docs/integrations/returns/3pl-wms/shipbob",
                   "/docs/integrations/returns/3pl-wms/shiphero",
