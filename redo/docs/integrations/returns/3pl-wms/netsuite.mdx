@@ -13,7 +13,7 @@ NetSuite is Oracle's cloud-based ERP suite that provides financials, inventory m
 
 ## What Does the Integration Do?
 
-When a customer initiates a return through Redo, the system automatically creates a **Return Authorization (RMA)** in NetSuite linked to the original Sales Order or Cash Sale. This ensures your warehouse, operations, and accounting teams have complete visibility into incoming returns without any manual data entry.
+When a return is approved in Redo, the system automatically creates a **Return Authorization (RMA)** in NetSuite linked to the original Sales Order or Cash Sale. This ensures your warehouse, operations, and accounting teams have complete visibility into incoming returns without any manual data entry.
 
 The integration goes beyond just creating RMAs. When your warehouse receives the returned items and creates an **Item Receipt** against the RMA in NetSuite, a webhook notifies Redo in real time. Redo then **automatically processes the return** — issuing refunds, sending exchanges, or applying store credit — based on the return's configuration. This means your warehouse staff only need to do what they already do (receive items in NetSuite), and Redo handles the rest.
 
@@ -64,7 +64,7 @@ The SuiteCloud project installs the following objects in your NetSuite account:
 <Steps>
 <Step title="Deploy the SuiteCloud Project">
 
-**Standard path (recommended):** Provide Redo with administrator access to your NetSuite account. Redo will deploy the SuiteCloud project using the SuiteCloud CLI, which automatically creates all custom fields, scripts, roles, and deployments listed above.
+**Standard path (recommended):** Assign the Administrator role in NetSuite to the user Redo will use, or allow Redo to attach the Redo custom role to an existing user. With this access, Redo will deploy the SuiteCloud project using the SuiteCloud CLI, which automatically creates all custom fields, scripts, roles, and deployments listed above.
 
 **Manual path:** If you prefer not to grant administrator access, your NetSuite developer can set everything up manually. Download the setup guide below and follow the step-by-step instructions:
 
@@ -186,23 +186,16 @@ No manual action is required in Redo — the webhook handles everything.
 </Step>
 </Steps>
 
-<Warning>
-**Disposition handling:** If an Item Receipt contains items with a quality grade of "C", the return is automatically flagged in Redo and automated processing is skipped. This allows your team to manually review items that don't meet quality standards before deciding on the outcome.
-</Warning>
 
 ### Credit Memo (Optional)
 
-When enabled, Redo automatically creates a Credit Memo by transforming the RMA after the return reaches **Complete** status. This keeps your NetSuite financials in sync without manual bookkeeping.
+When enabled, Redo automatically creates a Credit Memo by transforming the RMA after the return reaches **Complete** status. This happens immediately once all items on the return have been processed — no manual action is needed. The Credit Memo inherits line items and amounts from the RMA, keeping your NetSuite financials in sync without manual bookkeeping.
 
-The Credit Memo is linked to the return in Redo with a timeline entry containing a direct link to the record in NetSuite.
+A timeline entry is added to the return in Redo with a direct link to the Credit Memo in NetSuite for easy reference.
 
 ### Customer Refund (Optional)
 
-When enabled alongside Credit Memos, Redo automatically creates a Customer Refund from the Credit Memo, applying the full credit amount. This requires an account ID and custom form ID to be configured in your integration settings.
-
-### Support Case (Warranty Returns)
-
-For warranty returns, the integration can optionally create a **NetSuite Support Case** instead of an RMA. The support case includes the product issue description, SKU, and serial number from the return. This routes warranty claims into your existing NetSuite support workflows.
+When enabled alongside Credit Memos, Redo automatically creates a Customer Refund from the Credit Memo immediately after the Credit Memo is created, applying the full credit amount to the customer. This closes the loop on the financial side — the Credit Memo records the liability, and the Customer Refund records the actual payment back to the customer. This requires an account ID and custom form ID to be configured in your integration settings.
 
 ## How Long Does It Take?
 
