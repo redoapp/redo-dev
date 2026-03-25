@@ -197,6 +197,52 @@ A timeline entry is added to the return in Redo with a direct link to the Credit
 
 When enabled alongside Credit Memos, Redo automatically creates a Customer Refund from the Credit Memo immediately after the Credit Memo is created, applying the full credit amount to the customer. This closes the loop on the financial side — the Credit Memo records the liability, and the Customer Refund records the actual payment back to the customer. This requires an account ID and custom form ID to be configured in your integration settings.
 
+### RMA Customization
+
+Redo supports mapping custom fields onto your RMAs using dynamic variables. This lets you pass return-specific data into any custom transaction body field or line item field on the Return Authorization in NetSuite — no code changes required.
+
+#### Header-Level Custom Fields
+
+Custom fields on the RMA header can use the following dynamic variables:
+
+| Variable | Description |
+|----------|-------------|
+| `{{trackingNumber}}` | Return shipment tracking number |
+| `{{carrierName}}` | Shipping carrier name |
+| `{{compensationType}}` | How the customer is being compensated: `Refund`, `Store Credit`, or `Exchange` |
+| `{{exchangeAmount}}` | Total value of the exchange order |
+| `{{storeCredit}}` | Total store credit amount |
+| `{{refundTotal}}` | Total refund amount including shipping |
+
+#### Line Item Custom Fields
+
+Custom fields on individual RMA line items can use:
+
+| Variable | Description |
+|----------|-------------|
+| `{{primaryReturnReason}}` | The customer's primary return reason |
+| `{{secondaryReturnReason}}` | Any additional return reasons |
+| `{{primaryReasonCode}}` | Return reason code (primary) |
+| `{{secondaryReasonCode}}` | Return reason code (secondary) |
+| `{{isGreenReturn}}` | Whether the item is a green return (`true`/`false`) |
+| `{{compensationType}}` | Compensation type for this specific item |
+| `{{refundAmount}}` | Proportional refund amount for this item |
+| `{{storeCreditAmount}}` | Proportional store credit amount for this item |
+
+#### Custom Line Items
+
+You can also configure additional line items to be added to the RMA automatically. These are useful for representing exchange credits, store credit amounts, or deducted shipping fees as separate line items on the RMA. Custom line items support their own set of variables:
+
+| Variable | Description |
+|----------|-------------|
+| `{{exchangeCredit}}` | Pre-tax exchange credit value |
+| `{{storeCreditAmount}}` | Total store credit amount |
+| `{{deductedShippingFee}}` | Shipping fee deducted from the return |
+
+<Info>
+RMA customization is configured by the Redo team as part of your integration setup. Contact **support@getredo.com** if you need custom fields mapped on your RMAs.
+</Info>
+
 ## How Long Does It Take?
 
 ### Setup Timeline
