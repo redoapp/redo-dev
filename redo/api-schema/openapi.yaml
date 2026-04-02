@@ -300,8 +300,8 @@ paths:
         one will be created automatically.
 
         ## Rate Limiting
-        This endpoint is rate-limited to 10 requests per second per store.
-      operationId: Custom events bulk create
+        This endpoint is rate-limited to 100 requests per second per store.
+      operationId: Bulk create custom events
       parameters:
         - $ref: '#/components/parameters/store-id.param'
       requestBody:
@@ -319,6 +319,7 @@ paths:
                       properties:
                         plan_type: premium
                     - event_name: purchase_completed
+                      email: bob@example.com
                       properties:
                         order_total: 99.99
                         item_count: 3
@@ -1889,8 +1890,9 @@ components:
                 description: The unique identifier for the accepted event. Present only for accepted events.
                 type: string
               event_name:
-                description: The name of the custom event.
+                description: The name of the custom event. May be null if the event was rejected before the name could be parsed.
                 type: string
+                nullable: true
               status:
                 description: Whether the event was accepted or rejected.
                 enum:
@@ -1903,7 +1905,6 @@ components:
             additionalProperties: false
             required:
               - index
-              - event_name
               - status
       required:
         - total

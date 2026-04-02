@@ -24,8 +24,9 @@ properties:
           description: The unique identifier for the accepted event. Present only for accepted events.
           type: string
         event_name:
-          description: The name of the custom event.
+          description: The name of the custom event. May be null if the event was rejected before the name could be parsed.
           type: string
+          nullable: true
         status:
           description: Whether the event was accepted or rejected.
           enum:
@@ -38,7 +39,6 @@ properties:
       additionalProperties: false
       required:
         - index
-        - event_name
         - status
 required:
   - total

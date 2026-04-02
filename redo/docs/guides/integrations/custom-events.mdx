@@ -345,7 +345,7 @@ Some events may be accepted while others are rejected:
 | Endpoint                            | Limit                     |
 | ----------------------------------- | ------------------------- |
 | `POST /stores/{storeId}/events`     | 100 requests/second/store |
-| `POST /stores/{storeId}/events/bulk`| 10 requests/second/store  |
+| `POST /stores/{storeId}/events/bulk`| 100 requests/second/store |
 
 When you hit a rate limit, the API returns `429 Too Many Requests`. Implement
 exponential backoff in your retry logic.
