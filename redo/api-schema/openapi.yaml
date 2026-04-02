@@ -199,7 +199,8 @@ paths:
         3. `customer.phoneNumber` — customer phone number
 
         At least one identifier must be provided. If no matching customer is found, one will
-        be created automatically.
+        be created automatically. If `customer.id` is provided but not found, the API falls
+        back to email/phone rather than returning 404.
 
         ## Rate Limiting
         This endpoint is rate-limited to 100 requests per second per store.
@@ -253,6 +254,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-event-response.schema'
+              examples:
+                success:
+                  summary: Event accepted
+                  value:
+                    eventId: evt_abc123def456
+                    status: queued
+                    eventName: user_registered
           description: Event accepted and queued for processing
         '400':
           content:
@@ -353,7 +361,7 @@ paths:
                       - index: 1
                         eventName: purchase_completed
                         status: rejected
-                        error: Missing required customer identifier (customer.email, customer.phoneNumber, or customer.id)
+                        error: At least one of id, email, or phoneNumber is required
           description: Bulk request processed. Check per-event status for individual results.
         '400':
           content:
@@ -1795,10 +1803,8 @@ components:
       type: object
     custom-event-request.schema:
       additionalProperties: true
-      description: >
-        Custom event to trigger flows with merchant-defined event names and properties.
-        Supports both v2.3 (camelCase, nested customer object) and legacy v2.2
-        (snake_case, flat email/phone fields) formats for backwards compatibility.
+      description: |
+        Custom event to trigger flows with merchant-defined event names and properties. Supports both v2.3 (camelCase, nested customer object) and legacy v2.2 (snake_case, flat email/phone fields) formats for backwards compatibility.
       properties:
         eventName:
           description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
@@ -1819,10 +1825,10 @@ components:
               description: Customer phone number in E.164 format. Used for identity resolution.
               type: string
             firstName:
-              description: Customer first name. Applied with patch semantics.
+              description: Customer first name. Applied with patch semantics — does not erase existing value if omitted.
               type: string
             lastName:
-              description: Customer last name. Applied with patch semantics.
+              description: Customer last name. Applied with patch semantics — does not erase existing value if omitted.
               type: string
             location:
               description: Customer location for profile enrichment.
@@ -1831,13 +1837,14 @@ components:
             customFields:
               description: Merchant-defined customer attributes as key-value pairs.
               type: object
-              additionalProperties: true
+              additionalProperties:
+                oneOf:
+                  - type: string
+                  - type: number
+                  - type: boolean
         data:
-          description: >
-            Custom properties for this event. Top-level keys are segmentable and
-            support types: string, number, boolean, and date. Values of 0, null,
-            and empty string are treated as unset and not stored. Nest
-            non-segmentable metadata under a $extra key.
+          description: |
+            Custom properties for this event. Access in templates using dot notation (e.g., {{ data.product_name }}). Top-level keys are segmentable and support types: string, number, boolean, and date (ISO 8601 strings are auto-detected as dates). Values of 0, null, and empty string are treated as unset and are not stored. To include non-segmentable metadata, nest it under a $extra key — anything inside $extra is stored but excluded from segmentation indexes.
           type: object
           additionalProperties: true
         eventTimestamp:
@@ -1851,10 +1858,8 @@ components:
           description: ISO 4217 currency code for the value field (e.g., "USD", "EUR").
           type: string
         uniqueId:
-          description: >
-            Merchant-controlled deduplication key (1-255 characters). If provided,
-            subsequent events with the same uniqueId for the same store are silently
-            deduplicated.
+          description: |
+            Merchant-controlled deduplication key (1-255 characters). If provided, subsequent events with the same uniqueId for the same store are silently deduplicated. Use this for safe retries and at-least-once delivery patterns.
           type: string
       required:
         - eventName
@@ -1907,7 +1912,7 @@ components:
           description: Number of events successfully accepted for processing.
           type: integer
         rejected:
-          description: Number of events that failed validation.
+          description: Number of events that failed validation or processing.
           type: integer
         events:
           description: Per-event results in the same order as the request.
