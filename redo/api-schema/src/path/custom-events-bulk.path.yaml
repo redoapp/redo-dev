@@ -1,4 +1,5 @@
 post:
+  x-hidden: true
   description: |
     Create multiple custom events in a single request. Accepts up to 100 events per request.
 
