@@ -2,8 +2,6 @@
 additionalProperties: true
 description: >
   Custom event to trigger flows with merchant-defined event names and properties.
-  Supports both v2.3 (camelCase, nested customer object) and legacy v2.2
-  (snake_case, flat email/phone fields) formats for backwards compatibility.
 properties:
   eventName:
     description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
@@ -43,15 +41,35 @@ properties:
             - type: boolean
   data:
     description: >
-      Custom properties for this event. Access in templates using dot notation
-      (e.g., {{ data.product_name }}). Top-level keys are segmentable and
-      support types: string, number, boolean, and date (ISO 8601 strings are
-      auto-detected as dates). Values of 0, null, and empty string are treated as
-      unset and are not stored. To include non-segmentable metadata, nest it under
-      a $extra key — anything inside $extra is stored but excluded from
-      segmentation indexes.
+      Custom properties for this event (must not exceed 400 properties). The
+      size of the event payload must not exceed 5 MB, and each string cannot be
+      larger than 100 KB. For a full list of data limits on event payloads, see
+      [Limitations](/docs/guides/integrations/custom-events#rate-limits).
+
+
+      Note any top-level property that is not an object can be used to create
+      segments. The `$extra` property records any non-segmentable values that
+      can be referenced later, e.g., HTML templates are useful on a segment but
+      are not used to create a segment.
     type: object
-    additionalProperties: true
+    properties:
+      $extra:
+        description: >
+          Non-segmentable metadata bucket. Values inside `$extra` are stored on
+          the event but excluded from segmentation indexes. Unlike top-level
+          data properties, values of 0, null, and empty string are NOT stripped
+          inside `$extra`. Use this for large text, debug info, nested objects,
+          arrays, or any data you want to reference in templates but not segment
+          on.
+        type: object
+        additionalProperties: true
+    additionalProperties:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: string
+          format: date-time
   eventTimestamp:
     description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
     format: date-time
