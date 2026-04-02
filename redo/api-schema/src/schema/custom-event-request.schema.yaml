@@ -6,52 +6,42 @@ properties:
     description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
     type: string
   email:
-    description: Customer email address (one of email or phone is required).
+    description: Customer email address. Used for identity resolution. At least one of email, phone, or customer_id is required.
+    format: email
     type: string
   phone:
-    description: Customer phone number (one of email or phone is required).
+    description: Customer phone number. Used for identity resolution. At least one of email, phone, or customer_id is required.
+    type: string
+  customer_id:
+    description: Redo customer ObjectId. Used for identity resolution. Takes priority over email and phone when provided.
     type: string
   properties:
-    description: Custom properties for this event. Access in templates using dot notation (e.g., {{ properties.product_name }}).
+    description: >
+      Custom properties for this event. Access in templates using dot notation
+      (e.g., {{ properties.product_name }}). Top-level keys are segmentable and
+      support types: string, number, boolean, and date (ISO 8601 strings are
+      auto-detected as dates). Values of 0, null, and empty string are treated as
+      unset and are not stored. To include non-segmentable metadata, nest it under
+      a `$extra` key — anything inside `$extra` is stored but excluded from
+      segmentation indexes.
     type: object
     additionalProperties: true
   event_timestamp:
     description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
     format: date-time
     type: string
-  cart_context:
-    description: Cart context for product recommendations in triggered emails. If not provided, no cart-aware recommendations will be made.
-    nullable: true
-    type: object
-    properties:
-      existingCartId:
-        description: The ID of an existing cart to use for recommendations.
-        type: string
-        nullable: true
-      productIdsForRecommendations:
-        description: Product IDs to use as the basis for recommendations.
-        type: array
-        items:
-          type: string
-      alreadyInCart:
-        description: Items already in the customer's cart.
-        type: array
-        items:
-          type: object
-          properties:
-            productId:
-              type: string
-            variantId:
-              type: string
-            quantity:
-              type: number
-          required:
-            - productId
-            - variantId
-    required:
-      - existingCartId
-      - productIdsForRecommendations
-      - alreadyInCart
+  value:
+    description: Monetary or conversion value associated with the event (e.g., purchase amount).
+    type: number
+  value_currency:
+    description: ISO 4217 currency code for the value field (e.g., "USD", "EUR").
+    type: string
+  unique_id:
+    description: >
+      Merchant-controlled deduplication key. If provided, subsequent events with
+      the same unique_id for the same store are silently deduplicated. Use this
+      for safe retries and at-least-once delivery patterns.
+    type: string
 required:
   - event_name
 title: Custom Event Request

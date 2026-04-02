@@ -66,6 +66,7 @@ paths:
     { $ref: path/coverage-products.path.yaml }
   # Custom Events
   /stores/{storeId}/events: { $ref: path/custom-events.path.yaml }
+  /stores/{storeId}/events/bulk: { $ref: path/custom-events-bulk.path.yaml }
   # Customer Portal
   /stores/{storeId}/customer-portal: { $ref: path/customer-portal.path.yaml }
   # Customer Subscriptions

@@ -1,0 +1,356 @@
+---
+title: "Custom Events"
+description: "Send custom events from your systems to trigger automations, build segments, and track customer activity"
+icon: "bolt"
+---
+
+## Overview
+
+Custom events let you send merchant-defined events from your own systems into
+Redo. Each event is associated with a customer and can carry arbitrary
+properties. Once ingested, custom events can:
+
+- Trigger automation flows (email, SMS)
+- Power customer segmentation
+- Appear on the customer timeline for support context
+
+## Authentication
+
+All requests require a Bearer token using your store's API key:
+
+```bash
+POST https://api.getredo.com/v2.2/stores/{storeId}/events
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+```
+
+You can find your API key in the Redo dashboard under **Settings > API Keys**.
+
+## Identity Resolution
+
+Each event must include at least one customer identifier. The API resolves
+customers using the following priority order:
+
+| Priority | Field         | Description                  |
+| -------- | ------------- | ---------------------------- |
+| 1        | `customer_id` | Redo customer ObjectId       |
+| 2        | `email`       | Customer email address       |
+| 3        | `phone`       | Customer phone number (E.164) |
+
+If multiple identifiers are provided, the highest-priority match is used. If no
+matching customer is found, one is created automatically.
+
+```json
+{
+  "event_name": "subscription_renewed",
+  "customer_id": "665f1a2b3c4d5e6f7a8b9c0d",
+  "email": "jane@example.com",
+  "properties": {
+    "plan": "pro"
+  }
+}
+```
+
+In this example, the event resolves to the customer with the given `customer_id`.
+The `email` is ignored for resolution but may be used for other purposes.
+
+## Properties Structure
+
+The `properties` object carries event-specific data. Top-level keys are
+**segmentable** — you can use them in segment conditions and automation filters.
+
+### Supported Property Types
+
+| Type      | Example                        | Notes                                   |
+| --------- | ------------------------------ | --------------------------------------- |
+| `string`  | `"gold"`                       |                                         |
+| `number`  | `99.99`                        | Integer or decimal                      |
+| `boolean` | `true`                         |                                         |
+| `date`    | `"2025-03-15T10:30:00Z"`       | ISO 8601 strings are auto-detected      |
+
+### Ignored Values
+
+Values of `0`, `null`, and empty string (`""`) are treated as **unset** and are
+not stored. This prevents polluting segments with meaningless zero/empty values.
+
+```json
+{
+  "event_name": "form_submitted",
+  "email": "customer@example.com",
+  "properties": {
+    "form_name": "contact_us",
+    "score": 0,
+    "notes": ""
+  }
+}
+```
+
+In this example, only `form_name` is stored. `score` and `notes` are dropped.
+
+### Non-Segmentable Metadata with `$extra`
+
+To include metadata that should be stored but **not** indexed for segmentation,
+nest it under the `$extra` key. This is useful for large text, debug info, or
+context that doesn't need to be queried.
+
+```json
+{
+  "event_name": "product_reviewed",
+  "email": "customer@example.com",
+  "properties": {
+    "rating": 5,
+    "category": "electronics",
+    "$extra": {
+      "review_text": "Absolutely love this product!",
+      "browser": "Chrome 120",
+      "session_id": "abc-123-def"
+    }
+  }
+}
+```
+
+Here, `rating` and `category` are segmentable. Everything inside `$extra` is
+stored on the event but excluded from segmentation indexes.
+
+## Value Tracking
+
+Use the `value` and `value_currency` fields to associate a monetary or
+conversion value with an event:
+
+```json
+{
+  "event_name": "purchase_completed",
+  "email": "customer@example.com",
+  "properties": {
+    "item_count": 3,
+    "category": "apparel"
+  },
+  "value": 149.99,
+  "value_currency": "USD"
+}
+```
+
+`value_currency` uses [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency
+codes (e.g., `USD`, `EUR`, `GBP`).
+
+## Idempotency
+
+Use the `unique_id` field to safely retry requests without creating duplicate
+events. If you send two events with the same `unique_id` for the same store,
+only the first is persisted — subsequent requests are silently deduplicated.
+
+```json
+{
+  "event_name": "order_placed",
+  "email": "customer@example.com",
+  "unique_id": "order-789",
+  "properties": {
+    "order_total": 59.99
+  }
+}
+```
+
+<Info>
+  If you don't provide a `unique_id`, each request creates a new event. Use
+  `unique_id` whenever your system may retry requests (webhooks, queues, etc.).
+</Info>
+
+## Timestamps
+
+By default, events are timestamped at ingestion time. To set a custom timestamp
+(e.g., for backfilling historical events), use the `event_timestamp` field with
+an ISO 8601 value:
+
+```json
+{
+  "event_name": "loyalty_tier_upgrade",
+  "email": "customer@example.com",
+  "event_timestamp": "2025-01-15T14:30:00Z",
+  "properties": {
+    "new_tier": "platinum"
+  }
+}
+```
+
+## Bulk Ingestion
+
+For high-volume use cases, use the bulk endpoint to send up to **100 events per
+request**:
+
+```bash
+POST https://api.getredo.com/v2.2/stores/{storeId}/events/bulk
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+```
+
+### Request
+
+```json
+{
+  "events": [
+    {
+      "event_name": "page_viewed",
+      "email": "alice@example.com",
+      "properties": { "page": "/pricing" }
+    },
+    {
+      "event_name": "feature_used",
+      "properties": { "feature": "dashboard" }
+    }
+  ]
+}
+```
+
+### Response
+
+The bulk endpoint returns a `202 Accepted` response with per-event results.
+Some events may be accepted while others are rejected:
+
+```json
+{
+  "total": 2,
+  "accepted": 1,
+  "rejected": 1,
+  "events": [
+    {
+      "index": 0,
+      "event_id": "evt_abc123",
+      "event_name": "page_viewed",
+      "status": "queued"
+    },
+    {
+      "index": 1,
+      "event_name": "feature_used",
+      "status": "rejected",
+      "error": "Missing required customer identifier (email, phone, or customer_id)"
+    }
+  ]
+}
+```
+
+<Warning>
+  Always check the per-event `status` field. A `202` response does not guarantee
+  all events were accepted — inspect each event's status for partial failures.
+</Warning>
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Migrating from Klaviyo custom events">
+    Redo custom events use a similar model to Klaviyo's Track API. Key
+    differences:
+
+    - Use `event_name` instead of `event`
+    - Customer identity goes in top-level fields (`email`, `phone`, `customer_id`), not nested under `customer_properties`
+    - Use `$extra` for non-segmentable metadata instead of relying on Klaviyo's property flattening
+    - Use `unique_id` for deduplication instead of Klaviyo's `$event_id`
+  </Accordion>
+
+  <Accordion title="Webhook-triggered events">
+    If you're sending events from a webhook handler, always include `unique_id`
+    to handle retries safely:
+
+    ```javascript
+    app.post('/webhooks/order-placed', async (req, res) => {
+      const order = req.body;
+
+      await fetch(`https://api.getredo.com/v2.2/stores/${STORE_ID}/events`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event_name: 'order_placed',
+          email: order.customer_email,
+          unique_id: `order-${order.id}`,
+          properties: {
+            order_total: order.total,
+            item_count: order.line_items.length,
+          },
+          value: order.total,
+          value_currency: order.currency,
+        }),
+      });
+
+      res.status(200).send('OK');
+    });
+    ```
+  </Accordion>
+
+  <Accordion title="Backfilling historical events">
+    To import historical events, use the bulk endpoint with `event_timestamp`:
+
+    ```json
+    {
+      "events": [
+        {
+          "event_name": "subscription_started",
+          "email": "customer@example.com",
+          "event_timestamp": "2024-06-01T00:00:00Z",
+          "unique_id": "sub-start-cust-123",
+          "properties": {
+            "plan": "annual",
+            "source": "website"
+          }
+        },
+        {
+          "event_name": "subscription_renewed",
+          "email": "customer@example.com",
+          "event_timestamp": "2025-06-01T00:00:00Z",
+          "unique_id": "sub-renew-cust-123",
+          "properties": {
+            "plan": "annual"
+          }
+        }
+      ]
+    }
+    ```
+
+    <Tip>
+      Always include `unique_id` when backfilling so you can safely re-run the
+      import without creating duplicates.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Python example">
+    ```python
+    import requests
+
+    API_KEY = "your_api_secret"
+    STORE_ID = "your_store_id"
+
+    response = requests.post(
+        f"https://api.getredo.com/v2.2/stores/{STORE_ID}/events",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "event_name": "checkout_started",
+            "email": "customer@example.com",
+            "properties": {
+                "cart_value": 89.99,
+                "item_count": 2,
+                "source": "mobile_app",
+            },
+            "value": 89.99,
+            "value_currency": "USD",
+        },
+    )
+
+    print(response.status_code)  # 202
+    print(response.json())
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Rate Limits
+
+| Endpoint                            | Limit                     |
+| ----------------------------------- | ------------------------- |
+| `POST /stores/{storeId}/events`     | 100 requests/second/store |
+| `POST /stores/{storeId}/events/bulk`| 10 requests/second/store  |
+
+When you hit a rate limit, the API returns `429 Too Many Requests`. Implement
+exponential backoff in your retry logic.

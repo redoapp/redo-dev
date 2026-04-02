@@ -8,7 +8,7 @@ properties:
   status:
     description: Status of the event processing.
     enum:
-      - processed
+      - queued
     type: string
   event_name:
     description: The name of the custom event that was created.

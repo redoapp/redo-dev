@@ -1,0 +1,97 @@
+post:
+  description: |
+    Create multiple custom events in a single request. Accepts up to 100 events per request.
+
+    Each event is validated independently. The response includes per-event results, allowing
+    partial failures — some events may be accepted while others are rejected due to validation
+    errors.
+
+    ## Identity Resolution
+    Each event resolves customers independently using the same priority order as the
+    single-event endpoint:
+    1. `customer_id` — Redo customer ObjectId (highest priority)
+    2. `email` — customer email address
+    3. `phone` — customer phone number
+
+    At least one identifier must be provided per event. If no matching customer is found,
+    one will be created automatically.
+
+    ## Rate Limiting
+    This endpoint is rate-limited to 10 requests per second per store.
+  operationId: Custom events bulk create
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/bulk-custom-event-request.schema.yaml"
+        examples:
+          mixed_events:
+            summary: Bulk event creation with multiple event types
+            value:
+              events:
+                - event_name: "user_registered"
+                  email: "alice@example.com"
+                  properties:
+                    plan_type: "premium"
+                - event_name: "purchase_completed"
+                  properties:
+                    order_total: 99.99
+                    item_count: 3
+                  value: 99.99
+                  value_currency: "USD"
+                  unique_id: "order-456"
+    required: true
+  responses:
+    "202":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/bulk-custom-event-response.schema.yaml"
+          examples:
+            partial_success:
+              summary: Partial success — one accepted, one rejected
+              value:
+                total: 2
+                accepted: 1
+                rejected: 1
+                events:
+                  - index: 0
+                    event_id: "evt_abc123"
+                    event_name: "user_registered"
+                    status: "queued"
+                  - index: 1
+                    event_name: "purchase_completed"
+                    status: "rejected"
+                    error: "Missing required customer identifier (email, phone, or customer_id)"
+      description: Bulk request processed. Check per-event status for individual results.
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid request body (e.g., events array missing or exceeds 100 items)
+    "404":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Store not found
+    "429":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Rate limit exceeded
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Bulk create custom events
+  tags:
+    - Custom Events

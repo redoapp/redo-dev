@@ -3,12 +3,17 @@ post:
     Create a custom event to trigger flows with merchant-defined event names and properties.
 
     Custom events allow merchants to trigger flows based on events from their own systems.
-    Events can include custom properties that are accessible in email and SMS templates.
+    Events can include custom properties that are accessible in email and SMS templates,
+    and are persisted for segmentation and historical queries.
 
-    ## Customer Matching
-    The API matches customers by email or phone number. At least one must be provided.
+    ## Identity Resolution
+    The API resolves customers using the following priority order:
+    1. `customer_id` — Redo customer ObjectId (highest priority)
+    2. `email` — customer email address
+    3. `phone` — customer phone number
 
-    If no matching customer is found, the request will fail with a 404 error.
+    At least one identifier must be provided. If no matching customer is found, one will
+    be created automatically.
 
     ## Rate Limiting
     This endpoint is rate-limited to 100 requests per second per store.
@@ -31,22 +36,35 @@ post:
                 referral_code: "FRIEND123"
                 source: "mobile_app"
           purchase_milestone:
-            summary: Purchase milestone event
+            summary: Purchase milestone event with value
             value:
               event_name: "purchase_milestone_reached"
               phone: "+12065551234"
               properties:
                 milestone_type: "100th_purchase"
-                total_spent: 5000
                 vip_tier: "gold"
+              value: 5000
+              value_currency: "USD"
+          with_extra_metadata:
+            summary: Event with segmentable and non-segmentable properties
+            value:
+              event_name: "product_reviewed"
+              customer_id: "665f1a2b3c4d5e6f7a8b9c0d"
+              properties:
+                rating: 5
+                category: "electronics"
+                $extra:
+                  review_text: "Great product, highly recommend!"
+                  browser: "Chrome 120"
+              unique_id: "review-12345"
     required: true
   responses:
-    "200":
+    "202":
       content:
         application/json:
           schema:
             $ref: "../schema/custom-event-response.schema.yaml"
-      description: Event created successfully
+      description: Event accepted and queued for processing
     "400":
       content:
         application/json:
@@ -58,7 +76,7 @@ post:
         application/json:
           schema:
             $ref: "../schema/error.schema.yaml"
-      description: Customer not found with provided identifier
+      description: Store not found
     "429":
       content:
         application/json:
