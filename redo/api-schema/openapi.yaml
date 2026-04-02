@@ -231,14 +231,10 @@ paths:
                     vip_tier: gold
                     enrolled_at: '2025-01-01T00:00:00Z'
                     $extra:
-                      raw_webhook_payload:
-                        nested: true
-                        items:
-                          - 1
-                          - 2
-                          - 3
-                      zero_val: 0
-                      empty_str: ''
+                      most_recent_order_ids:
+                        - 1
+                        - 2
+                        - 3
               simple:
                 summary: Minimal event with just a name and email
                 value:
