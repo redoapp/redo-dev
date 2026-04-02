@@ -1,0 +1,80 @@
+---
+title: "Events API Overview"
+description: "Understand how custom events work in Redo and what you can do with them"
+icon: "satellite-dish"
+---
+
+Custom events let you send data about things that happen in your systems —
+purchases, signups, feature usage, support interactions — into Redo, where they
+become first-class objects tied to customer profiles.
+
+## Use Cases
+
+- **Trigger automation flows** — kick off email or SMS sequences when an event
+  fires (e.g., send a welcome series after `account_created`)
+- **Build customer segments** — define audiences based on event history (e.g.,
+  customers who triggered `purchase_completed` in the last 30 days)
+- **Track activity on the customer timeline** — give support and marketing teams
+  visibility into what a customer has done
+
+## Data Model
+
+Each event has a **name**, a **customer**, and optional **properties**:
+
+```
+┌──────────────────────────────────────────┐
+│  Event                                   │
+│                                          │
+│  event_name: "purchase_completed"        │
+│  customer:   jane@example.com            │
+│  properties:                             │
+│    ├─ item_count: 3                      │
+│    ├─ category: "apparel"                │
+│    └─ $extra:                            │
+│         └─ session_id: "abc-123"         │
+│  value: 149.99                           │
+│  value_currency: "USD"                   │
+│  timestamp: 2025-03-15T10:30:00Z         │
+└──────────────────────────────────────────┘
+```
+
+**Event names** act as categories. Every event with the name
+`purchase_completed` is grouped together, similar to how Klaviyo uses metrics.
+If you send an event with a name that doesn't exist yet, it's created
+automatically — no setup required.
+
+**Properties** are key-value pairs attached to each event. Top-level properties
+are indexed for segmentation. Anything nested under `$extra` is stored but not
+indexed — useful for debug context or large text that you don't need to query.
+
+**Value** is an optional numeric field for monetary or conversion tracking.
+
+## How Events Reach Customers
+
+When you send an event, you include at least one customer identifier:
+`customer_id`, `email`, or `phone`. Redo resolves the customer using a priority
+order (`customer_id` > `email` > `phone`). If no match is found, a new customer
+profile is created.
+
+This means you don't need to pre-register customers before sending events.
+
+## Asynchronous Processing
+
+Events are accepted with a `202` response and processed asynchronously. This
+means:
+
+- The API responds fast — your integration isn't blocked by downstream
+  processing
+- Events may take a moment to appear on timelines and in segments
+- Use `unique_id` for safe retries without creating duplicates
+
+## What's Next
+
+<CardGroup cols={2}>
+  <Card title="Implementation Guide" icon="code" href="/docs/guides/integrations/custom-events">
+    Authentication, request format, properties, bulk ingestion, and code examples.
+  </Card>
+  <Card title="API Reference" icon="square-terminal" href="/docs/api-reference">
+    Full endpoint documentation for creating events, including request and response schemas.
+  </Card>
+</CardGroup>
