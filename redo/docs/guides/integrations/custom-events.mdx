@@ -23,35 +23,60 @@ You can find your API key in the Redo dashboard under **Settings > API Keys**.
 
 ## Identity Resolution
 
-Each event must include at least one customer identifier. The API resolves
+Each event must include at least one customer identifier inside the `customer` object. The API resolves
 customers using the following priority order:
 
-| Priority | Field         | Description                  |
-| -------- | ------------- | ---------------------------- |
-| 1        | `customer_id` | Redo customer ObjectId       |
-| 2        | `email`       | Customer email address       |
-| 3        | `phone`       | Customer phone number (E.164) |
+| Priority | Field                | Description                   |
+| -------- | -------------------- | ----------------------------- |
+| 1        | `customer.id`        | Redo customer ObjectId        |
+| 2        | `customer.email`     | Customer email address        |
+| 3        | `customer.phoneNumber` | Customer phone number (E.164) |
 
 If multiple identifiers are provided, the highest-priority match is used. If no
 matching customer is found, one is created automatically.
 
 ```json
 {
-  "event_name": "subscription_renewed",
-  "customer_id": "665f1a2b3c4d5e6f7a8b9c0d",
-  "email": "jane@example.com",
-  "properties": {
+  "eventName": "subscription_renewed",
+  "customer": {
+    "id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "email": "jane@example.com"
+  },
+  "data": {
     "plan": "pro"
   }
 }
 ```
 
-In this example, the event resolves to the customer with the given `customer_id`.
-The `email` is ignored for resolution but may be used for other purposes.
+In this example, the event resolves to the customer with the given `customer.id`.
+The `email` is ignored for resolution but may be used for profile enrichment.
+
+## Request Shape
+
+```json
+{
+  "eventName": "purchase_milestone_reached",
+  "customer": {
+    "email": "customer@example.com",
+    "firstName": "Test",
+    "lastName": "User"
+  },
+  "eventTimestamp": "2026-04-02T12:00:00Z",
+  "value": 299.99,
+  "valueCurrency": "USD",
+  "uniqueId": "milestone-test-001",
+  "data": {
+    "milestone_type": "100th_purchase",
+    "total_spent": 5000,
+    "vip_tier": "gold",
+    "enrolled_at": "2025-01-01T00:00:00Z"
+  }
+}
+```
 
 ## Properties Structure
 
-The `properties` object carries event-specific data. Top-level keys are
+The `data` object carries event-specific data. Top-level keys are
 **segmentable** — you can use them in segment conditions and automation filters.
 
 ### Supported Property Types
@@ -70,9 +95,11 @@ not stored. This prevents polluting segments with meaningless zero/empty values.
 
 ```json
 {
-  "event_name": "form_submitted",
-  "email": "customer@example.com",
-  "properties": {
+  "eventName": "form_submitted",
+  "customer": {
+    "email": "customer@example.com"
+  },
+  "data": {
     "form_name": "contact_us",
     "score": 0,
     "notes": ""
@@ -85,83 +112,99 @@ In this example, only `form_name` is stored. `score` and `notes` are dropped.
 ### Non-Segmentable Metadata with `$extra`
 
 To include metadata that should be stored but **not** indexed for segmentation,
-nest it under the `$extra` key. This is useful for large text, debug info, or
+nest it under the `$extra` key inside `data`. This is useful for large text, debug info, or
 context that doesn't need to be queried.
 
 ```json
 {
-  "event_name": "product_reviewed",
-  "email": "customer@example.com",
-  "properties": {
-    "rating": 5,
-    "category": "electronics",
+  "eventName": "purchase_milestone_reached",
+  "customer": {
+    "email": "customer@example.com",
+    "firstName": "Test",
+    "lastName": "User"
+  },
+  "eventTimestamp": "2026-04-02T12:00:00Z",
+  "value": 299.99,
+  "valueCurrency": "USD",
+  "uniqueId": "milestone-test-001",
+  "data": {
+    "milestone_type": "100th_purchase",
+    "total_spent": 5000,
+    "vip_tier": "gold",
+    "enrolled_at": "2025-01-01T00:00:00Z",
     "$extra": {
-      "review_text": "Absolutely love this product!",
-      "browser": "Chrome 120",
-      "session_id": "abc-123-def"
+      "raw_webhook_payload": { "nested": true, "items": [1, 2, 3] },
+      "zero_val": 0,
+      "empty_str": ""
     }
   }
 }
 ```
 
-Here, `rating` and `category` are segmentable. Everything inside `$extra` is
-stored on the event but excluded from segmentation indexes.
+`milestone_type`, `total_spent`, `vip_tier`, and `enrolled_at` are segmentable. Everything inside `$extra` is
+stored on the event but excluded from segmentation indexes. Note that `zero_val` and `empty_str` inside `$extra` are **not** stripped — `$extra` is a raw pass-through.
 
 ## Value Tracking
 
-Use the `value` and `value_currency` fields to associate a monetary or
+Use the `value` and `valueCurrency` fields to associate a monetary or
 conversion value with an event:
 
 ```json
 {
-  "event_name": "purchase_completed",
-  "email": "customer@example.com",
-  "properties": {
+  "eventName": "purchase_completed",
+  "customer": {
+    "email": "customer@example.com"
+  },
+  "data": {
     "item_count": 3,
     "category": "apparel"
   },
   "value": 149.99,
-  "value_currency": "USD"
+  "valueCurrency": "USD"
 }
 ```
 
-`value_currency` uses [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency
+`valueCurrency` uses [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency
 codes (e.g., `USD`, `EUR`, `GBP`).
 
 ## Idempotency
 
-Use the `unique_id` field to safely retry requests without creating duplicate
-events. If you send two events with the same `unique_id` for the same store,
+Use the `uniqueId` field to safely retry requests without creating duplicate
+events. If you send two events with the same `uniqueId` for the same store,
 only the first is persisted — subsequent requests are silently deduplicated.
 
 ```json
 {
-  "event_name": "order_placed",
-  "email": "customer@example.com",
-  "unique_id": "order-789",
-  "properties": {
+  "eventName": "order_placed",
+  "customer": {
+    "email": "customer@example.com"
+  },
+  "uniqueId": "order-789",
+  "data": {
     "order_total": 59.99
   }
 }
 ```
 
 <Info>
-  If you don't provide a `unique_id`, each request creates a new event. Use
-  `unique_id` whenever your system may retry requests (webhooks, queues, etc.).
+  If you don't provide a `uniqueId`, each request creates a new event. Use
+  `uniqueId` whenever your system may retry requests (webhooks, queues, etc.).
 </Info>
 
 ## Timestamps
 
 By default, events are timestamped at ingestion time. To set a custom timestamp
-(e.g., for backfilling historical events), use the `event_timestamp` field with
+(e.g., for backfilling historical events), use the `eventTimestamp` field with
 an ISO 8601 value:
 
 ```json
 {
-  "event_name": "loyalty_tier_upgrade",
-  "email": "customer@example.com",
-  "event_timestamp": "2025-01-15T14:30:00Z",
-  "properties": {
+  "eventName": "loyalty_tier_upgrade",
+  "customer": {
+    "email": "customer@example.com"
+  },
+  "eventTimestamp": "2025-01-15T14:30:00Z",
+  "data": {
     "new_tier": "platinum"
   }
 }
@@ -184,13 +227,18 @@ Content-Type: application/json
 {
   "events": [
     {
-      "event_name": "page_viewed",
-      "email": "alice@example.com",
-      "properties": { "page": "/pricing" }
+      "eventName": "page_viewed",
+      "customer": {
+        "email": "alice@example.com"
+      },
+      "data": { "page": "/pricing" }
     },
     {
-      "event_name": "feature_used",
-      "properties": { "feature": "dashboard" }
+      "eventName": "feature_used",
+      "customer": {
+        "email": "bob@example.com"
+      },
+      "data": { "feature": "dashboard" }
     }
   ]
 }
@@ -209,15 +257,15 @@ Some events may be accepted while others are rejected:
   "events": [
     {
       "index": 0,
-      "event_id": "evt_abc123",
-      "event_name": "page_viewed",
+      "eventId": "evt_abc123",
+      "eventName": "page_viewed",
       "status": "queued"
     },
     {
       "index": 1,
-      "event_name": "feature_used",
+      "eventName": "feature_used",
       "status": "rejected",
-      "error": "Missing required customer identifier (email, phone, or customer_id)"
+      "error": "At least one of id, email, or phoneNumber is required"
     }
   ]
 }
@@ -235,14 +283,15 @@ Some events may be accepted while others are rejected:
     Redo custom events use a similar model to Klaviyo's Track API. Key
     differences:
 
-    - Use `event_name` instead of `event`
-    - Customer identity goes in top-level fields (`email`, `phone`, `customer_id`), not nested under `customer_properties`
-    - Use `$extra` for non-segmentable metadata instead of relying on Klaviyo's property flattening
-    - Use `unique_id` for deduplication instead of Klaviyo's `$event_id`
+    - Use `eventName` instead of `event`
+    - Customer identity goes in the nested `customer` object (`customer.email`, `customer.phoneNumber`, `customer.id`), not as root-level fields
+    - Use `data` instead of `properties` for event-specific attributes
+    - Use `$extra` inside `data` for non-segmentable metadata instead of relying on Klaviyo's property flattening
+    - Use `uniqueId` for deduplication instead of Klaviyo's `$event_id`
   </Accordion>
 
   <Accordion title="Webhook-triggered events">
-    If you're sending events from a webhook handler, always include `unique_id`
+    If you're sending events from a webhook handler, always include `uniqueId`
     to handle retries safely:
 
     ```javascript
@@ -256,15 +305,17 @@ Some events may be accepted while others are rejected:
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          event_name: 'order_placed',
-          email: order.customer_email,
-          unique_id: `order-${order.id}`,
-          properties: {
+          eventName: 'order_placed',
+          customer: {
+            email: order.customer_email,
+          },
+          uniqueId: `order-${order.id}`,
+          data: {
             order_total: order.total,
             item_count: order.line_items.length,
           },
           value: order.total,
-          value_currency: order.currency,
+          valueCurrency: order.currency,
         }),
       });
 
@@ -274,27 +325,31 @@ Some events may be accepted while others are rejected:
   </Accordion>
 
   <Accordion title="Backfilling historical events">
-    To import historical events, use the bulk endpoint with `event_timestamp`:
+    To import historical events, use the bulk endpoint with `eventTimestamp`:
 
     ```json
     {
       "events": [
         {
-          "event_name": "subscription_started",
-          "email": "customer@example.com",
-          "event_timestamp": "2024-06-01T00:00:00Z",
-          "unique_id": "sub-start-cust-123",
-          "properties": {
+          "eventName": "subscription_started",
+          "customer": {
+            "email": "customer@example.com"
+          },
+          "eventTimestamp": "2024-06-01T00:00:00Z",
+          "uniqueId": "sub-start-cust-123",
+          "data": {
             "plan": "annual",
             "source": "website"
           }
         },
         {
-          "event_name": "subscription_renewed",
-          "email": "customer@example.com",
-          "event_timestamp": "2025-06-01T00:00:00Z",
-          "unique_id": "sub-renew-cust-123",
-          "properties": {
+          "eventName": "subscription_renewed",
+          "customer": {
+            "email": "customer@example.com"
+          },
+          "eventTimestamp": "2025-06-01T00:00:00Z",
+          "uniqueId": "sub-renew-cust-123",
+          "data": {
             "plan": "annual"
           }
         }
@@ -303,7 +358,7 @@ Some events may be accepted while others are rejected:
     ```
 
     <Tip>
-      Always include `unique_id` when backfilling so you can safely re-run the
+      Always include `uniqueId` when backfilling so you can safely re-run the
       import without creating duplicates.
     </Tip>
   </Accordion>
@@ -322,15 +377,17 @@ Some events may be accepted while others are rejected:
             "Content-Type": "application/json",
         },
         json={
-            "event_name": "checkout_started",
-            "email": "customer@example.com",
-            "properties": {
+            "eventName": "checkout_started",
+            "customer": {
+                "email": "customer@example.com",
+            },
+            "data": {
                 "cart_value": 89.99,
                 "item_count": 2,
                 "source": "mobile_app",
             },
             "value": 89.99,
-            "value_currency": "USD",
+            "valueCurrency": "USD",
         },
     )
 
