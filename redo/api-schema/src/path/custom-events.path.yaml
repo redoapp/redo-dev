@@ -27,8 +27,31 @@ post:
         schema:
           $ref: "../schema/custom-event-request.schema.yaml"
         examples:
-          user_registered:
-            summary: User registration event
+          full_example:
+            summary: Full event with value, data, and $extra
+            value:
+              eventName: "purchase_milestone_reached"
+              customer:
+                email: "customer@example.com"
+                firstName: "Test"
+                lastName: "User"
+              eventTimestamp: "2026-04-02T12:00:00Z"
+              value: 299.99
+              valueCurrency: "USD"
+              uniqueId: "milestone-test-001"
+              data:
+                milestone_type: "100th_purchase"
+                total_spent: 5000
+                vip_tier: "gold"
+                enrolled_at: "2025-01-01T00:00:00Z"
+                $extra:
+                  raw_webhook_payload:
+                    nested: true
+                    items: [1, 2, 3]
+                  zero_val: 0
+                  empty_str: ""
+          simple:
+            summary: Minimal event with just a name and email
             value:
               eventName: "user_registered"
               customer:
@@ -37,30 +60,17 @@ post:
                 plan_type: "premium"
                 referral_code: "FRIEND123"
                 source: "mobile_app"
-          purchase_milestone:
-            summary: Purchase milestone event with value
+          with_phone:
+            summary: Event identified by phone number
             value:
-              eventName: "purchase_milestone_reached"
+              eventName: "purchase_completed"
               customer:
                 phoneNumber: "+12065551234"
               data:
-                milestone_type: "100th_purchase"
-                vip_tier: "gold"
-              value: 5000
+                item_count: 3
+                category: "apparel"
+              value: 149.99
               valueCurrency: "USD"
-          with_extra_metadata:
-            summary: Event with segmentable and non-segmentable properties
-            value:
-              eventName: "product_reviewed"
-              customer:
-                id: "665f1a2b3c4d5e6f7a8b9c0d"
-              data:
-                rating: 5
-                category: "electronics"
-                $extra:
-                  review_text: "Great product, highly recommend!"
-                  browser: "Chrome 120"
-              uniqueId: "review-12345"
     required: true
   responses:
     "202":

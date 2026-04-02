@@ -52,6 +52,19 @@ properties:
       can be referenced later, e.g., HTML templates are useful on a segment but
       are not used to create a segment.
     type: object
+    additionalProperties:
+      description: >
+        Segmentable event property. Each key you add becomes available for
+        audience segmentation and automation conditions. Supported types are
+        string, number, boolean, and date (ISO 8601 strings like
+        "2025-01-15T00:00:00Z" are auto-detected as dates). Values of 0, null,
+        and empty string ("") are treated as unset and will not be stored.
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: string
+          format: date-time
     properties:
       $extra:
         description: >
@@ -63,13 +76,6 @@ properties:
           on.
         type: object
         additionalProperties: true
-    additionalProperties:
-      oneOf:
-        - type: string
-        - type: number
-        - type: boolean
-        - type: string
-          format: date-time
   eventTimestamp:
     description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
     format: date-time
