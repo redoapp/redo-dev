@@ -2,7 +2,7 @@
 additionalProperties: false
 description: Response after successfully creating a custom event.
 properties:
-  event_id:
+  eventId:
     description: The unique identifier for the created event.
     type: string
   status:
@@ -10,12 +10,12 @@ properties:
     enum:
       - queued
     type: string
-  event_name:
+  eventName:
     description: The name of the custom event that was created.
     type: string
 required:
-  - event_id
+  - eventId
   - status
-  - event_name
+  - eventName
 title: Custom Event Response
 type: object

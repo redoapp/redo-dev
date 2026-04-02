@@ -1,48 +1,74 @@
 # $schema: https://json-schema.org/draft/2020-12/schema#
-additionalProperties: false
-description: Custom event to trigger flows with merchant-defined event names and properties.
+additionalProperties: true
+description: >
+  Custom event to trigger flows with merchant-defined event names and properties.
+  Supports both v2.3 (camelCase, nested customer object) and legacy v2.2
+  (snake_case, flat email/phone fields) formats for backwards compatibility.
 properties:
-  event_name:
+  eventName:
     description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
     type: string
-  email:
-    description: Customer email address. Used for identity resolution. At least one of email, phone, or customer_id is required.
-    format: email
-    type: string
-  phone:
-    description: Customer phone number. Used for identity resolution. At least one of email, phone, or customer_id is required.
-    type: string
-  customer_id:
-    description: Redo customer ObjectId. Used for identity resolution. Takes priority over email and phone when provided.
-    type: string
-  properties:
+  customer:
+    description: Customer identity and profile fields. At least one of id, email, or phoneNumber is required.
+    type: object
+    additionalProperties: false
+    properties:
+      id:
+        description: Redo customer ObjectId. Used for identity resolution. Takes priority over email and phoneNumber when provided.
+        type: string
+      email:
+        description: Customer email address. Used for identity resolution.
+        format: email
+        type: string
+      phoneNumber:
+        description: Customer phone number in E.164 format. Used for identity resolution.
+        type: string
+      firstName:
+        description: Customer first name. Applied with patch semantics — does not erase existing value if omitted.
+        type: string
+      lastName:
+        description: Customer last name. Applied with patch semantics — does not erase existing value if omitted.
+        type: string
+      location:
+        description: Customer location for profile enrichment.
+        type: object
+        additionalProperties: true
+      customFields:
+        description: Merchant-defined customer attributes as key-value pairs.
+        type: object
+        additionalProperties:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+  data:
     description: >
       Custom properties for this event. Access in templates using dot notation
-      (e.g., {{ properties.product_name }}). Top-level keys are segmentable and
+      (e.g., {{ data.product_name }}). Top-level keys are segmentable and
       support types: string, number, boolean, and date (ISO 8601 strings are
       auto-detected as dates). Values of 0, null, and empty string are treated as
       unset and are not stored. To include non-segmentable metadata, nest it under
-      a `$extra` key — anything inside `$extra` is stored but excluded from
+      a $extra key — anything inside $extra is stored but excluded from
       segmentation indexes.
     type: object
     additionalProperties: true
-  event_timestamp:
+  eventTimestamp:
     description: ISO 8601 timestamp when the event occurred. Defaults to current time if not provided.
     format: date-time
     type: string
   value:
     description: Monetary or conversion value associated with the event (e.g., purchase amount).
     type: number
-  value_currency:
+  valueCurrency:
     description: ISO 4217 currency code for the value field (e.g., "USD", "EUR").
     type: string
-  unique_id:
+  uniqueId:
     description: >
-      Merchant-controlled deduplication key. If provided, subsequent events with
-      the same unique_id for the same store are silently deduplicated. Use this
-      for safe retries and at-least-once delivery patterns.
+      Merchant-controlled deduplication key (1-255 characters). If provided,
+      subsequent events with the same uniqueId for the same store are silently
+      deduplicated. Use this for safe retries and at-least-once delivery patterns.
     type: string
 required:
-  - event_name
+  - eventName
 title: Custom Event Request
 type: object

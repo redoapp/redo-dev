@@ -9,9 +9,9 @@ post:
     ## Identity Resolution
     Each event resolves customers independently using the same priority order as the
     single-event endpoint:
-    1. `customer_id` — Redo customer ObjectId (highest priority)
-    2. `email` — customer email address
-    3. `phone` — customer phone number
+    1. `customer.id` — Redo customer ObjectId (highest priority)
+    2. `customer.email` — customer email address
+    3. `customer.phoneNumber` — customer phone number
 
     At least one identifier must be provided per event. If no matching customer is found,
     one will be created automatically.
@@ -31,18 +31,20 @@ post:
             summary: Bulk event creation with multiple event types
             value:
               events:
-                - event_name: "user_registered"
-                  email: "alice@example.com"
-                  properties:
+                - eventName: "user_registered"
+                  customer:
+                    email: "alice@example.com"
+                  data:
                     plan_type: "premium"
-                - event_name: "purchase_completed"
-                  email: "bob@example.com"
-                  properties:
+                - eventName: "purchase_completed"
+                  customer:
+                    email: "bob@example.com"
+                  data:
                     order_total: 99.99
                     item_count: 3
                   value: 99.99
-                  value_currency: "USD"
-                  unique_id: "order-456"
+                  valueCurrency: "USD"
+                  uniqueId: "order-456"
     required: true
   responses:
     "202":
@@ -59,13 +61,13 @@ post:
                 rejected: 1
                 events:
                   - index: 0
-                    event_id: "evt_abc123"
-                    event_name: "user_registered"
+                    eventId: "evt_abc123"
+                    eventName: "user_registered"
                     status: "queued"
                   - index: 1
-                    event_name: "purchase_completed"
+                    eventName: "purchase_completed"
                     status: "rejected"
-                    error: "Missing required customer identifier (email, phone, or customer_id)"
+                    error: "At least one of id, email, or phoneNumber is required"
       description: Bulk request processed. Check per-event status for individual results.
     "400":
       content:

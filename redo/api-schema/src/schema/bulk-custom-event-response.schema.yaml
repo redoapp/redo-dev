@@ -9,7 +9,7 @@ properties:
     description: Number of events successfully accepted for processing.
     type: integer
   rejected:
-    description: Number of events that failed validation.
+    description: Number of events that failed validation or processing.
     type: integer
   events:
     description: Per-event results in the same order as the request.
@@ -20,10 +20,10 @@ properties:
         index:
           description: Zero-based index of the event in the request array.
           type: integer
-        event_id:
+        eventId:
           description: The unique identifier for the accepted event. Present only for accepted events.
           type: string
-        event_name:
+        eventName:
           description: The name of the custom event. May be null if the event was rejected before the name could be parsed.
           type: string
           nullable: true

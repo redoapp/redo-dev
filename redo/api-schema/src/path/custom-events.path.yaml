@@ -8,12 +8,13 @@ post:
 
     ## Identity Resolution
     The API resolves customers using the following priority order:
-    1. `customer_id` — Redo customer ObjectId (highest priority)
-    2. `email` — customer email address
-    3. `phone` — customer phone number
+    1. `customer.id` — Redo customer ObjectId (highest priority)
+    2. `customer.email` — customer email address
+    3. `customer.phoneNumber` — customer phone number
 
     At least one identifier must be provided. If no matching customer is found, one will
-    be created automatically.
+    be created automatically. If `customer.id` is provided but not found, the API falls
+    back to email/phone rather than returning 404.
 
     ## Rate Limiting
     This endpoint is rate-limited to 100 requests per second per store.
@@ -29,34 +30,37 @@ post:
           user_registered:
             summary: User registration event
             value:
-              event_name: "user_registered"
-              email: "customer@example.com"
-              properties:
+              eventName: "user_registered"
+              customer:
+                email: "customer@example.com"
+              data:
                 plan_type: "premium"
                 referral_code: "FRIEND123"
                 source: "mobile_app"
           purchase_milestone:
             summary: Purchase milestone event with value
             value:
-              event_name: "purchase_milestone_reached"
-              phone: "+12065551234"
-              properties:
+              eventName: "purchase_milestone_reached"
+              customer:
+                phoneNumber: "+12065551234"
+              data:
                 milestone_type: "100th_purchase"
                 vip_tier: "gold"
               value: 5000
-              value_currency: "USD"
+              valueCurrency: "USD"
           with_extra_metadata:
             summary: Event with segmentable and non-segmentable properties
             value:
-              event_name: "product_reviewed"
-              customer_id: "665f1a2b3c4d5e6f7a8b9c0d"
-              properties:
+              eventName: "product_reviewed"
+              customer:
+                id: "665f1a2b3c4d5e6f7a8b9c0d"
+              data:
                 rating: 5
                 category: "electronics"
                 $extra:
                   review_text: "Great product, highly recommend!"
                   browser: "Chrome 120"
-              unique_id: "review-12345"
+              uniqueId: "review-12345"
     required: true
   responses:
     "202":
@@ -64,6 +68,13 @@ post:
         application/json:
           schema:
             $ref: "../schema/custom-event-response.schema.yaml"
+          examples:
+            success:
+              summary: Event accepted
+              value:
+                eventId: "evt_abc123def456"
+                status: "queued"
+                eventName: "user_registered"
       description: Event accepted and queued for processing
     "400":
       content:
