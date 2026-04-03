@@ -44,8 +44,13 @@ post:
                 Total Spent: 5000
                 VIP Tier: "gold"
                 Enrolled At: "2025-01-01T00:00:00Z"
+                Campaign Source: "email_drip"
+                Last Purchase Date: "2026-03-15T00:00:00Z"
                 $extra:
                   Most Recent Order IDs: [1, 2, 3]
+                  Profile Snapshot:
+                    tier: "gold"
+                    memberSince: "2024-01-01"
           simple:
             summary: Minimal event with just a name and email
             value:
