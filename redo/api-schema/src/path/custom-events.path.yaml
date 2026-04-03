@@ -16,6 +16,11 @@ post:
     be created automatically. If `customer.id` is provided but not found, the API falls
     back to email/phone rather than returning 404.
 
+    ## Datetime Formatting
+    All datetime values must be formatted as ISO 8601 (RFC 3339) strings, e.g., `2026-04-02T12:00:00Z`.
+    This applies to `eventTimestamp`, any date-valued properties in `data`, and any date-valued `customFields`.
+    Strings matching this format are automatically detected and indexed as dates for segmentation.
+
     ## Rate Limiting
     This endpoint is rate-limited to 100 requests per second per store.
   operationId: Custom event create
