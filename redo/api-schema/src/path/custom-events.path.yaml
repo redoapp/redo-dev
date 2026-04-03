@@ -38,10 +38,10 @@ post:
               eventName: "Purchase Milestone Reached"
               customer:
                 id: "665f1a2b3c4d5e6f7a8b9c0d"
-                email: "customer@example.com"
-                phoneNumber: "+12065551234"
-                firstName: "Jane"
-                lastName: "Doe"
+                email: "stewart@example.com"
+                phoneNumber: "+11234567890"
+                firstName: "Stewart"
+                lastName: "Thompson"
                 location:
                   street1: "123 Main St"
                   street2: "Apt 4B"
@@ -56,7 +56,7 @@ post:
                   longitude: -122.3321
                 customFields:
                   Age at Signup: 25
-                  Birthday: "1998-03-02T12:00:00Z"
+                  Birthday: "1776-07-04T12:00:00Z"
                   Loyalty Tier: "Gold"
                   Accepts Marketing: true
               eventTimestamp: "2026-04-02T12:00:00Z"
@@ -75,27 +75,29 @@ post:
                   Profile Snapshot:
                     tier: "gold"
                     memberSince: "2024-01-01"
-          simple:
-            summary: Minimal event with just a name and email
+          medium_example:
+            summary: Event with customer profile and data
             value:
-              eventName: "User Registered"
+              eventName: "Order Placed"
               customer:
-                email: "customer@example.com"
-              data:
-                Plan Type: "premium"
-                Referral Code: "FRIEND123"
-                Source: "mobile_app"
-          with_phone:
-            summary: Event identified by phone number
-            value:
-              eventName: "Purchase Completed"
-              customer:
-                phoneNumber: "+12065551234"
-              data:
-                Item Count: 3
-                Category: "apparel"
+                email: "stewart@example.com"
+                firstName: "Stewart"
+                lastName: "Thompson"
+                customFields:
+                  Birthday: "1776-07-04T12:00:00Z"
+                  Loyalty Tier: "Gold"
               value: 149.99
               valueCurrency: "USD"
+              data:
+                Order Id: "ord_456"
+                Item Count: 3
+                Category: "apparel"
+          minimal:
+            summary: Required fields only
+            value:
+              eventName: "Page Viewed"
+              customer:
+                email: "stewart@example.com"
     required: true
   responses:
     "202":
