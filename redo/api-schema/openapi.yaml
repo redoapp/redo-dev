@@ -210,6 +210,7 @@ paths:
         ## Rate Limiting
         This endpoint is rate-limited to 100 requests per second per store.
       operationId: Custom event create
+      x-express-openapi-disable-validation-middleware: true
       parameters:
         - $ref: '#/components/parameters/store-id.param'
       requestBody:
@@ -343,6 +344,7 @@ paths:
         ## Rate Limiting
         This endpoint is rate-limited to 100 requests per second per store.
       operationId: Bulk create custom events
+      x-express-openapi-disable-validation-middleware: true
       parameters:
         - $ref: '#/components/parameters/store-id.param'
       requestBody:
