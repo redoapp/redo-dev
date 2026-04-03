@@ -34,9 +34,43 @@ properties:
         description: Customer last name. Applied with patch semantics — does not erase existing value if omitted.
         type: string
       location:
-        description: Customer location for profile enrichment.
+        description: Customer location for profile enrichment. All fields are optional.
         type: object
-        additionalProperties: true
+        additionalProperties: false
+        properties:
+          street1:
+            description: Primary street address.
+            type: string
+          street2:
+            description: Secondary address line (apartment, suite, etc.).
+            type: string
+          city:
+            description: City name.
+            type: string
+          state:
+            description: State or province name.
+            type: string
+          stateCode:
+            description: State or province abbreviation (e.g., "CA", "NY").
+            type: string
+          postalCode:
+            description: Postal or ZIP code.
+            type: string
+          country:
+            description: Country name.
+            type: string
+          countryCode:
+            description: ISO 3166-1 alpha-2 country code (e.g., "US", "GB").
+            type: string
+          ianaTimeZoneName:
+            description: IANA time zone identifier (e.g., "America/New_York").
+            type: string
+          latitude:
+            description: Geographic latitude coordinate.
+            type: number
+          longitude:
+            description: Geographic longitude coordinate.
+            type: number
       customFields:
         description: >
           Merchant-defined customer attributes as key-value pairs. Values can be

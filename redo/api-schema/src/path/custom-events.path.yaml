@@ -33,13 +33,32 @@ post:
           $ref: "../schema/custom-event-request.schema.yaml"
         examples:
           full_example:
-            summary: Full event with value, data, and $extra
+            summary: Every field populated
             value:
               eventName: "Purchase Milestone Reached"
               customer:
+                id: "665f1a2b3c4d5e6f7a8b9c0d"
                 email: "customer@example.com"
-                firstName: "Test"
-                lastName: "User"
+                phoneNumber: "+12065551234"
+                firstName: "Jane"
+                lastName: "Doe"
+                location:
+                  street1: "123 Main St"
+                  street2: "Apt 4B"
+                  city: "Seattle"
+                  state: "Washington"
+                  stateCode: "WA"
+                  postalCode: "98101"
+                  country: "United States"
+                  countryCode: "US"
+                  ianaTimeZoneName: "America/Los_Angeles"
+                  latitude: 47.6062
+                  longitude: -122.3321
+                customFields:
+                  Age at Signup: 25
+                  Birthday: "1998-03-02T12:00:00Z"
+                  Loyalty Tier: "Gold"
+                  Accepts Marketing: true
               eventTimestamp: "2026-04-02T12:00:00Z"
               value: 299.99
               valueCurrency: "USD"

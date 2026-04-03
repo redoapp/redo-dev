@@ -219,13 +219,32 @@ paths:
               $ref: '#/components/schemas/custom-event-request.schema'
             examples:
               full_example:
-                summary: Full event with value, data, and $extra
+                summary: Every field populated
                 value:
                   eventName: Purchase Milestone Reached
                   customer:
+                    id: 665f1a2b3c4d5e6f7a8b9c0d
                     email: customer@example.com
-                    firstName: Test
-                    lastName: User
+                    phoneNumber: '+12065551234'
+                    firstName: Jane
+                    lastName: Doe
+                    location:
+                      street1: 123 Main St
+                      street2: Apt 4B
+                      city: Seattle
+                      state: Washington
+                      stateCode: WA
+                      postalCode: '98101'
+                      country: United States
+                      countryCode: US
+                      ianaTimeZoneName: America/Los_Angeles
+                      latitude: 47.6062
+                      longitude: -122.3321
+                    customFields:
+                      Age at Signup: 25
+                      Birthday: '1998-03-02T12:00:00Z'
+                      Loyalty Tier: Gold
+                      Accepts Marketing: true
                   eventTimestamp: '2026-04-02T12:00:00Z'
                   value: 299.99
                   valueCurrency: USD
@@ -1828,9 +1847,43 @@ components:
               description: Customer last name. Applied with patch semantics — does not erase existing value if omitted.
               type: string
             location:
-              description: Customer location for profile enrichment.
+              description: Customer location for profile enrichment. All fields are optional.
               type: object
-              additionalProperties: true
+              additionalProperties: false
+              properties:
+                street1:
+                  description: Primary street address.
+                  type: string
+                street2:
+                  description: Secondary address line (apartment, suite, etc.).
+                  type: string
+                city:
+                  description: City name.
+                  type: string
+                state:
+                  description: State or province name.
+                  type: string
+                stateCode:
+                  description: State or province abbreviation (e.g., "CA", "NY").
+                  type: string
+                postalCode:
+                  description: Postal or ZIP code.
+                  type: string
+                country:
+                  description: Country name.
+                  type: string
+                countryCode:
+                  description: ISO 3166-1 alpha-2 country code (e.g., "US", "GB").
+                  type: string
+                ianaTimeZoneName:
+                  description: IANA time zone identifier (e.g., "America/New_York").
+                  type: string
+                latitude:
+                  description: Geographic latitude coordinate.
+                  type: number
+                longitude:
+                  description: Geographic longitude coordinate.
+                  type: number
             customFields:
               description: |
                 Merchant-defined customer attributes as key-value pairs. Values can be strings, numbers, or booleans. Date values should be passed as ISO 8601 strings (e.g., "2026-04-02T12:00:00Z") and are automatically detected and indexed as dates.
