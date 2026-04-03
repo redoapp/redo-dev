@@ -30,7 +30,7 @@ post:
           full_example:
             summary: Full event with value, data, and $extra
             value:
-              eventName: "purchase_milestone_reached"
+              eventName: "Purchase Milestone Reached"
               customer:
                 email: "customer@example.com"
                 firstName: "Test"
@@ -54,7 +54,7 @@ post:
           simple:
             summary: Minimal event with just a name and email
             value:
-              eventName: "user_registered"
+              eventName: "User Registered"
               customer:
                 email: "customer@example.com"
               data:
@@ -64,7 +64,7 @@ post:
           with_phone:
             summary: Event identified by phone number
             value:
-              eventName: "purchase_completed"
+              eventName: "Purchase Completed"
               customer:
                 phoneNumber: "+12065551234"
               data:

@@ -32,12 +32,12 @@ post:
             summary: Bulk event creation with multiple event types
             value:
               events:
-                - eventName: "user_registered"
+                - eventName: "User Registered"
                   customer:
                     email: "alice@example.com"
                   data:
                     Plan Type: "premium"
-                - eventName: "purchase_completed"
+                - eventName: "Purchase Completed"
                   customer:
                     email: "bob@example.com"
                   data:
