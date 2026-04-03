@@ -1,0 +1,81 @@
+post:
+  description: |
+    Create multiple custom events in a single request. Accepts up to 100 events per request.
+
+    Each event is validated independently. The response includes per-event results, allowing
+    partial failures — some events may be accepted while others are rejected due to validation
+    errors.
+
+    ## Identity Resolution
+    Each event resolves customers independently using the same priority order as the
+    single-event endpoint:
+    1. `customer.id` — Redo customer ObjectId (highest priority)
+    2. `customer.email` — customer email address
+    3. `customer.phoneNumber` — customer phone number
+
+    At least one identifier must be provided per event. If no matching customer is found,
+    one will be created automatically.
+
+    ## Rate Limiting
+    This endpoint is rate-limited to 100 requests per second per store.
+  operationId: Bulk create custom events
+  x-express-openapi-disable-validation-middleware: true
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/bulk-custom-event-request.schema.yaml"
+        examples:
+          mixed_events:
+            summary: Bulk event creation with multiple event types
+            value:
+              events:
+                - eventName: "User Registered"
+                  customer:
+                    email: "alice@example.com"
+                  data:
+                    Plan Type: "premium"
+                - eventName: "Purchase Completed"
+                  customer:
+                    email: "bob@example.com"
+                  data:
+                    Order Total: 99.99
+                    Item Count: 3
+                  value: 99.99
+                  valueCurrency: "USD"
+                  uniqueId: "order-456"
+    required: true
+  responses:
+    "202":
+      description: Bulk request accepted and queued for processing. No response body is returned.
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid request body (e.g., events array missing or exceeds 100 items)
+    "404":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Store not found
+    "429":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Rate limit exceeded
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Bulk create custom events
+  tags:
+    - Custom Events

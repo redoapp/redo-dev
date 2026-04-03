@@ -64,6 +64,8 @@
               "/docs/guides/integrations/integrating-with-returns",
               "/docs/guides/integrations/integrating-with-returns-apis",
               "/docs/guides/integrations/custom-returns-integration",
+              "/docs/guides/integrations/events-overview",
+              "/docs/guides/integrations/custom-events",
               "/docs/guides/integrations/webhooks",
               "/docs/guides/integrations/hydrogen"
             ]

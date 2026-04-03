@@ -3,16 +3,28 @@ post:
     Create a custom event to trigger flows with merchant-defined event names and properties.
 
     Custom events allow merchants to trigger flows based on events from their own systems.
-    Events can include custom properties that are accessible in email and SMS templates.
+    Events can include custom properties that are accessible in email and SMS templates,
+    and are persisted for segmentation and historical queries.
 
-    ## Customer Matching
-    The API matches customers by email or phone number. At least one must be provided.
+    ## Identity Resolution
+    The API resolves customers using the following priority order:
+    1. `customer.id` — Redo customer ObjectId (highest priority)
+    2. `customer.email` — customer email address
+    3. `customer.phoneNumber` — customer phone number
 
-    If no matching customer is found, the request will fail with a 404 error.
+    At least one identifier must be provided. If no matching customer is found, one will
+    be created automatically. If `customer.id` is provided but not found, the API falls
+    back to email/phone rather than returning 404.
+
+    ## Datetime Formatting
+    All datetime values must be formatted as ISO 8601 (RFC 3339) strings, e.g., `2026-04-02T12:00:00Z`.
+    This applies to `eventTimestamp`, any date-valued properties in `data`, and any date-valued `customFields`.
+    Strings matching this format are automatically detected and indexed as dates for segmentation.
 
     ## Rate Limiting
     This endpoint is rate-limited to 100 requests per second per store.
   operationId: Custom event create
+  x-express-openapi-disable-validation-middleware: true
   parameters:
     - $ref: "../param/store-id.param.yaml"
   requestBody:
@@ -21,32 +33,76 @@ post:
         schema:
           $ref: "../schema/custom-event-request.schema.yaml"
         examples:
-          user_registered:
-            summary: User registration event
+          full_example:
+            summary: Every field populated
             value:
-              event_name: "user_registered"
-              email: "customer@example.com"
-              properties:
-                plan_type: "premium"
-                referral_code: "FRIEND123"
-                source: "mobile_app"
-          purchase_milestone:
-            summary: Purchase milestone event
+              eventName: "Purchase Milestone Reached"
+              customer:
+                id: "665f1a2b3c4d5e6f7a8b9c0d"
+                email: "stewart@example.com"
+                phoneNumber: "+11234567890"
+                firstName: "Stewart"
+                lastName: "Thompson"
+                location:
+                  street1: "123 Main St"
+                  street2: "Apt 4B"
+                  city: "Seattle"
+                  state: "Washington"
+                  stateCode: "WA"
+                  postalCode: "98101"
+                  country: "United States"
+                  countryCode: "US"
+                  ianaTimeZoneName: "America/Los_Angeles"
+                  latitude: 47.6062
+                  longitude: -122.3321
+                customFields:
+                  Age at Signup: 25
+                  Birthday: "1976-07-04T12:00:00Z"
+                  Loyalty Tier: "Gold"
+                  Accepts Marketing: true
+              eventTimestamp: "2026-04-02T12:00:00Z"
+              value: 299.99
+              valueCurrency: "USD"
+              uniqueId: "milestone-test-001"
+              data:
+                Milestone Type: "100th_purchase"
+                Total Spent: 5000
+                VIP Tier: "gold"
+                Enrolled At: "2025-01-01T00:00:00Z"
+                Campaign Source: "email_drip"
+                Last Purchase Date: "2026-03-15T00:00:00Z"
+                $extra:
+                  Most Recent Order IDs: [1, 2, 3]
+                  Profile Snapshot:
+                    tier: "gold"
+                    memberSince: "2024-01-01"
+          medium_example:
+            summary: Event with customer profile and data
             value:
-              event_name: "purchase_milestone_reached"
-              phone: "+12065551234"
-              properties:
-                milestone_type: "100th_purchase"
-                total_spent: 5000
-                vip_tier: "gold"
+              eventName: "Order Placed"
+              customer:
+                email: "stewart@example.com"
+                firstName: "Stewart"
+                lastName: "Thompson"
+                customFields:
+                  Birthday: "1976-07-04T12:00:00Z"
+                  Loyalty Tier: "Gold"
+              value: 149.99
+              valueCurrency: "USD"
+              data:
+                Order Id: "ord_456"
+                Item Count: 3
+                Category: "apparel"
+          minimal:
+            summary: Required fields only
+            value:
+              eventName: "Page Viewed"
+              customer:
+                email: "stewart@example.com"
     required: true
   responses:
-    "200":
-      content:
-        application/json:
-          schema:
-            $ref: "../schema/custom-event-response.schema.yaml"
-      description: Event created successfully
+    "202":
+      description: Event accepted and queued for processing. No response body is returned.
     "400":
       content:
         application/json:
@@ -58,7 +114,7 @@ post:
         application/json:
           schema:
             $ref: "../schema/error.schema.yaml"
-      description: Customer not found with provided identifier
+      description: Store not found
     "429":
       content:
         application/json:

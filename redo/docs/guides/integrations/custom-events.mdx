@@ -1,0 +1,419 @@
+---
+title: "Custom Events Integration Guide"
+description: "How to send custom events to Redo — authentication, request format, properties, bulk ingestion, and code examples"
+icon: "bolt"
+---
+
+<Info>
+  New to custom events? Start with the [Events API Overview](/docs/guides/integrations/events-overview)
+  for concepts and use cases.
+</Info>
+
+## Authentication
+
+All requests require a Bearer token using your store's API key:
+
+```bash
+POST https://api.getredo.com/v2.2/stores/{storeId}/events
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+```
+
+You can find your API key in the Redo dashboard under **Settings > API Keys**.
+
+## Identity Resolution
+
+Each event must include at least one customer identifier inside the `customer` object. The API resolves
+customers using the following priority order:
+
+| Priority | Field                  | Description                   |
+| -------- | ---------------------- | ----------------------------- |
+| 1        | `customer.id`          | Redo customer ObjectId        |
+| 2        | `customer.email`       | Customer email address        |
+| 3        | `customer.phoneNumber` | Customer phone number (E.164) |
+
+If multiple identifiers are provided, the highest-priority match is used. If no
+matching customer is found, one is created automatically.
+
+```json
+{
+  "eventName": "Subscription Renewed",
+  "customer": {
+    "id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "email": "stewart@example.com"
+  },
+  "data": {
+    "Plan": "pro"
+  }
+}
+```
+
+In this example, the event resolves to the customer with the given `customer.id`.
+The `email` is ignored for resolution but may be used for profile enrichment.
+
+## Request Shape
+
+```json
+{
+  "eventName": "Purchase Milestone Reached",
+  "customer": {
+    "email": "stewart@example.com",
+    "firstName": "Stewart",
+    "lastName": "Thompson"
+  },
+  "eventTimestamp": "2026-04-02T12:00:00Z",
+  "value": 299.99,
+  "valueCurrency": "USD",
+  "uniqueId": "milestone-test-001",
+  "data": {
+    "Milestone Type": "100th_purchase",
+    "Total Spent": 5000,
+    "VIP Tier": "gold",
+    "Enrolled At": "2025-01-01T00:00:00Z"
+  }
+}
+```
+
+The endpoint returns `202 Accepted` with no response body.
+
+## Datetime Formatting
+
+All datetime values must be formatted as ISO 8601 (RFC 3339) strings.
+
+**Example:** `2026-04-02T12:00:00Z`
+
+This applies to `eventTimestamp`, any date-valued properties in `data`, and any
+date-valued `customFields`. Strings matching this format are automatically
+detected and indexed as dates for segmentation.
+
+## Customer Fields
+
+The `customer` object supports identity, profile, location, and custom fields:
+
+```json
+{
+  "eventName": "Order Placed",
+  "customer": {
+    "id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "email": "stewart@example.com",
+    "phoneNumber": "+11234567890",
+    "firstName": "Stewart",
+    "lastName": "Thompson",
+    "location": {
+      "street1": "123 Main St",
+      "street2": "Apt 4B",
+      "city": "Seattle",
+      "state": "Washington",
+      "stateCode": "WA",
+      "postalCode": "98101",
+      "country": "United States",
+      "countryCode": "US",
+      "ianaTimeZoneName": "America/Los_Angeles",
+      "latitude": 47.6062,
+      "longitude": -122.3321
+    },
+    "customFields": {
+      "Age at Signup": 25,
+      "Birthday": "1976-07-04T12:00:00Z",
+      "Loyalty Tier": "Gold",
+      "Accepts Marketing": true
+    }
+  },
+  "data": {
+    "Order Id": "ord_456"
+  }
+}
+```
+
+All customer fields except the identifier are optional. Profile fields use
+**patch semantics** — omitted fields are not erased.
+
+## Properties Structure
+
+The `data` object carries event-specific data. Top-level keys are
+**segmentable** — you can use them in segment conditions and automation filters.
+
+### Supported Property Types
+
+| Type      | Example                        | Notes                                   |
+| --------- | ------------------------------ | --------------------------------------- |
+| `string`  | `"gold"`                       |                                         |
+| `number`  | `99.99`                        | Integer or decimal                      |
+| `boolean` | `true`                         |                                         |
+| `date`    | `"2025-03-15T10:30:00Z"`       | ISO 8601 strings are auto-detected      |
+
+### Ignored Values
+
+Values of `0`, `null`, and empty string (`""`) are treated as **unset** and are
+not stored. This prevents polluting segments with meaningless zero/empty values.
+
+### Non-Segmentable Metadata with `$extra`
+
+To include metadata that should be stored but **not** indexed for segmentation,
+nest it under the `$extra` key inside `data`. This is useful for arrays, nested
+objects, debug info, or context that doesn't need to be queried.
+
+Unlike top-level `data` properties, values inside `$extra` are **not** stripped —
+`0`, `null`, and `""` are preserved as-is.
+
+```json
+{
+  "eventName": "Purchase Milestone Reached",
+  "customer": {
+    "email": "stewart@example.com"
+  },
+  "data": {
+    "Milestone Type": "100th_purchase",
+    "Total Spent": 5000,
+    "VIP Tier": "gold",
+    "$extra": {
+      "Most Recent Order IDs": [1, 2, 3],
+      "Profile Snapshot": {
+        "tier": "gold",
+        "memberSince": "2024-01-01"
+      }
+    }
+  }
+}
+```
+
+`Milestone Type`, `Total Spent`, and `VIP Tier` are segmentable. Everything
+inside `$extra` is stored on the event but excluded from segmentation indexes.
+
+## Value Tracking
+
+Use the `value` and `valueCurrency` fields to associate a monetary or
+conversion value with an event:
+
+```json
+{
+  "eventName": "Purchase Completed",
+  "customer": {
+    "email": "stewart@example.com"
+  },
+  "data": {
+    "Item Count": 3,
+    "Category": "apparel"
+  },
+  "value": 149.99,
+  "valueCurrency": "USD"
+}
+```
+
+`valueCurrency` uses [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency
+codes (e.g., `USD`, `EUR`, `GBP`).
+
+## Idempotency
+
+Use the `uniqueId` field to safely retry requests without creating duplicate
+events. If you send two events with the same `uniqueId` for the same store,
+only the first is persisted — subsequent requests are silently deduplicated.
+
+```json
+{
+  "eventName": "Order Placed",
+  "customer": {
+    "email": "stewart@example.com"
+  },
+  "uniqueId": "order-789",
+  "data": {
+    "Order Total": 59.99
+  }
+}
+```
+
+<Info>
+  If you don't provide a `uniqueId`, each request creates a new event. Use
+  `uniqueId` whenever your system may retry requests (webhooks, queues, etc.).
+</Info>
+
+## Timestamps
+
+By default, events are timestamped at ingestion time. To set a custom timestamp
+(e.g., for backfilling historical events), use the `eventTimestamp` field with
+an ISO 8601 value:
+
+```json
+{
+  "eventName": "Loyalty Tier Upgrade",
+  "customer": {
+    "email": "stewart@example.com"
+  },
+  "eventTimestamp": "2025-01-15T14:30:00Z",
+  "data": {
+    "New Tier": "platinum"
+  }
+}
+```
+
+## Bulk Ingestion
+
+For high-volume use cases, use the bulk endpoint to send up to **100 events per
+request**:
+
+```bash
+POST https://api.getredo.com/v2.2/stores/{storeId}/events/bulk
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+```
+
+### Request
+
+```json
+{
+  "events": [
+    {
+      "eventName": "Page Viewed",
+      "customer": {
+        "email": "stewart@example.com"
+      },
+      "data": { "Page": "/pricing" }
+    },
+    {
+      "eventName": "Feature Used",
+      "customer": {
+        "email": "stewart@example.com"
+      },
+      "data": { "Feature": "dashboard" }
+    }
+  ]
+}
+```
+
+The bulk endpoint returns `202 Accepted` with no response body.
+
+<Warning>
+  Each event is validated independently. If any event in the batch has a
+  validation error (e.g., missing customer identifier), that event is silently
+  rejected while valid events are still processed.
+</Warning>
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Migrating from Klaviyo custom events">
+    Redo custom events use a similar model to Klaviyo's Track API. Key
+    differences:
+
+    - Use `eventName` instead of `event`
+    - Customer identity goes in the nested `customer` object (`customer.email`, `customer.phoneNumber`, `customer.id`), not as root-level fields
+    - Use `data` instead of `properties` for event-specific attributes
+    - Use `$extra` inside `data` for non-segmentable metadata instead of relying on Klaviyo's property flattening
+    - Use `uniqueId` for deduplication instead of Klaviyo's `$event_id`
+  </Accordion>
+
+  <Accordion title="Webhook-triggered events">
+    If you're sending events from a webhook handler, always include `uniqueId`
+    to handle retries safely:
+
+    ```javascript
+    app.post('/webhooks/order-placed', async (req, res) => {
+      const order = req.body;
+
+      await fetch(`https://api.getredo.com/v2.2/stores/${STORE_ID}/events`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventName: 'Order Placed',
+          customer: {
+            email: order.customer_email,
+          },
+          uniqueId: `order-${order.id}`,
+          data: {
+            'Order Total': order.total,
+            'Item Count': order.line_items.length,
+          },
+          value: order.total,
+          valueCurrency: order.currency,
+        }),
+      });
+
+      res.status(200).send('OK');
+    });
+    ```
+  </Accordion>
+
+  <Accordion title="Backfilling historical events">
+    To import historical events, use the bulk endpoint with `eventTimestamp`:
+
+    ```json
+    {
+      "events": [
+        {
+          "eventName": "Subscription Started",
+          "customer": {
+            "email": "stewart@example.com"
+          },
+          "eventTimestamp": "2024-06-01T00:00:00Z",
+          "uniqueId": "sub-start-cust-123",
+          "data": {
+            "Plan": "annual",
+            "Source": "website"
+          }
+        },
+        {
+          "eventName": "Subscription Renewed",
+          "customer": {
+            "email": "stewart@example.com"
+          },
+          "eventTimestamp": "2025-06-01T00:00:00Z",
+          "uniqueId": "sub-renew-cust-123",
+          "data": {
+            "Plan": "annual"
+          }
+        }
+      ]
+    }
+    ```
+
+    <Tip>
+      Always include `uniqueId` when backfilling so you can safely re-run the
+      import without creating duplicates.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Python example">
+    ```python
+    import requests
+
+    API_KEY = "your_api_secret"
+    STORE_ID = "your_store_id"
+
+    response = requests.post(
+        f"https://api.getredo.com/v2.2/stores/{STORE_ID}/events",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "eventName": "Checkout Started",
+            "customer": {
+                "email": "stewart@example.com",
+            },
+            "data": {
+                "Cart Value": 89.99,
+                "Item Count": 2,
+                "Source": "mobile_app",
+            },
+            "value": 89.99,
+            "valueCurrency": "USD",
+        },
+    )
+
+    print(response.status_code)  # 202
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Rate Limits
+
+| Endpoint                            | Limit                     |
+| ----------------------------------- | ------------------------- |
+| `POST /stores/{storeId}/events`     | 100 requests/second/store |
+| `POST /stores/{storeId}/events/bulk`| 100 requests/second/store |
+
+When you hit a rate limit, the API returns `429 Too Many Requests`. Implement
+exponential backoff in your retry logic.

@@ -1,0 +1,15 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: false
+description: Request body for sending multiple custom events in a single request.
+properties:
+  events:
+    description: Array of custom events to create.
+    type: array
+    items:
+      $ref: "./custom-event-request.schema.yaml"
+    maxItems: 100
+    minItems: 1
+required:
+  - events
+title: Bulk Custom Event Request
+type: object
