@@ -56,7 +56,7 @@ post:
                   longitude: -122.3321
                 customFields:
                   Age at Signup: 25
-                  Birthday: "1776-07-04T12:00:00Z"
+                  Birthday: "1976-07-04T12:00:00Z"
                   Loyalty Tier: "Gold"
                   Accepts Marketing: true
               eventTimestamp: "2026-04-02T12:00:00Z"
@@ -84,7 +84,7 @@ post:
                 firstName: "Stewart"
                 lastName: "Thompson"
                 customFields:
-                  Birthday: "1776-07-04T12:00:00Z"
+                  Birthday: "1976-07-04T12:00:00Z"
                   Loyalty Tier: "Gold"
               value: 149.99
               valueCurrency: "USD"

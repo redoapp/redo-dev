@@ -4,7 +4,7 @@ description: >
   Custom event to trigger flows with merchant-defined event names and properties.
 properties:
   eventName:
-    description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
+    description: The name of the custom event (e.g., 'User Registered', 'Loyalty Reward Earned').
     type: string
   customer:
     description: >

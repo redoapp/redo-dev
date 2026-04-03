@@ -242,7 +242,7 @@ paths:
                       longitude: -122.3321
                     customFields:
                       Age at Signup: 25
-                      Birthday: '1776-07-04T12:00:00Z'
+                      Birthday: '1976-07-04T12:00:00Z'
                       Loyalty Tier: Gold
                       Accepts Marketing: true
                   eventTimestamp: '2026-04-02T12:00:00Z'
@@ -273,7 +273,7 @@ paths:
                     firstName: Stewart
                     lastName: Thompson
                     customFields:
-                      Birthday: '1776-07-04T12:00:00Z'
+                      Birthday: '1976-07-04T12:00:00Z'
                       Loyalty Tier: Gold
                   value: 149.99
                   valueCurrency: USD
@@ -1817,7 +1817,7 @@ components:
         Custom event to trigger flows with merchant-defined event names and properties.
       properties:
         eventName:
-          description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
+          description: The name of the custom event (e.g., 'User Registered', 'Loyalty Reward Earned').
           type: string
         customer:
           description: |
