@@ -36,40 +36,20 @@ post:
                   customer:
                     email: "alice@example.com"
                   data:
-                    plan_type: "premium"
+                    Plan Type: "premium"
                 - eventName: "purchase_completed"
                   customer:
                     email: "bob@example.com"
                   data:
-                    order_total: 99.99
-                    item_count: 3
+                    Order Total: 99.99
+                    Item Count: 3
                   value: 99.99
                   valueCurrency: "USD"
                   uniqueId: "order-456"
     required: true
   responses:
     "202":
-      content:
-        application/json:
-          schema:
-            $ref: "../schema/bulk-custom-event-response.schema.yaml"
-          examples:
-            partial_success:
-              summary: Partial success — one accepted, one rejected
-              value:
-                total: 2
-                accepted: 1
-                rejected: 1
-                events:
-                  - index: 0
-                    eventId: "evt_abc123"
-                    eventName: "user_registered"
-                    status: "queued"
-                  - index: 1
-                    eventName: "purchase_completed"
-                    status: "rejected"
-                    error: "At least one of id, email, or phoneNumber is required"
-      description: Bulk request processed. Check per-event status for individual results.
+      description: Bulk request accepted and queued for processing. No response body is returned.
     "400":
       content:
         application/json:

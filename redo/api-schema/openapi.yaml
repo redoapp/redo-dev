@@ -226,12 +226,12 @@ paths:
                   valueCurrency: USD
                   uniqueId: milestone-test-001
                   data:
-                    milestone_type: 100th_purchase
-                    total_spent: 5000
-                    vip_tier: gold
-                    enrolled_at: '2025-01-01T00:00:00Z'
+                    Milestone Type: 100th_purchase
+                    Total Spent: 5000
+                    VIP Tier: gold
+                    Enrolled At: '2025-01-01T00:00:00Z'
                     $extra:
-                      most_recent_order_ids:
+                      Most Recent Order IDs:
                         - 1
                         - 2
                         - 3
@@ -242,9 +242,9 @@ paths:
                   customer:
                     email: customer@example.com
                   data:
-                    plan_type: premium
-                    referral_code: FRIEND123
-                    source: mobile_app
+                    Plan Type: premium
+                    Referral Code: FRIEND123
+                    Source: mobile_app
               with_phone:
                 summary: Event identified by phone number
                 value:
@@ -252,25 +252,14 @@ paths:
                   customer:
                     phoneNumber: '+12065551234'
                   data:
-                    item_count: 3
-                    category: apparel
+                    Item Count: 3
+                    Category: apparel
                   value: 149.99
                   valueCurrency: USD
         required: true
       responses:
         '202':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/custom-event-response.schema'
-              examples:
-                success:
-                  summary: Event accepted
-                  value:
-                    eventId: evt_abc123def456
-                    status: queued
-                    eventName: user_registered
-          description: Event accepted and queued for processing
+          description: Event accepted and queued for processing. No response body is returned.
         '400':
           content:
             application/json:
@@ -339,40 +328,20 @@ paths:
                       customer:
                         email: alice@example.com
                       data:
-                        plan_type: premium
+                        Plan Type: premium
                     - eventName: purchase_completed
                       customer:
                         email: bob@example.com
                       data:
-                        order_total: 99.99
-                        item_count: 3
+                        Order Total: 99.99
+                        Item Count: 3
                       value: 99.99
                       valueCurrency: USD
                       uniqueId: order-456
         required: true
       responses:
         '202':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bulk-custom-event-response.schema'
-              examples:
-                partial_success:
-                  summary: Partial success — one accepted, one rejected
-                  value:
-                    total: 2
-                    accepted: 1
-                    rejected: 1
-                    events:
-                      - index: 0
-                        eventId: evt_abc123
-                        eventName: user_registered
-                        status: queued
-                      - index: 1
-                        eventName: purchase_completed
-                        status: rejected
-                        error: At least one of id, email, or phoneNumber is required
-          description: Bulk request processed. Check per-event status for individual results.
+          description: Bulk request accepted and queued for processing. No response body is returned.
         '400':
           content:
             application/json:
@@ -1820,9 +1789,14 @@ components:
           description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
           type: string
         customer:
-          description: Customer identity and profile fields. At least one of id, email, or phoneNumber is required.
+          description: |
+            Customer identity and profile fields. At least one of `id`, `email`, or `phoneNumber` is required for identity resolution.
           type: object
           additionalProperties: false
+          anyOf:
+            - required: [id]
+            - required: [email]
+            - required: [phoneNumber]
           properties:
             id:
               description: Redo customer ObjectId. Used for identity resolution. Takes priority over email and phoneNumber when provided.
@@ -1889,6 +1863,7 @@ components:
           type: string
       required:
         - eventName
+        - customer
       title: Custom Event Request
       type: object
     custom-event-response.schema:

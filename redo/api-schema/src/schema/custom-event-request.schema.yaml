@@ -7,9 +7,15 @@ properties:
     description: The name of the custom event (e.g., 'user_registered', 'purchase_completed').
     type: string
   customer:
-    description: Customer identity and profile fields. At least one of id, email, or phoneNumber is required.
+    description: >
+      Customer identity and profile fields. At least one of `id`, `email`, or
+      `phoneNumber` is required for identity resolution.
     type: object
     additionalProperties: false
+    anyOf:
+      - required: [id]
+      - required: [email]
+      - required: [phoneNumber]
     properties:
       id:
         description: Redo customer ObjectId. Used for identity resolution. Takes priority over email and phoneNumber when provided.
@@ -94,5 +100,6 @@ properties:
     type: string
 required:
   - eventName
+  - customer
 title: Custom Event Request
 type: object
