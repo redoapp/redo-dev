@@ -26,10 +26,10 @@ You can find your API key in the Redo dashboard under **Settings > API Keys**.
 Each event must include at least one customer identifier inside the `customer` object. The API resolves
 customers using the following priority order:
 
-| Priority | Field                | Description                   |
-| -------- | -------------------- | ----------------------------- |
-| 1        | `customer.id`        | Redo customer ObjectId        |
-| 2        | `customer.email`     | Customer email address        |
+| Priority | Field                  | Description                   |
+| -------- | ---------------------- | ----------------------------- |
+| 1        | `customer.id`          | Redo customer ObjectId        |
+| 2        | `customer.email`       | Customer email address        |
 | 3        | `customer.phoneNumber` | Customer phone number (E.164) |
 
 If multiple identifiers are provided, the highest-priority match is used. If no
@@ -37,13 +37,13 @@ matching customer is found, one is created automatically.
 
 ```json
 {
-  "eventName": "subscription_renewed",
+  "eventName": "Subscription Renewed",
   "customer": {
     "id": "665f1a2b3c4d5e6f7a8b9c0d",
-    "email": "jane@example.com"
+    "email": "stewart@example.com"
   },
   "data": {
-    "plan": "pro"
+    "Plan": "pro"
   }
 }
 ```
@@ -55,24 +55,78 @@ The `email` is ignored for resolution but may be used for profile enrichment.
 
 ```json
 {
-  "eventName": "purchase_milestone_reached",
+  "eventName": "Purchase Milestone Reached",
   "customer": {
-    "email": "customer@example.com",
-    "firstName": "Test",
-    "lastName": "User"
+    "email": "stewart@example.com",
+    "firstName": "Stewart",
+    "lastName": "Thompson"
   },
   "eventTimestamp": "2026-04-02T12:00:00Z",
   "value": 299.99,
   "valueCurrency": "USD",
   "uniqueId": "milestone-test-001",
   "data": {
-    "milestone_type": "100th_purchase",
-    "total_spent": 5000,
-    "vip_tier": "gold",
-    "enrolled_at": "2025-01-01T00:00:00Z"
+    "Milestone Type": "100th_purchase",
+    "Total Spent": 5000,
+    "VIP Tier": "gold",
+    "Enrolled At": "2025-01-01T00:00:00Z"
   }
 }
 ```
+
+The endpoint returns `202 Accepted` with no response body.
+
+## Datetime Formatting
+
+All datetime values must be formatted as ISO 8601 (RFC 3339) strings.
+
+**Example:** `2026-04-02T12:00:00Z`
+
+This applies to `eventTimestamp`, any date-valued properties in `data`, and any
+date-valued `customFields`. Strings matching this format are automatically
+detected and indexed as dates for segmentation.
+
+## Customer Fields
+
+The `customer` object supports identity, profile, location, and custom fields:
+
+```json
+{
+  "eventName": "Order Placed",
+  "customer": {
+    "id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "email": "stewart@example.com",
+    "phoneNumber": "+11234567890",
+    "firstName": "Stewart",
+    "lastName": "Thompson",
+    "location": {
+      "street1": "123 Main St",
+      "street2": "Apt 4B",
+      "city": "Seattle",
+      "state": "Washington",
+      "stateCode": "WA",
+      "postalCode": "98101",
+      "country": "United States",
+      "countryCode": "US",
+      "ianaTimeZoneName": "America/Los_Angeles",
+      "latitude": 47.6062,
+      "longitude": -122.3321
+    },
+    "customFields": {
+      "Age at Signup": 25,
+      "Birthday": "1976-07-04T12:00:00Z",
+      "Loyalty Tier": "Gold",
+      "Accepts Marketing": true
+    }
+  },
+  "data": {
+    "Order Id": "ord_456"
+  }
+}
+```
+
+All customer fields except the identifier are optional. Profile fields use
+**patch semantics** — omitted fields are not erased.
 
 ## Properties Structure
 
@@ -93,56 +147,38 @@ The `data` object carries event-specific data. Top-level keys are
 Values of `0`, `null`, and empty string (`""`) are treated as **unset** and are
 not stored. This prevents polluting segments with meaningless zero/empty values.
 
-```json
-{
-  "eventName": "form_submitted",
-  "customer": {
-    "email": "customer@example.com"
-  },
-  "data": {
-    "form_name": "contact_us",
-    "score": 0,
-    "notes": ""
-  }
-}
-```
-
-In this example, only `form_name` is stored. `score` and `notes` are dropped.
-
 ### Non-Segmentable Metadata with `$extra`
 
 To include metadata that should be stored but **not** indexed for segmentation,
-nest it under the `$extra` key inside `data`. This is useful for large text, debug info, or
-context that doesn't need to be queried.
+nest it under the `$extra` key inside `data`. This is useful for arrays, nested
+objects, debug info, or context that doesn't need to be queried.
+
+Unlike top-level `data` properties, values inside `$extra` are **not** stripped —
+`0`, `null`, and `""` are preserved as-is.
 
 ```json
 {
-  "eventName": "purchase_milestone_reached",
+  "eventName": "Purchase Milestone Reached",
   "customer": {
-    "email": "customer@example.com",
-    "firstName": "Test",
-    "lastName": "User"
+    "email": "stewart@example.com"
   },
-  "eventTimestamp": "2026-04-02T12:00:00Z",
-  "value": 299.99,
-  "valueCurrency": "USD",
-  "uniqueId": "milestone-test-001",
   "data": {
-    "milestone_type": "100th_purchase",
-    "total_spent": 5000,
-    "vip_tier": "gold",
-    "enrolled_at": "2025-01-01T00:00:00Z",
+    "Milestone Type": "100th_purchase",
+    "Total Spent": 5000,
+    "VIP Tier": "gold",
     "$extra": {
-      "raw_webhook_payload": { "nested": true, "items": [1, 2, 3] },
-      "zero_val": 0,
-      "empty_str": ""
+      "Most Recent Order IDs": [1, 2, 3],
+      "Profile Snapshot": {
+        "tier": "gold",
+        "memberSince": "2024-01-01"
+      }
     }
   }
 }
 ```
 
-`milestone_type`, `total_spent`, `vip_tier`, and `enrolled_at` are segmentable. Everything inside `$extra` is
-stored on the event but excluded from segmentation indexes. Note that `zero_val` and `empty_str` inside `$extra` are **not** stripped — `$extra` is a raw pass-through.
+`Milestone Type`, `Total Spent`, and `VIP Tier` are segmentable. Everything
+inside `$extra` is stored on the event but excluded from segmentation indexes.
 
 ## Value Tracking
 
@@ -151,13 +187,13 @@ conversion value with an event:
 
 ```json
 {
-  "eventName": "purchase_completed",
+  "eventName": "Purchase Completed",
   "customer": {
-    "email": "customer@example.com"
+    "email": "stewart@example.com"
   },
   "data": {
-    "item_count": 3,
-    "category": "apparel"
+    "Item Count": 3,
+    "Category": "apparel"
   },
   "value": 149.99,
   "valueCurrency": "USD"
@@ -175,13 +211,13 @@ only the first is persisted — subsequent requests are silently deduplicated.
 
 ```json
 {
-  "eventName": "order_placed",
+  "eventName": "Order Placed",
   "customer": {
-    "email": "customer@example.com"
+    "email": "stewart@example.com"
   },
   "uniqueId": "order-789",
   "data": {
-    "order_total": 59.99
+    "Order Total": 59.99
   }
 }
 ```
@@ -199,13 +235,13 @@ an ISO 8601 value:
 
 ```json
 {
-  "eventName": "loyalty_tier_upgrade",
+  "eventName": "Loyalty Tier Upgrade",
   "customer": {
-    "email": "customer@example.com"
+    "email": "stewart@example.com"
   },
   "eventTimestamp": "2025-01-15T14:30:00Z",
   "data": {
-    "new_tier": "platinum"
+    "New Tier": "platinum"
   }
 }
 ```
@@ -227,53 +263,29 @@ Content-Type: application/json
 {
   "events": [
     {
-      "eventName": "page_viewed",
+      "eventName": "Page Viewed",
       "customer": {
-        "email": "alice@example.com"
+        "email": "stewart@example.com"
       },
-      "data": { "page": "/pricing" }
+      "data": { "Page": "/pricing" }
     },
     {
-      "eventName": "feature_used",
+      "eventName": "Feature Used",
       "customer": {
-        "email": "bob@example.com"
+        "email": "stewart@example.com"
       },
-      "data": { "feature": "dashboard" }
+      "data": { "Feature": "dashboard" }
     }
   ]
 }
 ```
 
-### Response
-
-The bulk endpoint returns a `202 Accepted` response with per-event results.
-Some events may be accepted while others are rejected:
-
-```json
-{
-  "total": 2,
-  "accepted": 1,
-  "rejected": 1,
-  "events": [
-    {
-      "index": 0,
-      "eventId": "evt_abc123",
-      "eventName": "page_viewed",
-      "status": "queued"
-    },
-    {
-      "index": 1,
-      "eventName": "feature_used",
-      "status": "rejected",
-      "error": "At least one of id, email, or phoneNumber is required"
-    }
-  ]
-}
-```
+The bulk endpoint returns `202 Accepted` with no response body.
 
 <Warning>
-  Always check the per-event `status` field. A `202` response does not guarantee
-  all events were accepted — inspect each event's status for partial failures.
+  Each event is validated independently. If any event in the batch has a
+  validation error (e.g., missing customer identifier), that event is silently
+  rejected while valid events are still processed.
 </Warning>
 
 ## Common Patterns
@@ -305,14 +317,14 @@ Some events may be accepted while others are rejected:
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          eventName: 'order_placed',
+          eventName: 'Order Placed',
           customer: {
             email: order.customer_email,
           },
           uniqueId: `order-${order.id}`,
           data: {
-            order_total: order.total,
-            item_count: order.line_items.length,
+            'Order Total': order.total,
+            'Item Count': order.line_items.length,
           },
           value: order.total,
           valueCurrency: order.currency,
@@ -331,26 +343,26 @@ Some events may be accepted while others are rejected:
     {
       "events": [
         {
-          "eventName": "subscription_started",
+          "eventName": "Subscription Started",
           "customer": {
-            "email": "customer@example.com"
+            "email": "stewart@example.com"
           },
           "eventTimestamp": "2024-06-01T00:00:00Z",
           "uniqueId": "sub-start-cust-123",
           "data": {
-            "plan": "annual",
-            "source": "website"
+            "Plan": "annual",
+            "Source": "website"
           }
         },
         {
-          "eventName": "subscription_renewed",
+          "eventName": "Subscription Renewed",
           "customer": {
-            "email": "customer@example.com"
+            "email": "stewart@example.com"
           },
           "eventTimestamp": "2025-06-01T00:00:00Z",
           "uniqueId": "sub-renew-cust-123",
           "data": {
-            "plan": "annual"
+            "Plan": "annual"
           }
         }
       ]
@@ -377,14 +389,14 @@ Some events may be accepted while others are rejected:
             "Content-Type": "application/json",
         },
         json={
-            "eventName": "checkout_started",
+            "eventName": "Checkout Started",
             "customer": {
-                "email": "customer@example.com",
+                "email": "stewart@example.com",
             },
             "data": {
-                "cart_value": 89.99,
-                "item_count": 2,
-                "source": "mobile_app",
+                "Cart Value": 89.99,
+                "Item Count": 2,
+                "Source": "mobile_app",
             },
             "value": 89.99,
             "valueCurrency": "USD",
@@ -392,7 +404,6 @@ Some events may be accepted while others are rejected:
     )
 
     print(response.status_code)  # 202
-    print(response.json())
     ```
   </Accordion>
 </AccordionGroup>
