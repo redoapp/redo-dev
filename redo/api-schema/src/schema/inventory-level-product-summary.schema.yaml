@@ -1,0 +1,18 @@
+description: Product summary in an inventory level response.
+properties:
+  id:
+    description: Prefixed product ID (`prd_...`).
+    example: prd_1a2b3c4d5e
+    type: string
+  title:
+    description: Product title including variant options.
+    example: Classic Cotton T-Shirt - Black / M
+    type: string
+  sku:
+    description: Stock keeping unit.
+    example: TSH-BLK-M
+    nullable: true
+    type: string
+required: [id, title, sku]
+title: Inventory Level Product Summary
+type: object

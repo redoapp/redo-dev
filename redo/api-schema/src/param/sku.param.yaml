@@ -1,0 +1,5 @@
+description: Filter by product SKU
+example: TSH-BLK-M
+in: query
+name: sku
+schema: { type: string }

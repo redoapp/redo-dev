@@ -1,0 +1,5 @@
+description: Filter by location ID (e.g. `loc_...`)
+example: loc_4d8e1a2b3c
+in: query
+name: location_id
+schema: { type: string }

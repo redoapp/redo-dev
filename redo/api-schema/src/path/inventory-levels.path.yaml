@@ -1,0 +1,40 @@
+description: Inventory levels for a store.
+get:
+  description: >-
+    List inventory levels, representing the aggregate quantity of a product at a
+    specific location. Sorted by most recently updated first.
+  operationId: Inventory levels list
+  parameters:
+    - { $ref: ../param/page-continue.param.yaml }
+    - { $ref: ../param/page-size.param.yaml }
+    - { $ref: ../param/location-id.param.yaml }
+    - { $ref: ../param/product-id.param.yaml }
+    - { $ref: ../param/sku.param.yaml }
+    - { $ref: ../param/updated-at-min.param.yaml }
+    - { $ref: ../param/updated-at-max.param.yaml }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              inventory_levels:
+                items: { $ref: ../schema/inventory-level-list.schema.yaml }
+                type: array
+            required: [inventory_levels]
+            type: object
+      description: Success
+      headers:
+        X-Page-Next: { $ref: ../header/page-next.header.yaml }
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: List Inventory Levels
+  tags: [Inventory Levels]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Inventory Levels
