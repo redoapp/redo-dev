@@ -1,0 +1,35 @@
+description: Single inventory level.
+get:
+  description: >-
+    Get a single inventory level by ID. Returns additional detail fields
+    including external IDs, creation timestamp, product UPC, and image URL.
+  operationId: Inventory level get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              inventory_level:
+                $ref: ../schema/inventory-level-detail.schema.yaml
+            required: [inventory_level]
+            type: object
+      description: Success
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Inventory level not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get Inventory Level
+  tags: [Inventory Levels]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/inventory-level-id.param.yaml }
+summary: Inventory Level

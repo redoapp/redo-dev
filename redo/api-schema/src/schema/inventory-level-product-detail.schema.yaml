@@ -1,0 +1,16 @@
+description: Product detail in an inventory level detail response.
+allOf:
+  - $ref: inventory-level-product-summary.schema.yaml
+  - properties:
+      upc:
+        description: Universal product code.
+        example: "012345678901"
+        nullable: true
+        type: string
+      image_url:
+        description: URL of the product's primary image.
+        example: https://cdn.example.com/tshirt-blk-m.jpg
+        nullable: true
+        type: string
+    type: object
+title: Inventory Level Product Detail

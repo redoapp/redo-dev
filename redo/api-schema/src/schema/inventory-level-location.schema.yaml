@@ -1,0 +1,13 @@
+description: Location summary in an inventory level response.
+properties:
+  id:
+    description: Prefixed location ID (`loc_...`).
+    example: loc_4d8e1a2b3c
+    type: string
+  name:
+    description: Location name.
+    example: East Coast Warehouse
+    type: string
+required: [id, name]
+title: Inventory Level Location
+type: object

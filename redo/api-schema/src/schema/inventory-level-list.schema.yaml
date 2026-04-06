@@ -1,0 +1,52 @@
+description: Inventory level list item.
+properties:
+  id:
+    description: Prefixed inventory level ID (`li_...`).
+    example: li_9b2c4d6e8f
+    type: string
+  product:
+    $ref: inventory-level-product-summary.schema.yaml
+  location:
+    $ref: inventory-level-location.schema.yaml
+  quantity:
+    description: On-hand quantity.
+    example: 1250
+    type: integer
+  available:
+    description: Available quantity (`quantity - committed - reserved`).
+    example: 1100
+    type: integer
+  committed:
+    description: Allocated to unfulfilled orders.
+    example: 100
+    type: integer
+  reserved:
+    description: Held (damaged, QC, etc.).
+    example: 50
+    type: integer
+  buildable:
+    description: Can be assembled from BOM components.
+    example: 0
+    type: integer
+  total_available:
+    description: Total available (`available + buildable`).
+    example: 1100
+    type: integer
+  updated_at:
+    description: Last updated timestamp (ISO 8601).
+    example: "2026-03-31T18:45:00.000Z"
+    format: date-time
+    type: string
+required:
+  - id
+  - product
+  - location
+  - quantity
+  - available
+  - committed
+  - reserved
+  - buildable
+  - total_available
+  - updated_at
+title: Inventory Level
+type: object

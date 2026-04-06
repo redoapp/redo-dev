@@ -43,6 +43,7 @@ tags:
   - name: Customer Portal
   - name: Customer Subscriptions
   - name: Customers
+  - name: Inventory Levels
   - name: Invoices
   - name: Merchant Admin
   - name: Orders
@@ -663,6 +664,88 @@ paths:
       tags:
         - Customers
     summary: Customers
+  /stores/{storeId}/inventory-levels:
+    description: Inventory levels for a store.
+    get:
+      description: List inventory levels, representing the aggregate quantity of a product at a specific location. Sorted by most recently updated first.
+      operationId: Inventory levels list
+      parameters:
+        - $ref: '#/components/parameters/page-continue.param'
+        - $ref: '#/components/parameters/page-size.param'
+        - $ref: '#/components/parameters/location-id.param'
+        - $ref: '#/components/parameters/product-id.param'
+        - $ref: '#/components/parameters/sku.param'
+        - $ref: '#/components/parameters/updated-at-min.param'
+        - $ref: '#/components/parameters/updated-at-max.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  inventory_levels:
+                    items:
+                      $ref: '#/components/schemas/inventory-level-list.schema'
+                    type: array
+                required:
+                  - inventory_levels
+                type: object
+          description: Success
+          headers:
+            X-Page-Next:
+              $ref: '#/components/headers/page-next.header'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: List Inventory Levels
+      tags:
+        - Inventory Levels
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Inventory Levels
+  /stores/{storeId}/inventory-levels/{inventoryLevelId}:
+    description: Single inventory level.
+    get:
+      description: Get a single inventory level by ID. Returns additional detail fields including external IDs, creation timestamp, product UPC, and image URL.
+      operationId: Inventory level get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  inventory_level:
+                    $ref: '#/components/schemas/inventory-level-detail.schema'
+                required:
+                  - inventory_level
+                type: object
+          description: Success
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Inventory level not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Get Inventory Level
+      tags:
+        - Inventory Levels
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/inventory-level-id.param'
+    summary: Inventory Level
   /invoices/pending/items.csv:
     description: Return invoice CSV file.
     get:
@@ -1757,6 +1840,67 @@ components:
       schema:
         example: 64e5a8a1af49a89df37e4ee7
         type: string
+    page-continue.param:
+      description: Page marker, from X-Page-Next header
+      example: 64df700931a04885276c3364
+      in: header
+      name: X-Page-Continue
+      schema:
+        type: string
+    page-size.param:
+      description: Page size, defaults to 20
+      example: 20
+      in: header
+      name: X-Page-Size
+      schema:
+        maximum: 500
+        minimum: 1
+        type: integer
+    location-id.param:
+      description: Filter by location ID (e.g. `loc_...`)
+      example: loc_4d8e1a2b3c
+      in: query
+      name: location_id
+      schema:
+        type: string
+    product-id.param:
+      description: Filter by product ID (e.g. `prd_...`)
+      example: prd_1a2b3c4d5e
+      in: query
+      name: product_id
+      schema:
+        type: string
+    sku.param:
+      description: Filter by product SKU
+      example: TSH-BLK-M
+      in: query
+      name: sku
+      schema:
+        type: string
+    updated-at-min.param:
+      description: Minimum updated time, inclusive
+      example: '2000-01-01T00:00:00Z'
+      in: query
+      name: updated_at_min
+      schema:
+        format: date-time
+        type: string
+    updated-at-max.param:
+      description: Maximum updated time, exclusive
+      example: '2000-02-01T00:00:00Z'
+      in: query
+      name: updated_at_max
+      schema:
+        format: date-time
+        type: string
+    inventory-level-id.param:
+      description: Inventory level ID
+      in: path
+      name: inventoryLevelId
+      required: true
+      schema:
+        example: li_9b2c4d6e8f
+        type: string
     invoice-id.param:
       description: Invoice ID
       in: path
@@ -1786,38 +1930,6 @@ components:
       required: true
       schema:
         example: 64e4d5e837572a4813b73e40
-        type: string
-    page-continue.param:
-      description: Page marker, from X-Page-Next header
-      example: 64df700931a04885276c3364
-      in: header
-      name: X-Page-Continue
-      schema:
-        type: string
-    page-size.param:
-      description: Page size, defaults to 20
-      example: 20
-      in: header
-      name: X-Page-Size
-      schema:
-        maximum: 500
-        minimum: 1
-        type: integer
-    updated-at-max.param:
-      description: Maximum updated time, exclusive
-      example: '2000-02-01T00:00:00Z'
-      in: query
-      name: updated_at_max
-      schema:
-        format: date-time
-        type: string
-    updated-at-min.param:
-      description: Minimum updated time, inclusive
-      example: '2000-01-01T00:00:00Z'
-      in: query
-      name: updated_at_min
-      schema:
-        format: date-time
         type: string
     shopify-order-name:
       description: Shopify specific order name
@@ -2492,6 +2604,137 @@ components:
         - created
       title: Customer Upsert Response
       type: object
+    inventory-level-product-summary.schema:
+      description: Product summary in an inventory level response.
+      properties:
+        id:
+          description: Prefixed product ID (`prd_...`).
+          example: prd_1a2b3c4d5e
+          type: string
+        title:
+          description: Product title including variant options.
+          example: Classic Cotton T-Shirt - Black / M
+          type: string
+        sku:
+          description: Stock keeping unit.
+          example: TSH-BLK-M
+          nullable: true
+          type: string
+      required:
+        - id
+        - title
+        - sku
+      title: Inventory Level Product Summary
+      type: object
+    inventory-level-location.schema:
+      description: Location summary in an inventory level response.
+      properties:
+        id:
+          description: Prefixed location ID (`loc_...`).
+          example: loc_4d8e1a2b3c
+          type: string
+        name:
+          description: Location name.
+          example: East Coast Warehouse
+          type: string
+      required:
+        - id
+        - name
+      title: Inventory Level Location
+      type: object
+    inventory-level-list.schema:
+      description: Inventory level list item.
+      properties:
+        id:
+          description: Prefixed inventory level ID (`li_...`).
+          example: li_9b2c4d6e8f
+          type: string
+        product:
+          $ref: '#/components/schemas/inventory-level-product-summary.schema'
+        location:
+          $ref: '#/components/schemas/inventory-level-location.schema'
+        quantity:
+          description: On-hand quantity.
+          example: 1250
+          type: integer
+        available:
+          description: Available quantity (`quantity - committed - reserved`).
+          example: 1100
+          type: integer
+        committed:
+          description: Allocated to unfulfilled orders.
+          example: 100
+          type: integer
+        reserved:
+          description: Held (damaged, QC, etc.).
+          example: 50
+          type: integer
+        buildable:
+          description: Can be assembled from BOM components.
+          example: 0
+          type: integer
+        total_available:
+          description: Total available (`available + buildable`).
+          example: 1100
+          type: integer
+        updated_at:
+          description: Last updated timestamp (ISO 8601).
+          example: '2026-03-31T18:45:00.000Z'
+          format: date-time
+          type: string
+      required:
+        - id
+        - product
+        - location
+        - quantity
+        - available
+        - committed
+        - reserved
+        - buildable
+        - total_available
+        - updated_at
+      title: Inventory Level
+      type: object
+    inventory-level-product-detail.schema:
+      description: Product detail in an inventory level detail response.
+      allOf:
+        - $ref: '#/components/schemas/inventory-level-product-summary.schema'
+        - properties:
+            upc:
+              description: Universal product code.
+              example: '012345678901'
+              nullable: true
+              type: string
+            image_url:
+              description: URL of the product's primary image.
+              example: https://cdn.example.com/tshirt-blk-m.jpg
+              nullable: true
+              type: string
+          type: object
+      title: Inventory Level Product Detail
+    inventory-level-detail.schema:
+      description: Inventory level detail.
+      allOf:
+        - $ref: '#/components/schemas/inventory-level-list.schema'
+        - properties:
+            product:
+              $ref: '#/components/schemas/inventory-level-product-detail.schema'
+            external_ids:
+              description: External system IDs (e.g. Shopify inventory item GID).
+              example:
+                shopify: gid://shopify/InventoryItem/12345678
+              nullable: true
+              type: object
+            created_at:
+              description: Creation timestamp (ISO 8601).
+              example: '2025-11-01T10:00:00.000Z'
+              format: date-time
+              type: string
+          required:
+            - external_ids
+            - created_at
+          type: object
+      title: Inventory Level Detail
     invoice.schema:
       description: Schema for an invoice.
       properties:

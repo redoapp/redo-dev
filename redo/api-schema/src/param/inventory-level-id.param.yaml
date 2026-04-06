@@ -1,0 +1,7 @@
+description: Inventory level ID
+in: path
+name: inventoryLevelId
+required: true
+schema:
+  example: li_9b2c4d6e8f
+  type: string

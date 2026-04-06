@@ -1,0 +1,5 @@
+description: Filter by product ID (e.g. `prd_...`)
+example: prd_1a2b3c4d5e
+in: query
+name: product_id
+schema: { type: string }

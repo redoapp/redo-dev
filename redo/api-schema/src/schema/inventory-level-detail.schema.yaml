@@ -1,0 +1,19 @@
+description: Inventory level detail.
+allOf:
+  - $ref: inventory-level-list.schema.yaml
+  - properties:
+      product:
+        $ref: inventory-level-product-detail.schema.yaml
+      external_ids:
+        description: External system IDs (e.g. Shopify inventory item GID).
+        example: { shopify: "gid://shopify/InventoryItem/12345678" }
+        nullable: true
+        type: object
+      created_at:
+        description: Creation timestamp (ISO 8601).
+        example: "2025-11-01T10:00:00.000Z"
+        format: date-time
+        type: string
+    required: [external_ids, created_at]
+    type: object
+title: Inventory Level Detail
