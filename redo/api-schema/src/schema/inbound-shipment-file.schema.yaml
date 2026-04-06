@@ -1,0 +1,26 @@
+description: File attached to an inbound shipment.
+properties:
+  id:
+    description: Prefixed file ID (`isf_...`).
+    example: isf_3d4e5f6g7h
+    type: string
+  title:
+    description: File display title.
+    example: Packing List.pdf
+    type: string
+  url:
+    description: File URL.
+    example: https://storage.example.com/files/packing-list.pdf
+    type: string
+  content_type:
+    description: MIME type.
+    example: application/pdf
+    type: string
+  created_at:
+    description: Upload timestamp (ISO 8601).
+    example: "2026-03-28T14:35:00Z"
+    format: date-time
+    type: string
+required: [id, title, url, content_type, created_at]
+title: Inbound Shipment File
+type: object

@@ -1,0 +1,13 @@
+description: Reference to a linked purchase order or transfer order.
+properties:
+  id:
+    description: Prefixed order ID (`po_...` or `trn_...`).
+    example: po_5e6f7a8b9c
+    type: string
+  name:
+    description: Order number or name.
+    example: PO-2026-0018
+    type: string
+required: [id, name]
+title: Order Reference
+type: object

@@ -49,6 +49,7 @@ tags:
   - name: Customer Portal
   - name: Customer Subscriptions
   - name: Customers
+  - name: Inbound Shipments
   - name: Inventory Levels
   - name: Invoices
   - name: Merchant Admin
@@ -76,6 +77,11 @@ paths:
     { $ref: path/customer-subscriptions.path.yaml }
   # Customers
   /stores/{storeId}/customers: { $ref: path/customers.path.yaml }
+  # Inbound Shipments
+  /stores/{storeId}/inbound-shipments:
+    { $ref: path/inbound-shipments.path.yaml }
+  /stores/{storeId}/inbound-shipments/{inboundShipmentId}:
+    { $ref: path/inbound-shipment.path.yaml }
   # Inventory Levels
   /stores/{storeId}/inventory-levels:
     { $ref: path/inventory-levels.path.yaml }

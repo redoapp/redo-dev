@@ -1,0 +1,39 @@
+description: Inbound shipments for a store.
+get:
+  description: >-
+    List inbound shipments, representing inventory in transit or received at a
+    location. Sorted by most recently updated first.
+  operationId: Inbound shipments list
+  parameters:
+    - { $ref: ../param/page-continue.param.yaml }
+    - { $ref: ../param/page-size.param.yaml }
+    - { $ref: ../param/inbound-shipment-status.param.yaml }
+    - { $ref: ../param/location-id.param.yaml }
+    - { $ref: ../param/created-at-min.param.yaml }
+    - { $ref: ../param/created-at-max.param.yaml }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              inbound_shipments:
+                items: { $ref: ../schema/inbound-shipment-list.schema.yaml }
+                type: array
+            required: [inbound_shipments]
+            type: object
+      description: Success
+      headers:
+        X-Page-Next: { $ref: ../header/page-next.header.yaml }
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: List Inbound Shipments
+  tags: [Inbound Shipments]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Inbound Shipments

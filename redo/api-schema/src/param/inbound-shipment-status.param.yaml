@@ -1,0 +1,7 @@
+description: Filter by shipment status
+example: IN_TRANSIT
+in: query
+name: status
+schema:
+  enum: [PENDING, IN_TRANSIT, PARTIALLY_RECEIVED, RECEIVED]
+  type: string

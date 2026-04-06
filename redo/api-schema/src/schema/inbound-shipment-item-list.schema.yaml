@@ -1,0 +1,27 @@
+description: Inbound shipment line item (list view).
+properties:
+  id:
+    description: Prefixed shipment item ID (`isp_...`).
+    example: isp_8b2c3d4e5f
+    type: string
+  product:
+    $ref: inbound-shipment-product-summary.schema.yaml
+  quantity:
+    description: Expected quantity.
+    example: 500
+    type: integer
+  received_quantity:
+    description: Quantity received so far.
+    example: 0
+    type: integer
+  damaged_quantity:
+    description: Damaged units.
+    example: 0
+    type: integer
+  missing_quantity:
+    description: Missing units.
+    example: 0
+    type: integer
+required: [id, product, quantity, received_quantity, damaged_quantity, missing_quantity]
+title: Inbound Shipment Item
+type: object

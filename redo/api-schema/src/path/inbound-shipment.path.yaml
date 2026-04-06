@@ -1,0 +1,36 @@
+description: Single inbound shipment.
+get:
+  description: >-
+    Get a single inbound shipment by ID. Returns additional detail fields
+    including purchase orders, transfer orders, files, volume, item discrepancies,
+    and packing modes.
+  operationId: Inbound shipment get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              inbound_shipment:
+                $ref: ../schema/inbound-shipment-detail.schema.yaml
+            required: [inbound_shipment]
+            type: object
+      description: Success
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Inbound shipment not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get Inbound Shipment
+  tags: [Inbound Shipments]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/inbound-shipment-id.param.yaml }
+summary: Inbound Shipment

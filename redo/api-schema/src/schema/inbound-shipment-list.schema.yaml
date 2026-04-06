@@ -1,0 +1,106 @@
+description: Inbound shipment (list view).
+properties:
+  id:
+    description: Prefixed shipment ID (`inb_...`).
+    example: inb_7a3f9c2e1b
+    type: string
+  shipment_id:
+    description: Merchant-assigned shipment identifier.
+    example: SHIP-2026-0042
+    nullable: true
+    type: string
+  status:
+    description: Shipment status.
+    enum: [PENDING, IN_TRANSIT, PARTIALLY_RECEIVED, RECEIVED]
+    example: IN_TRANSIT
+    type: string
+  location:
+    $ref: inbound-shipment-location.schema.yaml
+  carrier:
+    description: Carrier name.
+    example: FedEx Freight
+    nullable: true
+    type: string
+  tracking_number:
+    description: Tracking number.
+    example: "794644790132"
+    nullable: true
+    type: string
+  tracking_url:
+    description: Tracking URL.
+    example: https://www.fedex.com/fedextrack/?trknbr=794644790132
+    nullable: true
+    type: string
+  estimated_arrival_date:
+    description: Expected arrival date (YYYY-MM-DD).
+    example: "2026-04-15"
+    format: date
+    nullable: true
+    type: string
+  actual_arrival_date:
+    description: Actual arrival date (YYYY-MM-DD).
+    example: null
+    format: date
+    nullable: true
+    type: string
+  freight_type:
+    description: Type of freight (e.g. `LTL`, `FTL`, `Parcel`).
+    example: LTL
+    nullable: true
+    type: string
+  payment_terms:
+    description: Payment terms (e.g. `NET30`, `COD`).
+    example: NET30
+    nullable: true
+    type: string
+  freight_cost:
+    $ref: inbound-shipment-money.schema.yaml
+  duty_cost:
+    $ref: inbound-shipment-money.schema.yaml
+  items:
+    items: { $ref: inbound-shipment-item-list.schema.yaml }
+    type: array
+  sku_count:
+    description: Distinct SKU count.
+    example: 2
+    type: integer
+  item_count:
+    description: Total expected unit quantity.
+    example: 800
+    type: integer
+  received_count:
+    description: Total received units.
+    example: 0
+    type: integer
+  created_at:
+    description: Creation timestamp (ISO 8601).
+    example: "2026-03-28T14:30:00Z"
+    format: date-time
+    type: string
+  updated_at:
+    description: Last updated timestamp (ISO 8601).
+    example: "2026-03-29T09:15:00Z"
+    format: date-time
+    type: string
+required:
+  - id
+  - shipment_id
+  - status
+  - location
+  - carrier
+  - tracking_number
+  - tracking_url
+  - estimated_arrival_date
+  - actual_arrival_date
+  - freight_type
+  - payment_terms
+  - freight_cost
+  - duty_cost
+  - items
+  - sku_count
+  - item_count
+  - received_count
+  - created_at
+  - updated_at
+title: Inbound Shipment
+type: object

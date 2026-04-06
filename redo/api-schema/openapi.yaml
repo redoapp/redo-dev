@@ -43,6 +43,7 @@ tags:
   - name: Customer Portal
   - name: Customer Subscriptions
   - name: Customers
+  - name: Inbound Shipments
   - name: Inventory Levels
   - name: Invoices
   - name: Merchant Admin
@@ -664,6 +665,87 @@ paths:
       tags:
         - Customers
     summary: Customers
+  /stores/{storeId}/inbound-shipments:
+    description: Inbound shipments for a store.
+    get:
+      description: List inbound shipments, representing inventory in transit or received at a location. Sorted by most recently updated first.
+      operationId: Inbound shipments list
+      parameters:
+        - $ref: '#/components/parameters/page-continue.param'
+        - $ref: '#/components/parameters/page-size.param'
+        - $ref: '#/components/parameters/inbound-shipment-status.param'
+        - $ref: '#/components/parameters/location-id.param'
+        - $ref: '#/components/parameters/created-at-min.param'
+        - $ref: '#/components/parameters/created-at-max.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  inbound_shipments:
+                    items:
+                      $ref: '#/components/schemas/inbound-shipment-list.schema'
+                    type: array
+                required:
+                  - inbound_shipments
+                type: object
+          description: Success
+          headers:
+            X-Page-Next:
+              $ref: '#/components/headers/page-next.header'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: List Inbound Shipments
+      tags:
+        - Inbound Shipments
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Inbound Shipments
+  /stores/{storeId}/inbound-shipments/{inboundShipmentId}:
+    description: Single inbound shipment.
+    get:
+      description: Get a single inbound shipment by ID. Returns additional detail fields including purchase orders, transfer orders, files, volume, item discrepancies, and packing modes.
+      operationId: Inbound shipment get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  inbound_shipment:
+                    $ref: '#/components/schemas/inbound-shipment-detail.schema'
+                required:
+                  - inbound_shipment
+                type: object
+          description: Success
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Inbound shipment not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Get Inbound Shipment
+      tags:
+        - Inbound Shipments
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/inbound-shipment-id.param'
+    summary: Inbound Shipment
   /stores/{storeId}/inventory-levels:
     description: Inventory levels for a store.
     get:
@@ -1856,12 +1938,48 @@ components:
         maximum: 500
         minimum: 1
         type: integer
+    inbound-shipment-status.param:
+      description: Filter by shipment status
+      example: IN_TRANSIT
+      in: query
+      name: status
+      schema:
+        enum:
+          - PENDING
+          - IN_TRANSIT
+          - PARTIALLY_RECEIVED
+          - RECEIVED
+        type: string
     location-id.param:
       description: Filter by location ID (e.g. `loc_...`)
       example: loc_4d8e1a2b3c
       in: query
       name: location_id
       schema:
+        type: string
+    created-at-min.param:
+      description: Minimum created time, inclusive
+      example: '2000-01-01T00:00:00Z'
+      in: query
+      name: created_at_min
+      schema:
+        format: date-time
+        type: string
+    created-at-max.param:
+      description: Maximum created time, exclusive
+      example: '2026-01-01T00:00:00Z'
+      in: query
+      name: created_at_max
+      schema:
+        format: date-time
+        type: string
+    inbound-shipment-id.param:
+      description: Inbound shipment ID
+      in: path
+      name: inboundShipmentId
+      required: true
+      schema:
+        example: inb_7a3f9c2e1b
         type: string
     product-id.param:
       description: Filter by product ID (e.g. `prd_...`)
@@ -2604,6 +2722,334 @@ components:
         - created
       title: Customer Upsert Response
       type: object
+    inbound-shipment-location.schema:
+      description: Destination location.
+      properties:
+        id:
+          description: Prefixed location ID (`loc_...`).
+          example: loc_4d8e1a2b3c
+          type: string
+        name:
+          description: Location name.
+          example: East Coast Warehouse
+          type: string
+      required:
+        - id
+        - name
+      title: Inbound Shipment Location
+      type: object
+    inbound-shipment-money.schema:
+      description: Monetary amount with currency.
+      properties:
+        amount:
+          description: Decimal amount as a string.
+          example: '1250.00'
+          type: string
+        currency:
+          description: ISO 4217 currency code.
+          example: USD
+          type: string
+      required:
+        - amount
+        - currency
+      title: Money
+      type: object
+    inbound-shipment-product-summary.schema:
+      description: Product summary in a shipment item.
+      properties:
+        id:
+          description: Prefixed product ID (`prd_...`).
+          example: prd_1a2b3c4d5e
+          type: string
+        title:
+          description: Product title including variant options.
+          example: Classic Cotton T-Shirt - Black / M
+          type: string
+        sku:
+          description: Stock keeping unit.
+          example: TSH-BLK-M
+          nullable: true
+          type: string
+        image_url:
+          description: URL of the product's primary image.
+          example: https://cdn.example.com/tshirt-blk-m.jpg
+          nullable: true
+          type: string
+      required:
+        - id
+        - title
+        - sku
+      title: Inbound Shipment Product Summary
+      type: object
+    inbound-shipment-item-list.schema:
+      description: Inbound shipment line item (list view).
+      properties:
+        id:
+          description: Prefixed shipment item ID (`isp_...`).
+          example: isp_8b2c3d4e5f
+          type: string
+        product:
+          $ref: '#/components/schemas/inbound-shipment-product-summary.schema'
+        quantity:
+          description: Expected quantity.
+          example: 500
+          type: integer
+        received_quantity:
+          description: Quantity received so far.
+          example: 0
+          type: integer
+        damaged_quantity:
+          description: Damaged units.
+          example: 0
+          type: integer
+        missing_quantity:
+          description: Missing units.
+          example: 0
+          type: integer
+      required:
+        - id
+        - product
+        - quantity
+        - received_quantity
+        - damaged_quantity
+        - missing_quantity
+      title: Inbound Shipment Item
+      type: object
+    inbound-shipment-list.schema:
+      description: Inbound shipment (list view).
+      properties:
+        id:
+          description: Prefixed shipment ID (`inb_...`).
+          example: inb_7a3f9c2e1b
+          type: string
+        shipment_id:
+          description: Merchant-assigned shipment identifier.
+          example: SHIP-2026-0042
+          nullable: true
+          type: string
+        status:
+          description: Shipment status.
+          enum:
+            - PENDING
+            - IN_TRANSIT
+            - PARTIALLY_RECEIVED
+            - RECEIVED
+          example: IN_TRANSIT
+          type: string
+        location:
+          $ref: '#/components/schemas/inbound-shipment-location.schema'
+        carrier:
+          description: Carrier name.
+          example: FedEx Freight
+          nullable: true
+          type: string
+        tracking_number:
+          description: Tracking number.
+          example: '794644790132'
+          nullable: true
+          type: string
+        tracking_url:
+          description: Tracking URL.
+          example: https://www.fedex.com/fedextrack/?trknbr=794644790132
+          nullable: true
+          type: string
+        estimated_arrival_date:
+          description: Expected arrival date (YYYY-MM-DD).
+          example: '2026-04-15'
+          format: date
+          nullable: true
+          type: string
+        actual_arrival_date:
+          description: Actual arrival date (YYYY-MM-DD).
+          example: null
+          format: date
+          nullable: true
+          type: string
+        freight_type:
+          description: Type of freight (e.g. `LTL`, `FTL`, `Parcel`).
+          example: LTL
+          nullable: true
+          type: string
+        payment_terms:
+          description: Payment terms (e.g. `NET30`, `COD`).
+          example: NET30
+          nullable: true
+          type: string
+        freight_cost:
+          $ref: '#/components/schemas/inbound-shipment-money.schema'
+        duty_cost:
+          $ref: '#/components/schemas/inbound-shipment-money.schema'
+        items:
+          items:
+            $ref: '#/components/schemas/inbound-shipment-item-list.schema'
+          type: array
+        sku_count:
+          description: Distinct SKU count.
+          example: 2
+          type: integer
+        item_count:
+          description: Total expected unit quantity.
+          example: 800
+          type: integer
+        received_count:
+          description: Total received units.
+          example: 0
+          type: integer
+        created_at:
+          description: Creation timestamp (ISO 8601).
+          example: '2026-03-28T14:30:00Z'
+          format: date-time
+          type: string
+        updated_at:
+          description: Last updated timestamp (ISO 8601).
+          example: '2026-03-29T09:15:00Z'
+          format: date-time
+          type: string
+      required:
+        - id
+        - shipment_id
+        - status
+        - location
+        - carrier
+        - tracking_number
+        - tracking_url
+        - estimated_arrival_date
+        - actual_arrival_date
+        - freight_type
+        - payment_terms
+        - freight_cost
+        - duty_cost
+        - items
+        - sku_count
+        - item_count
+        - received_count
+        - created_at
+        - updated_at
+      title: Inbound Shipment
+      type: object
+    inbound-shipment-product-detail.schema:
+      description: Product detail in a shipment item (detail view).
+      allOf:
+        - $ref: '#/components/schemas/inbound-shipment-product-summary.schema'
+        - properties:
+            upc:
+              description: Universal product code.
+              example: '012345678901'
+              nullable: true
+              type: string
+          type: object
+      title: Inbound Shipment Product Detail
+    inbound-shipment-item-detail.schema:
+      description: Inbound shipment line item (detail view).
+      allOf:
+        - $ref: '#/components/schemas/inbound-shipment-item-list.schema'
+        - properties:
+            product:
+              $ref: '#/components/schemas/inbound-shipment-product-detail.schema'
+            discrepancy:
+              description: Difference between expected and received quantity.
+              example: -150
+              type: integer
+            packing_mode:
+              description: Packing mode (e.g. `individual`).
+              example: individual
+              type: string
+          type: object
+      title: Inbound Shipment Item Detail
+    inbound-shipment-order-ref.schema:
+      description: Reference to a linked purchase order or transfer order.
+      properties:
+        id:
+          description: Prefixed order ID (`po_...` or `trn_...`).
+          example: po_5e6f7a8b9c
+          type: string
+        name:
+          description: Order number or name.
+          example: PO-2026-0018
+          type: string
+      required:
+        - id
+        - name
+      title: Order Reference
+      type: object
+    inbound-shipment-file.schema:
+      description: File attached to an inbound shipment.
+      properties:
+        id:
+          description: Prefixed file ID (`isf_...`).
+          example: isf_3d4e5f6g7h
+          type: string
+        title:
+          description: File display title.
+          example: Packing List.pdf
+          type: string
+        url:
+          description: File URL.
+          example: https://storage.example.com/files/packing-list.pdf
+          type: string
+        content_type:
+          description: MIME type.
+          example: application/pdf
+          type: string
+        created_at:
+          description: Upload timestamp (ISO 8601).
+          example: '2026-03-28T14:35:00Z'
+          format: date-time
+          type: string
+      required:
+        - id
+        - title
+        - url
+        - content_type
+        - created_at
+      title: Inbound Shipment File
+      type: object
+    inbound-shipment-detail.schema:
+      description: Inbound shipment (detail view).
+      allOf:
+        - $ref: '#/components/schemas/inbound-shipment-list.schema'
+        - properties:
+            items:
+              items:
+                $ref: '#/components/schemas/inbound-shipment-item-detail.schema'
+              type: array
+            custom_volume_cubic_meters:
+              description: Custom volume in cubic meters.
+              example: 2.4
+              nullable: true
+              type: number
+            purchase_orders:
+              description: Linked purchase orders.
+              items:
+                $ref: '#/components/schemas/inbound-shipment-order-ref.schema'
+              type: array
+            transfer_orders:
+              description: Linked transfer orders.
+              items:
+                $ref: '#/components/schemas/inbound-shipment-order-ref.schema'
+              type: array
+            files:
+              description: Attached files.
+              items:
+                $ref: '#/components/schemas/inbound-shipment-file.schema'
+              type: array
+            damaged_count:
+              description: Total damaged units.
+              example: 5
+              type: integer
+            missing_count:
+              description: Total missing units.
+              example: 0
+              type: integer
+          required:
+            - custom_volume_cubic_meters
+            - purchase_orders
+            - transfer_orders
+            - files
+            - damaged_count
+            - missing_count
+          type: object
+      title: Inbound Shipment Detail
     inventory-level-product-summary.schema:
       description: Product summary in an inventory level response.
       properties:
