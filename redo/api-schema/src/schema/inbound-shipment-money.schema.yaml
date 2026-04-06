@@ -1,0 +1,13 @@
+description: Monetary amount with currency.
+properties:
+  amount:
+    description: Decimal amount as a string.
+    example: "1250.00"
+    type: string
+  currency:
+    description: ISO 4217 currency code.
+    example: USD
+    type: string
+required: [amount, currency]
+title: Money
+type: object

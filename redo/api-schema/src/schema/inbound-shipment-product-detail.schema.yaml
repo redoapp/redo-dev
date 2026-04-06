@@ -1,0 +1,11 @@
+description: Product detail in a shipment item (detail view).
+allOf:
+  - $ref: inbound-shipment-product-summary.schema.yaml
+  - properties:
+      upc:
+        description: Universal product code.
+        example: "012345678901"
+        nullable: true
+        type: string
+    type: object
+title: Inbound Shipment Product Detail

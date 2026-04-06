@@ -1,0 +1,16 @@
+description: Inbound shipment line item (detail view).
+allOf:
+  - $ref: inbound-shipment-item-list.schema.yaml
+  - properties:
+      product:
+        $ref: inbound-shipment-product-detail.schema.yaml
+      discrepancy:
+        description: Difference between expected and received quantity.
+        example: -150
+        type: integer
+      packing_mode:
+        description: Packing mode (e.g. `individual`).
+        example: individual
+        type: string
+    type: object
+title: Inbound Shipment Item Detail

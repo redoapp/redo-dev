@@ -1,0 +1,5 @@
+description: Maximum created time, exclusive
+example: 2026-01-01T00:00:00Z
+in: query
+name: created_at_max
+schema: { format: date-time, type: string }

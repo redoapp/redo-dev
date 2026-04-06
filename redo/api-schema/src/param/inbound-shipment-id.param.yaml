@@ -1,0 +1,7 @@
+description: Inbound shipment ID
+in: path
+name: inboundShipmentId
+required: true
+schema:
+  example: inb_7a3f9c2e1b
+  type: string

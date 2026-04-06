@@ -1,0 +1,41 @@
+description: Inbound shipment (detail view).
+allOf:
+  - $ref: inbound-shipment-list.schema.yaml
+  - properties:
+      items:
+        items: { $ref: inbound-shipment-item-detail.schema.yaml }
+        type: array
+      custom_volume_cubic_meters:
+        description: Custom volume in cubic meters.
+        example: 2.4
+        nullable: true
+        type: number
+      purchase_orders:
+        description: Linked purchase orders.
+        items: { $ref: inbound-shipment-order-ref.schema.yaml }
+        type: array
+      transfer_orders:
+        description: Linked transfer orders.
+        items: { $ref: inbound-shipment-order-ref.schema.yaml }
+        type: array
+      files:
+        description: Attached files.
+        items: { $ref: inbound-shipment-file.schema.yaml }
+        type: array
+      damaged_count:
+        description: Total damaged units.
+        example: 5
+        type: integer
+      missing_count:
+        description: Total missing units.
+        example: 0
+        type: integer
+    required:
+      - custom_volume_cubic_meters
+      - purchase_orders
+      - transfer_orders
+      - files
+      - damaged_count
+      - missing_count
+    type: object
+title: Inbound Shipment Detail
