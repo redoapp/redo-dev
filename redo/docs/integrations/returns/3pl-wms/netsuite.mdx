@@ -1,8 +1,366 @@
 ---
 title: "NetSuite"
-description: "Connect NetSuite to Redo for automated return processing"
+description: "Connect NetSuite to Redo for automated return processing, RMA creation, and inventory management"
 ---
 
-<Warning>
-  This page is under construction. Check back soon for detailed setup instructions and configuration guides.
-</Warning>
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is NetSuite?
+
+NetSuite is Oracle's cloud-based ERP suite that provides financials, inventory management, order management, and warehouse operations in a single platform. It is widely used by mid-market and enterprise brands to manage their end-to-end business operations.
+
+**Primary Purpose:** NetSuite delivers unified business management across financials, supply chain, and commerce. For returns, NetSuite serves as the system of record for Return Authorizations (RMAs), Item Receipts, Credit Memos, and Customer Refunds — giving operations and accounting teams full visibility into the return lifecycle.
+
+## What Does the Integration Do?
+
+When a return is approved in Redo, the system automatically creates a **Return Authorization (RMA)** in NetSuite linked to the original Sales Order or Cash Sale. This ensures your warehouse, operations, and accounting teams have complete visibility into incoming returns without any manual data entry.
+
+The integration goes beyond just creating RMAs. When your warehouse receives the returned items and creates an **Item Receipt** against the RMA in NetSuite, a webhook notifies Redo in real time. Redo then **automatically processes the return** — issuing refunds, sending exchanges, or applying store credit — based on the return's configuration. This means your warehouse staff only need to do what they already do (receive items in NetSuite), and Redo handles the rest.
+
+Depending on your configuration, Redo can also automatically create **Credit Memos** and **Customer Refunds** in NetSuite after a return is completed, keeping your financial records synchronized without manual intervention.
+
+## How to Set It Up
+
+Setting up the NetSuite integration involves two parts: deploying Redo's SuiteCloud project to your NetSuite account, and then entering your API credentials in Redo.
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active NetSuite Account" icon="circle-check">
+You must have an active NetSuite account with the following features enabled under **Setup > Company > Enable Features > SuiteCloud tab**:
+- **Web Services**
+- **Server-Side Scripting**
+- **Token-Based Authentication (TBA)**
+</Accordion>
+
+<Accordion title="Orders Synced to NetSuite" icon="box">
+Your orders must already exist in NetSuite as Sales Orders or Cash Sales. Returns cannot be created for orders that don't exist in NetSuite.
+</Accordion>
+
+<Accordion title="SKU Alignment" icon="barcode">
+Product SKUs in Redo must match the SKUs (or the configured SKU field) on your NetSuite inventory items. The integration uses SKUs to match returned products to RMA line items.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+</AccordionGroup>
+
+### What Gets Deployed
+
+The SuiteCloud project installs the following objects in your NetSuite account:
+
+| Object | Purpose |
+|--------|---------|
+| 2 custom transaction body fields | `custbody_created_by_redo` and `custbody_redo_tax_override` — carry Redo-specific data on RMAs |
+| 1 custom role | `customrole_redo` — grants Redo's API user the exact permissions it needs |
+| 2 SuiteScript files | `update-rma.js` (handles tax codes and discount overrides on RMA creation) and `ItemReceiptEvent.js` (sends a webhook to Redo when an Item Receipt is created) |
+| 2 script deployments | Wire the scripts to Return Authorization and Item Receipt record types |
+
+### Configuration Steps
+
+<Steps>
+<Step title="Deploy the SuiteCloud Project">
+
+**Standard path (recommended):** Assign the Administrator role in NetSuite to the user Redo will use, or allow Redo to attach the Redo custom role to an existing user. With this access, Redo will deploy the SuiteCloud project using the SuiteCloud CLI, which automatically creates all custom fields, scripts, roles, and deployments listed above.
+
+**Manual path:** If you prefer not to grant administrator access, your NetSuite developer can set everything up manually. Download the setup guide below and follow the step-by-step instructions:
+
+<Card title="NetSuite Redo Returns Manual Setup Guide" icon="file-arrow-down" href="/docs/integrations/returns/3pl-wms/netsuite-manual-setup">
+  Step-by-step instructions for creating all required objects manually in your NetSuite account.
+</Card>
+</Step>
+
+<Step title="Create an Integration Record and OAuth Tokens">
+Regardless of which deployment path you chose, you need to create an Integration record and generate OAuth tokens in NetSuite. If you followed the manual setup guide, you already completed this in Step 5.
+
+If Redo deployed the SuiteCloud project for you, follow these steps:
+
+1. Navigate to **Setup > Integration > Manage Integrations > New**
+2. Set **Name** to `Redo Returns`, enable **Token-Based Authentication**, and disable **Authorization Code Grant**
+3. Click **Save** and copy the **Consumer Key** and **Consumer Secret** (shown only once)
+4. Assign the **Redo** role to a service employee under **Lists > Employees > Employees** (Access subtab)
+5. Navigate to **Setup > Users/Roles > Access Tokens > New**
+6. Select the **Redo Returns** integration, the service employee, and the **Redo** role
+7. Click **Save** and copy the **Token ID** and **Token Secret** (shown only once)
+</Step>
+
+<Step title="Enter Credentials in Redo">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **NetSuite** card and click **Connect**
+4. Enter the following credentials:
+
+<ParamField path="accountId" type="string" required>
+Your NetSuite Account ID, found at **Setup > Company > Company Information** (format: `1234567` or `1234567-SB1` for sandboxes).
+</ParamField>
+
+<ParamField path="consumerKey" type="string" required>
+The Consumer Key from the Integration record you created.
+</ParamField>
+
+<ParamField path="consumerSecret" type="string" required>
+The Consumer Secret from the Integration record you created.
+</ParamField>
+
+<ParamField path="tokenId" type="string" required>
+The Token ID from the Access Token you generated.
+</ParamField>
+
+<ParamField path="tokenSecret" type="string" required>
+The Token Secret from the Access Token you generated.
+</ParamField>
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal
+2. Check the return timeline in Redo for a NetSuite RMA creation entry with a direct link to the RMA
+3. Log in to NetSuite and verify the Return Authorization was created
+4. Confirm the RMA:
+   - References the correct original Sales Order or Cash Sale
+   - Contains accurate products, quantities, and SKUs
+   - Has the `custbody_created_by_redo` field set to `true`
+</Step>
+</Steps>
+
+## How It Works
+
+### Return Authorization (RMA)
+
+When a return is approved in Redo, an RMA is automatically created in NetSuite. This is the core record that drives the rest of the integration.
+
+<Steps>
+<Step title="Order Lookup">
+Redo looks up the original Sales Order or Cash Sale in NetSuite using the Shopify order name. The lookup uses a configurable field mapping and supports both transaction types.
+</Step>
+
+<Step title="RMA Creation">
+Redo creates a Return Authorization linked to the original order. Each returned product is mapped to a line item on the RMA using SKU matching. The RMA includes:
+- Line items with quantities and product details
+- A memo field referencing the Redo return ID
+- The `custbody_created_by_redo` flag set to `true`
+- An optional tax override via `custbody_redo_tax_override`
+</Step>
+
+<Step title="SuiteScript Processing">
+On creation, the `update-rma.js` script fires automatically. It clears any discount items, applies the tax override if present, and copies tax codes from the original Sales Order's line items to the matching RMA lines. This ensures tax accuracy on the return.
+</Step>
+
+<Step title="Timeline Update">
+A timeline entry is added to the return in Redo with a direct link to the RMA in NetSuite, giving your team quick access to the record.
+</Step>
+</Steps>
+
+<Info>
+**Skipped returns:** Full green returns (where no items are being shipped back) and in-store returns can be optionally excluded from RMA creation based on your integration settings.
+</Info>
+
+### Item Receipt and Automatic Return Processing
+
+The Item Receipt is where the integration delivers the most value. When your warehouse receives returned items and records an Item Receipt against the RMA in NetSuite, Redo automatically processes the return.
+
+<Steps>
+<Step title="Warehouse Receives Items">
+Your warehouse staff creates an Item Receipt against the RMA in NetSuite — the same workflow they already follow for receiving returned goods.
+</Step>
+
+<Step title="Webhook Notification">
+The `ItemReceiptEvent.js` script fires on Item Receipt creation and sends a webhook to Redo with the Item Receipt ID and your NetSuite Account ID. This happens in real time.
+</Step>
+
+<Step title="Item Matching">
+Redo fetches the full Item Receipt from NetSuite and matches each received item to the corresponding product on the Redo return using SKU matching. If a direct match isn't found, Redo falls back to a SuiteQL query to resolve the SKU.
+</Step>
+
+<Step title="Automatic Processing">
+Redo automatically triggers return processing for each matched item. Depending on the return's configuration, this means:
+- **Refunds** are issued to the customer's original payment method
+- **Exchanges** have new orders created and sent to fulfillment
+- **Store credit** is applied to the customer's account
+
+No manual action is required in Redo — the webhook handles everything.
+</Step>
+</Steps>
+
+
+### Credit Memo (Optional)
+
+When enabled, Redo automatically creates a Credit Memo by transforming the RMA after the return reaches **Complete** status. This happens immediately once all items on the return have been processed — no manual action is needed. The Credit Memo inherits line items and amounts from the RMA, keeping your NetSuite financials in sync without manual bookkeeping.
+
+A timeline entry is added to the return in Redo with a direct link to the Credit Memo in NetSuite for easy reference.
+
+### Customer Refund (Optional)
+
+When enabled alongside Credit Memos, Redo automatically creates a Customer Refund from the Credit Memo immediately after the Credit Memo is created, applying the full credit amount to the customer. This closes the loop on the financial side — the Credit Memo records the liability, and the Customer Refund records the actual payment back to the customer. This requires an account ID and custom form ID to be configured in your integration settings.
+
+### RMA Customization
+
+Redo supports mapping custom fields onto your RMAs using dynamic variables. This lets you pass return-specific data into any custom transaction body field or line item field on the Return Authorization in NetSuite — no code changes required.
+
+#### Header-Level Custom Fields
+
+Custom fields on the RMA header can use the following dynamic variables:
+
+| Variable | Description |
+|----------|-------------|
+| `{{trackingNumber}}` | Return shipment tracking number |
+| `{{carrierName}}` | Shipping carrier name |
+| `{{compensationType}}` | How the customer is being compensated: `Refund`, `Store Credit`, or `Exchange` |
+| `{{exchangeAmount}}` | Total value of the exchange order |
+| `{{storeCredit}}` | Total store credit amount |
+| `{{refundTotal}}` | Total refund amount including shipping |
+
+#### Line Item Custom Fields
+
+Custom fields on individual RMA line items can use:
+
+| Variable | Description |
+|----------|-------------|
+| `{{primaryReturnReason}}` | The customer's primary return reason |
+| `{{secondaryReturnReason}}` | Any additional return reasons |
+| `{{primaryReasonCode}}` | Return reason code (primary) |
+| `{{secondaryReasonCode}}` | Return reason code (secondary) |
+| `{{isGreenReturn}}` | Whether the item is a green return (`true`/`false`) |
+| `{{compensationType}}` | Compensation type for this specific item |
+| `{{refundAmount}}` | Proportional refund amount for this item |
+| `{{storeCreditAmount}}` | Proportional store credit amount for this item |
+
+#### Custom Line Items
+
+You can also configure additional line items to be added to the RMA automatically. These are useful for representing exchange credits, store credit amounts, or deducted shipping fees as separate line items on the RMA. Custom line items support their own set of variables:
+
+| Variable | Description |
+|----------|-------------|
+| `{{exchangeCredit}}` | Pre-tax exchange credit value |
+| `{{storeCreditAmount}}` | Total store credit amount |
+| `{{deductedShippingFee}}` | Shipping fee deducted from the return |
+
+<Info>
+RMA customization is configured by the Redo team as part of your integration setup. Contact **support@getredo.com** if you need custom fields mapped on your RMAs.
+</Info>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step | Time | Description |
+|------|------|-------------|
+| SuiteCloud deployment | 5-10 minutes | Redo deploys scripts, fields, and roles (or your developer follows the manual guide) |
+| Integration record and OAuth tokens | 5-10 minutes | Create the integration record and generate access tokens in NetSuite |
+| Credential entry in Redo | 2-3 minutes | Enter your five credentials in the Redo dashboard |
+| First return test | 5-10 minutes | Create a test return and verify the RMA in NetSuite |
+| **Total setup** | **20-35 minutes** | Complete setup for most merchants |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after a return is approved in Redo.
+</Step>
+
+<Step title="Item Receipt Webhook">
+**Real-time (within seconds)** after an Item Receipt is created in NetSuite. Redo receives the webhook and begins processing immediately.
+</Step>
+
+<Step title="Automatic Return Processing">
+**Real-time (1-5 seconds)** after the Item Receipt webhook is received. Redo matches items and triggers refunds, exchanges, or store credit automatically.
+</Step>
+
+<Step title="Credit Memo Creation">
+**Real-time (1-3 seconds)** after the return reaches Complete status (when enabled).
+</Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="RMA Creation Failed: Sales Order Not Found">
+Redo could not locate the original Sales Order or Cash Sale in NetSuite.
+
+**Solution:**
+- Verify the order exists in NetSuite as a Sales Order or Cash Sale
+- Ensure the Shopify order name is stored in the configured lookup field in NetSuite
+- Confirm orders are syncing correctly from Shopify to NetSuite
+- Check if there's a delay in order sync — the order must exist in NetSuite before a return can be created
+</Accordion>
+
+<Accordion title="RMA Creation Failed: Sales Order Must Be Fulfilled">
+NetSuite requires the Sales Order to be fulfilled before a Return Authorization can be initialized from it.
+
+**Solution:**
+- Verify the Sales Order has been fulfilled in NetSuite
+- Check if fulfillment records are syncing correctly from your shipping provider to NetSuite
+</Accordion>
+
+<Accordion title="RMA Creation Failed: Return Authorization Cannot Be Initialized">
+NetSuite could not initialize a Return Authorization from the referenced transaction.
+
+**Solution:**
+- Verify the original transaction type is correct (Sales Order or Cash Sale)
+- Check if another RMA already exists for this order in NetSuite
+- Ensure the Sales Order status allows return authorization creation
+</Accordion>
+
+<Accordion title="RMA Creation Failed: Record Already Exists">
+A Return Authorization with this reference already exists in NetSuite.
+
+**Solution:**
+- Check NetSuite for an existing RMA linked to this order
+- If the existing RMA is incorrect, void or close it in NetSuite before retrying
+</Accordion>
+
+<Accordion title="RMA Creation Failed: Permission Violation">
+The Redo API user does not have sufficient permissions to create the RMA or access required records.
+
+**Solution:**
+- Verify the Redo custom role (`customrole_redo`) has all required permissions (see the setup guide for the full list)
+- Ensure the service employee has the Redo role assigned
+- Check if any custom record or field-level permissions are restricting access
+</Accordion>
+
+<Accordion title="Item Receipt Webhook Not Triggering">
+Returns are not being auto-processed after items are received in NetSuite.
+
+**Solution:**
+- Confirm the `customscript_redo_item_receipt_event` script deployment status is **Released**
+- Confirm the deployment record type is **Item Receipt** and event type is **Create (afterSubmit)**
+- Confirm **Execute as Role** is set to the **Redo** role on the deployment
+- Check script execution logs at **Customization > Scripting > Script Execution Logs** for errors
+- Confirm outbound HTTPS calls to `netsuite-webhook.getredo.com` are not blocked by firewall or allowlist rules
+</Accordion>
+
+<Accordion title="Item Receipt Received but Products Not Matched">
+The webhook was received but Redo could not match Item Receipt items to return products.
+
+**Solution:**
+- Verify that product SKUs in Redo match the SKUs on the NetSuite inventory items
+- Check the return timeline in Redo for details about which items could not be matched
+- Confirm the correct SKU field is configured in your integration settings
+</Accordion>
+
+<Accordion title="RMA Tax Not Being Applied">
+The tax override or tax codes from the original Sales Order are not appearing on the RMA.
+
+**Solution:**
+- Confirm the `custbody_created_by_redo` and `custbody_redo_tax_override` fields exist and are visible on the Return Authorization form
+- Check the execution log for the `customscriptupdate_rma` script
+- Confirm the script deployment event type is **Create (beforeSubmit)** and record type is **Return Authorization**
+</Accordion>
+
+<Accordion title="REST API Authentication Failed">
+API credential issues prevent the integration from connecting to NetSuite.
+
+**Solution:**
+- Confirm Token-Based Authentication is enabled on the account
+- Verify the five credentials entered in Redo are correct (Account ID, Consumer Key, Consumer Secret, Token ID, Token Secret)
+- Ensure the service employee has the **Redo** role assigned
+- Confirm the token was generated with the correct employee + role + integration combination
+- Re-generate the token and update the credentials in Redo if needed
+</Accordion>
+</AccordionGroup>
+
+<IntegrationSupport integrationProvider="NetSuite" />

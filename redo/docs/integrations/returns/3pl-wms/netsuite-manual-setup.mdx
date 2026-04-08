@@ -1,0 +1,492 @@
+---
+title: "Manual SuiteCloud Setup"
+description: "Step-by-step guide for manually setting up the Redo Returns integration in your NetSuite account"
+---
+
+This guide describes every object, script, and configuration that must be
+created manually in your NetSuite account to enable the Redo Returns
+integration. These steps replace the automated SuiteCloud CLI deployment that
+Redo normally runs.
+
+<Info>
+**Audience:** A NetSuite administrator or developer with access to
+Customization menus and the ability to upload files to the File Cabinet.
+</Info>
+
+## Overview
+
+Redo's NetSuite Returns integration creates two SuiteScript user event scripts
+and supporting metadata in your account:
+
+| What                                      | Purpose                                               |
+| ----------------------------------------- | ----------------------------------------------------- |
+| 2 custom transaction body fields          | Carry Redo-specific data on RMAs and Item Receipts    |
+| 1 custom role                             | Grants Redo's API user the exact permissions it needs |
+| 2 SuiteScript files                       | Uploaded to File Cabinet                              |
+| 2 user event script records + deployments | Wire the scripts to the correct record types          |
+| 1 integration record + OAuth token        | Lets Redo authenticate against your account via REST  |
+
+<Warning>
+All objects use fixed script IDs. Do not change them — Redo's backend expects
+these exact IDs.
+</Warning>
+
+## Prerequisites
+
+Before starting, confirm that the following NetSuite features are enabled in
+your account:
+
+1. **Web Services** — Go to **Setup > Company > Enable Features > SuiteCloud
+   tab**, check **Web Services**.
+2. **Server-Side Scripting** — On the same page, check **Server-Side
+   Scripting**.
+3. **Token-Based Authentication (TBA)** — On the same page (SuiteCloud tab),
+   check **Token-Based Authentication** (required for OAuth 1.0 REST access).
+
+## Step 1 — Create Custom Transaction Body Fields
+
+You need to create two custom fields. Both are plain **Text** fields applied to
+transaction records.
+
+Navigate to: **Customization > Lists, Records, & Fields > Transaction Body
+Fields > New**
+
+### Field 1: `custbody_created_by_redo`
+
+| Setting          | Value                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| **Script ID**    | `custbody_created_by_redo`                                    |
+| **Label**        | `created_by_redo`                                             |
+| **Type**         | Free-Form Text                                                |
+| **Description**  | flag to mark whether return authorization was created by redo |
+| **Mandatory**    | No                                                            |
+| **Store Value**  | Yes                                                           |
+| **Display Type** | Normal                                                        |
+| **Search Level** | 2                                                             |
+
+**Applies To (check these record types only):**
+
+| Transaction Type | Enabled |
+| ---------------- | ------- |
+| Item Receipt     | Yes     |
+| Purchase         | Yes     |
+| Sale             | Yes     |
+| All others       | No      |
+
+Click **Save**.
+
+### Field 2: `custbody_redo_tax_override`
+
+| Setting          | Value                                      |
+| ---------------- | ------------------------------------------ |
+| **Script ID**    | `custbody_redo_tax_override`               |
+| **Label**        | `redo_tax_override`                        |
+| **Type**         | Free-Form Text                             |
+| **Description**  | override for taxes on rmas created by redo |
+| **Mandatory**    | No                                         |
+| **Store Value**  | Yes                                        |
+| **Display Type** | Normal                                     |
+| **Search Level** | 2                                          |
+
+**Applies To (check these record types only):**
+
+| Transaction Type | Enabled |
+| ---------------- | ------- |
+| Item Receipt     | Yes     |
+| Purchase         | Yes     |
+| Sale             | Yes     |
+| All others       | No      |
+
+Click **Save**.
+
+## Step 2 — Create the Redo Custom Role
+
+Navigate to: **Setup > Users/Roles > Manage Roles > New**
+
+| Setting                               | Value             |
+| ------------------------------------- | ----------------- |
+| **Script ID**                         | `customrole_redo` |
+| **Name**                              | Redo              |
+| **Center Type**                       | Shipping Center   |
+| **Subsidiary Restriction**            | All               |
+| **Allow viewing of all subsidiaries** | Yes               |
+
+Under the **Permissions** tab, add each of the following:
+
+| Permission                                               | Level |
+| -------------------------------------------------------- | ----- |
+| Manage Own OAuth Tokens (`ADMI_MANAGE_OWN_OAUTH_TOKENS`) | Full  |
+| REST Web Services (`ADMI_RESTWEBSERVICES`)               | Full  |
+| Items (`LIST_ITEM`)                                      | Full  |
+| Analytics (`REPO_ANALYTICS`)                             | Edit  |
+| Cash Sales (`TRAN_CASHSALE`)                             | View  |
+| Find Transaction (`TRAN_FIND`)                           | Full  |
+| Item Receipts (`TRAN_ITEMRCPT`)                          | View  |
+| Return Authorization (`TRAN_RTNAUTH`)                    | Full  |
+| Sales Order (`TRAN_SALESORD`)                             | Full  |
+
+Click **Save**.
+
+## Step 3 — Upload SuiteScript Files to the File Cabinet
+
+Navigate to: **Documents > Files > File Cabinet**
+
+You need one subfolder and two files.
+
+### 3a. Create the folder structure
+
+1. Under **SuiteScripts**, create a subfolder named **`Redo`** (if it doesn't
+   already exist).
+   - Full path: `SuiteScripts/Redo/`
+
+The root `SuiteScripts` folder already exists by default. You only need to
+create the `Redo` subfolder inside it.
+
+### 3b. Upload `update-rma.js`
+
+Upload this file to **`SuiteScripts/`** (directly in SuiteScripts, not inside
+the Redo subfolder).
+
+**File name:** `update-rma.js`
+**Full cabinet path:** `/SuiteScripts/update-rma.js`
+
+```javascript
+/* eslint-disable no-undef */
+/**
+ * @NApiVersion 2.1
+ * @NScriptType UserEventScript
+ */
+
+define(["N/record", "N/runtime"], function (record, runtime) {
+  function beforeSubmit(context) {
+    if (context.type !== context.UserEventType.CREATE) {
+      return;
+    }
+
+    var newRecord = context.newRecord;
+
+    var createdByRedo = newRecord.getValue({
+      fieldId: "custbody_created_by_redo",
+    });
+    if (createdByRedo !== "true") {
+      log.debug({ title: "createdByRedo doesn't equal true", details: "" });
+      return;
+    }
+
+    try {
+      // Set discount item to null
+      newRecord.setValue({ fieldId: "discountitem", value: null });
+      var taxOverride = newRecord.getValue({
+        fieldId: "custbody_redo_tax_override",
+      });
+      if (taxOverride) {
+        newRecord.setValue({
+          fieldId: "taxamountoverride",
+          value: parseFloat(taxOverride),
+        });
+      }
+
+      // If the RMA is linked to a Sales Order, load that order to retrieve tax codes
+      var createdFrom = newRecord.getValue({ fieldId: "createdfrom" });
+      if (createdFrom) {
+        var soRecord = record.load({
+          type: record.Type.SALES_ORDER,
+          id: createdFrom,
+        });
+
+        // Build a mapping from sales order line item IDs to their tax codes
+        var soLineMapping = {};
+        var soLineCount = soRecord.getLineCount({ sublistId: "item" });
+        for (var j = 0; j < soLineCount; j++) {
+          var soLineNumber = soRecord.getSublistValue({
+            sublistId: "item",
+            fieldId: "item",
+            line: j,
+          });
+          if (soLineNumber === null || soLineNumber === undefined) {
+            soLineNumber = j;
+          }
+          var soTaxCode = soRecord.getSublistValue({
+            sublistId: "item",
+            fieldId: "taxcode",
+            line: j,
+          });
+          soLineMapping[soLineNumber] = soTaxCode;
+        }
+
+        // Loop through each RMA line and apply the tax code from the originating sales order line
+        var numLines = newRecord.getLineCount({ sublistId: "item" });
+        for (var i = 0; i < numLines; i++) {
+          var orderLineNumber = newRecord.getSublistValue({
+            sublistId: "item",
+            fieldId: "item",
+            line: i,
+          });
+          if (orderLineNumber !== null && orderLineNumber !== undefined) {
+            var taxCode = soLineMapping[orderLineNumber];
+            if (taxCode) {
+              newRecord.setSublistValue({
+                sublistId: "item",
+                fieldId: "taxcode",
+                line: i,
+                value: taxCode,
+              });
+            }
+          }
+        }
+      }
+    } catch (e) {
+      log.error({ title: "problem while updating rma", details: e.toString() });
+    }
+  }
+
+  return { beforeSubmit };
+});
+```
+
+### 3c. Upload `ItemReceiptEvent.js`
+
+Upload this file to **`SuiteScripts/Redo/`** (inside the Redo subfolder).
+
+**File name:** `ItemReceiptEvent.js`
+**Full cabinet path:** `/SuiteScripts/Redo/ItemReceiptEvent.js`
+
+```javascript
+/**
+ * @NApiVersion 2.1
+ * @NScriptType UserEventScript
+ */
+define(["N/https", "N/log", "N/runtime"], function (https, log, runtime) {
+  var WEBHOOK_URL = "https://netsuite-webhook.getredo.com/";
+
+  function afterSubmit(context) {
+    var record = context.newRecord;
+
+    log.debug("Sending item receipt to Redo", { itemReceiptId: record.id });
+
+    var event = {
+      account: { id: runtime.accountId },
+      itemReceipt: { id: record.id },
+    };
+
+    try {
+      var response = https.post({
+        url: WEBHOOK_URL,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      });
+      if (response.code < 200 || response.code > 299) {
+        throw new Error("HTTP status: " + response.code);
+      }
+    } catch (e) {
+      log.error("Failed to send item receipt to Redo", {
+        error: String(e),
+        itemReceiptId: record.id,
+      });
+      return;
+    }
+
+    log.debug("Sent item receipt to Redo", { itemReceiptId: record.id });
+  }
+
+  return { afterSubmit: afterSubmit };
+});
+```
+
+<Warning>
+The `WEBHOOK_URL` in `ItemReceiptEvent.js` must be set to
+`https://netsuite-webhook.getredo.com/`. Do not change it.
+</Warning>
+
+## Step 4 — Create User Event Scripts and Deployments
+
+### Script 1: Update RMA Script
+
+Navigate to: **Customization > Scripting > Scripts > New**
+
+Select **User Event Script** as the script type.
+
+#### Script Record Settings
+
+| Setting           | Value                                                                      |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Script ID**     | `customscriptupdate_rma`                                                   |
+| **Name**          | `update-rma.js`                                                            |
+| **Description**   | use redo fields to update                                                  |
+| **Script File**   | `/SuiteScripts/update-rma.js` (browse to the file you uploaded in Step 3b) |
+| **Inactive**      | No                                                                         |
+| **Notify Admins** | No                                                                         |
+| **Notify Owner**  | No                                                                         |
+
+Click **Save and Deploy** (or save first, then go to the Deployments subtab).
+
+#### Deployment Settings
+
+| Setting                       | Value                                         |
+| ----------------------------- | --------------------------------------------- |
+| **Deployment Script ID**      | `customdeployupdate_rma_deployment`           |
+| **Record Type**               | Return Authorization                          |
+| **Event Type**                | Create (beforeSubmit)                         |
+| **Status**                    | Released                                      |
+| **Execute as Role**           | _(leave blank — runs as the submitting user)_ |
+| **Log Level**                 | Debug                                         |
+| **Deployed**                  | Yes                                           |
+| **All Employees**             | Yes                                           |
+| **All Roles**                 | Yes                                           |
+| **All Localization Contexts** | Yes                                           |
+| **All Partners**              | No                                            |
+
+Click **Save**.
+
+### Script 2: Item Receipt Event Script
+
+Navigate to: **Customization > Scripting > Scripts > New**
+
+Select **User Event Script** as the script type.
+
+#### Script Record Settings
+
+| Setting         | Value                                                                                 |
+| --------------- | ------------------------------------------------------------------------------------- |
+| **Script ID**   | `customscript_redo_item_receipt_event`                                                |
+| **Name**        | Redo Item Receipt Event                                                               |
+| **Description** | Redo item receipt event                                                               |
+| **Script File** | `/SuiteScripts/Redo/ItemReceiptEvent.js` (browse to the file you uploaded in Step 3c) |
+
+Click **Save and Deploy** (or save first, then go to the Deployments subtab).
+
+#### Deployment Settings
+
+| Setting                  | Value                                                              |
+| ------------------------ | ------------------------------------------------------------------ |
+| **Deployment Script ID** | `customdeploy_redo_item_receipt_event`                             |
+| **Record Type**          | Item Receipt                                                       |
+| **Event Type**           | Create (afterSubmit)                                               |
+| **Status**               | Released                                                           |
+| **Execute as Role**      | Redo _(the custom role you created in Step 2 — `customrole_redo`)_ |
+| **Log Level**            | Debug                                                              |
+| **All Roles**            | Yes                                                                |
+
+Click **Save**.
+
+<Warning>
+The Item Receipt script's deployment must have **Execute as
+Role** set to the **Redo** custom role. This ensures the script always runs
+with the correct permissions regardless of which user creates the Item
+Receipt.
+</Warning>
+
+## Step 5 — Create an Integration Record and OAuth Tokens
+
+Redo's backend connects to your NetSuite account using **Token-Based
+Authentication (TBA / OAuth 1.0)**. You need to create an Integration record and
+then generate a token for an employee who has the Redo role assigned.
+
+### 5a. Create the Integration Record
+
+Navigate to: **Setup > Integration > Manage Integrations > New**
+
+| Setting                        | Value        |
+| ------------------------------ | ------------ |
+| **Name**                       | Redo Returns |
+| **State**                      | Enabled      |
+| **Token-Based Authentication** | Checked      |
+| **Authorization Code Grant**   | Unchecked    |
+| **TBA: Authorization Flow**    | Unchecked    |
+
+Click **Save**. NetSuite will display a **Consumer Key** and **Consumer
+Secret**. Copy both immediately — they are shown only once.
+
+> Record:
+>
+> - Consumer Key (Client ID): `__________________`
+> - Consumer Secret (Client Secret): `__________________`
+
+### 5b. Assign the Redo Role to a Service Employee
+
+You need a NetSuite employee (a service/API user, not a real person) who has the
+**Redo** role assigned.
+
+1. Create or use an existing service employee: **Lists > Employees > Employees >
+   New**.
+2. On the employee record, go to the **Access** subtab.
+3. Add the **Redo** role to their role list.
+4. Save.
+
+### 5c. Generate an Access Token for that Employee
+
+Navigate to: **Setup > Users/Roles > Access Tokens > New**
+
+| Setting              | Value                                                    |
+| -------------------- | -------------------------------------------------------- |
+| **Application Name** | Redo Returns _(select the integration you just created)_ |
+| **Employee**         | _(select the service employee from 5b)_                  |
+| **Role**             | Redo _(select `customrole_redo`)_                        |
+
+Click **Save**. NetSuite will display a **Token ID** and **Token Secret**. Copy
+both immediately.
+
+> Record:
+>
+> - Token ID: `__________________`
+> - Token Secret: `__________________`
+
+### 5d. Enter Credentials in Redo
+
+Once you have all five values, enter them in your Redo merchant dashboard:
+
+1. Go to **Settings > Returns & Claims > Integrations**
+2. Locate the **NetSuite** card and click **Connect**
+3. Enter the following credentials:
+   - **NetSuite Account ID** (found at **Setup > Company > Company Information** —
+     format: `1234567` or `1234567-SB1` for sandboxes)
+   - **Consumer Key** (from Step 5a)
+   - **Consumer Secret** (from Step 5a)
+   - **Token ID** (from Step 5c)
+   - **Token Secret** (from Step 5c)
+4. Click **Save**
+
+Redo will store these credentials and use them to authenticate all REST API
+calls to your account.
+
+## Summary of All Script IDs
+
+| Object Type                      | Script ID                              |
+| -------------------------------- | -------------------------------------- |
+| Custom Field                     | `custbody_created_by_redo`             |
+| Custom Field                     | `custbody_redo_tax_override`           |
+| Custom Role                      | `customrole_redo`                      |
+| User Event Script (RMA)          | `customscriptupdate_rma`               |
+| Script Deployment (RMA)          | `customdeployupdate_rma_deployment`    |
+| User Event Script (Item Receipt) | `customscript_redo_item_receipt_event` |
+| Script Deployment (Item Receipt) | `customdeploy_redo_item_receipt_event` |
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Script is not firing">
+- Confirm the deployment status is **Released** (not Testing or Disabled).
+- Confirm the correct record type and event type are set on the deployment.
+- Check script execution logs at **Customization > Scripting > Script Execution Logs**.
+</Accordion>
+
+<Accordion title="Item Receipt webhook is failing">
+- Check the execution log for the `customscript_redo_item_receipt_event` script.
+- Confirm that **Web Services** is enabled under **Setup > Company > Enable Features**.
+- Confirm the `Execute as Role` on the deployment is set to the **Redo** role.
+- Confirm outbound HTTPS calls to `netsuite-webhook.getredo.com` are not blocked by any firewall or allowlist rules in your account.
+</Accordion>
+
+<Accordion title="RMA tax is not being applied">
+- Confirm the `custbody_created_by_redo` and `custbody_redo_tax_override` fields exist and are visible on the Return Authorization form.
+- Check the execution log for `customscriptupdate_rma`.
+- Confirm the script's deployment event type is **Create** and record type is **Return Authorization**.
+</Accordion>
+
+<Accordion title="REST API authentication errors">
+- Confirm Token-Based Authentication is enabled on the account.
+- Confirm the service employee has the **Redo** role assigned.
+- Confirm the token was generated with the correct employee + role + integration combination.
+- Re-generate the token and update the credentials in Redo if needed.
+</Accordion>
+</AccordionGroup>
