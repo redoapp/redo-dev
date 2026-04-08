@@ -163,6 +163,9 @@ The Redo MCP Server provides tools for return and claim management:
 | **close_return** | Close a return without processing — marks all items as complete with no further action. |
 | **create_return_comment** | Add a comment to a return's timeline. |
 | **approve_return** | Approve a return so the customer can proceed with shipping items back. |
+| **list_return_tags** | List every return tag defined for the authenticated team. Read-only, no input. |
+| **upsert_return_tag** | Create a new tag, recolor an existing tag, or rename a tag (rename cascades to returns and saved view filters). |
+| **delete_return_tag** | Permanently delete a tag and strip it from every return and saved view filter that referenced it. Destructive. |
 | **ask_redo** | Ask the Redo support AI any question about your account, settings, policies, or platform features. |
 
 ## Usage Examples
@@ -190,6 +193,30 @@ The AI will call `get_return` to fetch full details including item statuses, com
 > Process the return for order #5678 — accept all items.
 
 The AI will call `get_return` to retrieve the return's items and their IDs, confirm the details with you, then call `process_return` to accept each item.
+
+### List return tags
+
+**Prompt:**
+
+> What return tags do we have?
+
+The AI will call `list_return_tags` to fetch every tag defined for your team. Use this to discover the exact stored name — names are case-sensitive — before calling `upsert_return_tag` or `delete_return_tag`.
+
+### Create, recolor, or rename a return tag
+
+**Prompt:**
+
+> Rename the "Damaged" tag to "Damaged in transit".
+
+The AI will call `upsert_return_tag` with the current name, a `pillTheme`, and (for a rename) a `newName`. Renames cascade to every return and saved view filter that referenced the old name, so the AI should confirm with you before creating or renaming a tag.
+
+### Delete a return tag
+
+**Prompt:**
+
+> Delete the "Fraud review" tag.
+
+The AI will call `delete_return_tag` with the tag's name. This permanently deletes the tag and strips it from every return and saved view filter that referenced it, so the AI should always confirm with you before calling it.
 
 ### Ask a question about your Redo account
 

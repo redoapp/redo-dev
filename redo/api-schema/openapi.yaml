@@ -49,6 +49,7 @@ tags:
   - name: Merchant Admin
   - name: Orders
   - name: Products
+  - name: Return Tags
   - name: Returns
   - name: Storefront
   - name: Webhooks
@@ -1660,6 +1661,124 @@ paths:
     parameters:
       - $ref: '#/components/parameters/store-id.param'
     summary: Returns
+  /stores/{storeId}/return-tags:
+    description: Return tags for a store.
+    get:
+      description: List every return tag defined for the store.
+      operationId: Return tags list
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  tags:
+                    items:
+                      $ref: '#/components/schemas/return-tag.schema'
+                    type: array
+                required:
+                  - tags
+                type: object
+          description: Success
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: List Return Tags
+      tags:
+        - Return Tags
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Return Tags
+  /stores/{storeId}/return-tags/{name}:
+    delete:
+      description: Delete a return tag. The tag is also stripped from every return and saved view filter that referenced it.
+      operationId: Return tag delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    const: true
+                    type: boolean
+                required:
+                  - success
+                type: object
+          description: Success
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request. Returned with type `com.getredo.api:return-tag/invalid-request` when the path `name` is missing.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Delete Return Tag
+      tags:
+        - Return Tags
+    description: Return tag.
+    put:
+      description: |-
+        Create a new return tag, update an existing tag's color, or rename a tag. When `newName` is set and differs from the path `name`, the rename cascades to returns and saved view filters.
+
+        Possible 400 problem types:
+        - `com.getredo.api:return-tag/rename-precondition-failed` — the source
+          tag does not exist, or the target name is already in use.
+
+        - `com.getredo.api:return-tag/invalid-request` — the path `name` is
+          missing or the request body is invalid.
+      operationId: Return tag upsert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/return-tag-upsert-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  tag:
+                    $ref: '#/components/schemas/return-tag.schema'
+                required:
+                  - tag
+                type: object
+          description: Success
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Rename precondition failed or invalid request
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Upsert Return Tag
+      tags:
+        - Return Tags
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/return-tag-name.param'
+    summary: Return Tag
   /stores/{storeId}/storefront/events:
     post:
       description: Processes events from storefronts using Shopify pixel event schema
@@ -2075,6 +2194,14 @@ components:
       name: Idempotency-Key
       required: false
       schema:
+        type: string
+    return-tag-name.param:
+      description: Return tag name. Case-sensitive and URL-encoded.
+      in: path
+      name: name
+      required: true
+      schema:
+        example: Damaged
         type: string
     webhook-id.param:
       description: Webhook ID
@@ -5146,6 +5273,89 @@ components:
       required:
         - return
         - externalRMAResponses
+    pill-theme.schema:
+      description: Color theme used to render a tag pill in the UI.
+      enum:
+        - NORMAL
+        - PRIMARY_LIGHT
+        - LIGHT_PINK
+        - DANGER
+        - NEUTRAL_YELLOW
+        - SUCCESS
+        - NEUTRAL_BLUE
+        - PRIMARY
+        - SOLID_WHITE
+        - SOLID_PINK
+        - SOLID_RED
+        - SOLID_ORANGE
+        - SOLID_YELLOW
+        - SOLID_GREEN
+        - SOLID_LIGHT_BLUE
+        - SOLID_NAVY
+        - SOLID_BLACK
+        - BRAND
+        - GRAY_BLUE
+        - WHITE_SUCCESS
+        - GRAY_ALTERNATE
+        - BRAND_ALTERNATE
+        - ERROR_ALTERNATE
+        - WARNING_ALTERNATE
+        - SUCCESS_ALTERNATE
+        - GRAY_BLUE_ALTERNATE
+        - BLUE_LIGHT_ALTERNATE
+        - BLUE_ALTERNATE
+        - INDIGO_ALTERNATE
+        - PURPLE_ALTERNATE
+        - PINK_ALTERNATE
+        - ORANGE_ALTERNATE
+        - BLACK_ALTERNATE
+        - WHITE_ALTERNATE
+        - WHITE_SUCCESS_ALTERNATE
+      title: Pill theme
+      type: string
+    return-tag.schema:
+      description: A return tag defined for a store.
+      properties:
+        name:
+          description: The tag's display name. Case-sensitive.
+          type: string
+        kind:
+          const: return
+          type: string
+        pillTheme:
+          $ref: '#/components/schemas/pill-theme.schema'
+        source:
+          description: Where the tag originated.
+          enum:
+            - merchant
+            - redo
+            - flow
+          type: string
+        numericId:
+          description: Stable numeric identifier, if one has been assigned.
+          type:
+            - number
+            - 'null'
+      required:
+        - name
+        - kind
+        - pillTheme
+        - source
+        - numericId
+      title: Return tag
+      type: object
+    return-tag-upsert-request.schema:
+      description: Request body for creating, recoloring, or renaming a return tag.
+      properties:
+        pillTheme:
+          $ref: '#/components/schemas/pill-theme.schema'
+        newName:
+          description: New name for the tag. When set and different from the path `name`, the tag is renamed and the change cascades to returns and saved view filters.
+          type: string
+      required:
+        - pillTheme
+      title: Return tag upsert request
+      type: object
     storefront-event.schema:
       additionalProperties: true
       description: Shopify pixel event for storefront tracking.

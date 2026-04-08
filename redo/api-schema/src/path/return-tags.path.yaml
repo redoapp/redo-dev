@@ -1,0 +1,28 @@
+description: Return tags for a store.
+get:
+  description: List every return tag defined for the store.
+  operationId: Return tags list
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              tags:
+                items: { $ref: ../schema/return-tag.schema.yaml }
+                type: array
+            required: [tags]
+            type: object
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: List Return Tags
+  tags: [Return Tags]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Return Tags
