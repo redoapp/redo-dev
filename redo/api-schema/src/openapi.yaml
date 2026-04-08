@@ -55,7 +55,6 @@ tags:
   - name: Merchant Admin
   - name: Orders
   - name: Products
-  - name: Return Tags
   - name: Returns
   - name: Storefront
   - name: Webhooks

@@ -49,7 +49,6 @@ tags:
   - name: Merchant Admin
   - name: Orders
   - name: Products
-  - name: Return Tags
   - name: Returns
   - name: Storefront
   - name: Webhooks
@@ -1690,7 +1689,7 @@ paths:
         - Bearer: []
       summary: List Return Tags
       tags:
-        - Return Tags
+        - Returns
     parameters:
       - $ref: '#/components/parameters/store-id.param'
     summary: Return Tags
@@ -1727,7 +1726,7 @@ paths:
         - Bearer: []
       summary: Delete Return Tag
       tags:
-        - Return Tags
+        - Returns
     description: Return tag.
     put:
       description: |-
@@ -1774,7 +1773,7 @@ paths:
         - Bearer: []
       summary: Upsert Return Tag
       tags:
-        - Return Tags
+        - Returns
     parameters:
       - $ref: '#/components/parameters/store-id.param'
       - $ref: '#/components/parameters/return-tag-name.param'
