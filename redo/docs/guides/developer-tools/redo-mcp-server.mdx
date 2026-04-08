@@ -151,14 +151,16 @@ To use it in a conversation, click the `+` button in the message composer, selec
 
 ## Features
 
-The Redo MCP Server provides tools for return and claim management:
+The Redo MCP Server provides tools for order and return management:
 
 | Tool | Description |
 |---|---|
+| **list_orders** | Search and list orders by order name, customer email, provider order ID, or date range. Supports pagination. |
+| **get_order** | Get detailed information about a specific order including customer, items, totals, discounts, shipping cost, and taxes. |
 | **list_returns** | Search returns by order name, customer email, status, or date range. Supports pagination. |
 | **get_return** | Get full return details including items, status, compensation totals, and order info. |
 | **process_return** | Accept or reject each item in a return, with options for restocking and grading. |
-| **update_return_status** | Change a return's status (in_transit, delivered, needs_review, in_review, flagged, pre-shipment). |
+| **update_return_status** | Change a return's status (in_transit, delivered, needs_review, in_review, flagged, pre_shipment). |
 | **reopen_return** | Reopen a completed or rejected return, resetting items back to open. |
 | **close_return** | Close a return without processing — marks all items as complete with no further action. |
 | **create_return_comment** | Add a comment to a return's timeline. |
@@ -169,6 +171,22 @@ The Redo MCP Server provides tools for return and claim management:
 | **ask_redo** | Ask the Redo support AI any question about your account, settings, policies, or platform features. |
 
 ## Usage Examples
+
+### Look up orders for a customer
+
+**Prompt:**
+
+> Show me all orders for customer jane@example.com.
+
+The AI will call `list_orders` with an email filter to find all orders for that customer and display a summary of each.
+
+### Get details about an order
+
+**Prompt:**
+
+> Get me the full details for order #1234.
+
+The AI will call `list_orders` to find the order by name, then call `get_order` with the order ID to fetch full details including items, totals, discounts, shipping, and taxes.
 
 ### Search for returns by status
 
