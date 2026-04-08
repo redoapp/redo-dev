@@ -109,6 +109,9 @@ paths:
   /returns/{returnId}/process: { $ref: path/return-process.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
   /stores/{storeId}/returns: { $ref: path/returns.path.yaml }
+  # Return Tags
+  /stores/{storeId}/return-tags: { $ref: path/return-tags.path.yaml }
+  /stores/{storeId}/return-tags/{name}: { $ref: path/return-tag.path.yaml }
   # Storefront
   /stores/{storeId}/storefront/events:
     { $ref: path/storefront-events.path.yaml }

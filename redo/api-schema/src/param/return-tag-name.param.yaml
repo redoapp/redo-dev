@@ -1,0 +1,7 @@
+description: Return tag name. Case-sensitive and URL-encoded.
+in: path
+name: name
+required: true
+schema:
+  example: Damaged
+  type: string

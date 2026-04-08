@@ -1,0 +1,13 @@
+description: Request body for creating, recoloring, or renaming a return tag.
+properties:
+  pillTheme:
+    $ref: ./pill-theme.schema.yaml
+  newName:
+    description: >-
+      New name for the tag. When set and different from the path `name`,
+      the tag is renamed and the change cascades to returns and saved view
+      filters.
+    type: string
+required: [pillTheme]
+title: Return tag upsert request
+type: object

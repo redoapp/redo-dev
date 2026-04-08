@@ -1,0 +1,20 @@
+description: A return tag defined for a store.
+properties:
+  name:
+    description: The tag's display name. Case-sensitive.
+    type: string
+  kind:
+    const: return
+    type: string
+  pillTheme:
+    $ref: ./pill-theme.schema.yaml
+  source:
+    description: Where the tag originated.
+    enum: [merchant, redo, flow]
+    type: string
+  numericId:
+    description: Stable numeric identifier, if one has been assigned.
+    type: [number, "null"]
+required: [name, kind, pillTheme, source, numericId]
+title: Return tag
+type: object

@@ -1,0 +1,81 @@
+delete:
+  description: >-
+    Delete a return tag. The tag is also stripped from every return and
+    saved view filter that referenced it.
+  operationId: Return tag delete
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              success: { const: true, type: boolean }
+            required: [success]
+            type: object
+      description: Success
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        Invalid request. Returned with type
+        `com.getredo.api:return-tag/invalid-request` when the path `name`
+        is missing.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Delete Return Tag
+  tags: [Returns]
+description: Return tag.
+put:
+  description: >-
+    Create a new return tag, update an existing tag's color, or rename a
+    tag. When `newName` is set and differs from the path `name`, the
+    rename cascades to returns and saved view filters.
+
+
+    Possible 400 problem types:
+
+    - `com.getredo.api:return-tag/rename-precondition-failed` — the source
+      tag does not exist, or the target name is already in use.
+
+    - `com.getredo.api:return-tag/invalid-request` — the path `name` is
+      missing or the request body is invalid.
+  operationId: Return tag upsert
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/return-tag-upsert-request.schema.yaml }
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              tag: { $ref: ../schema/return-tag.schema.yaml }
+            required: [tag]
+            type: object
+      description: Success
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Rename precondition failed or invalid request
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Upsert Return Tag
+  tags: [Returns]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/return-tag-name.param.yaml }
+summary: Return Tag
