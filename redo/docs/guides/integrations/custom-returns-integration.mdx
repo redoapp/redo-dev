@@ -30,7 +30,7 @@ Use the custom integration orders endpoint when:
 ```mermaid
 flowchart TD
     A[Order created/updated in your system] --> B[Transform order data]
-    B --> C[POST to endpoint]
+    B --> C[POST to /stores/storeId/custom/orders]
     C --> D{Order valid?}
     D -->|Yes| E[Order synced to Redo]
     D -->|No| F[Error response]
@@ -40,6 +40,36 @@ flowchart TD
 
     classDef transparent fill:transparent
     class A,B,C,D,E,F,G,H transparent
+```
+
+## Endpoint
+
+Send order data to the following endpoint:
+
+```
+POST https://api.getredo.com/v2.2/stores/{storeId}/custom/orders
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `storeId` | Your store ID, found in **Settings** → **Developer** in the Redo Dashboard |
+
+### Headers
+
+```
+Authorization: Bearer YOUR_API_SECRET
+Content-Type: application/json
+```
+
+### Response
+
+A successful request returns:
+
+```json
+{
+  "message": "Order synced successfully",
+  "orderId": "your_order_id"
+}
 ```
 
 ## Order Schema
@@ -370,7 +400,7 @@ must conform to this schema for successful synchronization.
     Transform your order data to match the required schema
   </Step>
   <Step title="Implement the Integration">
-    Build your integration to POST orders to the endpoint when created or
+    Build your integration to POST orders to `https://api.getredo.com/v2.2/stores/{storeId}/custom/orders` when created or
     updated
   </Step>
   <Step title="Test Thoroughly">
