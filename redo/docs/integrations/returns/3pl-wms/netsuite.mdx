@@ -49,7 +49,7 @@ Redo links every record back to the original NetSuite sales order using the e-co
 
 ## How to Set It Up
 
-The NetSuite integration is set up by the Redo team on your behalf. Unlike plug-and-play integrations, NetSuite requires deploying a custom SuiteCloud script into your NetSuite instance — Redo handles all of this for you.
+The NetSuite integration is set up by the Redo team on your behalf. Unlike plug-and-play integrations, NetSuite requires deploying a custom SuiteCloud script into your NetSuite instance. Redo handles all of this for you.
 
 ### Prerequisites
 
@@ -69,7 +69,7 @@ Before Redo can configure your integration, make sure the following are in place
   </Accordion>
 
   <Accordion title="NetSuite Account with Appropriate Permissions" icon="shield-check">
-    The integration user in NetSuite needs sufficient permissions to read sales orders and create Return Authorizations, Item Receipts, Credit Memos, and Sales Orders. Redo will configure a dedicated role with the minimum necessary permissions.
+    The integration user in NetSuite needs sufficient permissions to read sales orders and create Return Authorizations, Item Receipts, and Credit Memos. Redo will configure a dedicated role with the minimum necessary permissions.
   </Accordion>
 </AccordionGroup>
 
@@ -121,7 +121,7 @@ Before Redo can configure your integration, make sure the following are in place
   </Accordion>
 
   <Accordion title="When does the integration create records?">
-    The Return Authorization is created in real time (within a few seconds) when a return is initiated in Redo and a shipping label is generated. Item Receipts are created when the return reaches a delivered or received status. Credit Memos are created when the return is marked complete in Redo.
+    The Return Authorization is created in real time (within a few seconds) when a return is initiated and approved in Redo. Item Receipts are created when returned items are delivered or the Redo return has been processed. Credit Memos are created when the return is marked complete in Redo.
   </Accordion>
 
   <Accordion title="Does Redo need permanent admin access to my NetSuite account?">
