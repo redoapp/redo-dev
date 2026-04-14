@@ -15,13 +15,13 @@ NetSuite is a cloud-based ERP (Enterprise Resource Planning) platform used by mi
 
 When a customer initiates a return through Redo, the integration automatically creates a **Return Authorization** in NetSuite, notifying your team that items are on their way back. From there, optional downstream records can be created as the return progresses through your warehouse and accounting workflows.
 
-Redo links every record back to the original NetSuite sales order using the Shopify order name, and matches returned items using SKUs. Tracking information is synced to the Return Authorization so your warehouse and logistics teams have full visibility. Status updates flow back from NetSuite to Redo to trigger refunds, store credits, or exchange orders in Shopify at the right time.
+Redo links every record back to the original NetSuite sales order using the e-commerce order name, and matches returned items using SKUs. Tracking information is synced to the Return Authorization so your warehouse and logistics teams have full visibility. Status updates flow back from NetSuite to Redo to trigger refunds, store credits, or exchange orders at the right time.
 
 ### Records Redo Creates in NetSuite
 
 <AccordionGroup>
   <Accordion title="Return Authorization (always created)" icon="rotate-left">
-    A Return Authorization (RA) is created in NetSuite as soon as a return is initiated in Redo. This is the core record the integration creates and is always enabled.
+    A Return Authorization (RA) is created in NetSuite as soon as a return is initiated and approved in Redo. This is the core record the integration creates and is always enabled.
 
     **What it contains:**
     - Line items with inventory item IDs, quantities, and product values
@@ -29,7 +29,7 @@ Redo links every record back to the original NetSuite sales order using the Shop
     - The Redo return ID stored in the memo field
     - Tracking number and estimated delivery date (once a label is generated)
 
-    **How Redo finds the original order:** Redo looks up the NetSuite sales order using the Shopify order name. The field used for this lookup is configurable to match your NetSuite setup.
+    **How Redo finds the original order:** Redo looks up the NetSuite sales order using the e-commerce order name. The field used for this lookup is configurable to match your NetSuite setup.
 
     **How item values are calculated:** The value used for each line item is configurable. Options include the actual refund amount, the original item total, or the pre-discount total.
   </Accordion>
@@ -44,10 +44,6 @@ Redo links every record back to the original NetSuite sales order using the Shop
     A Credit Memo is created in NetSuite when a return is marked complete in Redo. It links to the originating Return Authorization and accurately reflects refund amounts, taxes, and any adjustments.
 
     Enable this when you want returns to generate financial records in NetSuite automatically, supporting accounting reconciliation and reporting.
-  </Accordion>
-
-  <Accordion title="Sales Order for Exchanges" icon="arrow-right-arrow-left">
-    When a return includes an exchange (replacement items being sent to the customer), Redo creates a Sales Order in NetSuite to represent the outbound replacement. This record links to the original sales order and the Return Authorization, and accounts for any pricing differences between the returned and replacement items.
   </Accordion>
 </AccordionGroup>
 
@@ -68,8 +64,8 @@ Before Redo can configure your integration, make sure the following are in place
     Redo matches returned items to NetSuite order line items using SKUs. The SKU for each product must be identical in both systems. Mismatched or missing SKUs will prevent line items from being matched correctly.
   </Accordion>
 
-  <Accordion title="Shopify Order Name Available on Sales Orders" icon="shopify">
-    Redo identifies the original NetSuite sales order using the Shopify order name (e.g., `#1234`). This value needs to be stored on your NetSuite sales orders in a consistent field. The specific field is configurable — let Redo know which field contains this value during setup.
+  <Accordion title="E-commerce Order Name Available on Sales Orders" icon="cart-shopping">
+    Redo identifies the original NetSuite sales order using the e-commerce order name (e.g., `#1234`). This value needs to be stored on your NetSuite sales orders in a consistent field. The specific field is configurable. Let Redo know which field contains this value during setup.
   </Accordion>
 
   <Accordion title="NetSuite Account with Appropriate Permissions" icon="shield-check">
@@ -83,17 +79,11 @@ Before Redo can configure your integration, make sure the following are in place
   <Step title="Grant Redo Access to Your NetSuite Instance">
     Redo needs temporary admin access to your NetSuite account to deploy the integration scripts and configure the necessary roles and credentials.
 
-    **Option A (recommended):** Add `system@getredo.com` as an admin user in NetSuite.
-
-    **Option B:** Share credentials for an existing admin user along with multi-factor authentication backup codes so Redo can access the account.
-
-    Access can be revoked after setup is complete.
+    Add `system@getredo.com` as an admin user in NetSuite. Access can be revoked after setup is complete.
   </Step>
 
   <Step title="Share Your Configuration Preferences">
     Let the Redo team know:
-    - Which NetSuite field stores the Shopify order name
-    - Which field contains your product SKUs
     - Whether you want Item Receipt creation enabled
     - Whether you want Credit Memo creation enabled
     - How you want item values calculated (refund amount, item total, or pre-discount total)
@@ -115,11 +105,11 @@ Before Redo can configure your integration, make sure the following are in place
 
 <AccordionGroup>
   <Accordion title="What happens if the original sales order doesn't exist in NetSuite?">
-    Redo will be unable to create the Return Authorization and the return will fail to sync. Make sure all orders that may generate returns are synced to NetSuite before customers initiate returns. If you're seeing this error, check whether your Shopify-to-NetSuite order sync is working correctly and whether the order in question was created before the integration was active.
+    Redo will be unable to create the Return Authorization and the return will fail to sync. Make sure all orders that may generate returns are synced to NetSuite before customers initiate returns. If you're seeing this error, check whether your e-commerce-to-NetSuite order sync is working correctly and whether the order in question was created before the integration was active.
   </Accordion>
 
   <Accordion title="What happens if a SKU doesn't match?">
-    If a returned item's SKU cannot be found on the original NetSuite sales order, that line item cannot be matched and the Return Authorization creation will fail. Ensure SKUs are consistent between Shopify and NetSuite. Common causes include SKU changes after an order was placed, or variant SKUs being formatted differently between systems.
+    If a returned item's SKU cannot be found on the original NetSuite sales order, that line item cannot be matched and the Return Authorization creation will fail. Ensure SKUs are consistent between your e-commerce platform and NetSuite. Common causes include SKU changes after an order was placed, or variant SKUs being formatted differently between systems.
   </Accordion>
 
   <Accordion title="Can I choose which records get created?">
