@@ -1,0 +1,42 @@
+description: Bulk create external returns without requiring an existing order.
+post:
+  description: >-
+    Create returns in bulk by referencing products via platform-specific
+    external IDs (e.g. Shopify GIDs). Products are resolved against the
+    product catalog. Supports up to 100 returns per request with per-item
+    error reporting. Designed for external systems (warehouse management,
+    ERPs, offline POS) that need to push returns into Redo without going
+    through the customer portal flow.
+  operationId: Returns bulk create
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/bulk-returns-request.schema.yaml
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/bulk-returns-response.schema.yaml
+      description: >-
+        Batch processed. Check individual results for per-item status.
+        Some items may have succeeded while others failed.
+    "400":
+      content:
+        application/json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Invalid request body or team not configured for product catalog operations.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Bulk Create Returns
+  tags: [Returns]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Bulk Returns
