@@ -45,6 +45,18 @@ Redo links every record back to the original NetSuite sales order using the e-co
 
     Enable this when you want returns to generate financial records in NetSuite automatically, supporting accounting reconciliation and reporting.
   </Accordion>
+
+  <Accordion title="Customer Refund (optional, off by default)" icon="money-bill-transfer">
+    A Customer Refund is created in NetSuite after a Credit Memo has been created. It settles the Credit Memo against the original customer record and posts the cash-out entry to your bank GL.
+
+    Enable this alongside Credit Memo when you want NetSuite to reflect the actual movement of money back to the customer.
+  </Accordion>
+
+  <Accordion title="Cash Refund (optional, off by default)" icon="money-check-dollar">
+    A Cash Refund is created in NetSuite when a return is marked complete in Redo. It links to the originating Return Authorization and includes only line items being refunded, with amounts and tax calculated automatically.
+
+    Enable this when you want a direct refund record in NetSuite without going through a Credit Memo.
+  </Accordion>
 </AccordionGroup>
 
 ## How to Set It Up
@@ -69,7 +81,7 @@ Before Redo can configure your integration, make sure the following are in place
   </Accordion>
 
   <Accordion title="NetSuite Account with Appropriate Permissions" icon="shield-check">
-    The integration user in NetSuite needs sufficient permissions to read sales orders and create Return Authorizations, Item Receipts, and Credit Memos. Redo will configure a dedicated role with the minimum necessary permissions.
+    The integration user in NetSuite needs sufficient permissions to read sales orders and create Return Authorizations, Item Receipts, Credit Memos, Cash Refunds, and Customer Refunds. Redo will configure a dedicated role with the minimum necessary permissions.
   </Accordion>
 </AccordionGroup>
 
@@ -86,6 +98,8 @@ Before Redo can configure your integration, make sure the following are in place
     Let the Redo team know:
     - Whether you want Item Receipt creation enabled
     - Whether you want Credit Memo creation enabled
+    - Whether you want Cash Refund creation enabled
+    - Whether you want Customer Refund creation enabled
     - How you want item values calculated (refund amount, item total, or pre-discount total)
   </Step>
 
@@ -97,7 +111,7 @@ Before Redo can configure your integration, make sure the following are in place
     Once the integration is live, initiate a test return through your Redo return portal. Verify that:
     - A Return Authorization is created in NetSuite with the correct order, items, quantities, and tracking information
     - The Redo return ID appears in the memo field of the RA
-    - If enabled, Item Receipts and Credit Memos are created at the appropriate stages
+    - If enabled, Item Receipts, Credit Memos, Cash Refunds, and Customer Refunds are created at the appropriate stages
   </Step>
 </Steps>
 
@@ -113,7 +127,7 @@ Before Redo can configure your integration, make sure the following are in place
   </Accordion>
 
   <Accordion title="Can I choose which records get created?">
-    Yes. Item Receipt and Credit Memo creation are both optional and disabled by default. You can enable either or both during setup. Contact Redo support if you want to change these settings after the integration is live.
+    Yes. Item Receipt, Credit Memo, Cash Refund, and Customer Refund creation are all optional and disabled by default. You can enable any combination during setup. Contact Redo support if you want to change these settings after the integration is live.
   </Accordion>
 
   <Accordion title="NetSuite is applying discounts to my Return Authorizations, making the totals incorrect.">
@@ -121,7 +135,7 @@ Before Redo can configure your integration, make sure the following are in place
   </Accordion>
 
   <Accordion title="When does the integration create records?">
-    The Return Authorization is created in real time (within a few seconds) when a return is initiated and approved in Redo. Item Receipts are created when returned items are delivered or the Redo return has been processed. Credit Memos are created when the return is marked complete in Redo.
+    The Return Authorization is created in real time (within a few seconds) when a return is initiated and approved in Redo. Item Receipts are created when returned items are delivered or the Redo return has been processed. Credit Memos and Cash Refunds are both created when the return is marked complete in Redo. Customer Refunds are created immediately after the Credit Memo, if both are enabled.
   </Accordion>
 
   <Accordion title="Does Redo need permanent admin access to my NetSuite account?">
