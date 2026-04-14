@@ -25,9 +25,9 @@ Redo links every record back to the original NetSuite sales order using the e-co
 
     **What it contains:**
     - Line items with inventory item IDs, quantities, and product values
-    - Origin location pulled from the original sales order
+    - Origin location pulled from the original sales order unless specified by destination location.
     - The Redo return ID stored in the memo field
-    - Tracking number and estimated delivery date (once a label is generated)
+    - Tracking number and estimated delivery date (once a label is generated). This only works if custom fields have been provided to us. 
 
     **How Redo finds the original order:** Redo looks up the NetSuite sales order using the e-commerce order name. The field used for this lookup is configurable to match your NetSuite setup.
 
@@ -120,16 +120,12 @@ Before Redo can configure your integration, make sure the following are in place
     This is a known NetSuite behavior. NetSuite can automatically apply discounts when a Return Authorization is created, which causes totals to be off. Redo can deploy an additional script to your NetSuite instance that removes discounts immediately after an RA is created. Reach out to Redo support if you're experiencing this issue.
   </Accordion>
 
-  <Accordion title="When does the integration create records — immediately or on a delay?">
+  <Accordion title="When does the integration create records?">
     The Return Authorization is created in real time (within a few seconds) when a return is initiated in Redo and a shipping label is generated. Item Receipts are created when the return reaches a delivered or received status. Credit Memos are created when the return is marked complete in Redo.
   </Accordion>
 
   <Accordion title="Does Redo need permanent admin access to my NetSuite account?">
     No. Admin access is only needed during initial setup to deploy the SuiteCloud scripts and configure the integration role. Once setup is complete, Redo uses a dedicated integration user with a scoped role. Admin access can be revoked at that point.
-  </Accordion>
-
-  <Accordion title="What if I have multiple subsidiaries in NetSuite?">
-    Redo can be configured to work across multiple subsidiaries. During setup, let the Redo team know if you have a multi-subsidiary setup so the integration role and script deployments are configured with the correct subsidiary access.
   </Accordion>
 
   <Accordion title="Can I customize the field mappings or add additional fields?">
