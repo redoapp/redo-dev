@@ -1,8 +1,136 @@
 ---
 title: "NetSuite"
-description: "Connect NetSuite to Redo for automated return processing"
+description: "Connect NetSuite to Redo for automated return authorization, inventory, and financial record management"
 ---
 
-<Warning>
-  This page is under construction. Check back soon for detailed setup instructions and configuration guides.
-</Warning>
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is NetSuite?
+
+NetSuite is a cloud-based ERP (Enterprise Resource Planning) platform used by mid-market and enterprise businesses to manage financials, inventory, order management, and more. Many brands use NetSuite as the system of record for their orders, inventory levels, and accounting.
+
+**Primary Purpose:** NetSuite gives businesses a centralized view of their operations, including sales orders, inventory, and financial reporting. For merchants using NetSuite, keeping return data in sync is critical for accurate inventory counts, financial reconciliation, and warehouse operations.
+
+## What Does the Integration Do?
+
+When a customer initiates a return through Redo, the integration automatically creates a **Return Authorization** in NetSuite, notifying your team that items are on their way back. From there, optional downstream records can be created as the return progresses through your warehouse and accounting workflows.
+
+Redo links every record back to the original NetSuite sales order using the e-commerce order name, and matches returned items using SKUs. Tracking information is synced to the Return Authorization so your warehouse and logistics teams have full visibility. Status updates flow back from NetSuite to Redo to trigger refunds, store credits, or exchange orders at the right time.
+
+### Records Redo Creates in NetSuite
+
+<AccordionGroup>
+  <Accordion title="Return Authorization (always created)" icon="rotate-left">
+    A Return Authorization (RA) is created in NetSuite as soon as a return is initiated and approved in Redo. This is the core record the integration creates and is always enabled.
+
+    **What it contains:**
+    - Line items with inventory item IDs, quantities, and product values
+    - Origin location pulled from the original sales order unless specified by destination location.
+    - The Redo return ID stored in the memo field
+    - Tracking number and estimated delivery date (once a label is generated). This only works if custom fields have been provided to us. 
+
+    **How Redo finds the original order:** Redo looks up the NetSuite sales order using the e-commerce order name. The field used for this lookup is configurable to match your NetSuite setup.
+
+    **How item values are calculated:** The value used for each line item is configurable. Options include the actual refund amount, the original item total, or the pre-discount total.
+  </Accordion>
+
+  <Accordion title="Item Receipt (optional, off by default)" icon="box-open">
+    An Item Receipt is created in NetSuite when returned items are delivered or the Redo return has been processed. This record links back to the originating Return Authorization and updates inventory counts in NetSuite.
+
+    Enable this when you want NetSuite inventory to update automatically as returns arrive, rather than requiring manual receiving.
+  </Accordion>
+
+  <Accordion title="Credit Memo (optional, off by default)" icon="file-invoice-dollar">
+    A Credit Memo is created in NetSuite when a return is marked complete in Redo. It links to the originating Return Authorization and accurately reflects refund amounts, taxes, and any adjustments.
+
+    Enable this when you want returns to generate financial records in NetSuite automatically, supporting accounting reconciliation and reporting.
+  </Accordion>
+</AccordionGroup>
+
+## How to Set It Up
+
+The NetSuite integration is set up by the Redo team on your behalf. Unlike plug-and-play integrations, NetSuite requires deploying a custom SuiteCloud script into your NetSuite instance. Redo handles all of this for you.
+
+### Prerequisites
+
+Before Redo can configure your integration, make sure the following are in place:
+
+<AccordionGroup>
+  <Accordion title="Sales Orders Exist in NetSuite" icon="file-lines">
+    Redo looks up returns against existing NetSuite sales orders. Every order that may have a return must be present in NetSuite before the return is initiated. Returns cannot be processed for orders that don't exist as sales orders in your NetSuite account.
+  </Accordion>
+
+  <Accordion title="SKUs Match Between Redo and NetSuite" icon="barcode">
+    Redo matches returned items to NetSuite order line items using SKUs. The SKU for each product must be identical in both systems. Mismatched or missing SKUs will prevent line items from being matched correctly.
+  </Accordion>
+
+  <Accordion title="E-commerce Order Name Available on Sales Orders" icon="cart-shopping">
+    Redo identifies the original NetSuite sales order using the e-commerce order name (e.g., `#1234`). This value needs to be stored on your NetSuite sales orders in a consistent field. The specific field is configurable. Let Redo know which field contains this value during setup.
+  </Accordion>
+
+  <Accordion title="NetSuite Account with Appropriate Permissions" icon="shield-check">
+    The integration user in NetSuite needs sufficient permissions to read sales orders and create Return Authorizations, Item Receipts, and Credit Memos. Redo will configure a dedicated role with the minimum necessary permissions.
+  </Accordion>
+</AccordionGroup>
+
+### Setup Steps
+
+<Steps>
+  <Step title="Grant Redo Access to Your NetSuite Instance">
+    Redo needs temporary admin access to your NetSuite account to deploy the integration scripts and configure the necessary roles and credentials.
+
+    Add `system@getredo.com` as an admin user in NetSuite. Access can be revoked after setup is complete.
+  </Step>
+
+  <Step title="Share Your Configuration Preferences">
+    Let the Redo team know:
+    - Whether you want Item Receipt creation enabled
+    - Whether you want Credit Memo creation enabled
+    - How you want item values calculated (refund amount, item total, or pre-discount total)
+  </Step>
+
+  <Step title="Redo Deploys and Configures the Integration">
+    Redo's team will deploy the SuiteCloud script to your NetSuite instance, configure the Redo role and access token, and connect everything to your Redo account. No action is needed from you during this step.
+  </Step>
+
+  <Step title="Test with a Sample Return">
+    Once the integration is live, initiate a test return through your Redo return portal. Verify that:
+    - A Return Authorization is created in NetSuite with the correct order, items, quantities, and tracking information
+    - The Redo return ID appears in the memo field of the RA
+    - If enabled, Item Receipts and Credit Memos are created at the appropriate stages
+  </Step>
+</Steps>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="What happens if the original sales order doesn't exist in NetSuite?">
+    Redo will be unable to create the Return Authorization and the return will fail to sync. Make sure all orders that may generate returns are synced to NetSuite before customers initiate returns. If you're seeing this error, check whether your e-commerce-to-NetSuite order sync is working correctly and whether the order in question was created before the integration was active.
+  </Accordion>
+
+  <Accordion title="What happens if a SKU doesn't match?">
+    If a returned item's SKU cannot be found on the original NetSuite sales order, that line item cannot be matched and the Return Authorization creation will fail. Ensure SKUs are consistent between your e-commerce platform and NetSuite. Common causes include SKU changes after an order was placed, or variant SKUs being formatted differently between systems.
+  </Accordion>
+
+  <Accordion title="Can I choose which records get created?">
+    Yes. Item Receipt and Credit Memo creation are both optional and disabled by default. You can enable either or both during setup. Contact Redo support if you want to change these settings after the integration is live.
+  </Accordion>
+
+  <Accordion title="NetSuite is applying discounts to my Return Authorizations, making the totals incorrect.">
+    This is a known NetSuite behavior. NetSuite can automatically apply discounts when a Return Authorization is created, which causes totals to be off. Redo can deploy an additional script to your NetSuite instance that removes discounts immediately after an RA is created. Reach out to Redo support if you're experiencing this issue.
+  </Accordion>
+
+  <Accordion title="When does the integration create records?">
+    The Return Authorization is created in real time (within a few seconds) when a return is initiated and approved in Redo. Item Receipts are created when returned items are delivered or the Redo return has been processed. Credit Memos are created when the return is marked complete in Redo.
+  </Accordion>
+
+  <Accordion title="Does Redo need permanent admin access to my NetSuite account?">
+    No. Admin access is only needed during initial setup to deploy the SuiteCloud scripts and configure the integration role. Once setup is complete, Redo uses a dedicated integration user with a scoped role. Admin access can be revoked at that point.
+  </Accordion>
+
+  <Accordion title="Can I customize the field mappings or add additional fields?">
+    Yes. The standard integration maps a set of default fields, but additional fields and custom mappings can be added. Redo will scope any modifications with your team and own the development work. Reach out to Redo support to discuss custom requirements.
+  </Accordion>
+</AccordionGroup>
+
+<IntegrationSupport integrationProvider="NetSuite" />
