@@ -1,0 +1,44 @@
+type: object
+description: Bulk external return creation response.
+properties:
+  totalCount:
+    type: integer
+    description: Total number of returns in the request.
+  processedCount:
+    type: integer
+    description: Number of returns successfully created.
+  errorCount:
+    type: integer
+    description: Number of returns that failed.
+  results:
+    type: array
+    description: Per-item results in the same order as the request.
+    items:
+      oneOf:
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [created]
+            index:
+              type: integer
+              description: Zero-based index into the request array.
+            returnId:
+              type: string
+              description: ID of the created return.
+          required: [status, index, returnId]
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [error]
+            index:
+              type: integer
+              description: Zero-based index into the request array.
+            error:
+              type: string
+              description: Error message.
+          required: [status, index, error]
+      discriminator:
+        propertyName: status
+required: [totalCount, processedCount, errorCount, results]

@@ -1660,6 +1660,47 @@ paths:
     parameters:
       - $ref: '#/components/parameters/store-id.param'
     summary: Returns
+  /stores/{storeId}/returns/bulk:
+    description: Import returns from external systems.
+    post:
+      description: |-
+        Import externally-created returns into Redo. Use this endpoint when the return originates outside of Redo — a warehouse scan, an ERP, a POS system, or a partner platform.
+
+        Products are referenced by their platform-specific external ID and resolved against the Redo product catalog. No order is required. Returns are created ready for warehouse intake. Supports up to 100 returns per request with per-item error reporting.
+      operationId: Import returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bulk-returns-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bulk-returns-response.schema'
+          description: Batch processed. Check individual results for per-item status. Some items may have succeeded while others failed.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body or team not configured for product catalog operations.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Import Returns
+      tags:
+        - Returns
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Import Returns
   /stores/{storeId}/return-tags:
     description: Return tags for a store.
     get:
@@ -5272,6 +5313,225 @@ components:
       required:
         - return
         - externalRMAResponses
+    bulk-returns-request.schema:
+      type: object
+      description: Import returns request body.
+      properties:
+        returns:
+          type: array
+          minItems: 1
+          maxItems: 100
+          description: Array of returns to import (max 100).
+          items:
+            type: object
+            description: A single return to import.
+            properties:
+              products:
+                type: array
+                minItems: 1
+                description: Products being returned (at least 1).
+                items:
+                  type: object
+                  properties:
+                    externalId:
+                      type: string
+                      description: Platform-specific variant/product identifier. Resolved against the Redo product catalog.
+                    quantity:
+                      type: integer
+                      minimum: 1
+                      description: Number of units to return.
+                    provider:
+                      type: string
+                      enum:
+                        - shopify
+                        - bigcommerce
+                        - commentsold
+                        - commerce-cloud
+                        - cin7-omni
+                        - cin7-core
+                        - amazon
+                        - ebay
+                      description: Ecommerce platform the externalId belongs to.
+                    sku:
+                      type: string
+                      description: Override SKU (uses catalog value if omitted).
+                    barcode:
+                      type: string
+                      description: Override barcode (uses catalog value if omitted).
+                    productTitle:
+                      type: string
+                      description: Override product title (uses catalog value if omitted).
+                    variantTitle:
+                      type: string
+                      description: Override variant title (uses catalog value if omitted).
+                    reason:
+                      type: string
+                      description: Return reason.
+                    condition:
+                      type: string
+                      description: Item condition.
+                  required:
+                    - externalId
+                    - quantity
+                    - provider
+              customer:
+                type: object
+                description: Optional customer information.
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+              externalReferenceId:
+                type: string
+                description: Merchant's own return/RMA ID. Stored on the return so it's scannable at warehouse intake.
+              trackingNumber:
+                type: string
+                description: Carrier tracking number for the inbound return shipment.
+              carrier:
+                type: string
+                description: Carrier name for the tracking number (e.g. 'USPS', 'UPS').
+              notes:
+                type: string
+                description: Internal notes.
+              idempotencyKey:
+                type: string
+                description: Idempotency key to prevent duplicate return creation on retry.
+              currency:
+                type: string
+                description: ISO 4217 currency code (defaults to USD).
+                examples:
+                  - USD
+                  - GBP
+                  - EUR
+              shippingAddress:
+                type: object
+                description: Customer's shipping address.
+                properties:
+                  line1:
+                    type: string
+                    description: Street address line 1.
+                  line2:
+                    type: string
+                    description: Street address line 2.
+                  city:
+                    type: string
+                    description: City.
+                  state:
+                    type: string
+                    description: State or province code.
+                  postalCode:
+                    type: string
+                    description: Postal/ZIP code.
+                  country:
+                    type: string
+                    description: ISO 3166-1 alpha-2 country code.
+                  name:
+                    type: string
+                    description: Recipient or location name.
+                  phone:
+                    type: string
+                    description: Phone number.
+                required:
+                  - line1
+                  - city
+                  - country
+              merchantAddress:
+                type: object
+                description: Merchant return destination address.
+                properties:
+                  line1:
+                    type: string
+                    description: Street address line 1.
+                  line2:
+                    type: string
+                    description: Street address line 2.
+                  city:
+                    type: string
+                    description: City.
+                  state:
+                    type: string
+                    description: State or province code.
+                  postalCode:
+                    type: string
+                    description: Postal/ZIP code.
+                  country:
+                    type: string
+                    description: ISO 3166-1 alpha-2 country code.
+                  name:
+                    type: string
+                    description: Recipient or location name.
+                  phone:
+                    type: string
+                    description: Phone number.
+                required:
+                  - line1
+                  - city
+                  - country
+            required:
+              - products
+      required:
+        - returns
+    bulk-returns-response.schema:
+      type: object
+      description: Bulk external return creation response.
+      properties:
+        totalCount:
+          type: integer
+          description: Total number of returns in the request.
+        processedCount:
+          type: integer
+          description: Number of returns successfully created.
+        errorCount:
+          type: integer
+          description: Number of returns that failed.
+        results:
+          type: array
+          description: Per-item results in the same order as the request.
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - created
+                  index:
+                    type: integer
+                    description: Zero-based index into the request array.
+                  returnId:
+                    type: string
+                    description: ID of the created return.
+                required:
+                  - status
+                  - index
+                  - returnId
+              - type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                  index:
+                    type: integer
+                    description: Zero-based index into the request array.
+                  error:
+                    type: string
+                    description: Error message.
+                required:
+                  - status
+                  - index
+                  - error
+            discriminator:
+              propertyName: status
+      required:
+        - totalCount
+        - processedCount
+        - errorCount
+        - results
     pill-theme.schema:
       description: Color theme used to render a tag pill in the UI.
       enum:
