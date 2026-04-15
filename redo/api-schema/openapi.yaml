@@ -1663,7 +1663,25 @@ paths:
   /stores/{storeId}/returns/bulk:
     description: Bulk create external returns without requiring an existing order.
     post:
-      description: Create returns in bulk by referencing products via platform-specific external IDs (e.g. Shopify GIDs). Products are resolved against the product catalog. Supports up to 100 returns per request with per-item error reporting. Designed for external systems (warehouse management, ERPs, offline POS) that need to push returns into Redo without going through the customer portal flow.
+      description: |-
+        Create **external** returns in bulk by referencing products via platform-specific external IDs (e.g. Shopify GIDs). Products are resolved against the product catalog. Supports up to 100 returns per request with per-item error reporting.
+
+        **How this differs from Create Return (`POST /stores/{storeId}/returns`):**
+        - **No order required.** The standard endpoint creates a return against an
+          existing order using line item IDs. This endpoint resolves products
+          directly from the product catalog by external ID and provider.
+
+        - **External source.** Returns created through this endpoint are marked with
+          `source: "external"` rather than `source: "redo"`. This distinction
+          is used downstream to skip flows that don't apply to externally-managed
+          returns (e.g. customer notifications, Shopify refund sync).
+
+        - **Immediately processed.** Returns are created with `provision: "processed"`,
+          meaning no customer portal flow, no label generation, and no payment holds.
+          The return is ready for warehouse intake on creation.
+
+
+        Designed for external systems (warehouse management, ERPs, offline POS) that need to push returns into Redo without going through the customer portal flow.
       operationId: Returns bulk create
       requestBody:
         content:
