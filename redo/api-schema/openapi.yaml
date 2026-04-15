@@ -1682,7 +1682,7 @@ paths:
 
 
         Designed for external systems (warehouse management, ERPs, offline POS) that need to push returns into Redo without going through the customer portal flow.
-      operationId: Returns bulk create
+      operationId: Bulk upload external returns
       requestBody:
         content:
           application/json:
@@ -1710,12 +1710,12 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Bulk Create Returns
+      summary: Bulk Upload External Returns
       tags:
         - Returns
     parameters:
       - $ref: '#/components/parameters/store-id.param'
-    summary: Bulk Returns
+    summary: Bulk Upload External Returns
   /stores/{storeId}/return-tags:
     description: Return tags for a store.
     get:
