@@ -1661,28 +1661,24 @@ paths:
       - $ref: '#/components/parameters/store-id.param'
     summary: Returns
   /stores/{storeId}/returns/bulk:
-    description: Bulk create external returns without requiring an existing order.
+    description: Import returns from external systems.
     post:
       description: |-
-        Create **external** returns in bulk by referencing products via platform-specific external IDs (e.g. Shopify GIDs). Products are resolved against the product catalog. Supports up to 100 returns per request with per-item error reporting.
+        Import returns into Redo by referencing products via platform-specific external IDs (e.g. Shopify GIDs). Products are resolved against the product catalog. Supports up to 100 returns per request with per-item error reporting.
+
+        Use this endpoint when the return originates outside of Redo — a warehouse scan, an ERP, a POS system, or a partner platform. No order is required.
 
         **How this differs from Create Return (`POST /stores/{storeId}/returns`):**
-        - **No order required.** The standard endpoint creates a return against an
+        - **No order required.** Create Return creates a return against an
           existing order using line item IDs. This endpoint resolves products
           directly from the product catalog by external ID and provider.
 
-        - **External source.** Returns created through this endpoint are marked with
-          `source: "external"` rather than `source: "redo"`. This distinction
-          is used downstream to skip flows that don't apply to externally-managed
-          returns (e.g. customer notifications, Shopify refund sync).
+        - **No customer flow.** Returns are created ready for warehouse intake —
+          no customer portal, no label generation, and no payment holds.
 
-        - **Immediately processed.** Returns are created with `provision: "processed"`,
-          meaning no customer portal flow, no label generation, and no payment holds.
-          The return is ready for warehouse intake on creation.
-
-
-        Designed for external systems (warehouse management, ERPs, offline POS) that need to push returns into Redo without going through the customer portal flow.
-      operationId: Bulk upload external returns
+        - **External source.** Returns are tagged as externally-managed, which
+          skips flows like customer notifications and platform refund sync.
+      operationId: Import returns
       requestBody:
         content:
           application/json:
@@ -1710,12 +1706,12 @@ paths:
           description: Error
       security:
         - Bearer: []
-      summary: Bulk Upload External Returns
+      summary: Import Returns
       tags:
         - Returns
     parameters:
       - $ref: '#/components/parameters/store-id.param'
-    summary: Bulk Upload External Returns
+    summary: Import Returns
   /stores/{storeId}/return-tags:
     description: Return tags for a store.
     get:
