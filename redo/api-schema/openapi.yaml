@@ -1664,20 +1664,9 @@ paths:
     description: Import returns from external systems.
     post:
       description: |-
-        Import returns into Redo by referencing products via platform-specific external IDs (e.g. Shopify GIDs). Products are resolved against the product catalog. Supports up to 100 returns per request with per-item error reporting.
+        Import externally-created returns into Redo. Use this endpoint when the return originates outside of Redo — a warehouse scan, an ERP, a POS system, or a partner platform.
 
-        Use this endpoint when the return originates outside of Redo — a warehouse scan, an ERP, a POS system, or a partner platform. No order is required.
-
-        **How this differs from Create Return (`POST /stores/{storeId}/returns`):**
-        - **No order required.** Create Return creates a return against an
-          existing order using line item IDs. This endpoint resolves products
-          directly from the product catalog by external ID and provider.
-
-        - **No customer flow.** Returns are created ready for warehouse intake —
-          no customer portal, no label generation, and no payment holds.
-
-        - **External source.** Returns are tagged as externally-managed, which
-          skips flows like customer notifications and platform refund sync.
+        Products are referenced by their platform-specific external ID and resolved against the Redo product catalog. No order is required. Returns are created ready for warehouse intake. Supports up to 100 returns per request with per-item error reporting.
       operationId: Import returns
       requestBody:
         content:
@@ -5326,16 +5315,16 @@ components:
         - externalRMAResponses
     bulk-returns-request.schema:
       type: object
-      description: Bulk external return creation request body.
+      description: Import returns request body.
       properties:
         returns:
           type: array
           minItems: 1
           maxItems: 100
-          description: Array of external returns to create (max 100).
+          description: Array of returns to import (max 100).
           items:
             type: object
-            description: A single external return to create.
+            description: A single return to import.
             properties:
               products:
                 type: array
@@ -5346,7 +5335,7 @@ components:
                   properties:
                     externalId:
                       type: string
-                      description: Platform-specific variant/product identifier (e.g. Shopify GID like 'gid://shopify/ProductVariant/12345'). Resolved against the product catalog.
+                      description: Platform-specific variant/product identifier. Resolved against the Redo product catalog.
                     quantity:
                       type: integer
                       minimum: 1
