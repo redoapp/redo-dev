@@ -1,0 +1,17 @@
+description: Per-location quantity for an inventory item.
+properties:
+  location_id:
+    description: Prefixed location ID (`loc_...`).
+    example: loc_4d8e1a2b3c
+    type: string
+  location_name:
+    description: Location name.
+    example: East Coast Warehouse
+    type: string
+  quantity:
+    description: On-hand quantity at this location.
+    example: 120
+    type: integer
+required: [location_id, location_name, quantity]
+title: Inventory Item Location
+type: object

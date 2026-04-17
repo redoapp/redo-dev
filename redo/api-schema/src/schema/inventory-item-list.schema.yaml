@@ -1,0 +1,57 @@
+description: Inventory item list entry.
+properties:
+  id:
+    description: Prefixed inventory item ID (`ii_...`).
+    example: ii_5f8e1a2b3c
+    type: string
+  sku:
+    description: Stock keeping unit from the linked product.
+    example: TSH-BLK-M
+    nullable: true
+    type: string
+  name:
+    description: Product title including variant options.
+    example: Classic Cotton T-Shirt - Black / M
+    nullable: true
+    type: string
+  kind:
+    description: Inventory item kind.
+    enum:
+      - PRODUCT
+      - RETURN
+      - UNDECLARED
+      - UNKNOWN
+    example: PRODUCT
+    type: string
+  quantity:
+    description: >-
+      On-hand quantity. When `location_id` is supplied as a query filter, this
+      is the quantity at that location; otherwise it is the total across all
+      locations.
+    example: 250
+    type: integer
+  locations:
+    description: Per-location quantities for this inventory item.
+    items: { $ref: inventory-item-location.schema.yaml }
+    type: array
+  created_at:
+    description: Creation timestamp (ISO 8601).
+    example: "2025-11-01T10:00:00.000Z"
+    format: date-time
+    type: string
+  updated_at:
+    description: Last updated timestamp (ISO 8601).
+    example: "2026-03-31T18:45:00.000Z"
+    format: date-time
+    type: string
+required:
+  - id
+  - sku
+  - name
+  - kind
+  - quantity
+  - locations
+  - created_at
+  - updated_at
+title: Inventory Item
+type: object

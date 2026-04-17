@@ -1,0 +1,7 @@
+description: Inventory item ID
+in: path
+name: inventoryItemId
+required: true
+schema:
+  example: ii_5f8e1a2b3c
+  type: string
