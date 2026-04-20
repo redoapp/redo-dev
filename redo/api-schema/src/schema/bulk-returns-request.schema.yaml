@@ -17,27 +17,15 @@ properties:
           items:
             type: object
             properties:
-              externalId:
+              productId:
                 type: string
                 description: >-
-                  Platform-specific variant/product identifier. Resolved
-                  against the Redo product catalog.
+                  Redo product ID returned from the bulk product upload
+                  response (e.g. `prd_ABC123`).
               quantity:
                 type: integer
                 minimum: 1
                 description: Number of units to return.
-              provider:
-                type: string
-                enum:
-                  - shopify
-                  - bigcommerce
-                  - commentsold
-                  - commerce-cloud
-                  - cin7-omni
-                  - cin7-core
-                  - amazon
-                  - ebay
-                description: Ecommerce platform the externalId belongs to.
               sku:
                 type: string
                 description: Override SKU (uses catalog value if omitted).
@@ -56,7 +44,7 @@ properties:
               condition:
                 type: string
                 description: Item condition.
-            required: [externalId, quantity, provider]
+            required: [productId, quantity]
         customer:
           type: object
           description: Optional customer information.
