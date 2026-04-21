@@ -1,0 +1,37 @@
+description: In-stock inventory items for a store.
+get:
+  description: >-
+    List in-stock inventory items. Only items with on-hand quantity greater
+    than zero are returned. Sorted by most recently updated first.
+  operationId: Inventory items list
+  parameters:
+    - { $ref: ../param/page-continue.param.yaml }
+    - { $ref: ../param/page-size.param.yaml }
+    - { $ref: ../param/location-id.param.yaml }
+    - { $ref: ../param/inventory-item-kind.param.yaml }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              inventory_items:
+                items: { $ref: ../schema/inventory-item-list.schema.yaml }
+                type: array
+            required: [inventory_items]
+            type: object
+      description: Success
+      headers:
+        X-Page-Next: { $ref: ../header/page-next.header.yaml }
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: List Inventory Items
+  tags: [Inventory Items]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Inventory Items

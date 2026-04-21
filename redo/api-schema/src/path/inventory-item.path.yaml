@@ -1,0 +1,33 @@
+description: Single inventory item.
+get:
+  description: Get a single in-stock inventory item by ID.
+  operationId: Inventory item get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              inventory_item:
+                $ref: ../schema/inventory-item-list.schema.yaml
+            required: [inventory_item]
+            type: object
+      description: Success
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Inventory item not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get Inventory Item
+  tags: [Inventory Items]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/inventory-item-id.param.yaml }
+summary: Inventory Item

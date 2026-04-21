@@ -1,0 +1,11 @@
+description: Filter by inventory item kind
+example: PRODUCT
+in: query
+name: kind
+schema:
+  enum:
+    - PRODUCT
+    - RETURN
+    - UNDECLARED
+    - UNKNOWN
+  type: string
