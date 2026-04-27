@@ -3,6 +3,12 @@ get:
   description: >-
     Get a single inventory level by ID. Returns additional detail fields
     including external IDs, creation timestamp, product UPC, and image URL.
+
+
+    Includes inventory at locations owned by linked 3PL fulfillment services.
+    The returned `location.id` is the merchant's own location id when a
+    Shopify-mirrored location shadows the 3PL canonical; otherwise it is the
+    3PL's location id.
   operationId: Inventory level get
   responses:
     "200":
