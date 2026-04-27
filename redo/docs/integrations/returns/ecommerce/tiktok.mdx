@@ -1,6 +1,6 @@
 ---
 title: "TikTok Shop"
-description: "Connect TikTok Shop to Redo for social commerce return management"
+description: "Manage TikTok Shop returns through Redo with automatic approve/reject syncing"
 icon: "tiktok"
 ---
 
@@ -10,37 +10,42 @@ import IntegrationSupport from '/snippets/integration-support.mdx';
 
 TikTok Shop is a social commerce platform integrated directly into the TikTok app, allowing businesses to sell products through live streams, shoppable videos, and a dedicated storefront. With TikTok's massive user base and engaging content format, TikTok Shop enables brands to reach customers where they're already spending time and make purchases without leaving the app.
 
-**Primary Purpose:** TikTok Shop transforms social media engagement into direct sales by enabling seamless in-app shopping experiences, leveraging TikTok's algorithm to reach interested buyers through entertaining and authentic content.
-
 ## What Does the Integration Do?
 
-The TikTok Shop integration connects your social commerce storefront to Redo's return management system, enabling professional return handling for orders placed through TikTok. Orders automatically sync from TikTok Shop to Redo, allowing customers to initiate returns through a dedicated return portal while maintaining compliance with TikTok's return policies.
+The TikTok Shop integration lets you review and process TikTok Shop returns from your Redo dashboard. When a customer requests a return through TikTok Shop, Redo automatically creates a corresponding return for you to manage. When you approve or reject the return in Redo, the decision syncs back to TikTok Shop automatically.
 
-Order data, including products, customer information, and fulfillment details, syncs automatically from TikTok Shop. When customers request returns, Redo manages the entire return process including label generation, tracking, and refund coordination. Return data can be synced back to TikTok Shop for seller dashboard visibility and performance metrics.
+This integration requires that your TikTok Shop orders sync to Shopify through TikTok's built-in Shopify integration. Redo uses the synced Shopify order data to match products and process returns.
+
+### How it works
+
+1. A customer initiates a return on TikTok Shop (refund, return and refund, or replacement request).
+2. TikTok sends a webhook to Redo, which automatically creates a return with the matched Shopify order and line items.
+3. You review and process the return in Redo — approve or reject individual items.
+4. Redo syncs your decision back to TikTok Shop:
+   - **Approved** returns are approved on TikTok, including support for returnless refunds (green returns where the buyer keeps the item).
+   - **Rejected** returns (all items rejected) are rejected on TikTok with a valid reject reason.
+
+### Optional: Redo return labels
+
+You can configure Redo to generate return shipping labels and upload them to TikTok Shop. When enabled, Redo creates the label and sends it (shipping label or QR code, depending on TikTok's configuration) back to TikTok so the customer can use it to ship their return.
 
 ## How to Set It Up
-
-Follow these steps to configure the TikTok Shop integration with Redo.
 
 ### Prerequisites
 
 Before you begin, ensure you have:
 
 <AccordionGroup>
-<Accordion title="Active TikTok Shop Account" icon="circle-check">
+<Accordion title="TikTok Shop connected to Shopify" icon="circle-check">
+Your TikTok Shop must be connected to Shopify through TikTok's Shopify integration so that TikTok orders sync to your Shopify store. Redo relies on these synced Shopify orders to process returns.
+</Accordion>
+
+<Accordion title="Active TikTok Shop seller account" icon="tiktok">
 You must have an approved TikTok Shop seller account in good standing.
 </Accordion>
 
-<Accordion title="TikTok Shop Authorization" icon="key">
-You need the ability to authorize third-party applications to access your TikTok Shop data.
-</Accordion>
-
-<Accordion title="Administrative Access to Redo" icon="user-shield">
+<Accordion title="Administrative access to Redo" icon="user-shield">
 You need administrative access to your Redo merchant dashboard to configure integrations.
-</Accordion>
-
-<Accordion title="Fulfillment Method Configured" icon="truck">
-Your TikTok Shop should have a fulfillment method configured (self-fulfilled or TikTok Fulfilled).
 </Accordion>
 </AccordionGroup>
 
@@ -59,12 +64,12 @@ Locate the **"TikTok Shop"** card and click **Connect**.
 You'll be redirected to TikTok to authorize Redo's access to your shop data. Review the permissions and approve the connection.
 </Step>
 
-<Step title="Configure Return Policies">
-Set up return policies that comply with TikTok Shop's requirements and your business needs.
+<Step title="Configure Return Labels (Optional)">
+If you want Redo to generate and upload return shipping labels to TikTok, you must contact TikTok Shop to ensure that your Shop is configured to use Redo shipping labels. Once your TikTok Shop seller account has been configured, enable the **Use Redo Return Labels** setting.
 </Step>
 
 <Step title="Test the Integration">
-Create a test order in TikTok Shop and initiate a test return through Redo to verify order data syncs correctly.
+Create a test order in TikTok Shop, initiate a return through TikTok, and verify that the return appears in your Redo dashboard.
 </Step>
 </Steps>
 
@@ -75,27 +80,23 @@ Create a test order in TikTok Shop and initiate a test return through Redo to ve
 | Step               | Time              | Description                                |
 | ------------------ | ----------------- | ------------------------------------------ |
 | Initial Connection | 3-5 minutes       | OAuth authentication with TikTok Shop      |
-| Configuration      | 10-15 minutes     | Set up policies compliant with TikTok      |
+| Configuration      | 5-10 minutes      | Configure return label settings            |
 | First Return Test  | 5-10 minutes      | Create test order and verify return flow   |
-| **Total Setup**    | **20-30 minutes** | Complete setup for most merchants          |
+| **Total Setup**    | **15-25 minutes** | Complete setup for most merchants          |
 
 ### Operational Timing
 
 <Steps>
-<Step title="Order Sync">
-**Near real-time (2-5 minutes)** - Orders sync when they're confirmed in TikTok Shop.
-</Step>
-
 <Step title="Return Creation">
-**Instant** - Returns are created immediately when customers submit through Redo.
+**Automatic** — When a customer requests a return on TikTok Shop, Redo creates the return within moments of receiving the webhook. This will also create any Return Authorizations for your configured WMS/3PL integrations (such as NetSuite or ShipHero), the same way they would be created for a return created through the Redo return portal.
 </Step>
 
-<Step title="Refund Processing">
-**Coordinated with TikTok** - Refunds are processed according to TikTok Shop's policies and timelines.
+<Step title="Label Upload">
+**Automatic** — If Redo return labels are enabled, the label is generated and uploaded to TikTok Shop when the return is created.
 </Step>
 
-<Step title="Status Updates">
-**Real-time** - Return status updates are synced back to TikTok Shop seller center.
+<Step title="Approve/Reject Sync">
+**Automatic** — When you process a return in Redo, the approve or reject decision syncs back to TikTok Shop as part of return processing.
 </Step>
 </Steps>
 
