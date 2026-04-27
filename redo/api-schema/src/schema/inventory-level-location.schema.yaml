@@ -1,12 +1,7 @@
 description: Location summary in an inventory level response.
 properties:
   id:
-    description: >-
-      Prefixed location ID (`loc_...`). When a 3PL fulfills for the merchant
-      and a Shopify-mirrored location shadows the 3PL canonical, this is the
-      merchant's own location id; otherwise it is the 3PL's. The same id is
-      accepted as `locationId` on `POST /orders` to pin an order's origin to
-      this location.
+    description: Prefixed location ID (`loc_...`).
     example: loc_4d8e1a2b3c
     type: string
   name:

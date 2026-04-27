@@ -3,14 +3,6 @@ get:
   description: >-
     List inventory levels, representing the aggregate quantity of a product at a
     specific location. Sorted by most recently updated first.
-
-
-    Includes inventory at locations owned by linked 3PL fulfillment services
-    (so a merchant fulfilling through a 3PL can see their goods at the 3PL's
-    warehouses). When a single physical location is represented twice — once
-    as the 3PL's source-of-truth location and once as the merchant's
-    Shopify-mirrored copy — only one row is returned, displaying the
-    merchant's own location id when one exists.
   operationId: Inventory levels list
   parameters:
     - { $ref: ../param/page-continue.param.yaml }
