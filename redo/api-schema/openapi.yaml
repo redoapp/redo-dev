@@ -3734,6 +3734,12 @@ components:
           type:
             - string
             - 'null'
+        locationId:
+          description: Optional. Pin this order to a specific fulfillment location. Must be a location id (`loc_...`) returned by `GET /inventory-levels` — either one of your own warehouses or a location at a linked 3PL fulfillment service. When provided, the fulfillment group's origin address is sourced from the location row. Omit to use your team's default origin address.
+          example: loc_4d8e1a2b3c
+          type:
+            - string
+            - 'null'
       required:
         - orderId
         - createdAt
