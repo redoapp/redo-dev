@@ -1,5 +1,8 @@
 # $schema: https://json-schema.org/draft/2020-12/schema#
-description: Webhook topic.
-enum: [return]
+description: >-
+  Webhook topic. Subscribe to `return` for return lifecycle events, `label`
+  for outbound label purchases, `shipment` for fulfillment shipment events,
+  or `consolidation_shipment` for consolidated shipment events.
+enum: [return, label, shipment, consolidation_shipment]
 title: Webhook topic
 type: string
