@@ -342,6 +342,18 @@ properties:
               type: string
           required: [amount]
           type: object
+        productValueNoTaxNoAdjustment:
+          description:
+            Per-product value before taxes and merchant adjustments. Equivalent
+            to the "Product Value (No Tax/Adjustment)" column in the Returns
+            Report.
+          properties:
+            amount:
+              $ref: ./money.schema.yaml
+              title: Amount
+          required: [amount]
+          title: Product value (no tax / no adjustment)
+          type: object
         sku:
           description: Product SKU
           type: string
