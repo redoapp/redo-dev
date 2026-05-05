@@ -16,13 +16,91 @@ When Redo issues store credit for a return, it is issued as a reward to the
 customer's Rise.ai account instead of as standard Shopify store credit. This
 keeps all store credit and rewards consolidated within Rise.ai.
 
-## How to Set It Up
+## Authentication Options
+
+There are two ways to connect Rise.ai to Redo:
+
+- **OAuth (Beta)** — A self-serve, one-click install from the Redo merchant
+  dashboard. Still in active development — see the warning below before
+  enabling on a production store.
+- **Legacy API key** — The original setup that uses a Rise.ai workflow trigger
+  URL. Stable and the recommended path until OAuth exits beta.
+
+<Warning>
+  **OAuth is in beta and still under active development.** Behavior may change
+  without notice, and edge cases around token refresh, wallet creation, and
+  error handling are still being hardened. Before enabling OAuth on a
+  production store, take the following precautions:
+
+  - Test the full return-to-store-credit flow on a staging or low-volume store
+    first.
+  - Verify that issued credits appear correctly in Rise.ai before relying on
+    the integration for live returns.
+  - Keep your legacy API key configuration available so you can fall back if
+    you hit issues.
+  - If you see unexpected behavior, contact **support@getredo.com**
+    immediately.
+
+  If you are not comfortable troubleshooting an in-development integration, use
+  the **Legacy API key** setup below instead.
+</Warning>
+
+<Note>
+  Rise.ai store credit issuance currently supports **Shopify orders only**. For
+  non-Shopify orders, store credit falls back to your default store credit
+  type.
+</Note>
+
+## How to Set It Up (OAuth — Beta)
+
+<Steps>
+<Step title="Open the Rise.ai integration settings">
+  In the Redo merchant dashboard, go to **Settings** > **Returns & Claims** >
+  **Integrations** and find the Rise.ai integration.
+</Step>
+
+<Step title="Connect with Rise.ai">
+  In the **OAuth** section, click **Connect with Rise.ai**. A Rise.ai
+  authorization popup opens.
+</Step>
+
+<Step title="Approve the install in Rise.ai">
+  Sign in to Rise.ai if prompted and approve the Redo app install. Rise.ai
+  redirects back to Redo and the popup closes automatically.
+
+  After the popup closes, the integration shows as **Connected via OAuth**.
+</Step>
+
+<Step title="Select Rise.ai as Store Credit Type">
+  Navigate to **Settings** > **Returns & Claims** > **Processing** > **Return
+  Processing**. Under **Store credit type**, select **Rise.ai**.
+</Step>
+</Steps>
+
+Once connected, Redo issues store credit by calling Rise.ai's Issue Store
+Credit API directly. Rise.ai creates (or reuses) a wallet keyed on the
+customer's Shopify account and adds the return amount to it. No workflow or
+custom trigger setup is required.
+
+## How Long Does It Take?
+
+The OAuth setup is **immediate** — there is no waiting period and no need to
+contact Redo support to finalize the connection.
+
+## Legacy API Key Setup
+
+<Note>
+  This is the **stable, recommended path** until OAuth exits beta. Available
+  only to merchants on a Rise.ai Enterprise plan.
+</Note>
+
+<Accordion title="Show legacy API key setup steps">
 
 ### Prerequisites
 
 <AccordionGroup>
 <Accordion title="Rise.ai Enterprise Plan" icon="circle-check">
-  This integration is only available for merchants on a **Rise.ai Enterprise**
+  This setup path is only available for merchants on a **Rise.ai Enterprise**
   plan.
 </Accordion>
 </AccordionGroup>
@@ -89,9 +167,9 @@ The merchant must complete the following steps in their Rise.ai dashboard.
 </Step>
 </Steps>
 
-## How Long Does It Take?
+Legacy setup takes up to **2 business days** after the merchant completes the
+steps above and sends the trigger URL to Redo.
 
-Setup takes up to **2 business days** after the merchant completes the steps
-above and sends the trigger URL to Redo.
+</Accordion>
 
 <IntegrationSupport integrationProvider="Rise.ai" />
