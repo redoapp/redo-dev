@@ -92,6 +92,7 @@ Return events notify you when returns are created or updated in your store.
 {
   "type": "created",
   "at": "2023-08-18T12:00:00Z",
+  "merchantName": "Example Merchant",
   "return": {
     "id": "64df65d4c5a4ca3eff4b4e43",
     "status": "pending",
@@ -107,7 +108,8 @@ Return events notify you when returns are created or updated in your store.
           "id": "order-123/1"
         },
         "quantity": 1,
-        "reason": "Too big"
+        "reason": "Too big",
+        "upc": "012345678905"
       }
     ],
     "source": {
@@ -184,8 +186,16 @@ Return events notify you when returns are created or updated in your store.
   ISO 8601 timestamp of when the event occurred
 </ResponseField>
 
+<ResponseField name="merchantName" type="string">
+  The name of the merchant team that owns this return. Useful for 3PL and integration consumers that process webhooks across multiple merchants.
+</ResponseField>
+
 <ResponseField name="return" type="object">
   Complete return object. See the Returns API reference for full schema.
+</ResponseField>
+
+<ResponseField name="return.items[].upc" type="string">
+  Universal Product Code (barcode) for the returned item, snapshotted from the product at return-creation time. `null` if no barcode was recorded for the item.
 </ResponseField>
 
 <ResponseField name="order" type="object">

@@ -2115,6 +2115,10 @@ webhooks:
                   format: date-time
                   title: At
                   type: string
+                merchantName:
+                  description: Name of the merchant team that owns this return.
+                  title: Merchant Name
+                  type: string
                 order:
                   $ref: '#/components/schemas/order-read.schema'
                   description: Order for return.
@@ -5138,6 +5142,11 @@ components:
               sku:
                 description: Product SKU
                 type: string
+              upc:
+                description: Universal Product Code (barcode) snapshotted from the product at return-creation time. Null if no barcode was recorded.
+                title: UPC
+                type: string
+                nullable: true
               status:
                 description: Return item status
                 type: string

@@ -357,6 +357,11 @@ properties:
         sku:
           description: Product SKU
           type: string
+        upc:
+          description: Universal Product Code (barcode) snapshotted from the product at return-creation time. Null if no barcode was recorded.
+          title: UPC
+          type: string
+          nullable: true
         status:
           description: Return item status
           type: string
