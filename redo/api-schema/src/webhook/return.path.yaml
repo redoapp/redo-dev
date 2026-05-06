@@ -11,6 +11,10 @@ post:
               format: date-time
               title: At
               type: string
+            merchantName:
+              description: Name of the merchant team that owns this return.
+              title: Merchant Name
+              type: string
             order:
               $ref: ../schema/order-read.schema.yaml
               description: Order for return.
