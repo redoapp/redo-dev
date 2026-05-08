@@ -3592,7 +3592,7 @@ components:
           maximum: 1000
           type: integer
         price:
-          description: Price per unit of the product.
+          description: Price per unit of the product before discounts.
           minimum: 0
           type:
             - number
