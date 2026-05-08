@@ -3597,6 +3597,18 @@ components:
           type:
             - number
             - 'null'
+        imageUrl:
+          description: URL to the product image.
+          maxLength: 2048
+          type:
+            - string
+            - 'null'
+        totalDiscount:
+          description: Total discount amount applied to this line item.
+          minimum: 0
+          type:
+            - number
+            - 'null'
       required:
         - id
         - productId
