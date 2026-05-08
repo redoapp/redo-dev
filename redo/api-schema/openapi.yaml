@@ -3592,7 +3592,19 @@ components:
           maximum: 1000
           type: integer
         price:
-          description: Price per unit of the product.
+          description: Price per unit of the product before discounts.
+          minimum: 0
+          type:
+            - number
+            - 'null'
+        imageUrl:
+          description: URL to the product image.
+          maxLength: 2048
+          type:
+            - string
+            - 'null'
+        totalDiscount:
+          description: Total discount amount applied to this line item.
           minimum: 0
           type:
             - number
