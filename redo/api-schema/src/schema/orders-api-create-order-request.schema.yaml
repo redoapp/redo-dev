@@ -35,6 +35,14 @@ properties:
     type:
       - number
       - "null"
+  totalDiscount:
+    description: Total discount amount applied to the order (e.g. coupon codes, promotions).
+    minimum: 0
+    type:
+      - number
+      - "null"
+  billingAddress:
+    $ref: ./orders-api-billing-address.schema.yaml
   tags:
     description: Optional tags associated with the order.
     items:

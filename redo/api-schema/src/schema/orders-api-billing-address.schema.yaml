@@ -1,0 +1,33 @@
+description: Billing address.
+properties:
+  address1:
+    description: Primary address line.
+    type:
+      - string
+      - "null"
+  address2:
+    description: Secondary address line.
+    type:
+      - string
+      - "null"
+  city:
+    description: City.
+    type:
+      - string
+      - "null"
+  province:
+    description: State or province.
+    type:
+      - string
+      - "null"
+  country:
+    description: Country.
+    type:
+      - string
+      - "null"
+  postalCode:
+    description: Postal or zip code.
+    type:
+      - string
+      - "null"
+type: object
