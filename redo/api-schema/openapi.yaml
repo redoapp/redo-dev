@@ -3603,7 +3603,7 @@ components:
           type:
             - string
             - 'null'
-        totalDiscount:
+        discount:
           description: Total discount amount applied to this line item.
           minimum: 0
           type:
@@ -3700,6 +3700,40 @@ components:
         address:
           $ref: '#/components/schemas/orders-api-shipping-address.schema'
       type: object
+    orders-api-billing-address.schema:
+      description: Billing address.
+      properties:
+        address1:
+          description: Primary address line.
+          type:
+            - string
+            - 'null'
+        address2:
+          description: Secondary address line.
+          type:
+            - string
+            - 'null'
+        city:
+          description: City.
+          type:
+            - string
+            - 'null'
+        province:
+          description: State or province.
+          type:
+            - string
+            - 'null'
+        country:
+          description: Country.
+          type:
+            - string
+            - 'null'
+        postalCode:
+          description: Postal or zip code.
+          type:
+            - string
+            - 'null'
+      type: object
     orders-api-create-order-request.schema:
       description: Request body for creating an order.
       properties:
@@ -3738,6 +3772,14 @@ components:
           type:
             - number
             - 'null'
+        totalDiscount:
+          description: Total discount amount applied to the order (e.g. coupon codes, promotions).
+          minimum: 0
+          type:
+            - number
+            - 'null'
+        billingAddress:
+          $ref: '#/components/schemas/orders-api-billing-address.schema'
         tags:
           description: Optional tags associated with the order.
           items:
