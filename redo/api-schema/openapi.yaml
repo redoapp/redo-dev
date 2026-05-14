@@ -3568,7 +3568,8 @@ components:
       description: Line item in the order.
       properties:
         id:
-          description: Unique identifier for the line item.
+          description: Unique identifier for the line item. Must not contain the `-` character — Redo uses `-` as a delimiter when encoding line item ids into internal returns-accounting keys, and an id containing `-` will cause draft return creation to fail with a `LineItemNotFoundError`. Use alphanumeric ids (e.g. `LI001`, `12345`).
+          pattern: ^[^-]+$
           type: string
         productId:
           description: Identifier for the product.
