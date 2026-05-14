@@ -1,5 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
+  "api": {
+    "openapi": "api-schema/openapi.yaml"
+  },
   "background": {
     "decoration": "windows"
   },
@@ -186,12 +189,11 @@
           },
           {
             "group": "Endpoints",
-            "openapi": { "source": "/api-schema/openapi.yaml" }
+            "openapi": { "source": "api-schema/openapi.yaml" }
           }
         ]
       }
     ]
   },
-  "openapi": "/api-schema/openapi.yaml",
   "theme": "aspen"
 }
