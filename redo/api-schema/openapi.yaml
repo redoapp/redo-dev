@@ -3895,6 +3895,12 @@ components:
             - cancelled
             - error
           type: string
+        estimatedDeliveryDate:
+          description: Carrier's estimated delivery date (YYYY-MM-DD), typically in the destination's local time. Some carriers do not clearly distinguish local vs UTC, so the date may occasionally be off by one day.
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type:
+            - string
+            - 'null'
         trackingHistory:
           description: List of tracking events in chronological order.
           items:
