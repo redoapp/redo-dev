@@ -157,6 +157,9 @@ The Redo MCP Server provides tools for order and return management:
 |---|---|
 | **list_orders** | Search and list orders by order name, customer email, provider order ID, or date range. Supports pagination. |
 | **get_order** | Get detailed information about a specific order including customer, items, totals, discounts, shipping cost, and taxes. |
+| **create_draft_return** | Start a merchant-created draft return for an order. Returns returnable items, non-returnable items, and the draft return ID. |
+| **manage_draft_return** | Configure a draft return step-by-step by selecting items, editing quantities, answering return-flow questions, choosing compensation, setting overrides, selecting shipment, and configuring exchanges. |
+| **submit_draft_return** | Submit a fully configured draft return once it reaches the ready step. Creates the actual return and returns the return ID. |
 | **list_returns** | Search returns by order name, customer email, status, or date range. Supports pagination. |
 | **get_return** | Get full return details including items, status, compensation totals, and order info. |
 | **process_return** | Accept or reject each item in a return, with options for restocking and grading. |
@@ -187,6 +190,14 @@ The AI will call `list_orders` with an email filter to find all orders for that 
 > Get me the full details for order #1234.
 
 The AI will call `list_orders` to find the order by name, then call `get_order` with the order ID to fetch full details including items, totals, discounts, shipping, and taxes.
+
+### Create a return for an order
+
+**Prompt:**
+
+> Create a return for order #1234. Return the blue hoodie, refund to the original payment method, and use the available prepaid shipping option.
+
+The AI will call `list_orders` if it needs to resolve the order, then call `create_draft_return` to start the return. It will use `manage_draft_return` repeatedly to select items, answer any return-flow questions, choose compensation, set shipment details, and follow the draft's `availableActions`. Once the draft reaches the `ready` step and you confirm the details, the AI will call `submit_draft_return` to create the return.
 
 ### Search for returns by status
 
