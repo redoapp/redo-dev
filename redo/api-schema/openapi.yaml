@@ -3943,6 +3943,12 @@ components:
           type:
             - string
             - 'null'
+        deliveredAt:
+          description: ISO 8601 timestamp of when the shipment was delivered.
+          format: date-time
+          type:
+            - string
+            - 'null'
         trackingHistory:
           description: List of tracking events in chronological order.
           items:
