@@ -3,6 +3,172 @@ post:
   requestBody:
     content:
       application/json:
+        example:
+          type: created
+          at: "2023-08-18T12:00:00Z"
+          merchantName: Example Merchant
+          return:
+            id: 64df65d4c5a4ca3eff4b4e43
+            type: return
+            status: open
+            createdAt: "2023-08-18T12:00:00Z"
+            updatedAt: "2023-08-18T12:00:00Z"
+            order:
+              id: 64e4da943dd822979a70bd12
+              name: "#1234"
+            externalOrderIds:
+              - "1073459971"
+            shopifyOrderIds:
+              - "1073459971"
+            compensationMethods:
+              - refund
+              - store_credit
+              - exchange
+            completeWithNoAction: false
+            internalCreatedByName: Jordan Manager
+            items:
+              - id: 64df65d4c5a4ca3eff4b4e44
+                orderItem:
+                  id: 1073459971/0
+                  line_item_id: "12345678901234"
+                productId: "8453214567890"
+                variantId: "44567823456789"
+                sku: TSHIRT-BLU-M
+                upc: "012345678905"
+                quantity: 1
+                status: open
+                greenReturn: false
+                reason: Too big
+                reasonCode: size_too_large
+                reasons:
+                  - Too big
+                reasonCodes:
+                  - size_too_large
+                customerComment: Runs larger than expected
+                multipleChoiceQuestions:
+                  - question: What was wrong with the fit?
+                    answer: Too large in the chest
+                shipmentGroupIds:
+                  - sg_abc123
+                externalReturnLineItemId: ret_li_12345
+                exchangeItem:
+                  product:
+                    externalId: "8453214567890"
+                    name: Classic T-Shirt
+                  variant:
+                    externalId: "44567823456790"
+                    name: Large / Blue
+                  quantity: 1
+                refund:
+                  amount: { amount: "29.99", currency: USD }
+                  type: original_payment
+                productValueNoTaxNoAdjustment:
+                  amount: { amount: "29.99", currency: USD }
+            source:
+              emailAddress: customer@example.com
+              name:
+                given: Jane
+                surname: Doe
+              mailingAddress:
+                line1: 123 Main St
+                line2: Apt 4B
+                city: San Francisco
+                state: CA
+                postalCode: "94102"
+                country: US
+              phoneNumber: "+14155551234"
+            destination:
+              mailingAddress:
+                line1: 500 Warehouse Way
+                line2: ""
+                city: Salt Lake City
+                state: UT
+                postalCode: "84104"
+                country: US
+              phoneNumber: "+18015550100"
+            shipment:
+              carrier: USPS
+              status: pre_transit
+              tracker: "9400111202555842761523"
+              trackingUrl: https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111202555842761523
+              postageLabel: https://files.getredo.com/labels/abc123.pdf
+              formLabel: https://files.getredo.com/forms/abc123.pdf
+              shipmentGroupId: sg_abc123
+              itemIds:
+                - 64df65d4c5a4ca3eff4b4e44
+              externalLocationId: loc_warehouse_1
+              estimatedDeliveryDate: "2023-08-22T00:00:00Z"
+            shipments:
+              - carrier: USPS
+                status: pre_transit
+                tracker: "9400111202555842761523"
+                trackingUrl: https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111202555842761523
+                postageLabel: https://files.getredo.com/labels/abc123.pdf
+                shipmentGroupId: sg_abc123
+                itemIds:
+                  - 64df65d4c5a4ca3eff4b4e44
+            dropoffs: []
+            giftCards: []
+            exchange:
+              itemCount: 1
+              items:
+                - id: 64df65d4c5a4ca3eff4b4e45
+                  originalPrice: { amount: "34.99", currency: USD }
+                  price: { amount: "29.99", currency: USD, tax: "2.40" }
+                  product:
+                    externalId: "8453214567890"
+                    name: Classic T-Shirt
+                  variant:
+                    externalId: "44567823456790"
+                    name: Large / Blue
+                    sku: TSHIRT-BLU-L
+                  quantity: 1
+              order:
+                externalId: shopify-exchange-456
+              provision: deferred
+              totalTax: { amount: "2.40", currency: USD }
+            totals:
+              refund:
+                amount: { amount: "0.00", currency: USD }
+              exchange:
+                amount: { amount: "29.99", currency: USD }
+              storeCredit:
+                amount: { amount: "0.00", currency: USD }
+              charge:
+                amount: { amount: "0.00", currency: USD }
+            tags:
+              - name: VIP customer
+                source: merchant
+            notes:
+              - message: Reviewed by support — approved for exchange
+          order:
+            id: 64e4da943dd822979a70bd12
+            externalId: "1073459971"
+            name: "#1234"
+            customer:
+              emailAddress: customer@example.com
+              name:
+                given: Jane
+                surname: Doe
+              phoneNumber: "+14155551234"
+            items:
+              - id: 1073459971/0
+                externalId: "12345678901234"
+                fulfillmentLocationId: loc_warehouse_1
+                product:
+                  externalId: "8453214567890"
+                  name: Classic T-Shirt
+                variant:
+                  externalId: "44567823456789"
+                  name: Medium / Blue
+                  sku: TSHIRT-BLU-M
+                quantity: 1
+                price: { amount: "29.99", currency: USD }
+            discounts: { amount: "0.00", currency: USD }
+            lineItemsTotal: { amount: "29.99", currency: USD }
+            shippingCost: { amount: "5.99", currency: USD }
+            taxes: { amount: "2.40", currency: USD }
+            total: { amount: "38.38", currency: USD }
         schema:
           description: Return event
           properties:
