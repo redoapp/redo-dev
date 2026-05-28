@@ -18,16 +18,19 @@ https://mcp.getredo.com/mcp
 
 ## Features
 
-The Redo MCP Server provides tools across orders, returns, discounts, customers, and marketing:
+The Redo MCP Server provides tools across orders, returns, discounts, customers, and marketing.
+
+### Orders
 
 | Tool | Description |
 |---|---|
 | **list_orders** | Search and list orders by order name, customer email, provider order ID, or date range. Supports pagination. |
 | **get_order** | Get detailed information about a specific order including customer, items, totals, discounts, shipping cost, and taxes. |
-| **get_discount_config** | Get the reusable discount configuration — offer, code/prefix, provider, expiration, eligibility, usage limits, and stacking rules — for a discount ID returned by a campaign, automation, template, or generated-code tool. |
-| **get_generated_discount_code** | Look up an issued discount code and its usage records: whether it was used, by which customer or order, when it expires, and what configuration it came from. Accepts a code ID or the code itself. |
-| **list_customers** | Search and list customer records by name, email, phone, or segment membership. Supports pagination. Use to find customer IDs before calling get_customer. |
-| **get_customer** | Get detailed customer information including contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details. |
+
+### Returns
+
+| Tool | Description |
+|---|---|
 | **create_draft_return** | Start a merchant-created draft return for an order. Returns returnable items, non-returnable items, and the draft return ID. |
 | **manage_draft_return** | Configure a draft return step-by-step by selecting items, editing quantities, answering return-flow questions, choosing compensation, setting overrides, selecting shipment, and configuring exchanges. |
 | **submit_draft_return** | Submit a fully configured draft return once it reaches the ready step. Creates the actual return and returns the return ID. |
@@ -39,9 +42,37 @@ The Redo MCP Server provides tools across orders, returns, discounts, customers,
 | **close_return** | Close a return without processing — marks all items as complete with no further action. |
 | **create_return_comment** | Add a comment to a return's timeline. |
 | **approve_return** | Approve a return so the customer can proceed with shipping items back. |
+
+### Return tags
+
+| Tool | Description |
+|---|---|
 | **list_return_tags** | List every return tag defined for the authenticated team. Read-only, no input. |
 | **upsert_return_tag** | Create a new tag, recolor an existing tag, or rename a tag (rename cascades to returns and saved view filters). |
 | **delete_return_tag** | Permanently delete a tag and strip it from every return and saved view filter that referenced it. Destructive. |
+
+### Discounts
+
+| Tool | Description |
+|---|---|
+| **get_discount_config** | Get the reusable discount configuration — offer, code/prefix, provider, expiration, eligibility, usage limits, and stacking rules — for a discount ID returned by a campaign, automation, template, or generated-code tool. |
+| **get_generated_discount_code** | Look up an issued discount code and its usage records: whether it was used, by which customer or order, when it expires, and what configuration it came from. Accepts a code ID or the code itself. |
+
+### Customers
+
+| Tool | Description |
+|---|---|
+| **list_customers** | Search and list customer records by name, email, phone, or segment membership. Supports pagination. Use to find customer IDs before calling get_customer. |
+| **get_customer** | Get detailed customer information including contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details. |
+
+### Marketing
+
+<Note>
+  The marketing tools are only available when Redo Marketing is enabled for your account.
+</Note>
+
+| Tool | Description |
+|---|---|
 | **list_campaigns** | List marketing campaigns, filtered by channel (email/SMS), status, name, or scheduled-date range. Returns a summary per campaign. Supports pagination. |
 | **get_campaign** | Get full details for a campaign including its templates (email subject lines or SMS variants), audiences, status, and schedule. |
 | **get_campaign_performance** | Get per-campaign performance metrics plus period totals with a prior-period comparison: revenue, spend, ROI, revenue per recipient, and order/click/open/send counts. |
@@ -53,11 +84,12 @@ The Redo MCP Server provides tools across orders, returns, discounts, customers,
 | **get_automation_step_configuration** | Resolve the linked configuration for a specific automation step — Recover scenarios and messaging, email subject and builder sections, or SMS content, prefix, and attachments. |
 | **get_automation_step_performance** | Get step-level automation performance for a metric family, such as Recover recovered revenue, reply rate, and conversion rate. |
 | **get_template** | Get an email or SMS marketing template by ID — subject lines, email builder sections, SMS content, prefix, attachments, and AI config. |
-| **ask_redo** | Ask the Redo support AI any question about your account, settings, policies, or platform features. |
 
-<Note>
-  The marketing tools (`list_campaigns`, `get_campaign`, `get_campaign_performance`, `list_segments`, `get_segment`, `list_automations`, `get_automation`, `get_automation_performance`, `get_automation_step_configuration`, `get_automation_step_performance`, and `get_template`) are only available when Redo Marketing is enabled for your account.
-</Note>
+### Support
+
+| Tool | Description |
+|---|---|
+| **ask_redo** | Ask the Redo support AI any question about your account, settings, policies, or platform features. |
 
 ## Setup Instructions
 
