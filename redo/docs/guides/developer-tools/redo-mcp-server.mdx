@@ -18,12 +18,19 @@ https://mcp.getredo.com/mcp
 
 ## Features
 
-The Redo MCP Server provides tools for order and return management:
+The Redo MCP Server provides tools across orders, returns, discounts, customers, and marketing.
+
+### Orders
 
 | Tool | Description |
 |---|---|
 | **list_orders** | Search and list orders by order name, customer email, provider order ID, or date range. Supports pagination. |
 | **get_order** | Get detailed information about a specific order including customer, items, totals, discounts, shipping cost, and taxes. |
+
+### Returns
+
+| Tool | Description |
+|---|---|
 | **create_draft_return** | Start a merchant-created draft return for an order. Returns returnable items, non-returnable items, and the draft return ID. |
 | **manage_draft_return** | Configure a draft return step-by-step by selecting items, editing quantities, answering return-flow questions, choosing compensation, setting overrides, selecting shipment, and configuring exchanges. |
 | **submit_draft_return** | Submit a fully configured draft return once it reaches the ready step. Creates the actual return and returns the return ID. |
@@ -38,6 +45,45 @@ The Redo MCP Server provides tools for order and return management:
 | **list_return_tags** | List every return tag defined for the authenticated team. Read-only, no input. |
 | **upsert_return_tag** | Create a new tag, recolor an existing tag, or rename a tag (rename cascades to returns and saved view filters). |
 | **delete_return_tag** | Permanently delete a tag and strip it from every return and saved view filter that referenced it. Destructive. |
+
+### Discounts
+
+| Tool | Description |
+|---|---|
+| **get_discount_config** | Get the reusable discount configuration — offer, code/prefix, provider, expiration, eligibility, usage limits, and stacking rules — for a discount ID returned by a campaign, automation, template, or generated-code tool. |
+| **get_generated_discount_code** | Look up an issued discount code and its usage records: whether it was used, by which customer or order, when it expires, and what configuration it came from. Accepts a code ID or the code itself. |
+
+### Customers
+
+| Tool | Description |
+|---|---|
+| **list_customers** | Search and list customer records by name, email, phone, or segment membership. Supports pagination. Use to find customer IDs before calling get_customer. |
+| **get_customer** | Get detailed customer information including contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details. |
+
+### Marketing
+
+<Note>
+  The marketing tools are only available when Redo Marketing is enabled for your account.
+</Note>
+
+| Tool | Description |
+|---|---|
+| **list_campaigns** | List marketing campaigns, filtered by channel (email/SMS), status, name, or scheduled-date range. Returns a summary per campaign. Supports pagination. |
+| **get_campaign** | Get full details for a campaign including its templates (email subject lines or SMS variants), audiences, status, and schedule. |
+| **get_campaign_performance** | Get per-campaign performance metrics plus period totals with a prior-period comparison: revenue, spend, ROI, revenue per recipient, and order/click/open/send counts. |
+| **list_segments** | List marketing segments/audiences for the team. Use to discover segment IDs or inspect the audiences included or excluded on a campaign. |
+| **get_segment** | Get full configuration for a segment/audience, including counts and the dynamic condition tree when applicable. |
+| **list_automations** | List automations with IDs, names, enabled state, category, step count, and step types. Filter by step type to find automations for a feature, such as Recover. |
+| **get_automation** | Get full automation details including enabled state, category, timestamps, and step configuration. |
+| **get_automation_performance** | Get per-automation performance metrics plus period totals with a prior-period comparison: revenue, spend, ROI, revenue per recipient, and order/click/open/send counts. |
+| **get_automation_step_configuration** | Resolve the linked configuration for a specific automation step — Recover scenarios and messaging, email subject and builder sections, or SMS content, prefix, and attachments. |
+| **get_automation_step_performance** | Get step-level automation performance for a metric family, such as Recover recovered revenue, reply rate, and conversion rate. |
+| **get_template** | Get an email or SMS marketing template by ID — subject lines, email builder sections, SMS content, prefix, attachments, and AI config. |
+
+### Support
+
+| Tool | Description |
+|---|---|
 | **ask_redo** | Ask the Redo support AI any question about your account, settings, policies, or platform features. |
 
 ## Setup Instructions
@@ -242,6 +288,118 @@ The AI will call `delete_return_tag` with the tag's name. This permanently delet
 > Ask Redo what my return flow is configured to do. What eligibility checks, return options, and fees are set up?
 
 The AI will call `ask_redo` to ask the Redo support AI, which has access to your account's configuration and can describe your specific return flow steps, conditions, and settings.
+
+### Find a customer
+
+**Prompt:**
+
+> Find the customer with email jane@example.com.
+
+The AI will call `list_customers` with an email filter to locate the customer and return a summary including their customer ID, name, and contact details.
+
+### Get details about a customer
+
+**Prompt:**
+
+> Show me everything about customer jane@example.com.
+
+The AI will call `list_customers` to resolve the customer ID if needed, then call `get_customer` to return contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details.
+
+### Look up a discount's configuration
+
+**Prompt:**
+
+> What are the rules on the discount tied to our welcome automation?
+
+The AI will call `get_discount_config` with the discount ID to return the offer, code or prefix, provider, expiration, eligibility, usage limits, and stacking rules.
+
+### Check whether a discount code was used
+
+**Prompt:**
+
+> Was the code SAVE20-A1B2 ever redeemed, and by whom?
+
+The AI will call `get_generated_discount_code` with the code to return its usage records — whether it was used, which customer or order used it, when it expires, and the base discount configuration it came from. It can follow up with `get_discount_config` to describe the underlying offer.
+
+### List marketing campaigns
+
+**Prompt:**
+
+> Show me all email campaigns we sent in the last 30 days.
+
+The AI will call `list_campaigns` with a channel filter and scheduled-date range to return a summary of each campaign — name, channel, status, schedule, and audience counts.
+
+### Get details about a campaign
+
+**Prompt:**
+
+> What templates and audiences are in our "Spring Sale" campaign?
+
+The AI will call `list_campaigns` to resolve the campaign ID if needed, then call `get_campaign` to return its templates (email subject lines or SMS variants), audiences, status, and schedule.
+
+### Review campaign performance
+
+**Prompt:**
+
+> How did our email campaigns perform last month? Which one drove the most revenue?
+
+The AI will call `list_campaigns` to find the relevant campaigns, then call `get_campaign_performance` for the date range to return per-campaign revenue, spend, ROI, and order/click/open/send counts, plus period totals compared to the prior period.
+
+### List customer segments
+
+**Prompt:**
+
+> What segments do we have set up?
+
+The AI will call `list_segments` to return each segment/audience for your team along with its ID and counts.
+
+### Inspect a segment
+
+**Prompt:**
+
+> What conditions define our "VIP customers" segment, and how many people are in it?
+
+The AI will call `list_segments` to resolve the segment ID, then call `get_segment` to return the audience counts and the dynamic condition tree.
+
+### List automations
+
+**Prompt:**
+
+> What automations do we have running, and which ones use Recover?
+
+The AI will call `list_automations` to return each automation's ID, name, enabled state, category, step count, and step types. Use the step-type filter to surface automations for a feature such as Recover.
+
+### Get details about an automation
+
+**Prompt:**
+
+> Walk me through the steps in our abandoned-cart automation.
+
+The AI will call `list_automations` to resolve the automation ID if needed, then call `get_automation` to return its enabled state, category, timestamps, and step configuration. For a step with an opaque template or config ID, it will call `get_automation_step_configuration` to resolve the scenarios, messaging, and settings behind that step.
+
+### Review automation performance
+
+**Prompt:**
+
+> How are our automations performing this quarter compared to last?
+
+The AI will call `get_automation_performance` for the date range to return per-automation revenue, spend, ROI, revenue per recipient, and order/click/open/send counts, plus period totals compared to the prior period.
+
+### Analyze Recover step performance
+
+**Prompt:**
+
+> How is our Recover abandoned-cart automation doing? What's the recovered revenue and reply rate?
+
+The AI will call `list_automations` (filtering by step type `recover`) to find the automation, then call `get_automation_step_performance` with `metricType='recover_conversation'` and `stepTypes=['recover']` for Recover-specific metrics like recovered revenue, reply rate, and conversion rate.
+
+### Inspect a marketing template
+
+**Prompt:**
+
+> Show me the email content for the template used in our welcome automation.
+
+The AI will call `get_automation` to find the step's template ID, then call `get_template` to return the subject line, email builder sections (or SMS content), attachments, and AI config.
 
 ## Rate Limits
 
