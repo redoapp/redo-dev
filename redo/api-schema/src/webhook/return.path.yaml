@@ -37,6 +37,8 @@ post:
                 upc: "012345678905"
                 quantity: 1
                 status: open
+                grade: A
+                outcome: restock
                 greenReturn: false
                 reason: Too big
                 reasonCode: size_too_large

@@ -155,10 +155,25 @@ properties:
               type: object
           title: Exchange item
           type: object
+        grade:
+          description:
+            Merchant-assigned grade for the returned item (e.g. condition or
+            quality tier). Null if the merchant has not graded this item.
+          title: Grade
+          type: string
+          nullable: true
         greenReturn:
           description:
             Whether this is a green return (no physical return required)
           type: boolean
+        outcome:
+          description:
+            Merchant-assigned processing outcome for the returned item (e.g.
+            restock, dispose). Null if the merchant has not set an outcome
+            for this item.
+          title: Outcome
+          type: string
+          nullable: true
         shipmentGroupIds:
           description: IDs of the shipment groups this return item belongs to
           items:
