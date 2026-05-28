@@ -262,13 +262,29 @@ The AI will call `delete_return_tag` with the tag's name. This permanently delet
 
 The AI will call `ask_redo` to ask the Redo support AI, which has access to your account's configuration and can describe your specific return flow steps, conditions, and settings.
 
-### Look up a customer
+### Find a customer
 
 **Prompt:**
 
-> Pull up the customer record for jane@example.com.
+> Find the customer with email jane@example.com.
 
-The AI will call `list_customers` with an email filter to find the customer, then call `get_customer` with the customer ID to return contact methods, marketing consent, tags, segment memberships, addresses, and loyalty details.
+The AI will call `list_customers` with an email filter to locate the customer and return a summary including their customer ID, name, and contact details.
+
+### Get details about a customer
+
+**Prompt:**
+
+> Show me everything about customer jane@example.com.
+
+The AI will call `list_customers` to resolve the customer ID if needed, then call `get_customer` to return contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details.
+
+### Look up a discount's configuration
+
+**Prompt:**
+
+> What are the rules on the discount tied to our welcome automation?
+
+The AI will call `get_discount_config` with the discount ID to return the offer, code or prefix, provider, expiration, eligibility, usage limits, and stacking rules.
 
 ### Check whether a discount code was used
 
@@ -276,7 +292,23 @@ The AI will call `list_customers` with an email filter to find the customer, the
 
 > Was the code SAVE20-A1B2 ever redeemed, and by whom?
 
-The AI will call `get_generated_discount_code` with the code to return its usage records — whether it was used, which customer or order used it, when it expires, and the base discount configuration it came from. It can follow up with `get_discount_config` to describe the underlying offer, eligibility, and stacking rules.
+The AI will call `get_generated_discount_code` with the code to return its usage records — whether it was used, which customer or order used it, when it expires, and the base discount configuration it came from. It can follow up with `get_discount_config` to describe the underlying offer.
+
+### List marketing campaigns
+
+**Prompt:**
+
+> Show me all email campaigns we sent in the last 30 days.
+
+The AI will call `list_campaigns` with a channel filter and scheduled-date range to return a summary of each campaign — name, channel, status, schedule, and audience counts.
+
+### Get details about a campaign
+
+**Prompt:**
+
+> What templates and audiences are in our "Spring Sale" campaign?
+
+The AI will call `list_campaigns` to resolve the campaign ID if needed, then call `get_campaign` to return its templates (email subject lines or SMS variants), audiences, status, and schedule.
 
 ### Review campaign performance
 
@@ -286,6 +318,14 @@ The AI will call `get_generated_discount_code` with the code to return its usage
 
 The AI will call `list_campaigns` to find the relevant campaigns, then call `get_campaign_performance` for the date range to return per-campaign revenue, spend, ROI, and order/click/open/send counts, plus period totals compared to the prior period.
 
+### List customer segments
+
+**Prompt:**
+
+> What segments do we have set up?
+
+The AI will call `list_segments` to return each segment/audience for your team along with its ID and counts.
+
 ### Inspect a segment
 
 **Prompt:**
@@ -294,13 +334,37 @@ The AI will call `list_campaigns` to find the relevant campaigns, then call `get
 
 The AI will call `list_segments` to resolve the segment ID, then call `get_segment` to return the audience counts and the dynamic condition tree.
 
-### Analyze Recover automation performance
+### List automations
+
+**Prompt:**
+
+> What automations do we have running, and which ones use Recover?
+
+The AI will call `list_automations` to return each automation's ID, name, enabled state, category, step count, and step types. Use the step-type filter to surface automations for a feature such as Recover.
+
+### Get details about an automation
+
+**Prompt:**
+
+> Walk me through the steps in our abandoned-cart automation.
+
+The AI will call `list_automations` to resolve the automation ID if needed, then call `get_automation` to return its enabled state, category, timestamps, and step configuration. For a step with an opaque template or config ID, it will call `get_automation_step_configuration` to resolve the scenarios, messaging, and settings behind that step.
+
+### Review automation performance
+
+**Prompt:**
+
+> How are our automations performing this quarter compared to last?
+
+The AI will call `get_automation_performance` for the date range to return per-automation revenue, spend, ROI, revenue per recipient, and order/click/open/send counts, plus period totals compared to the prior period.
+
+### Analyze Recover step performance
 
 **Prompt:**
 
 > How is our Recover abandoned-cart automation doing? What's the recovered revenue and reply rate?
 
-The AI will call `list_automations` (filtering by step type `recover`) to find the automation, then call `get_automation_performance` for automation-level totals and `get_automation_step_performance` with `metricType='recover_conversation'` for Recover-specific metrics like recovered revenue, reply rate, and conversion rate. It can call `get_automation_step_configuration` to describe the scenarios and messaging behind a step.
+The AI will call `list_automations` (filtering by step type `recover`) to find the automation, then call `get_automation_step_performance` with `metricType='recover_conversation'` and `stepTypes=['recover']` for Recover-specific metrics like recovered revenue, reply rate, and conversion rate.
 
 ### Inspect a marketing template
 
