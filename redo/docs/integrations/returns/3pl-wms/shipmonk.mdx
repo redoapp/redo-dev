@@ -46,6 +46,16 @@ You'll need your ShipMonk API key for authentication. This can be found in your 
 
 <Accordion title="ShipMonk Store ID" icon="store">
 You'll need your ShipMonk Store ID. This can be found in your ShipMonk account settings alongside your API credentials.
+
+<Warning>
+**Pick the Store ID for your ecommerce Store — not the one for the `Shipmonk API` Store.** In ShipMonk's **Settings > Stores** page, every connected source shows up as its own "Store" row — e.g. `Shopify v2`, `Manual Orders`, and `Shipmonk API` will each be listed with their own Store ID. Each ShipMonk order is bound to the Store that *synced* it, so orders coming from Shopify live under the **Shopify** Store — not the one whose **Type** is `Shipmonk API`.
+
+If you configure Redo with the `Shipmonk API` Store ID, RMA creation will fail with a 404 even though the order exists in ShipMonk:
+
+> Order with `"orderKey"` `"7231742542102"` using the provided `"Store ID"` `"19497"` does not exist in your Store.
+
+In ShipMonk, go to **Settings > Stores**, find the row whose **Type** matches the platform that pushes your orders into ShipMonk (typically `Shopify v2`), and copy *its* Store ID.
+</Warning>
 </Accordion>
 
 <Accordion title="Products and Orders Synced to ShipMonk" icon="box">
