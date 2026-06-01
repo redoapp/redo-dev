@@ -1,0 +1,134 @@
+---
+title: "MasonHub"
+description: "Connect MasonHub to Redo for automated return receiving, grading, and processing"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is MasonHub?
+
+MasonHub is a returns-focused warehouse management platform that handles receiving, grading, and disposition of returned items. Redo's MasonHub integration pushes RMAs into MasonHub when returns are created, and automatically processes returns in Redo when MasonHub finishes grading received items.
+
+## What Does the Integration Do?
+
+When a return has a shipping label in Redo, the integration creates an RMA in MasonHub with:
+
+- **Customer identifier** set to the Redo return ID
+- **Manifest ID** built from the original Shopify order name plus the return count on that order
+- **Return type** = `rma_submitted_by_customer`
+- **Package ID** set to the return tracking number (required — see below)
+- Line items with SKU, quantity, return reason, and inventory status
+
+When MasonHub finishes receiving and grading the package, it fires an **`rmaEvent`** webhook of type `received` back to Redo. Redo reads the per-SKU `receiving_details` block (which warehouse staff fill out as items are graded), maps each disposition to a restock decision, and **automatically processes** the return.
+
+### Item Discrepancy Handling
+
+MasonHub reports a final disposition per item — `available`, `damaged`, `qc`, `short`, etc. Redo processes these as follows:
+
+- **`available`** items are processed with restocking enabled.
+- All other dispositions (damaged, qc, short, …) are processed **without** restocking.
+- **Quantity shortfall or overage**: if the quantity MasonHub reports doesn't match the quantity Redo expected, the return is flagged in Redo and a timeline comment records the mismatch so your team can investigate. The return is still processed for whatever was received.
+- **Items with no SKU** or that are marked as green returns (e.g. discard / recycle) are excluded from the RMA payload entirely.
+
+In all cases, the return is still processed for whatever MasonHub reports — discrepancies surface as flags and timeline notes, not blockers.
+
+## How to Set It Up
+
+### Prerequisites
+
+Before you begin, make sure you have:
+
+<AccordionGroup>
+<Accordion title="Active MasonHub Account" icon="circle-check">
+You must have an active MasonHub account with returns services enabled.
+</Accordion>
+
+<Accordion title="MasonHub API Token" icon="key">
+Your MasonHub bearer API token, available from your MasonHub account manager or admin.
+</Accordion>
+
+<Accordion title="Account Slug" icon="building">
+Your MasonHub **account slug** — the identifier MasonHub uses to scope API requests to your brand.
+</Accordion>
+
+<Accordion title="Sandbox vs Production" icon="flask">
+MasonHub offers a sandbox environment at `https://sandbox.masonhub.co` for testing before going live. The integration form has a **Sandbox Mode** toggle — enable it during initial setup, then turn it off when you're ready to go live.
+</Accordion>
+
+<Accordion title="Tracking Number on Returns" icon="barcode">
+MasonHub requires the package tracking number on the RMA payload. The integration will not push an RMA to MasonHub until the return has a shipping label generated — make sure label generation is configured in your Redo return flow.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** → **Returns & Claims** → **Integrations** and locate the **MasonHub** card.
+</Step>
+
+<Step title="Connect MasonHub">
+Click **Connect** on the MasonHub card.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide:
+
+- **Account Slug** (required)
+- **API Token** (required)
+- **Sandbox Mode** (optional — enable for testing)
+- **Create Returns** (optional — controls whether RMAs are pushed to MasonHub)
+
+Click **Save** to complete the connection.
+</Step>
+
+<Step title="Webhook Auto-Setup">
+On save, Redo automatically registers the `rmaEvent` v2.0 webhook subscription with MasonHub on your behalf — no manual webhook setup required. Redo generates a per-integration webhook token and validates it on every incoming event.
+
+A scheduled cron job also re-syncs MasonHub webhook subscriptions periodically, so if a webhook is accidentally deleted on the MasonHub side, Redo will re-create it automatically.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify it works end-to-end:
+
+1. Initiate a test return through your Redo return portal and generate a shipping label
+2. Check the return timeline for a MasonHub RMA creation entry
+3. Verify the RMA appears in MasonHub with correct manifest ID, SKUs, quantities, and tracking
+4. Mark the RMA as received in MasonHub (or use sandbox to simulate)
+5. Confirm Redo processes the return automatically within seconds of the `received` event
+</Step>
+</Steps>
+
+<Note>
+MasonHub also emits tracking-stage events (`tendered`, `inTransit`, `delivered`, `undeliverable`, `onDock`, `receivingStarted`). Redo records these for audit but **does not** trigger return processing on them — only `received` triggers automatic processing.
+</Note>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                    | Time          | Description                                                  |
+| ----------------------- | ------------- | ------------------------------------------------------------ |
+| Obtain API Credentials  | 1-2 days      | Request API Token and Account Slug from your MasonHub manager |
+| Configure in Redo       | 2-5 minutes   | Enter credentials and save configuration                     |
+| Webhook Setup           | Automatic     | Redo auto-registers the `rmaEvent` subscription on save      |
+| First Return Test       | 10-15 minutes | Create test return and verify the RMA + auto-processing flow |
+| **Total Setup**         | **1-2 business days** | End-to-end, gated on MasonHub credentials            |
+
+### Operational Timing
+
+<Steps>
+<Step title="RMA Creation">
+**Real-time (1-3 seconds)** after the return is approved and a shipping label is generated.
+</Step>
+
+<Step title="Return Processing">
+**Automatic via webhook** — when MasonHub fires the `received` event with item dispositions, Redo processes the return within seconds.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days from package arrival to grading complete.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="MasonHub" />
