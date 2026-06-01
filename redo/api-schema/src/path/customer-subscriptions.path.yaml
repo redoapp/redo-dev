@@ -19,6 +19,45 @@ post:
             sms:
               $ref: ../schema/customer-subscription-sms.schema.yaml
           type: object
+        examples:
+          full_example:
+            summary: All channels and subscription types
+            value:
+              sms:
+                phoneNumber: "+15550000000"
+                subscriptions:
+                  marketing:
+                    subscriptionStatus: subscribed
+                    triggerAutomations: true
+                    updatedAt: "2026-01-15T10:30:00Z"
+                  transactional:
+                    subscriptionStatus: subscribed
+                    updatedAt: "2026-01-15T10:30:00Z"
+              email:
+                email: "jane.doe@example.com"
+                subscriptions:
+                  marketing:
+                    subscriptionStatus: subscribed
+                    triggerAutomations: true
+                    updatedAt: "2026-01-15T10:30:00Z"
+          sms_only:
+            summary: SMS marketing and transactional
+            value:
+              sms:
+                phoneNumber: "+15550000000"
+                subscriptions:
+                  marketing:
+                    subscriptionStatus: subscribed
+                  transactional:
+                    subscriptionStatus: subscribed
+          email_only:
+            summary: Email marketing only
+            value:
+              email:
+                email: "jane.doe@example.com"
+                subscriptions:
+                  marketing:
+                    subscriptionStatus: unsubscribed
     required: true
   responses:
     "200":
@@ -26,6 +65,26 @@ post:
         application/json:
           schema:
             $ref: ../schema/customer-subscription-update-response.schema.yaml
+          examples:
+            full_example:
+              summary: All channels updated
+              value:
+                success: true
+                message: "Customer subscriptions updated successfully"
+                updatedSubscriptions:
+                  sms:
+                    marketing: true
+                    transactional: true
+                  email:
+                    marketing: true
+            sms_only:
+              summary: SMS only updated
+              value:
+                success: true
+                message: "Customer subscriptions updated successfully"
+                updatedSubscriptions:
+                  sms:
+                    marketing: true
       description: Success
     "400":
       content:

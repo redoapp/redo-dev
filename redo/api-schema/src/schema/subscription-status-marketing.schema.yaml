@@ -1,7 +1,7 @@
 description: Marketing subscription status
 properties:
   subscriptionStatus:
-    description: Subscription status
+    description: Subscription status. Use `confirmed` if the customer has already completed double opt-in elsewhere and you are recording that fact.
     enum: [subscribed, confirmed, unsubscribed]
     type: string
   triggerAutomations:

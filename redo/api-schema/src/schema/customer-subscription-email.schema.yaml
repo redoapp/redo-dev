@@ -7,7 +7,23 @@ properties:
   subscriptions:
     properties:
       marketing:
-        $ref: ./subscription-status-marketing.schema.yaml
+        description: Email marketing subscription. Email is always auto-confirmed on subscribe.
+        properties:
+          subscriptionStatus:
+            description: Subscription status.
+            enum: [subscribed, unsubscribed]
+            type: string
+          triggerAutomations:
+            default: false
+            description: Whether to trigger automations for this subscription change. Defaults to false.
+            type: boolean
+          updatedAt:
+            description: ISO 8601 timestamp. If not provided, defaults to now.
+            format: date-time
+            type: string
+        required:
+          - subscriptionStatus
+        type: object
     type: object
 required:
   - email
