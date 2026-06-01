@@ -1,0 +1,138 @@
+---
+title: "Ecwid"
+description: "Connect Ecwid to Redo to record returns as inbound orders in your Ecwid store"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Ecwid?
+
+Ecwid is a cloud-based e-commerce platform that lets merchants add a storefront to any website or social channel. Redo's Ecwid integration mirrors returns back into Ecwid so your team can see incoming RMAs alongside outbound orders in the same admin.
+
+## What Does the Integration Do?
+
+When a return is approved in Redo, the integration creates a corresponding order record in Ecwid representing the incoming items. The Ecwid order is created with a $0 total and `PAID` payment status — it is not a sellable order, just an inbound record so warehouse and CX staff can match what's coming back to what originally shipped.
+
+The order carries:
+
+- Line items with SKU, quantity, and the customer's return reason (as a selected option)
+- Returner email and shipping address
+- Order comments referencing the merchant, Redo return ID, original order name, and incoming tracking number
+- Private admin notes containing the customer's questionnaire answers and any uploaded images
+- The configured **Customer Group** tag (so Redo-created orders are easy to filter in Ecwid)
+- The return tracking number stored in Ecwid's `affiliateId` field
+
+Once configured, Redo can also listen for `order.updated` webhooks from Ecwid and append the new fulfillment/payment status to the matching return's timeline — useful for keeping a paper trail when warehouse staff update the inbound order in Ecwid.
+
+<Note>
+The Ecwid integration **does not** auto-process returns in Redo from Ecwid status changes — webhook events are recorded as timeline notes only. Return processing in Redo (refund, store credit, exchange) is still triggered by your standard Redo workflow.
+</Note>
+
+## How to Set It Up
+
+### Prerequisites
+
+Before you begin, make sure you have the following:
+
+<AccordionGroup>
+<Accordion title="Active Ecwid Store" icon="circle-check">
+You must have an active Ecwid store with API access enabled.
+</Accordion>
+
+<Accordion title="Store ID" icon="store">
+Your numeric Ecwid Store ID. You can find it in Ecwid under **My Profile** or in your store admin URL.
+</Accordion>
+
+<Accordion title="Access Token" icon="key">
+A REST API access token with read/write permission on orders. Tokens are created in Ecwid under **Apps** → **Develop apps** (private app) or in **My Apps** → **API**.
+</Accordion>
+
+<Accordion title="Customer Group (optional but recommended)" icon="tag">
+A short identifier (e.g. `redo-returns`) that Redo will attach to every order it creates in Ecwid. This lets you filter or report on Redo-created orders without confusing them with real customer orders.
+</Accordion>
+
+<Accordion title="Client ID and Client Secret (only if you want webhooks)" icon="bell">
+If you want Ecwid order updates to appear on the Redo return timeline, you'll need your **Client ID** and **Client Secret** from your Ecwid custom app. Redo uses the Client Secret to verify the HMAC-SHA256 signature on incoming webhook events. Without these, the integration still works one-way (Redo → Ecwid) but Redo will not record Ecwid-side status changes.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** → **Returns & Claims** → **Integrations** and locate the **Ecwid** card.
+</Step>
+
+<Step title="Connect Ecwid">
+Click **Connect** on the Ecwid card.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide:
+
+- **Store ID** (required)
+- **Access Token** (required)
+- **Customer Group** (required)
+- **Client ID** (optional — required for webhooks)
+- **Client Secret** (optional — required for webhooks)
+
+You can also scope the integration to **Returns**, **Claims**, and/or **Warranties** independently, and optionally enable **Filter by return reason** or a **SKU override** if you want every returned item to be reported in Ecwid under a single SKU. Click **Save** to complete the connection.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify it works end-to-end:
+
+1. Initiate a test return through your Redo return portal
+2. Approve the return so it triggers Ecwid sync
+3. In Ecwid, check **My Sales** → **Orders** for a new $0 order tagged with your Customer Group
+4. Confirm the order has the correct SKUs, quantities, return reasons, and tracking number
+</Step>
+</Steps>
+
+### Webhook Setup (optional)
+
+If you provided a Client ID and Client Secret, you'll need to configure the webhook in Ecwid manually. Redo does not auto-register Ecwid webhooks.
+
+<Steps>
+<Step title="Get Your Webhook Endpoint">
+Contact [Redo support](mailto:support@getredo.com) to receive your team's unique Ecwid webhook endpoint URL.
+</Step>
+
+<Step title="Subscribe in Ecwid">
+In your Ecwid custom app configuration, subscribe the webhook endpoint to the **`order.updated`** event. Ecwid will then POST signed events to Redo whenever an order changes fulfillment or payment status.
+</Step>
+</Steps>
+
+<Warning>
+Webhook events are matched to Redo returns using the Ecwid **Store ID** plus the Ecwid order's human-readable order number (e.g. `B8HGD`), not the numeric entity ID. Each Redo team can connect one Ecwid store; merchants with multiple Ecwid stores should connect each store under its own Redo team.
+</Warning>
+
+### Required Address Fields
+
+Returns missing a complete shipping address (street, city, and country) will fail to sync to Ecwid and surface a non-retryable error on the return timeline. Make sure your return portal collects these fields before approving the return.
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                          | Time          | Description                                                          |
+| ----------------------------- | ------------- | -------------------------------------------------------------------- |
+| Obtain Store ID & Token       | 2-5 minutes   | Locate Store ID and create access token in Ecwid                     |
+| Configure in Redo             | 2-5 minutes   | Enter credentials and save configuration                             |
+| Configure Webhook (optional)  | 5-10 minutes  | Subscribe `order.updated` webhook in your Ecwid custom app           |
+| First Return Test             | 5-10 minutes  | Create test return and verify the inbound order appears in Ecwid     |
+| **Total Setup**               | **15-30 minutes** | Complete setup for most merchants                                |
+
+### Operational Timing
+
+<Steps>
+<Step title="Order Creation in Ecwid">
+**Real-time (1-3 seconds)** after the return is approved in Redo.
+</Step>
+
+<Step title="Timeline Updates from Ecwid">
+**Real-time via webhook** — when your team updates the inbound order in Ecwid (e.g. marks fulfillment as `SHIPPED`), Redo records the change on the return timeline within seconds. Return processing in Redo is **not** triggered automatically by these events.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Ecwid" />

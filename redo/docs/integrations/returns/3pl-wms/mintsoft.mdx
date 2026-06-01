@@ -1,0 +1,137 @@
+---
+title: "Mintsoft"
+description: "Connect Mintsoft to Redo for automated return creation and warehouse-confirmed processing"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Mintsoft?
+
+Mintsoft is a cloud warehouse management system used by 3PLs and brand-operated warehouses to manage inventory, order fulfillment, and returns. Redo's Mintsoft integration creates external return records in Mintsoft when a return is approved and polls Mintsoft for confirmation events so Redo can automatically process returns once items are received at the warehouse.
+
+## What Does the Integration Do?
+
+When a return is approved in Redo, the integration creates one **external return** in Mintsoft per shipment on the return, populated with:
+
+- **Client ID** from your Mintsoft configuration
+- **Warehouse ID**, resolved from the Redo location's configured external return hub (so multi-warehouse merchants automatically route to the correct facility)
+- **Reference** — the original order name(s) or, as a fallback, the Redo return ID
+- **Return items** with SKU, quantity, and Mintsoft reason ID (mapped from the customer's return reason via your configured reason map; unmapped reasons fall back to a configured default reason)
+
+Unlike most warehouse integrations, Mintsoft **does not send webhooks**. Instead, Redo runs a cron job every **5 minutes** that polls Mintsoft for confirmed returns updated since the last sync. When Mintsoft confirms a return is received, Redo matches the received items by SKU back to the eligible products on the return, and **automatically processes** the return — refund, store credit, or exchange — using the disposition determined by your team's restock setting.
+
+### Item Discrepancy Handling
+
+When Mintsoft confirms received items, Redo matches them by SKU to the eligible (not-yet-processed) products on the return:
+
+- **All SKUs match**: each product is processed with restocking enabled (unless your team's inventory restock setting is off, or the product is a green return — green returns are never restocked).
+- **Any SKU doesn't match**: the return is flagged in Redo with a clear note ("Items received by Mintsoft could not be matched to return products") so your team can investigate.
+- **Closed returns**: returns that are already closed when Mintsoft confirms receipt are skipped — Redo will not re-process them.
+
+## How to Set It Up
+
+### Prerequisites
+
+Before you begin, make sure you have:
+
+<AccordionGroup>
+<Accordion title="Active Mintsoft Account" icon="circle-check">
+You must have an active Mintsoft account with API access.
+</Accordion>
+
+<Accordion title="Mintsoft Credentials" icon="key">
+Mintsoft supports two authentication options:
+
+- **API Key** (static, no expiry) — preferred if your Mintsoft admin can provision one. Redo uses it as-is on every request.
+- **Username + Password** — Redo exchanges these for an API key valid for ~24 hours, and automatically refreshes the key in the background before it expires.
+
+Either option works; the integration form accepts both.
+</Accordion>
+
+<Accordion title="Client ID" icon="user">
+Your Mintsoft **Client ID** — the identifier for your brand inside your 3PL's Mintsoft tenant. Required on every external return payload.
+</Accordion>
+
+<Accordion title="Warehouse Mapping (External Return Hub)" icon="warehouse">
+For each Redo location that should sync to Mintsoft, you must configure the **external return hub** (the Mintsoft warehouse ID) on the location. Returns whose shipment groups don't resolve to a mapped warehouse will fall back to the warehouse mapped to the merchant address, or be skipped if no fallback exists.
+</Accordion>
+
+<Accordion title="Return Reason Mapping" icon="list">
+Redo return reasons need to be mapped to Mintsoft return reason IDs. You can also set a **default reason ID** that's used when a customer's reason doesn't match anything in the map. Reason mapping is configured in the same Mintsoft settings form.
+</Accordion>
+</AccordionGroup>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+Go to **Settings** → **Returns & Claims** → **Integrations** and locate the **Mintsoft** card.
+</Step>
+
+<Step title="Connect Mintsoft">
+Click **Connect** on the Mintsoft card.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide:
+
+- **Client ID** (required)
+- **API Key** *or* **Username + Password** (one is required)
+- **Default Return Reason ID** (required — used when a customer's reason doesn't map to a Mintsoft reason)
+- **Return Reason Map** (optional but recommended — maps Redo reason codes to Mintsoft reason IDs)
+
+Click **Save** to complete the connection.
+</Step>
+
+<Step title="Map Warehouses">
+On each Redo location that should sync to Mintsoft, set the **external return hub** to the corresponding Mintsoft warehouse ID. Without this mapping, the integration cannot determine where to send returns.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify it works end-to-end:
+
+1. Initiate a test return through your Redo return portal and approve it
+2. Check the return timeline for a Mintsoft external return creation entry
+3. Verify the external return appears in Mintsoft under the correct warehouse with the right SKUs and reasons
+4. Mark the return as confirmed/received in Mintsoft
+5. Within 5 minutes, Redo's polling job should pick up the confirmation and process the return automatically
+</Step>
+</Steps>
+
+<Note>
+Mintsoft does not send webhooks to Redo. **All inbound processing is driven by Redo's 5-minute polling job**, so expect up to a 5-minute delay between Mintsoft confirming a return and Redo processing it. If you need faster turnaround, contact [Redo support](mailto:support@getredo.com).
+</Note>
+
+<Warning>
+**Reason mapping sentinel**: When you first connect Mintsoft, you can save with a Default Return Reason ID of `0` as a placeholder while you gather the real reason IDs from your Mintsoft admin. The integration won't validate the reason map until you set a non-zero default, so make sure to come back and update it before going live, otherwise returns will sync to Mintsoft with reason ID `0`.
+</Warning>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+| Step                    | Time          | Description                                                          |
+| ----------------------- | ------------- | -------------------------------------------------------------------- |
+| Obtain Credentials      | 1-2 days      | Get API Key (or username/password) and Client ID from your 3PL/Mintsoft admin |
+| Configure in Redo       | 5-10 minutes  | Enter credentials, default reason, and reason map                    |
+| Map Warehouses          | 5-10 minutes  | Set external return hub on each Redo location                        |
+| First Return Test       | 10-15 minutes | Create test return and confirm it in Mintsoft, then verify auto-processing |
+| **Total Setup**         | **1-2 business days** | End-to-end, gated on Mintsoft credentials and reason IDs     |
+
+### Operational Timing
+
+<Steps>
+<Step title="External Return Creation">
+**Real-time (1-3 seconds)** after the return is approved in Redo.
+</Step>
+
+<Step title="Return Processing">
+**Up to 5 minutes** after Mintsoft confirms the return. Redo polls Mintsoft on a 5-minute cron and auto-processes any confirmed returns picked up by the poll.
+</Step>
+
+<Step title="Warehouse Processing">
+**Varies by warehouse SLA**, typically 1-3 business days from package arrival to confirmation in Mintsoft.
+</Step>
+</Steps>
+
+<IntegrationSupport integrationProvider="Mintsoft" />
