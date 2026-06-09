@@ -1710,6 +1710,7 @@ paths:
         - $ref: '#/components/parameters/shopify-order-name'
         - $ref: '#/components/parameters/provider-order-name'
         - $ref: '#/components/parameters/return-status.param'
+        - $ref: '#/components/parameters/email.param'
       responses:
         '200':
           content:
@@ -2590,6 +2591,14 @@ components:
       name: status
       schema:
         $ref: '#/components/schemas/return-status.schema'
+    email.param:
+      description: Filter returns by customer email address. Applies an implicit 2-month lookback on the return creation date.
+      in: query
+      name: email
+      schema:
+        example: customer@example.com
+        format: email
+        type: string
     idempotency-key.param:
       description: Optional idempotency key for safely retrying create requests.
       in: header
