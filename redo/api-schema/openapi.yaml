@@ -1840,6 +1840,62 @@ paths:
     parameters:
       - $ref: '#/components/parameters/store-id.param'
     summary: Import Returns
+  /stores/{storeId}/returns/{returnId}/item-identifiers:
+    description: Return item identifiers.
+    put:
+      description: |-
+        Set merchant-supplied external identifiers on return items. Each entry in `items` matches a return item by its `id` and records the supplied `externalIdentifier` on it. The full return object is returned after the update.
+
+        Possible 400 problem types:
+        - `com.getredo.api:return/invalid-request` — the request body is malformed.
+        - `com.getredo.api:return/item-not-found` — one or more item IDs supplied
+          in the request do not exist on this return.
+      operationId: Return item identifiers put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/return-item-identifiers-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  return:
+                    $ref: '#/components/schemas/return-read.schema'
+                required:
+                  - return
+                type: object
+          description: Success
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body or item ID not found on this return
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Return not found
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Set Return Item Identifiers
+      tags:
+        - Returns
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/return-id.param'
+    summary: Return Item Identifiers
   /stores/{storeId}/return-tags:
     description: Return tags for a store.
     get:
@@ -5297,6 +5353,11 @@ components:
                   - id
                 title: Order item
                 type: object
+              externalIdentifier:
+                description: Merchant-supplied external identifier for this return item. Set via `PUT /stores/{storeId}/returns/{returnId}/item-identifiers`. Null if not set.
+                nullable: true
+                title: External Identifier
+                type: string
               externalReturnLineItemId:
                 description: External return line item ID
                 title: External Return Line Item ID
@@ -6073,6 +6134,31 @@ components:
         - processedCount
         - errorCount
         - results
+    return-item-identifiers-request.schema:
+      description: Request body for setting external identifiers on return items.
+      properties:
+        items:
+          description: List of return items to update. Each entry must include the return item `id` and the `externalIdentifier` to assign to it.
+          items:
+            properties:
+              externalIdentifier:
+                description: Merchant-supplied identifier for this return item.
+                title: External Identifier
+                type: string
+              id:
+                description: Return item ID.
+                title: ID
+                type: string
+            required:
+              - id
+              - externalIdentifier
+            type: object
+          title: Items
+          type: array
+      required:
+        - items
+      title: Return Item Identifiers Request
+      type: object
     pill-theme.schema:
       description: Color theme used to render a tag pill in the UI.
       enum:
