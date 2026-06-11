@@ -6,7 +6,7 @@ properties:
       - string
       - "null"
   cost:
-    description: Shipping cost.
+    description: Shipping cost, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
     minimum: 0
     type:
       - number

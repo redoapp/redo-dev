@@ -18,25 +18,25 @@ properties:
   shipping:
     $ref: ./orders-api-shipping.schema.yaml
   totalPrice:
-    description: Total order price including tax and shipping.
+    description: Total order price including tax and shipping, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
     minimum: 0
     type:
       - number
       - "null"
   subtotalPrice:
-    description: Subtotal price excluding tax and shipping.
+    description: Subtotal price excluding tax and shipping, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
     minimum: 0
     type:
       - number
       - "null"
   totalTax:
-    description: Total tax amount.
+    description: Total tax amount, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
     minimum: 0
     type:
       - number
       - "null"
   totalDiscount:
-    description: Total discount amount applied to the order (e.g. coupon codes, promotions).
+    description: Total discount amount applied to the order (e.g. coupon codes, promotions), as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
     minimum: 0
     type:
       - number
