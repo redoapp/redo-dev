@@ -3868,7 +3868,7 @@ components:
           maximum: 1000
           type: integer
         price:
-          description: Price per unit of the product before discounts.
+          description: Price per unit of the product before discounts, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
@@ -3880,7 +3880,7 @@ components:
             - string
             - 'null'
         discount:
-          description: Total discount amount applied to this line item.
+          description: Total discount amount applied to this line item, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
@@ -3968,7 +3968,7 @@ components:
             - string
             - 'null'
         cost:
-          description: Shipping cost.
+          description: Shipping cost, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
@@ -4031,25 +4031,25 @@ components:
         shipping:
           $ref: '#/components/schemas/orders-api-shipping.schema'
         totalPrice:
-          description: Total order price including tax and shipping.
+          description: Total order price including tax and shipping, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
             - 'null'
         subtotalPrice:
-          description: Subtotal price excluding tax and shipping.
+          description: Subtotal price excluding tax and shipping, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
             - 'null'
         totalTax:
-          description: Total tax amount.
+          description: Total tax amount, as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
             - 'null'
         totalDiscount:
-          description: Total discount amount applied to the order (e.g. coupon codes, promotions).
+          description: Total discount amount applied to the order (e.g. coupon codes, promotions), as a decimal amount in the order's currency (e.g. $79.99, not 7999 cents).
           minimum: 0
           type:
             - number
