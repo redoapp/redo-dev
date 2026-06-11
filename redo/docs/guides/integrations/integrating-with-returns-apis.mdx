@@ -20,7 +20,7 @@ Before building your integration, determine which Redo API best fits your needs:
   >
     **Use this if:** You already have a Loop Returns integration built
 
-    Minimal redevelopment work required - simply change the base URL from Loop to Redo and your integration continues working.
+    Minimal redevelopment work required - simply change the base URL from Loop to Redo and your integration continues working. Covers Loop's warehouse return endpoints (return details, list, flag, remove line items, close, cancel, notes, process, and ASN reporting).
   </Card>
 
   <Card
@@ -49,40 +49,39 @@ Create, retrieve, update, and manage returns throughout their lifecycle. You can
 
 **Key Endpoints:**
 - `GET /stores/{storeId}/returns` - List all returns for a store
-- `POST /returns/{returnId}/status` - Update return status
+- `GET /returns/{returnId}` - Fetch a single return
+- `PUT /returns/{returnId}/status` - Update return status
+- `POST /returns/{returnId}/process` - Process a return to trigger refunds or exchanges
 
 ### Return Shipping
 
-Generate return shipping labels and track return shipments:
+Redo generates return shipping labels when a return is created. Your integration reads the resulting shipment data from the return — there are no separate endpoints for rating or purchasing labels:
 
-- Get shipping rates for return shipments
-- Purchase return shipping labels programmatically
-- Retrieve shipping label documents
-- Track return shipments back to your warehouse
+- Download shipping label documents via the `postageLabel` and `formLabel` URLs on each shipment
+- Read carrier, tracking number, and tracking URL for each return shipment
+- Monitor shipment status (`pre_transit`, `in_transit`, `delivered`, etc.) and estimated delivery date
 
-**Key Endpoints:**
-- `POST /stores/{storeId}/shipments/rates` - Get shipping rates
-- `POST /stores/{storeId}/shipments/buy` - Purchase shipping label
+This data is available in the `shipments` field of the return object, returned by the endpoints above and included in return webhook payloads.
 
 ### Invoicing
 
 Access invoice data for returns processing:
 
-- Retrieve invoices for completed returns
-- Export invoice line items for accounting systems
-- Track invoice status and payment details
+- Retrieve invoices with their charge amount and status
+- Export invoice line items as CSV for accounting systems
 
 **Key Endpoints:**
 - `GET /stores/{storeId}/invoices` - List invoices
+- `GET /invoices/{invoiceId}/items.csv` - Export line items for an invoice
+- `GET /invoices/pending/items.csv` - Export line items for the pending invoice
 
 ### Webhooks
 
-Set up real-time notifications for return events:
+Set up real-time notifications for return events. Webhooks use a single `return` topic that delivers `created` and `updated` events containing the full return and order objects:
 
-- Subscribe to return status changes
-- Receive notifications when returns are initiated
-- Get alerts for refund processing completion
-- Monitor shipment tracking updates
+- Receive a `created` event when a return is initiated
+- Receive an `updated` event whenever a return changes — status transitions, shipment tracking updates, refund processing, and item changes all arrive as `updated` events
+- Compare the payload against your stored state to determine what changed
 
 **Key Endpoints:**
 - `POST /stores/{storeId}/webhooks` - Create webhook subscriptions
