@@ -19,7 +19,7 @@ post:
             externalOrderIds:
               - "1073459971"
             externalReturnIds:
-              - platform: shopify
+              - provider: shopify
                 value: "12345"
             shopifyOrderIds:
               - "1073459971"

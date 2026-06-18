@@ -101,17 +101,18 @@ properties:
   externalReturnIds:
     description: Array of external return identifiers associated with this return. For Shopify returns, value is Shopify's numeric return ID as a string, not a Shopify admin URL or gid:// ID.
     examples:
-      - [{ platform: shopify, value: "12345" }]
+      - [{ provider: shopify, value: "12345" }]
+      - [{ provider: tiktok, value: "729837465" }]
     items:
       properties:
-        platform:
-          description: External platform that owns this return identifier
-          enum: [shopify]
+        provider:
+          description: External provider that owns this return identifier
+          enum: [shopify, tiktok]
           type: string
         value:
-          description: Return identifier value from the external platform
+          description: Return identifier value from the external provider
           type: string
-      required: [platform, value]
+      required: [provider, value]
       type: object
     title: External Return IDs
     type: array

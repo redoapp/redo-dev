@@ -2182,7 +2182,7 @@ webhooks:
                 externalOrderIds:
                   - '1073459971'
                 externalReturnIds:
-                  - platform: shopify
+                  - provider: shopify
                     value: '12345'
                 shopifyOrderIds:
                   - '1073459971'
@@ -5205,20 +5205,23 @@ components:
         externalReturnIds:
           description: Array of external return identifiers associated with this return. For Shopify returns, value is Shopify's numeric return ID as a string, not a Shopify admin URL or gid:// ID.
           examples:
-            - - platform: shopify
+            - - provider: shopify
                 value: '12345'
+            - - provider: tiktok
+                value: '729837465'
           items:
             properties:
-              platform:
-                description: External platform that owns this return identifier
+              provider:
+                description: External provider that owns this return identifier
                 enum:
                   - shopify
+                  - tiktok
                 type: string
               value:
-                description: Return identifier value from the external platform
+                description: Return identifier value from the external provider
                 type: string
             required:
-              - platform
+              - provider
               - value
             type: object
           title: External Return IDs
