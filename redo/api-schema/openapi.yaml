@@ -2181,6 +2181,8 @@ webhooks:
                   name: '#1234'
                 externalOrderIds:
                   - '1073459971'
+                externalReturnIds:
+                  - '12345'
                 shopifyOrderIds:
                   - '1073459971'
                 compensationMethods:
@@ -5200,7 +5202,9 @@ components:
           title: External Order IDs
           type: array
         externalReturnIds:
-          description: Array of external return IDs associated with this return
+          description: Array of external return IDs associated with this return. For Shopify returns, these are Shopify's numeric return IDs as strings, not Shopify admin URLs or gid:// IDs.
+          examples:
+            - - '12345'
           items:
             type: string
           title: External Return IDs
