@@ -5199,6 +5199,12 @@ components:
             type: string
           title: External Order IDs
           type: array
+        externalReturnIds:
+          description: Array of external return IDs associated with this return
+          items:
+            type: string
+          title: External Return IDs
+          type: array
         giftCards:
           description: Gift card(s) created for return
           items:
