@@ -102,12 +102,11 @@ properties:
     description: Array of external return identifiers associated with this return. For Shopify returns, value is Shopify's numeric return ID as a string, not a Shopify admin URL or gid:// ID.
     examples:
       - [{ provider: shopify, value: "12345" }]
-      - [{ provider: tiktok, value: "729837465" }]
     items:
       properties:
         provider:
           description: External provider that owns this return identifier
-          enum: [shopify, tiktok]
+          enum: [shopify]
           type: string
         value:
           description: Return identifier value from the external provider
