@@ -48,6 +48,13 @@ You must have an active account with ShipHero.
   Follow [ShipHero's documentation](https://software-help.shiphero.com/hc/en-us/articles/4419362224781-How-to-Obtain-a-GraphQL-API-Access-Refresh-Token)
   to obtain a GraphQL API access refresh token. Copy this token as you'll need
   it in the next step.
+
+  <Warning>
+    Do **not** use `system@getredo.com` as the email when creating your
+    ShipHero API access token. Redo uses that address across multiple merchants,
+    so ShipHero will report it as already taken. Use any unique email address
+    instead — only the refresh token itself is passed to Redo, not the email.
+  </Warning>
 </Step>
 
 <Step title="Navigate to Integrations">
@@ -111,5 +118,21 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
   arrive at the facility.
 </Step>
 </Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="ShipHero says the email address is already in use" icon="triangle-exclamation">
+  When obtaining a ShipHero API access token, you may see an error stating that
+  the email address is already taken. This happens if you tried to use
+  `system@getredo.com` — Redo shares that address across multiple merchants in
+  ShipHero, so it is unavailable for new accounts.
+
+  **Fix:** Use any unique email address when creating the ShipHero API token.
+  The email is not passed to Redo — only the refresh token matters. Once you
+  have the token, enter it in the Redo integration form and complete setup as
+  normal.
+</Accordion>
+</AccordionGroup>
 
 <IntegrationSupport integrationProvider="ShipHero" />
