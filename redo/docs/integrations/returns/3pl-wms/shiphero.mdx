@@ -50,12 +50,10 @@ You must have an active account with ShipHero.
   it in the next step.
 
   <Warning>
-    Do **not** use `system@getredo.com` as the email when creating your
-    ShipHero API access token. Redo uses that address across multiple merchants,
-    so ShipHero will report it as already taken. Instead, use an email address
-    that will be associated with the ShipHero user account dedicated to your
-    Redo integration — only the refresh token itself is passed to Redo, not
-    the email.
+    When creating your ShipHero API access token, use an email address that is
+    unique and not already taken in ShipHero. This ensures the third-party user
+    account is created successfully. Only the refresh token itself is passed to
+    Redo, not the email.
   </Warning>
 </Step>
 
@@ -126,14 +124,12 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
 <AccordionGroup>
 <Accordion title="ShipHero says the email address is already in use" icon="triangle-exclamation">
   When obtaining a ShipHero API access token, you may see an error stating that
-  the email address is already taken. This happens if you tried to use
-  `system@getredo.com` — Redo shares that address across multiple merchants in
-  ShipHero, so it is unavailable for new accounts.
+  the email address is already taken.
 
-  **Fix:** Use an email address that will be associated with the ShipHero user
-  account dedicated to your Redo integration. The email is not passed to Redo
-  — only the refresh token matters. Once you have the token, enter it in the
-  Redo integration form and complete setup as normal.
+  **Fix:** Use an email address that is unique and not already registered in
+  ShipHero. The email is not passed to Redo — only the refresh token matters.
+  Once you have the token, enter it in the Redo integration form and complete
+  setup as normal.
 </Accordion>
 </AccordionGroup>
 
