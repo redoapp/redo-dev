@@ -2181,6 +2181,9 @@ webhooks:
                   name: '#1234'
                 externalOrderIds:
                   - '1073459971'
+                externalReturnIds:
+                  - provider: shopify
+                    value: '12345'
                 shopifyOrderIds:
                   - '1073459971'
                 compensationMethods:
@@ -5198,6 +5201,27 @@ components:
           items:
             type: string
           title: External Order IDs
+          type: array
+        externalReturnIds:
+          description: Array of external return identifiers associated with this return. For Shopify returns, value is Shopify's numeric return ID as a string, not a Shopify admin URL or gid:// ID.
+          examples:
+            - - provider: shopify
+                value: '12345'
+          items:
+            properties:
+              provider:
+                description: External provider that owns this return identifier
+                enum:
+                  - shopify
+                type: string
+              value:
+                description: Return identifier value from the external provider
+                type: string
+            required:
+              - provider
+              - value
+            type: object
+          title: External Return IDs
           type: array
         giftCards:
           description: Gift card(s) created for return

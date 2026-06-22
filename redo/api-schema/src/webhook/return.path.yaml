@@ -18,6 +18,9 @@ post:
               name: "#1234"
             externalOrderIds:
               - "1073459971"
+            externalReturnIds:
+              - provider: shopify
+                value: "12345"
             shopifyOrderIds:
               - "1073459971"
             compensationMethods:
