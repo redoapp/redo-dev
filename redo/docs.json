@@ -253,6 +253,46 @@
                 ]
               },
               {
+                "group": "Common",
+                "root": "/docs/api-reference/v3/reference/common/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/common/queries/node"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/common/mailing-address",
+                      "/docs/api-reference/v3/reference/common/money",
+                      "/docs/api-reference/v3/reference/common/node"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Customers",
+                "root": "/docs/api-reference/v3/reference/customers/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/customers/queries/customer",
+                      "/docs/api-reference/v3/reference/customers/queries/customers"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/customers/customer",
+                      "/docs/api-reference/v3/reference/customers/customer-location"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "Inventory",
                 "root": "/docs/api-reference/v3/reference/inventory/overview",
                 "pages": [
@@ -270,6 +310,32 @@
                       "/docs/api-reference/v3/reference/inventory/inventory-product",
                       "/docs/api-reference/v3/reference/inventory/location",
                       "/docs/api-reference/v3/reference/inventory/location-inventory-level"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Orders",
+                "root": "/docs/api-reference/v3/reference/orders/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/orders/queries/order",
+                      "/docs/api-reference/v3/reference/orders/queries/orders"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/orders/order",
+                      "/docs/api-reference/v3/reference/orders/order-customer",
+                      "/docs/api-reference/v3/reference/orders/order-fulfillment",
+                      "/docs/api-reference/v3/reference/orders/order-fulfillment-line-item",
+                      "/docs/api-reference/v3/reference/orders/order-line-item",
+                      "/docs/api-reference/v3/reference/orders/order-shipping",
+                      "/docs/api-reference/v3/reference/orders/order-tracking-event",
+                      "/docs/api-reference/v3/reference/orders/order-tracking-event-location"
                     ]
                   }
                 ]
@@ -298,32 +364,6 @@
                       "/docs/api-reference/v3/reference/procurement/purchase-order-item",
                       "/docs/api-reference/v3/reference/procurement/supplier",
                       "/docs/api-reference/v3/reference/procurement/supplier-contact"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Orders",
-                "root": "/docs/api-reference/v3/reference/orders/overview",
-                "pages": [
-                  {
-                    "group": "Queries",
-                    "pages": [
-                      "/docs/api-reference/v3/reference/orders/queries/order",
-                      "/docs/api-reference/v3/reference/orders/queries/orders"
-                    ]
-                  },
-                  {
-                    "group": "Objects",
-                    "pages": [
-                      "/docs/api-reference/v3/reference/orders/order",
-                      "/docs/api-reference/v3/reference/orders/order-customer",
-                      "/docs/api-reference/v3/reference/orders/order-fulfillment",
-                      "/docs/api-reference/v3/reference/orders/order-fulfillment-line-item",
-                      "/docs/api-reference/v3/reference/orders/order-line-item",
-                      "/docs/api-reference/v3/reference/orders/order-shipping",
-                      "/docs/api-reference/v3/reference/orders/order-tracking-event",
-                      "/docs/api-reference/v3/reference/orders/order-tracking-event-location"
                     ]
                   }
                 ]
@@ -380,26 +420,6 @@
                 ]
               },
               {
-                "group": "Customers",
-                "root": "/docs/api-reference/v3/reference/customers/overview",
-                "pages": [
-                  {
-                    "group": "Queries",
-                    "pages": [
-                      "/docs/api-reference/v3/reference/customers/queries/customer",
-                      "/docs/api-reference/v3/reference/customers/queries/customers"
-                    ]
-                  },
-                  {
-                    "group": "Objects",
-                    "pages": [
-                      "/docs/api-reference/v3/reference/customers/customer",
-                      "/docs/api-reference/v3/reference/customers/customer-location"
-                    ]
-                  }
-                ]
-              },
-              {
                 "group": "Webhooks",
                 "root": "/docs/api-reference/v3/reference/webhooks/overview",
                 "pages": [
@@ -424,26 +444,6 @@
                     "group": "Objects",
                     "pages": [
                       "/docs/api-reference/v3/reference/webhooks/webhook-endpoint"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Common",
-                "root": "/docs/api-reference/v3/reference/common/overview",
-                "pages": [
-                  {
-                    "group": "Queries",
-                    "pages": [
-                      "/docs/api-reference/v3/reference/common/queries/node"
-                    ]
-                  },
-                  {
-                    "group": "Objects",
-                    "pages": [
-                      "/docs/api-reference/v3/reference/common/mailing-address",
-                      "/docs/api-reference/v3/reference/common/money",
-                      "/docs/api-reference/v3/reference/common/node"
                     ]
                   }
                 ]

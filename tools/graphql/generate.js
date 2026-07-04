@@ -128,8 +128,8 @@ function main() {
   if (!modelPath || !outDir) fail(["--model and --out are both required"]);
 
   const model = JSON.parse(fs.readFileSync(modelPath, "utf8"));
-  let categories = [...(model.categories || [])].sort(
-    (a, b) => a.order - b.order
+  let categories = [...(model.categories || [])].sort((a, b) =>
+    a.label.localeCompare(b.label)
   );
   const types = model.types || [];
   const queries = model.queries || [];
@@ -372,14 +372,22 @@ function main() {
   }
 
   // ----- Page renderers (each returns a full MDX document) -----
+  // Everything within a category is listed alphabetically by name.
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const catQueries = (catId) =>
+    queries.filter((q) => q.category === catId).sort(byName);
+  const catMutations = (catId) =>
+    mutations.filter((m) => m.category === catId).sort(byName);
   const catTypes = (catId) =>
-    types.filter((t) => t.category === catId && !isBoilerplate(t.name));
+    types
+      .filter((t) => t.category === catId && !isBoilerplate(t.name))
+      .sort(byName);
 
   function renderOverview(cat) {
     // The category description is the frontmatter subtitle; don't repeat it here.
     const lines = frontmatter(cat.label, cat.description);
-    const cQueries = queries.filter((q) => q.category === cat.id);
-    const cMutations = mutations.filter((m) => m.category === cat.id);
+    const cQueries = catQueries(cat.id);
+    const cMutations = catMutations(cat.id);
     const listOp = (op) =>
       `- [\`${op.name}\`](${opUrl(op)})${lifecycleBadge(
         op.lifecycle
@@ -536,11 +544,11 @@ function main() {
   for (const cat of categories) {
     write(`${cat.id}/overview.mdx`, renderOverview(cat));
     count++;
-    for (const op of queries.filter((q) => q.category === cat.id)) {
+    for (const op of catQueries(cat.id)) {
       write(`${cat.id}/queries/${slug(op.name)}.mdx`, renderOperationPage(op));
       count++;
     }
-    for (const op of mutations.filter((m) => m.category === cat.id)) {
+    for (const op of catMutations(cat.id)) {
       write(
         `${cat.id}/mutations/${slug(op.name)}.mdx`,
         renderOperationPage(op)
@@ -558,8 +566,8 @@ function main() {
   // ----- Build the v3 nav and patch docs.json -----
   const navGroups = categories.map((cat) => {
     const pages = [];
-    const cQueries = queries.filter((q) => q.category === cat.id);
-    const cMutations = mutations.filter((m) => m.category === cat.id);
+    const cQueries = catQueries(cat.id);
+    const cMutations = catMutations(cat.id);
     if (cQueries.length)
       pages.push({ group: "Queries", pages: cQueries.map((op) => opUrl(op)) });
     if (cMutations.length)
