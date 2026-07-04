@@ -180,20 +180,279 @@
       },
       {
         "tab": "API Reference",
-        "groups": [
+        "versions": [
           {
-            "group": "Getting Started",
-            "pages": [
-              "/docs/api-reference/introduction",
-              "/docs/api-reference/authentication",
-              "/docs/api-reference/errors",
-              "/docs/api-reference/pagination",
-              "/docs/api-reference/loop-compatible-api"
+            "version": "v2 (REST)",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "/docs/api-reference/introduction",
+                  "/docs/api-reference/authentication",
+                  "/docs/api-reference/errors",
+                  "/docs/api-reference/pagination",
+                  "/docs/api-reference/loop-compatible-api"
+                ]
+              },
+              {
+                "group": "Endpoints",
+                "openapi": {
+                  "source": "api-schema/openapi.yaml"
+                }
+              }
             ]
           },
           {
-            "group": "Endpoints",
-            "openapi": { "source": "api-schema/openapi.yaml" }
+            "version": "v3 (GraphQL)",
+            "tag": "Beta",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "/docs/api-reference/v3/introduction",
+                  "/docs/api-reference/v3/authentication",
+                  "/docs/api-reference/v3/queries-mutations",
+                  "/docs/api-reference/v3/pagination",
+                  "/docs/api-reference/v3/rate-limiting",
+                  "/docs/api-reference/v3/errors"
+                ]
+              },
+              {
+                "group": "Catalog",
+                "root": "/docs/api-reference/v3/reference/catalog/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/catalog/queries/product",
+                      "/docs/api-reference/v3/reference/catalog/queries/product-families",
+                      "/docs/api-reference/v3/reference/catalog/queries/product-family",
+                      "/docs/api-reference/v3/reference/catalog/queries/products"
+                    ]
+                  },
+                  {
+                    "group": "Mutations",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/catalog/mutations/create-product-family"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/catalog/attribute",
+                      "/docs/api-reference/v3/reference/catalog/dimensions",
+                      "/docs/api-reference/v3/reference/catalog/product",
+                      "/docs/api-reference/v3/reference/catalog/product-family",
+                      "/docs/api-reference/v3/reference/catalog/product-family-image",
+                      "/docs/api-reference/v3/reference/catalog/product-family-option",
+                      "/docs/api-reference/v3/reference/catalog/product-image",
+                      "/docs/api-reference/v3/reference/catalog/product-option-value",
+                      "/docs/api-reference/v3/reference/catalog/weight"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Inventory",
+                "root": "/docs/api-reference/v3/reference/inventory/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/inventory/queries/inventory-level",
+                      "/docs/api-reference/v3/reference/inventory/queries/location",
+                      "/docs/api-reference/v3/reference/inventory/queries/locations"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/inventory/inventory-product",
+                      "/docs/api-reference/v3/reference/inventory/location",
+                      "/docs/api-reference/v3/reference/inventory/location-inventory-level"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Procurement",
+                "root": "/docs/api-reference/v3/reference/procurement/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/procurement/queries/inbound-shipment",
+                      "/docs/api-reference/v3/reference/procurement/queries/inbound-shipments",
+                      "/docs/api-reference/v3/reference/procurement/queries/purchase-order",
+                      "/docs/api-reference/v3/reference/procurement/queries/purchase-orders",
+                      "/docs/api-reference/v3/reference/procurement/queries/supplier",
+                      "/docs/api-reference/v3/reference/procurement/queries/suppliers"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/procurement/inbound-shipment",
+                      "/docs/api-reference/v3/reference/procurement/inbound-shipment-item",
+                      "/docs/api-reference/v3/reference/procurement/purchase-order",
+                      "/docs/api-reference/v3/reference/procurement/purchase-order-item",
+                      "/docs/api-reference/v3/reference/procurement/supplier",
+                      "/docs/api-reference/v3/reference/procurement/supplier-contact"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Orders",
+                "root": "/docs/api-reference/v3/reference/orders/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/orders/queries/order",
+                      "/docs/api-reference/v3/reference/orders/queries/orders"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/orders/order",
+                      "/docs/api-reference/v3/reference/orders/order-customer",
+                      "/docs/api-reference/v3/reference/orders/order-fulfillment",
+                      "/docs/api-reference/v3/reference/orders/order-fulfillment-line-item",
+                      "/docs/api-reference/v3/reference/orders/order-line-item",
+                      "/docs/api-reference/v3/reference/orders/order-shipping",
+                      "/docs/api-reference/v3/reference/orders/order-tracking-event",
+                      "/docs/api-reference/v3/reference/orders/order-tracking-event-location"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Returns",
+                "root": "/docs/api-reference/v3/reference/returns/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/returns/queries/return",
+                      "/docs/api-reference/v3/reference/returns/queries/returns"
+                    ]
+                  },
+                  {
+                    "group": "Mutations",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/returns/mutations/tag-return"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/returns/assessment",
+                      "/docs/api-reference/v3/reference/returns/assessment-response",
+                      "/docs/api-reference/v3/reference/returns/assessment-user",
+                      "/docs/api-reference/v3/reference/returns/exchange-item",
+                      "/docs/api-reference/v3/reference/returns/exchange-item-price",
+                      "/docs/api-reference/v3/reference/returns/exchange-order",
+                      "/docs/api-reference/v3/reference/returns/external-ref",
+                      "/docs/api-reference/v3/reference/returns/external-return-id",
+                      "/docs/api-reference/v3/reference/returns/item-refund",
+                      "/docs/api-reference/v3/reference/returns/multiple-choice-question",
+                      "/docs/api-reference/v3/reference/returns/person-name",
+                      "/docs/api-reference/v3/reference/returns/return",
+                      "/docs/api-reference/v3/reference/returns/return-amount",
+                      "/docs/api-reference/v3/reference/returns/return-destination",
+                      "/docs/api-reference/v3/reference/returns/return-dropoff",
+                      "/docs/api-reference/v3/reference/returns/return-exchange",
+                      "/docs/api-reference/v3/reference/returns/return-gift-card",
+                      "/docs/api-reference/v3/reference/returns/return-integration",
+                      "/docs/api-reference/v3/reference/returns/return-item",
+                      "/docs/api-reference/v3/reference/returns/return-item-exchange-item",
+                      "/docs/api-reference/v3/reference/returns/return-note",
+                      "/docs/api-reference/v3/reference/returns/return-order",
+                      "/docs/api-reference/v3/reference/returns/return-refund",
+                      "/docs/api-reference/v3/reference/returns/return-shipment",
+                      "/docs/api-reference/v3/reference/returns/return-source",
+                      "/docs/api-reference/v3/reference/returns/return-tag",
+                      "/docs/api-reference/v3/reference/returns/return-totals"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Customers",
+                "root": "/docs/api-reference/v3/reference/customers/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/customers/queries/customer",
+                      "/docs/api-reference/v3/reference/customers/queries/customers"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/customers/customer",
+                      "/docs/api-reference/v3/reference/customers/customer-location"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "root": "/docs/api-reference/v3/reference/webhooks/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/webhooks/queries/webhook-endpoint",
+                      "/docs/api-reference/v3/reference/webhooks/queries/webhook-endpoints"
+                    ]
+                  },
+                  {
+                    "group": "Mutations",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/webhooks/mutations/activate-webhook-endpoint-secret",
+                      "/docs/api-reference/v3/reference/webhooks/mutations/create-webhook-endpoint",
+                      "/docs/api-reference/v3/reference/webhooks/mutations/delete-webhook-endpoint",
+                      "/docs/api-reference/v3/reference/webhooks/mutations/rotate-webhook-endpoint-secret",
+                      "/docs/api-reference/v3/reference/webhooks/mutations/update-webhook-endpoint"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/webhooks/webhook-endpoint"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Common",
+                "root": "/docs/api-reference/v3/reference/common/overview",
+                "pages": [
+                  {
+                    "group": "Queries",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/common/queries/node"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "/docs/api-reference/v3/reference/common/mailing-address",
+                      "/docs/api-reference/v3/reference/common/money",
+                      "/docs/api-reference/v3/reference/common/node"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Access",
+                "pages": ["/docs/api-reference/v3/reference/scopes"]
+              }
+            ]
           }
         ]
       }

@@ -1,0 +1,64 @@
+---
+title: "Introduction"
+description: "Getting started with the Redo v3 GraphQL API"
+icon: "hand-wave"
+---
+
+## Welcome to the Redo v3 API
+
+The v3 API is a **GraphQL** API for managing your product catalog, inventory,
+purchasing, suppliers, and webhooks. Unlike the
+[v2 REST API](/docs/api-reference/introduction), you send a single `POST`
+request describing exactly the data you want, and receive exactly that shape
+back.
+
+**Data endpoint:** `https://api.getredo.com/v3/account/{accountId}/graphql`
+**Schema endpoint:** `https://api.getredo.com/v3/graphql-schema`
+
+All operations go to the single data endpoint over `POST`. The schema endpoint
+is read-only [introspection](#introspection) and requires no authentication.
+
+## Quick start
+
+```bash
+curl -X POST "https://api.getredo.com/v3/account/YOUR_ACCOUNT_ID/graphql" \
+  -H "Authorization: Bearer YOUR_API_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ products(first: 10) { nodes { id title sku } pageInfo { hasNextPage endCursor } } }"
+  }'
+```
+
+## Introspection
+
+The schema is self-describing. Point any GraphQL client (GraphiQL, Apollo
+Sandbox, Insomnia, `graphql-codegen`) at the **schema endpoint** to explore
+types, fields, and docs:
+
+```
+https://api.getredo.com/v3/graphql-schema
+```
+
+This endpoint resolves introspection queries (`__schema`, `__type`) only — no
+account data is reachable there, so no token is needed.
+
+## Next steps
+
+<Steps>
+  <Step title="Authenticate">
+    Create an API token and learn the [bearer
+    scheme](/docs/api-reference/v3/authentication).
+  </Step>
+  <Step title="Send operations">
+    Learn how [queries and mutations](/docs/api-reference/v3/queries-mutations)
+    are structured.
+  </Step>
+  <Step title="Page through lists">
+    Understand [cursor-based pagination](/docs/api-reference/v3/pagination) on
+    connections.
+  </Step>
+  <Step title="Explore the schema">
+    Browse the reference, starting with
+    [Catalog](/docs/api-reference/v3/reference/catalog/overview).
+  </Step>
+</Steps>

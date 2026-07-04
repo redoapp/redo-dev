@@ -1,0 +1,8 @@
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["v3.docs.json"])
+
+filegroup(
+    name = "docs_model",
+    srcs = ["v3.docs.json"],
+)

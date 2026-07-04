@@ -1,0 +1,73 @@
+---
+title: "Authentication"
+description: "How to authenticate v3 GraphQL requests"
+icon: "key"
+---
+
+The v3 data endpoint is authenticated with a **bearer token** that is scoped to
+a single account.
+
+## Getting your credentials
+
+### API token
+
+To create an API token:
+
+1. Log in to your [Redo Dashboard](https://app.getredo.com)
+2. Go to **Settings** → **Developer**
+3. Click **Add API Client**
+4. Copy the generated API secret
+
+<Warning>
+  Store your API secret securely. It will only be shown once when created.
+</Warning>
+
+### Account ID
+
+Your account ID is part of the data endpoint path. It is shown in the
+**General** section of **Settings** → **Developer** in the Redo Dashboard, and
+looks like `acc_...`.
+
+## Making authenticated requests
+
+Send every operation as a `POST` to the data endpoint for your account, with the
+token in the `Authorization` header:
+
+```http
+POST /v3/account/acc_123/graphql HTTP/1.1
+Host: api.getredo.com
+Authorization: Bearer 77bb7598b7a972475cc7c7e171ec33af
+Content-Type: application/json
+
+{"query":"{ products(first: 10) { nodes { id title } } }"}
+```
+
+The token is validated against the account ID in the path. A malformed header,
+unknown token, or a token that does not belong to that account all fail the same
+way — with an `Unauthorized` error — so they cannot be told apart:
+
+```json
+{ "errors": [{ "message": "Unauthorized" }] }
+```
+
+<Warning>
+  Never share your API secret publicly or commit it to version control.
+</Warning>
+
+## Scopes
+
+Tokens carry **scopes** that determine which fields they may read or write.
+Fields you are not scoped for are denied even when the token is otherwise valid,
+and because a nested field's scope is additive to its parent's, a request needs
+the union of every scope along its selection path. Grant a client only the
+scopes it needs in the Dashboard.
+
+See [Access scopes](/docs/api-reference/v3/reference/scopes) for the full list,
+and the **Required scopes** on each query, mutation, and field in the reference.
+
+## Introspection without a token
+
+The [schema endpoint](/docs/api-reference/v3/introduction#introspection)
+(`https://api.getredo.com/v3/graphql-schema`) is unauthenticated and exposes the
+schema only — never account data. Use it to explore types and generate clients
+without a token.
