@@ -1,0 +1,48 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+cjs_root(
+    name = "root",
+    package_name = "@redotech/tools-graphql",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "lib",
+    srcs = ["generate.js"],
+    root = ":root",
+    deps = [
+        "@redotech_redodev_npm//prettier:lib",
+    ],
+)
+
+nodejs_binary(
+    name = "generate",
+    dep = ":lib",
+    main = "generate.js",
+)
+
+# `bazel run //tools/graphql:gen` regenerates the MDX into the source tree.
+sh_binary(
+    name = "gen",
+    data = [
+        ":generate",
+        "//redo/api-schema-v3:docs_model",
+    ],
+    main = "gen.sh",
+)
+
+# Fails if the vendored doc model is internally inconsistent (dangling category,
+# unknown scope, unresolved type reference).
+sh_test(
+    name = "validate_test",
+    srcs = ["validate.sh"],
+    data = [
+        ":generate",
+        "//redo/api-schema-v3:docs_model",
+    ],
+)

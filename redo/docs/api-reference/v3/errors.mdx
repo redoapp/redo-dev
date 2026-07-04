@@ -1,0 +1,48 @@
+---
+title: "Errors"
+description: "How the v3 GraphQL API reports errors"
+icon: "triangle-exclamation"
+---
+
+The v3 API follows GraphQL error conventions. A response can contain `data`,
+`errors`, or both. Always inspect the `errors` array even when an HTTP `200` is
+returned.
+
+## Error shape
+
+```json
+{
+  "errors": [
+    {
+      "message": "Query cost exceeds the rate limit",
+      "extensions": { "code": "THROTTLED" }
+    }
+  ]
+}
+```
+
+Machine-readable details live under `extensions`. The `code` field is the most
+useful for branching in your client.
+
+## Common cases
+
+| Situation                                                       | HTTP status | Body                                                     |
+| --------------------------------------------------------------- | ----------- | -------------------------------------------------------- |
+| Missing, malformed, or invalid token, or token/account mismatch | `401`       | `{ "errors": [{ "message": "Unauthorized" }] }`          |
+| Query cost exceeds your rate limit                              | `429`       | `code: "THROTTLED"`, with a `Retry-After` header         |
+| Field not permitted by your token's scopes                      | `200`       | `errors` entry denying the field                         |
+| Malformed query (syntax/validation)                             | `200`       | GraphQL validation `errors`                              |
+| Unexpected server error                                         | `500`       | `{ "errors": [{ "message": "Internal server error" }] }` |
+
+<Note>
+  Authentication failures are deliberately uniform — a bad header, an unknown
+  token, a nonexistent account, and a token that does not belong to the account
+  all return the same `Unauthorized` error, so they cannot be distinguished.
+</Note>
+
+## Handling throttling
+
+When you receive a `THROTTLED` error, wait the number of seconds given in the
+`Retry-After` header before retrying, and consider lowering query cost by
+requesting smaller pages or fewer fields. See
+[Rate limiting](/docs/api-reference/v3/rate-limiting).

@@ -23,6 +23,11 @@ alias(
     actual = "//tools/openapi:gen",
 )
 
+alias(
+    name = "graphql_gen",
+    actual = "//tools/graphql:gen",
+)
+
 cjs_root(
     name = "root",
     package_name = "@redotech/_root",

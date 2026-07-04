@@ -1,0 +1,89 @@
+---
+title: "Pagination"
+description: "Cursor-based pagination with connections"
+icon: "list"
+---
+
+List fields in the v3 API are **connections** and use cursor-based pagination,
+following the [Relay connection](https://relay.dev/graphql/connections.htm)
+pattern. Any field whose type ends in `Connection` (for example
+`ProductConnection`) is paginated.
+
+## Connection shape
+
+Every connection exposes `nodes`, `edges`, and `pageInfo`:
+
+| Field      | Description                                     |
+| ---------- | ----------------------------------------------- |
+| `nodes`    | The items on the current page.                  |
+| `edges`    | The same items, each wrapped with its `cursor`. |
+| `pageInfo` | Page metadata (see below).                      |
+
+`PageInfo` contains:
+
+| Field             | Type      | Description                               |
+| ----------------- | --------- | ----------------------------------------- |
+| `hasNextPage`     | `Boolean` | Whether more items exist after this page. |
+| `hasPreviousPage` | `Boolean` | Whether items exist before this page.     |
+| `startCursor`     | `String`  | Cursor of the first edge on the page.     |
+| `endCursor`       | `String`  | Cursor of the last edge on the page.      |
+
+## Paging forward
+
+Pass `first` to set the page size and `after` to continue from a cursor:
+
+```graphql
+query {
+  products(first: 50) {
+    nodes {
+      id
+      title
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+```
+
+To fetch the next page, send `endCursor` from the previous response as `after`:
+
+```graphql
+query {
+  products(first: 50, after: "eyJzb3J0IjoiMjAyNC0wMS0wMSJ9") {
+    nodes {
+      id
+      title
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+```
+
+Keep requesting while `pageInfo.hasNextPage` is `true`.
+
+## Sorting
+
+Many connections accept `orderBy` (a sort key enum, such as `ProductSortKey`)
+and `reverse` to flip the direction:
+
+```graphql
+query {
+  products(first: 20, orderBy: CREATED_AT, reverse: true) {
+    nodes {
+      id
+      title
+      createdAt
+    }
+  }
+}
+```
+
+<Tip>
+  Cursors encode the sort position, so always keep `orderBy` and `reverse`
+  consistent across pages of the same list.
+</Tip>

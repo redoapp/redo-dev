@@ -1,0 +1,127 @@
+---
+title: "Rate limiting"
+description: "How query-cost rate limiting works in the v3 API"
+icon: "gauge-high"
+---
+
+The v3 API uses **query-cost rate limiting**, the same calculated-cost model as
+Shopify's GraphQL API. Each request is assigned a cost in **points** based on
+the shape of the query, and every account draws from a continuously replenishing
+bucket of points.
+
+## The bucket
+
+Each account has its own **bucket** of points, shared across all of the
+account's API tokens:
+
+- **Capacity** — the maximum points available at once. Default **10,000**.
+- **Restore rate** — points added back each second. Default **500 / second**.
+
+The bucket refills continuously up to capacity. A request runs only if the
+bucket holds enough points to cover its cost; otherwise it is
+[throttled](#throttled-responses).
+
+<Info>
+  The default capacity and restore rate are starting values and may change or
+  vary by plan. Always read your account's live limits from `throttleStatus` in
+  each response (see [below](#reading-your-limits)) rather than hard-coding
+  them.
+</Info>
+
+## Query cost
+
+Cost follows an **object-reads** model — it tracks how many objects (rows) a
+query materializes:
+
+| Selection                                               | Cost (points)             |
+| ------------------------------------------------------- | ------------------------- |
+| Each returned object (a root entity or connection node) | 10                        |
+| Each nested to-one field or non-paginated list          | 5 (charged once)          |
+| Each scalar field                                       | 0.1                       |
+| A connection                                            | `first` × the node's cost |
+
+So paging a connection with `first: 50` costs roughly `50 × 10 = 500` points for
+the nodes, plus their selected fields. Requesting fewer results — or fewer
+fields — costs less. Some types carry a custom weight, and the total is rounded.
+
+### Requested vs. actual cost
+
+- **Requested cost** is estimated from the query _shape_ before it runs, using
+  your `first` values (an unpaged connection assumes a default page size). This
+  is what's reserved from your bucket up front.
+- **Actual cost** is computed from what actually came back — a null to-one costs
+  nothing. The difference (`requested − actual`) is **refunded** to your bucket
+  after execution.
+
+## Reading your limits
+
+Every response includes an `extensions.cost` object:
+
+```json
+{
+  "data": {},
+  "extensions": {
+    "cost": {
+      "requestedQueryCost": 512,
+      "actualQueryCost": 47,
+      "throttleStatus": {
+        "maximumAvailable": 10000,
+        "currentlyAvailable": 9488,
+        "restoreRate": 500
+      }
+    }
+  }
+}
+```
+
+| Field                               | Meaning                                      |
+| ----------------------------------- | -------------------------------------------- |
+| `requestedQueryCost`                | Points estimated and reserved for the query. |
+| `actualQueryCost`                   | Points actually consumed after execution.    |
+| `throttleStatus.maximumAvailable`   | Your bucket capacity.                        |
+| `throttleStatus.currentlyAvailable` | Points left in your bucket right now.        |
+| `throttleStatus.restoreRate`        | Points restored per second.                  |
+
+Use `currentlyAvailable` and `restoreRate` to pace your requests.
+
+## Throttled responses
+
+If a query's requested cost exceeds the points currently available, it is
+rejected **before it touches the database** with HTTP `429`, a `Retry-After`
+header (seconds to wait), and the error code `THROTTLED`:
+
+```json
+{
+  "errors": [
+    {
+      "message": "Query cost exceeds the rate limit",
+      "extensions": { "code": "THROTTLED" }
+    }
+  ]
+}
+```
+
+Wait the number of seconds in `Retry-After`, then retry — ideally with a smaller
+query.
+
+## Staying under the limit
+
+<Tip>
+  Request smaller pages (`first`), select only the fields you need, and avoid
+  deeply nested connections in a single query. Split large reads across several
+  paged requests and pace them using `throttleStatus`.
+</Tip>
+
+- Read `throttleStatus` after each request and back off as `currentlyAvailable`
+  drops toward zero.
+- Handle `429` / `THROTTLED` by honoring `Retry-After`, with exponential backoff
+  as a fallback.
+- Prefer several small paged requests over one large query — the unused-cost
+  refund means narrow requests are cheap.
+
+## Related
+
+- [Queries & mutations](/docs/api-reference/v3/queries-mutations) — how
+  operations are structured
+- [Pagination](/docs/api-reference/v3/pagination) — paging through connections
+- [Errors](/docs/api-reference/v3/errors) — error shapes and codes

@@ -1,0 +1,9 @@
+{
+  "name": "@redotech/tools-graphql",
+  "private": true,
+  "description": "Renders the v3 GraphQL API reference MDX from v3.docs.json",
+  "main": "generate.js",
+  "dependencies": {
+    "prettier": "^2"
+  }
+}

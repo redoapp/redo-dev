@@ -1,0 +1,87 @@
+---
+title: "Queries & mutations"
+description: "How operations, variables, and query cost work in the v3 API"
+icon: "code"
+---
+
+Every v3 request is a single `POST` carrying a GraphQL document. **Queries**
+read data; **mutations** write it.
+
+## Sending an operation
+
+The request body is JSON with a `query` field and optional `variables` and
+`operationName`:
+
+```json
+{
+  "query": "query GetProduct($id: ID!) { product(id: $id) { id title sku } }",
+  "variables": { "id": "prd_123" }
+}
+```
+
+The response mirrors the shape you asked for, under `data`:
+
+```json
+{
+  "data": {
+    "product": { "id": "prd_123", "title": "Wool Runner", "sku": "WR-9" }
+  }
+}
+```
+
+### Queries
+
+```graphql
+query {
+  productFamilies(first: 5) {
+    nodes {
+      id
+      title
+      products(first: 3) {
+        nodes {
+          id
+          sku
+          price {
+            amount
+            currency
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Mutations
+
+```graphql
+mutation {
+  upsertWebhookEndpoint(
+    input: {
+      url: "https://example.com/redo-webhooks"
+      topics: [product_created, product_updated]
+    }
+  ) {
+    id
+    created
+    secret
+  }
+}
+```
+
+## Query cost & rate limits
+
+The API uses **query-cost rate limiting**: each request's cost is estimated from
+the shape of the query _before_ it runs and reserved against your account's
+bucket, and every response reports the cost under `extensions.cost`. Requesting
+fewer results and fewer fields keeps cost — and latency — low.
+
+See [Rate limiting](/docs/api-reference/v3/rate-limiting) for the cost model,
+`throttleStatus`, and how to handle `429` / `THROTTLED` responses.
+
+## Related
+
+- [Rate limiting](/docs/api-reference/v3/rate-limiting) — query cost and
+  throttling
+- [Pagination](/docs/api-reference/v3/pagination) — paging through connections
+- [Errors](/docs/api-reference/v3/errors) — error shapes and codes
