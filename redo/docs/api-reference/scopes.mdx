@@ -17,12 +17,13 @@ required by the endpoint.
 
 ## Granting scopes
 
-Scopes are assigned to a token when you create it:
+Select a token's scopes when you create it, and update them at any time — no
+need to re-issue the token:
 
 1. Log in to your [Redo Dashboard](https://app.getredo.com)
 2. Go to **Settings** → **Developer**
-3. Click **Add API Client**
-4. Select the scopes the client needs, then copy the generated API secret
+3. Create an API client (**Add API Client**) or open an existing one
+4. Select the scopes the client needs and save
 
 Grant a client only the scopes it needs — read scopes for endpoints that only
 retrieve data, write scopes for endpoints that create, update, or delete.
@@ -62,4 +63,5 @@ problem response:
 }
 ```
 
-Re-issue the token with the required scope to resolve it.
+Add the missing scope to the token in the Dashboard to resolve it — you don't
+need to re-issue it.

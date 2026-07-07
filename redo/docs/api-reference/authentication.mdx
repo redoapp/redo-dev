@@ -55,8 +55,9 @@ Each endpoint requires a specific scope (for example, listing returns requires
 `returns_read`), and a request is rejected with `403 Forbidden` if the token
 does not hold it.
 
-Choose the scopes a client needs when you create its token in **Settings** →
-**Developer**. Every endpoint in this reference lists its required scope.
+Choose a client's scopes in **Settings** → **Developer** when you create its
+token, and update them at any time without re-issuing the token. Every endpoint
+in this reference lists its required scope.
 
 <Note>
   Tokens created before access scopes were introduced were granted all scopes,
