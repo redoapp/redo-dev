@@ -58,11 +58,11 @@ does not hold it.
 Choose the scopes a client needs when you create its token in **Settings** →
 **Developer**. Every endpoint in this reference lists its required scope.
 
-<Warning>
-  Tokens created before scopes were introduced may not carry any scopes. If a
-  request starts returning `403`, re-issue the token and grant it the required
-  scopes.
-</Warning>
+<Note>
+  Tokens created before access scopes were introduced were granted all scopes,
+  so they keep working unchanged. Newly created tokens only carry the scopes you
+  select.
+</Note>
 
 See [Access scopes](/docs/api-reference/scopes) for the full list and how to
 grant them.

@@ -9,11 +9,11 @@ API tokens carry **access scopes** that determine which endpoints they may call.
 A request is rejected with `403 Forbidden` unless the token holds the scope
 required by the endpoint.
 
-<Warning>
-  Existing tokens created before scopes were introduced may not carry any
-  scopes. If a request starts returning `403`, re-issue the token from the
-  Dashboard and grant it the scopes it needs.
-</Warning>
+<Note>
+  Tokens created before access scopes were introduced were granted all scopes,
+  so they keep working unchanged. Newly created tokens only carry the scopes you
+  select.
+</Note>
 
 ## Granting scopes
 
