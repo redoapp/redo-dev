@@ -1,6 +1,6 @@
 description: Return tags for a store.
 get:
-  description: List every return tag defined for the store.
+  description: List every return tag defined for the store. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
   operationId: Return tags list
   responses:
     "200":

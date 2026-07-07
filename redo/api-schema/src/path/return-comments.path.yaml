@@ -1,6 +1,6 @@
 description: Return comment.
 get:
-  description: List return comments.
+  description: List return comments. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
   operationId: Return comments get
   responses:
     "200":
@@ -21,7 +21,7 @@ get:
 parameters:
   - { $ref: ../param/return-id.param.yaml }
 post:
-  description: Create return comment.
+  description: Create return comment. Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Return comment create
   requestBody:
     content:

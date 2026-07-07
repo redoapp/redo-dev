@@ -1,6 +1,6 @@
 description: Webhooks.
 get:
-  description: List webhooks for store.
+  description: List webhooks for store. Requires the [`webhooks_read`](/docs/api-reference/scopes) scope.
   operationId: Webhooks list
   responses:
     "200":
@@ -26,7 +26,7 @@ parameters:
 post:
   description:
     Create webhook for store. Or if webhook already exists with `externalId`,
-    update it.
+    update it. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
   operationId: Webhook create
   requestBody:
     content:

@@ -19,6 +19,8 @@ post:
 
     Only one bulk upload operation can run per store at a time. If a bulk upload is already
     in progress, the request will return a `409 Conflict` error.
+
+    Requires the [`products_write`](/docs/api-reference/scopes) scope.
   operationId: Products bulk upload
   parameters:
     - $ref: "../param/store-id.param.yaml"

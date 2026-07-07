@@ -2,7 +2,7 @@ description: Webhook replay.
 parameters:
   - { $ref: ../param/webhook-id.param.yaml }
 post:
-  description: Replay a webhook.
+  description: Replay a webhook. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
   operationId: Webhook replay
   requestBody:
     content:

@@ -1,5 +1,5 @@
 delete:
-  description: Delete a webhook.
+  description: Delete a webhook. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
   operationId: Webhook delete
   parameters:
     - { $ref: "../param/webhook-id.param.yaml" }
@@ -12,7 +12,7 @@ delete:
   tags: [Webhooks]
 description: Webhook.
 get:
-  description: Get a webhook.
+  description: Get a webhook. Requires the [`webhooks_read`](/docs/api-reference/scopes) scope.
   operationId: Webhook get
   parameters:
     - { $ref: ../param/webhook-id.param.yaml }
@@ -29,7 +29,7 @@ get:
   summary: Webhook
   tags: [Webhooks]
 put:
-  description: Update a webhook.
+  description: Update a webhook. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
   operationId: Webhook update
   parameters:
     - { $ref: ../param/webhook-id.param.yaml }

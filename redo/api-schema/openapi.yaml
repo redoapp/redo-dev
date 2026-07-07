@@ -213,6 +213,8 @@ paths:
 
         ## Rate Limiting
         This endpoint is rate-limited to 100 requests per second per store.
+
+        Requires the [`customer_events_write`](/docs/api-reference/scopes) scope.
       operationId: Custom event create
       x-express-openapi-disable-validation-middleware: true
       parameters:
@@ -346,6 +348,8 @@ paths:
 
         ## Rate Limiting
         This endpoint is rate-limited to 100 requests per second per store.
+
+        Requires the [`customer_events_write`](/docs/api-reference/scopes) scope.
       operationId: Bulk create custom events
       x-express-openapi-disable-validation-middleware: true
       parameters:
@@ -434,7 +438,7 @@ paths:
   /stores/{storeId}/customer-subscriptions:
     description: Update customer subscription preferences for marketing and transactional messages.
     post:
-      description: Update customer subscription status for SMS and email marketing and transactional messages. If the customer with that phone number or email does not exist, it will be created.
+      description: Update customer subscription status for SMS and email marketing and transactional messages. If the customer with that phone number or email does not exist, it will be created. Requires the [`customers_write`](/docs/api-reference/scopes) scope.
       operationId: Customer subscriptions update
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -548,6 +552,8 @@ paths:
         The response includes the customer's name, contact information, location,
         and any custom fields associated with the profile. Custom fields are returned
         as `{ fieldName: value }` pairs.
+
+        Requires the [`customers_read`](/docs/api-reference/scopes) scope.
       operationId: Customer get
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -639,6 +645,8 @@ paths:
         Use `customFields` to store arbitrary key-value data on the customer (e.g.,
         `pricing_plan`, `subscription_source`). Values can be strings, numbers, or
         booleans. If a custom field doesn't exist yet, it is created automatically.
+
+        Requires the [`customers_write`](/docs/api-reference/scopes) scope.
       operationId: Customer upsert
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -728,7 +736,9 @@ paths:
   /stores/{storeId}/inbound-shipments:
     description: Inbound shipments for a store.
     get:
-      description: List inbound shipments, representing inventory in transit or received at a location. Sorted by most recently updated first.
+      description: |-
+        List inbound shipments, representing inventory in transit or received at a location. Sorted by most recently updated first.
+        Requires the [`inbound_shipments_read`](/docs/api-reference/scopes) scope.
       operationId: Inbound shipments list
       parameters:
         - $ref: '#/components/parameters/page-continue.param'
@@ -771,7 +781,9 @@ paths:
   /stores/{storeId}/inbound-shipments/{inboundShipmentId}:
     description: Single inbound shipment.
     get:
-      description: Get a single inbound shipment by ID. Returns additional detail fields including purchase orders, transfer orders, files, volume, item discrepancies, and packing modes.
+      description: |-
+        Get a single inbound shipment by ID. Returns additional detail fields including purchase orders, transfer orders, files, volume, item discrepancies, and packing modes.
+        Requires the [`inbound_shipments_read`](/docs/api-reference/scopes) scope.
       operationId: Inbound shipment get
       responses:
         '200':
@@ -809,7 +821,9 @@ paths:
   /stores/{storeId}/inventory-items:
     description: In-stock inventory items for a store.
     get:
-      description: List in-stock inventory items. Only items with on-hand quantity greater than zero are returned. Sorted by most recently updated first.
+      description: |-
+        List in-stock inventory items. Only items with on-hand quantity greater than zero are returned. Sorted by most recently updated first.
+        Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
       operationId: Inventory items list
       parameters:
         - $ref: '#/components/parameters/page-continue.param'
@@ -850,7 +864,7 @@ paths:
   /stores/{storeId}/inventory-items/{inventoryItemId}:
     description: Single inventory item.
     get:
-      description: Get a single in-stock inventory item by ID.
+      description: Get a single in-stock inventory item by ID. Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
       operationId: Inventory item get
       responses:
         '200':
@@ -888,7 +902,9 @@ paths:
   /stores/{storeId}/inventory-levels:
     description: Inventory levels for a store.
     get:
-      description: List inventory levels, representing the aggregate quantity of a product at a specific location. Sorted by most recently updated first.
+      description: |-
+        List inventory levels, representing the aggregate quantity of a product at a specific location. Sorted by most recently updated first.
+        Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
       operationId: Inventory levels list
       parameters:
         - $ref: '#/components/parameters/page-continue.param'
@@ -932,7 +948,9 @@ paths:
   /stores/{storeId}/inventory-levels/{inventoryLevelId}:
     description: Single inventory level.
     get:
-      description: Get a single inventory level by ID. Returns additional detail fields including external IDs, creation timestamp, product UPC, and image URL.
+      description: |-
+        Get a single inventory level by ID. Returns additional detail fields including external IDs, creation timestamp, product UPC, and image URL.
+        Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
       operationId: Inventory level get
       responses:
         '200':
@@ -970,7 +988,7 @@ paths:
   /invoices/pending/items.csv:
     description: Return invoice CSV file.
     get:
-      description: Get an invoice as a CSV.
+      description: Get an invoice as a CSV. Requires the [`invoices_read`](/docs/api-reference/scopes) scope.
       operationId: Invoice pending csv get
       responses:
         '200':
@@ -995,7 +1013,7 @@ paths:
   /invoices/{invoiceId}/items.csv:
     description: Return invoice CSV file.
     get:
-      description: Get an invoice as a CSV.
+      description: Get an invoice as a CSV. Requires the [`invoices_read`](/docs/api-reference/scopes) scope.
       operationId: Invoice csv get
       parameters:
         - $ref: '#/components/parameters/invoice-id.param'
@@ -1022,7 +1040,7 @@ paths:
   /stores/{storeId}/invoices:
     description: Return a list of invoices.
     get:
-      description: Get a list of invoices.
+      description: Get a list of invoices. Requires the [`invoices_read`](/docs/api-reference/scopes) scope.
       operationId: Invoice list
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -1069,7 +1087,7 @@ paths:
   /stores/{storeId}/orders:
     description: Orders collection.
     post:
-      description: Create a new order in the system with line items, customer information, and shipping details.
+      description: Create a new order in the system with line items, customer information, and shipping details. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
       operationId: Order create
       requestBody:
         content:
@@ -1119,7 +1137,7 @@ paths:
   /stores/{storeId}/orders/{orderId}:
     description: Single order operations.
     get:
-      description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_read`](/docs/api-reference/scopes) scope.
       operationId: Order get
       responses:
         '200':
@@ -1152,7 +1170,7 @@ paths:
       tags:
         - Orders
     delete:
-      description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
       operationId: Order delete
       responses:
         '200':
@@ -1191,7 +1209,7 @@ paths:
   /stores/{storeId}/orders/{orderId}/fulfillments:
     description: Order fulfillments collection.
     post:
-      description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
       operationId: Fulfillment create
       requestBody:
         content:
@@ -1252,6 +1270,8 @@ paths:
         **Events** (e.g., `stalled_in_transit`, `delayed`, `arriving_early`): Special event types that trigger automations without changing the current shipment status. The status field remains unchanged, but you can still update estimated delivery date and add tracking history entries. Use these to trigger event-based automations.
 
         Both statuses and events can update other fields like estimated delivery date and tracking history.
+
+        Requires the [`orders_write`](/docs/api-reference/scopes) scope.
       operationId: Fulfillment status update
       requestBody:
         content:
@@ -1322,6 +1342,8 @@ paths:
 
         Only one bulk upload operation can run per store at a time. If a bulk upload is already
         in progress, the request will return a `409 Conflict` error.
+
+        Requires the [`products_write`](/docs/api-reference/scopes) scope.
       operationId: Products bulk upload
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -1453,7 +1475,7 @@ paths:
   /returns/{returnId}:
     description: Return.
     get:
-      description: Get return.
+      description: Get return. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
       operationId: Return get
       responses:
         '200':
@@ -1487,7 +1509,7 @@ paths:
   /returns/{returnId}/comments:
     description: Return comment.
     get:
-      description: List return comments.
+      description: List return comments. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
       operationId: Return comments get
       responses:
         '200':
@@ -1511,7 +1533,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/return-id.param'
     post:
-      description: Create return comment.
+      description: Create return comment. Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Return comment create
       requestBody:
         content:
@@ -1557,6 +1579,8 @@ paths:
         **BETA**: This endpoint is in beta and subject to change.
 
         Trigger processing of a return with specified products.
+
+        Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Return process
       requestBody:
         content:
@@ -1633,7 +1657,7 @@ paths:
   /returns/{returnId}/status:
     description: Return status.
     get:
-      description: Get return status.
+      description: Get return status. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
       operationId: Return status get
       parameters:
         - $ref: '#/components/parameters/return-id.param'
@@ -1668,6 +1692,8 @@ paths:
 
         - Setting status to **complete** will also mark all return items as complete.
         - Setting status to **open** from **complete** or **rejected** will reopen the return, resetting all processed/rejected items back to open, clearing pending processing info, resetting the expiration date, and marking the return as reopened. **Note:** Reopening a processed return does not reverse any refunds, exchanges, or other actions that were performed during processing.
+
+        Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Return status update
       parameters:
         - $ref: '#/components/parameters/return-id.param'
@@ -1700,7 +1726,7 @@ paths:
   /stores/{storeId}/returns:
     description: List of returns for store.
     get:
-      description: List returns, sorted by most recent to least recent.
+      description: List returns, sorted by most recent to least recent. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
       operationId: Returns list
       parameters:
         - $ref: '#/components/parameters/page-continue.param'
@@ -1744,7 +1770,7 @@ paths:
       tags:
         - Returns
     post:
-      description: Create a return for specific order line items.
+      description: Create a return for specific order line items. Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Return create
       parameters:
         - $ref: '#/components/parameters/idempotency-key.param'
@@ -1806,6 +1832,7 @@ paths:
         Import externally-created returns into Redo. Use this endpoint when the return originates outside of Redo — a warehouse scan, an ERP, a POS system, or a partner platform.
 
         Products are referenced by their Redo product ID, obtained from the bulk product upload response. No order is required. Returns are created ready for warehouse intake. Supports up to 100 returns per request with per-item error reporting.
+        Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Import returns
       requestBody:
         content:
@@ -1843,7 +1870,7 @@ paths:
   /stores/{storeId}/return-tags:
     description: Return tags for a store.
     get:
-      description: List every return tag defined for the store.
+      description: List every return tag defined for the store. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
       operationId: Return tags list
       responses:
         '200':
@@ -1875,7 +1902,9 @@ paths:
     summary: Return Tags
   /stores/{storeId}/return-tags/{name}:
     delete:
-      description: Delete a return tag. The tag is also stripped from every return and saved view filter that referenced it.
+      description: |-
+        Delete a return tag. The tag is also stripped from every return and saved view filter that referenced it.
+        Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Return tag delete
       responses:
         '200':
@@ -1918,6 +1947,8 @@ paths:
 
         - `com.getredo.api:return-tag/invalid-request` — the path `name` is
           missing or the request body is invalid.
+
+        Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Return tag upsert
       requestBody:
         content:
@@ -1960,7 +1991,7 @@ paths:
     summary: Return Tag
   /stores/{storeId}/storefront/events:
     post:
-      description: Processes events from storefronts using Shopify pixel event schema
+      description: Processes events from storefronts using Shopify pixel event schema Requires the [`storefront_events_write`](/docs/api-reference/scopes) scope.
       operationId: Storefront Event
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -1993,7 +2024,7 @@ paths:
   /stores/{storeId}/webhooks:
     description: Webhooks.
     get:
-      description: List webhooks for store.
+      description: List webhooks for store. Requires the [`webhooks_read`](/docs/api-reference/scopes) scope.
       operationId: Webhooks list
       responses:
         '200':
@@ -2021,7 +2052,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/store-id.param'
     post:
-      description: Create webhook for store. Or if webhook already exists with `externalId`, update it.
+      description: Create webhook for store. Or if webhook already exists with `externalId`, update it. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
       operationId: Webhook create
       requestBody:
         content:
@@ -2065,7 +2096,7 @@ paths:
     summary: Webhooks
   /webhooks/{webhookId}:
     delete:
-      description: Delete a webhook.
+      description: Delete a webhook. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
       operationId: Webhook delete
       parameters:
         - $ref: '#/components/parameters/webhook-id.param'
@@ -2079,7 +2110,7 @@ paths:
         - Webhooks
     description: Webhook.
     get:
-      description: Get a webhook.
+      description: Get a webhook. Requires the [`webhooks_read`](/docs/api-reference/scopes) scope.
       operationId: Webhook get
       parameters:
         - $ref: '#/components/parameters/webhook-id.param'
@@ -2099,7 +2130,7 @@ paths:
       tags:
         - Webhooks
     put:
-      description: Update a webhook.
+      description: Update a webhook. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
       operationId: Webhook update
       parameters:
         - $ref: '#/components/parameters/webhook-id.param'
@@ -2132,7 +2163,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/webhook-id.param'
     post:
-      description: Replay a webhook.
+      description: Replay a webhook. Requires the [`webhooks_write`](/docs/api-reference/scopes) scope.
       operationId: Webhook replay
       requestBody:
         content:

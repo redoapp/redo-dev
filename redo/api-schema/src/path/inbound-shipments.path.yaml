@@ -3,6 +3,8 @@ get:
   description: >-
     List inbound shipments, representing inventory in transit or received at a
     location. Sorted by most recently updated first.
+
+    Requires the [`inbound_shipments_read`](/docs/api-reference/scopes) scope.
   operationId: Inbound shipments list
   parameters:
     - { $ref: ../param/page-continue.param.yaml }

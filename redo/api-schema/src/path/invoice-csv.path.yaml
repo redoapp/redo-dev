@@ -1,6 +1,6 @@
 description: Return invoice CSV file.
 get:
-  description: Get an invoice as a CSV.
+  description: Get an invoice as a CSV. Requires the [`invoices_read`](/docs/api-reference/scopes) scope.
   operationId: Invoice csv get
   parameters:
     - { $ref: ../param/invoice-id.param.yaml }

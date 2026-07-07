@@ -186,6 +186,7 @@
             "pages": [
               "/docs/api-reference/introduction",
               "/docs/api-reference/authentication",
+              "/docs/api-reference/scopes",
               "/docs/api-reference/errors",
               "/docs/api-reference/pagination",
               "/docs/api-reference/loop-compatible-api"

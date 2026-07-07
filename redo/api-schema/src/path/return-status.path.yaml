@@ -1,6 +1,6 @@
 description: Return status.
 get:
-  description: Get return status.
+  description: Get return status. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
   operationId: Return status get
   parameters:
     - { $ref: ../param/return-id.param.yaml }
@@ -31,6 +31,8 @@ put:
 
     - Setting status to **complete** will also mark all return items as complete.
     - Setting status to **open** from **complete** or **rejected** will reopen the return, resetting all processed/rejected items back to open, clearing pending processing info, resetting the expiration date, and marking the return as reopened. **Note:** Reopening a processed return does not reverse any refunds, exchanges, or other actions that were performed during processing.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Return status update
   parameters:
     - { $ref: ../param/return-id.param.yaml }

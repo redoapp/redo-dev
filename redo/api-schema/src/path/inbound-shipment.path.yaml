@@ -4,6 +4,8 @@ get:
     Get a single inbound shipment by ID. Returns additional detail fields
     including purchase orders, transfer orders, files, volume, item discrepancies,
     and packing modes.
+
+    Requires the [`inbound_shipments_read`](/docs/api-reference/scopes) scope.
   operationId: Inbound shipment get
   responses:
     "200":

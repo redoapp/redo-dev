@@ -6,6 +6,8 @@ post:
     **BETA**: This endpoint is in beta and subject to change.
 
     Trigger processing of a return with specified products.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Return process
   requestBody:
     content:

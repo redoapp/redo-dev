@@ -1,6 +1,6 @@
 description: Single inventory item.
 get:
-  description: Get a single in-stock inventory item by ID.
+  description: Get a single in-stock inventory item by ID. Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
   operationId: Inventory item get
   responses:
     "200":
