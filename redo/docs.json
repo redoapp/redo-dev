@@ -75,7 +75,10 @@
           },
           {
             "group": "Developer Tools",
-            "pages": ["/docs/guides/developer-tools/redo-mcp-server"]
+            "pages": [
+              "/docs/guides/developer-tools/redo-mcp-server",
+              "/docs/guides/developer-tools/sftp-reports"
+            ]
           }
         ]
       },
