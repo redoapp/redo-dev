@@ -1,6 +1,6 @@
 description: Return.
 get:
-  description: Get return.
+  description: Get return. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
   operationId: Return get
   responses:
     "200":

@@ -23,6 +23,8 @@ post:
 
     ## Rate Limiting
     This endpoint is rate-limited to 100 requests per second per store.
+
+    Requires the [`customer_events_write`](/docs/api-reference/scopes) scope.
   operationId: Custom event create
   x-express-openapi-disable-validation-middleware: true
   parameters:

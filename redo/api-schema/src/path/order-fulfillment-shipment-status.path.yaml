@@ -10,6 +10,8 @@ post:
     **Events** (e.g., `stalled_in_transit`, `delayed`, `arriving_early`): Special event types that trigger automations without changing the current shipment status. The status field remains unchanged, but you can still update estimated delivery date and add tracking history entries. Use these to trigger event-based automations.
 
     Both statuses and events can update other fields like estimated delivery date and tracking history.
+
+    Requires the [`orders_write`](/docs/api-reference/scopes) scope.
   operationId: Fulfillment status update
   requestBody:
     content:

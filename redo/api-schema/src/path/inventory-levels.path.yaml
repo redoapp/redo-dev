@@ -3,6 +3,8 @@ get:
   description: >-
     List inventory levels, representing the aggregate quantity of a product at a
     specific location. Sorted by most recently updated first.
+
+    Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
   operationId: Inventory levels list
   parameters:
     - { $ref: ../param/page-continue.param.yaml }

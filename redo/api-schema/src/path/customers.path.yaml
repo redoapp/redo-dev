@@ -6,6 +6,8 @@ get:
     The response includes the customer's name, contact information, location,
     and any custom fields associated with the profile. Custom fields are returned
     as `{ fieldName: value }` pairs.
+
+    Requires the [`customers_read`](/docs/api-reference/scopes) scope.
   operationId: Customer get
   parameters:
     - $ref: "../param/store-id.param.yaml"
@@ -97,6 +99,8 @@ put:
     Use `customFields` to store arbitrary key-value data on the customer (e.g.,
     `pricing_plan`, `subscription_source`). Values can be strings, numbers, or
     booleans. If a custom field doesn't exist yet, it is created automatically.
+
+    Requires the [`customers_write`](/docs/api-reference/scopes) scope.
   operationId: Customer upsert
   parameters:
     - $ref: "../param/store-id.param.yaml"

@@ -1,6 +1,6 @@
 description: Order fulfillments collection.
 post:
-  description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+  description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
   operationId: Fulfillment create
   requestBody:
     content:

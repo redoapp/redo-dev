@@ -1,6 +1,6 @@
 description: Return a list of invoices.
 get:
-  description: Get a list of invoices.
+  description: Get a list of invoices. Requires the [`invoices_read`](/docs/api-reference/scopes) scope.
   operationId: Invoice list
   parameters: [{ $ref: ../param/store-id.param.yaml }]
   responses:

@@ -1,6 +1,6 @@
 post:
   description:
-    Processes events from storefronts using Shopify pixel event schema
+    Processes events from storefronts using Shopify pixel event schema Requires the [`storefront_events_write`](/docs/api-reference/scopes) scope.
   operationId: Storefront Event
   parameters:
     - $ref: "../param/store-id.param.yaml"

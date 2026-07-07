@@ -2,6 +2,8 @@ delete:
   description: >-
     Delete a return tag. The tag is also stripped from every return and
     saved view filter that referenced it.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Return tag delete
   responses:
     "200":
@@ -45,6 +47,8 @@ put:
 
     - `com.getredo.api:return-tag/invalid-request` — the path `name` is
       missing or the request body is invalid.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Return tag upsert
   requestBody:
     content:

@@ -10,6 +10,8 @@ post:
     bulk product upload response. No order is required. Returns are
     created ready for warehouse intake. Supports up to 100 returns per
     request with per-item error reporting.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Import returns
   requestBody:
     content:

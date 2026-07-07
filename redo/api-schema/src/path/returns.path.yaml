@@ -1,6 +1,6 @@
 description: List of returns for store.
 get:
-  description: List returns, sorted by most recent to least recent.
+  description: List returns, sorted by most recent to least recent. Requires the [`returns_read`](/docs/api-reference/scopes) scope.
   operationId: Returns list
   parameters:
     - { $ref: ../param/page-continue.param.yaml }
@@ -37,7 +37,7 @@ get:
   summary: List Returns
   tags: [Returns]
 post:
-  description: Create a return for specific order line items.
+  description: Create a return for specific order line items. Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Return create
   parameters:
     - { $ref: ../param/idempotency-key.param.yaml }

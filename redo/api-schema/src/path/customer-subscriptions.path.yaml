@@ -5,7 +5,7 @@ post:
   description:
     Update customer subscription status for SMS and email marketing and
     transactional messages. If the customer with that phone number or email does
-    not exist, it will be created.
+    not exist, it will be created. Requires the [`customers_write`](/docs/api-reference/scopes) scope.
   operationId: Customer subscriptions update
   parameters:
     - $ref: ../param/store-id.param.yaml

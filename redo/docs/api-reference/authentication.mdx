@@ -1,7 +1,7 @@
 ---
-title: 'Authentication'
-description: 'How to authenticate your API requests'
-icon: 'key'
+title: "Authentication"
+description: "How to authenticate your API requests"
+icon: "key"
 ---
 
 ## Getting Your Credentials
@@ -21,11 +21,13 @@ To create an API token:
 
 ### Store ID
 
-Your Store ID is displayed in the **General** section of **Settings** → **Developer** in the Redo Dashboard.
+Your Store ID is displayed in the **General** section of **Settings** →
+**Developer** in the Redo Dashboard.
 
 ## API Endpoints
 
-All API endpoints are authenticated using the Bearer authorization scheme with your API secret.
+All API endpoints are authenticated using the Bearer authorization scheme with
+your API secret.
 
 Include your API secret in the `Authorization` header of every request:
 
@@ -46,11 +48,32 @@ curl -X GET "https://api.getredo.com/v2.2/stores/store_123/returns" \
   -H "Authorization: Bearer YOUR_API_SECRET"
 ```
 
+## Access scopes
+
+API tokens carry **access scopes** that determine which endpoints they may call.
+Each endpoint requires a specific scope (for example, listing returns requires
+`returns_read`), and a request is rejected with `403 Forbidden` if the token
+does not hold it.
+
+Choose the scopes a client needs when you create its token in **Settings** →
+**Developer**. Every endpoint in this reference lists its required scope.
+
+<Warning>
+  Tokens created before scopes were introduced may not carry any scopes. If a
+  request starts returning `403`, re-issue the token and grant it the required
+  scopes.
+</Warning>
+
+See [Access scopes](/docs/api-reference/scopes) for the full list and how to
+grant them.
+
 ## Webhooks
 
-Webhooks are authenticated using the Bearer authorization scheme with a secret **you provide** when creating the webhook subscription.
+Webhooks are authenticated using the Bearer authorization scheme with a secret
+**you provide** when creating the webhook subscription.
 
-Redo will include this secret in the `Authorization` header when delivering webhook events to your endpoint:
+Redo will include this secret in the `Authorization` header when delivering
+webhook events to your endpoint:
 
 ```http
 POST /events HTTP/1.1
@@ -58,11 +81,15 @@ Authorization: Bearer subscriberauth123
 Host: subscriber.example.com
 ```
 
-**Always verify the Authorization header** in your webhook handler before processing events.
+**Always verify the Authorization header** in your webhook handler before
+processing events.
 
 ### Webhook Event Delivery
 
-- Webhook events are delivered **in order** for each individual subject (e.g., return)
-- If the response is not a 2xx status code, the event will be retried multiple times before discarding it
+- Webhook events are delivered **in order** for each individual subject (e.g.,
+  return)
+- If the response is not a 2xx status code, the event will be retried multiple
+  times before discarding it
 
-See the [Webhooks guide](/docs/guides/integrations/webhooks) for detailed setup instructions.
+See the [Webhooks guide](/docs/guides/integrations/webhooks) for detailed setup
+instructions.

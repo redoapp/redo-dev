@@ -3,6 +3,8 @@ get:
   description: >-
     List in-stock inventory items. Only items with on-hand quantity greater
     than zero are returned. Sorted by most recently updated first.
+
+    Requires the [`inventory_read`](/docs/api-reference/scopes) scope.
   operationId: Inventory items list
   parameters:
     - { $ref: ../param/page-continue.param.yaml }

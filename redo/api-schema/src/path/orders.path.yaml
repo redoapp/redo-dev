@@ -1,6 +1,6 @@
 description: Orders collection.
 post:
-  description: Create a new order in the system with line items, customer information, and shipping details.
+  description: Create a new order in the system with line items, customer information, and shipping details. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
   operationId: Order create
   requestBody:
     content:
