@@ -1,0 +1,60 @@
+---
+title: "Scheduled Reports over SFTP"
+description: "Schedule custom reports in the Redo Dashboard and retrieve them as CSV files over SFTP"
+icon: "folder-arrow-down"
+---
+
+Redo can deliver your custom reports as CSV files to a private, read-only SFTP
+directory on a recurring schedule. This is useful for feeding report data into
+data warehouses, BI tools, or any system that ingests files.
+
+## Get your credentials
+
+SFTP uses the same credentials as the [Redo API](/docs/api-reference/authentication):
+
+1. Log in to your [Redo Dashboard](https://app.getredo.com)
+2. Go to **Settings** → **Developer**
+3. Your **Store ID** (shown in the **General** section) is your SFTP username
+4. An **API token** is your SFTP password — click **Add API Client** to create
+   one if you don't have one
+
+<Warning>
+  Your API token is only shown once when created. Store it securely.
+</Warning>
+
+## Connect via SFTP
+
+Connect to `sftp.getredo.com` on port 22 using password authentication:
+
+```bash
+sftp <your-store-id>@sftp.getredo.com
+```
+
+Enter your API token when prompted for a password.
+
+The directory is scoped to your store and is **read-only** — you can list and
+download files, but not upload or delete them.
+
+## Schedule a report
+
+1. In the [Redo Dashboard](https://app.getredo.com), go to **Analytics** →
+   **Reports**
+2. Open the report you want delivered (or create a new one), and save it
+3. In the save dialog, enable the **SFTP upload** toggle
+4. Choose a delivery schedule
+5. Click **Save**
+
+You can also enable **Email report** in the same dialog to send the report to
+one or more email addresses on the same schedule.
+
+## File layout
+
+Each scheduled run uploads a new CSV file:
+
+```
+/analytics-reports/<data type>/<report id>/<timestamp> <report name>.csv
+```
+
+Files from previous runs are kept, so consumers can process files
+incrementally. Use the timestamp prefix in the file name to identify the latest
+run.
