@@ -50,14 +50,18 @@ curl -X GET "https://api.getredo.com/v2.2/stores/store_123/returns" \
 
 ## Access scopes
 
-API tokens carry **access scopes** that determine which endpoints they may call.
-Each endpoint requires a specific scope (for example, listing returns requires
-`returns_read`), and a request is rejected with `403 Forbidden` if the token
-does not hold it.
+API tokens carry **access scopes** that determine which protected endpoints they
+may call. For example, listing returns requires `returns_read`, and a request is
+rejected with `403 Forbidden` if the token does not hold it.
 
 Choose a client's scopes in **Settings** → **Developer** when you create its
-token, and update them at any time without re-issuing the token. Every endpoint
-in this reference lists its required scope.
+token, and update them at any time without re-issuing the token. Endpoints that
+require a scope list it in this reference.
+
+<Note>
+  Public storefront coverage endpoints do not require an access scope. A token
+  used only for those endpoints can be created with no scopes selected.
+</Note>
 
 <Note>
   Tokens created before access scopes were introduced were granted all scopes,

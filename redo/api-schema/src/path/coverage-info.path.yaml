@@ -1,6 +1,6 @@
 description: Navigate to the coverage info page.
 get:
-  description: Navigate to the coverage info page.
+  description: Navigate to the coverage info page. This endpoint exposes public storefront coverage data and does not require an access scope.
   operationId: Coverage info navigate
   parameters:
     - { $ref: ../param/store-id.param.yaml }
