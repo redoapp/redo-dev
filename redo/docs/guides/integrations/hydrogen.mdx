@@ -301,7 +301,11 @@ const { nonce, header, NonceProvider } = createContentSecurityPolicy({
 
 ## API
 
-The utilities provided retrieve all of their information using the Redo public API endpoints described in our documentation at [https://developers.redo.com/](https://developers.redo.com/), specifically the [Get coverage product](https://developers.redo.com/docs/redo-api/beb7bc5b27a0c-get-coverage-products) endpoint.
+The utilities retrieve their information from Redo's public coverage endpoints,
+primarily the [Coverage Products](/api-reference/coverage-products/coverage-products)
+endpoint. These endpoints expose storefront-facing coverage data and do not
+require any access scopes. If you create an API token for this integration,
+leave all access scopes unselected.
 
 ## Speed Optimization
 

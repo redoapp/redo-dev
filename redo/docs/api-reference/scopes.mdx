@@ -5,9 +5,15 @@ description:
 icon: "lock"
 ---
 
-API tokens carry **access scopes** that determine which endpoints they may call.
-A request is rejected with `403 Forbidden` unless the token holds the scope
-required by the endpoint.
+API tokens carry **access scopes** that determine which protected endpoints they
+may call. A request is rejected with `403 Forbidden` unless the token holds the
+scope required by the endpoint.
+
+<Note>
+  Public storefront coverage endpoints do not require an access scope. A token
+  used only for those endpoints, including a Shopify Hydrogen integration
+  token, can be created with no scopes selected.
+</Note>
 
 <Note>
   Tokens created before access scopes were introduced were granted all scopes,
@@ -30,8 +36,8 @@ retrieve data, write scopes for endpoints that create, update, or delete.
 
 ## Available scopes
 
-Each endpoint in this reference lists the scope it requires. The full set of
-scopes:
+Each endpoint that requires an access scope lists it in this reference. The full
+set of scopes:
 
 | Scope                     | Access | Grants                                                   |
 | ------------------------- | ------ | -------------------------------------------------------- |

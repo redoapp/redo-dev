@@ -57,7 +57,7 @@ paths:
   /stores/{storeId}/checkout-buttons-ui:
     description: Generate HTML and CSS for checkout buttons to enable or disable returns coverage.
     get:
-      description: Generate rendered HTML and CSS for checkout buttons.
+      description: Generate rendered HTML and CSS for checkout buttons. This endpoint exposes public storefront coverage data and does not require an access scope.
       operationId: Checkout buttons UI
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -83,7 +83,7 @@ paths:
   /stores/{storeId}/coverage-info:
     description: Navigate to the coverage info page.
     get:
-      description: Navigate to the coverage info page.
+      description: Navigate to the coverage info page. This endpoint exposes public storefront coverage data and does not require an access scope.
       operationId: Coverage info navigate
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -97,7 +97,7 @@ paths:
   /stores/{storeId}/coverage-products:
     description: Available coverage products.
     post:
-      description: Get available coverage products.
+      description: Get available coverage products. This endpoint exposes public storefront coverage data and does not require an access scope.
       operationId: Coverage products
       parameters:
         - $ref: '#/components/parameters/store-id.param'
