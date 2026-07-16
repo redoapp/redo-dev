@@ -18,7 +18,7 @@ https://mcp.getredo.com/mcp
 
 ## Features
 
-The Redo MCP Server provides tools across orders, returns, discounts, customers, and marketing.
+The Redo MCP Server provides tools across orders, returns, discounts, customers, marketing, and analytics.
 
 ### Orders
 
@@ -79,6 +79,19 @@ The Redo MCP Server provides tools across orders, returns, discounts, customers,
 | **get_automation_step_configuration** | Resolve the linked configuration for a specific automation step — Recover scenarios and messaging, email subject and builder sections, or SMS content, prefix, and attachments. |
 | **get_automation_step_performance** | Get step-level automation performance for a metric family, such as Recover recovered revenue, reply rate, and conversion rate. |
 | **get_template** | Get an email or SMS marketing template by ID — subject lines, email builder sections, SMS content, prefix, attachments, and AI config. |
+
+### Analytics
+
+<Note>
+  The analytics report tools are only available when custom analytics reports and CSV export are enabled for your account.
+</Note>
+
+| Tool | Description |
+|---|---|
+| **generate_custom_analytics_report** | Generate a custom analytics report from a plain-English question. Returns immediately with a report ID and URL while the report is prepared; the finished report appears on your Redo analytics page and can be viewed or downloaded as a CSV. |
+| **edit_custom_analytics_report** | Regenerate an existing report from a full replacement spec describing the desired metrics, dimensions, filters, and date range. The previous version stays available while the new one is prepared. |
+| **get_custom_analytics_report** | Get a report's current state — status (preparing, ready, or failed with an error message), title, requested question, columns, and report URL once ready. Use to poll after generating or editing a report. |
+| **list_custom_analytics_reports** | List your custom reports, most recent first, with ID, title, status, and columns. Supports searching by title or requested question. |
 
 ### Support
 
@@ -400,6 +413,30 @@ The AI will call `list_automations` (filtering by step type `recover`) to find t
 > Show me the email content for the template used in our welcome automation.
 
 The AI will call `get_automation` to find the step's template ID, then call `get_template` to return the subject line, email builder sections (or SMS content), attachments, and AI config.
+
+### Generate a custom analytics report
+
+**Prompt:**
+
+> What are my top 10 products by return rate this quarter?
+
+The AI will call `generate_custom_analytics_report` with the question, then poll `get_custom_analytics_report` until the report is ready — generation typically takes a minute or two — and share the report link, where you can view the report or download it as a CSV.
+
+### Edit a custom analytics report
+
+**Prompt:**
+
+> Change my top products report to break results down by month and cover the last 6 months instead.
+
+The AI will call `edit_custom_analytics_report` with a full replacement spec describing the entire desired report — metrics, dimensions, filters, and date range — since the spec replaces the report's definition rather than patching it. The previous version stays available while the report regenerates.
+
+### Find existing custom reports
+
+**Prompt:**
+
+> Which custom reports do I have about exchanges?
+
+The AI will call `list_custom_analytics_reports` with a search filter matching titles and requested questions, and return each matching report's title, status, and columns.
 
 ## Rate Limits
 
