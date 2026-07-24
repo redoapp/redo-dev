@@ -1,0 +1,6 @@
+description: Order ID. Can be the external order ID provided when creating the order, the internal Redo order ID, or the Shopify order name (e.g. `#1001`).
+in: path
+name: orderId
+required: true
+schema:
+  type: string
