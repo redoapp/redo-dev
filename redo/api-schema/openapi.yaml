@@ -1174,6 +1174,8 @@ paths:
     delete:
       description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
       operationId: Order delete
+      parameters:
+        - $ref: '#/components/parameters/order-id.param'
       responses:
         '200':
           content:
@@ -1206,7 +1208,6 @@ paths:
         - Orders
     parameters:
       - $ref: '#/components/parameters/store-id.param'
-      - $ref: '#/components/parameters/order-id.param'
     summary: Order
   /stores/{storeId}/orders/{orderId}/fulfillments:
     description: Order fulfillments collection.
@@ -2584,15 +2585,15 @@ components:
       schema:
         example: 64e4d5e837572a4813b73e40
         type: string
-    order-id.param:
-      description: Order ID. Can be either the external order ID provided when creating the order, or the internal Redo order ID.
+    order-id-with-name.param:
+      description: Order ID. Can be the external order ID provided when creating the order, the internal Redo order ID, or the Shopify order name (e.g. `#1001`).
       in: path
       name: orderId
       required: true
       schema:
         type: string
-    order-id-with-name.param:
-      description: Order ID. Can be the external order ID provided when creating the order, the internal Redo order ID, or the Shopify order name (e.g. `#1001`).
+    order-id.param:
+      description: Order ID. Can be either the external order ID provided when creating the order, or the internal Redo order ID.
       in: path
       name: orderId
       required: true
