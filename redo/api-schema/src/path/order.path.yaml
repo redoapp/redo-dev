@@ -33,6 +33,8 @@ get:
 delete:
   description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_write`](/docs/api-reference/scopes) scope.
   operationId: Order delete
+  parameters:
+    - { $ref: ../param/order-id.param.yaml }
   responses:
     "200":
       content:
@@ -61,5 +63,4 @@ delete:
   tags: [Orders]
 parameters:
   - { $ref: ../param/store-id.param.yaml }
-  - { $ref: ../param/order-id.param.yaml }
 summary: Order
