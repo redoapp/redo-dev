@@ -1137,7 +1137,7 @@ paths:
   /stores/{storeId}/orders/{orderId}:
     description: Single order operations.
     get:
-      description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be the external order ID you provided when creating the order, the internal Redo order ID returned from the create order response, or the Shopify order name (e.g. `#1001`). Requires the [`orders_read`](/docs/api-reference/scopes) scope.
+      description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response. Requires the [`orders_read`](/docs/api-reference/scopes) scope.
       operationId: Order get
       responses:
         '200':
