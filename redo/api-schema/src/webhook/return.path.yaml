@@ -141,6 +141,8 @@ post:
                 amount: { amount: "0.00", currency: USD }
               charge:
                 amount: { amount: "0.00", currency: USD }
+              shippingFee:
+                amount: { amount: "0.00", currency: USD }
             tags:
               - name: VIP customer
                 source: merchant

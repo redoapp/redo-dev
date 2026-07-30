@@ -2357,6 +2357,10 @@ webhooks:
                     amount:
                       amount: '0.00'
                       currency: USD
+                  shippingFee:
+                    amount:
+                      amount: '0.00'
+                      currency: USD
                 tags:
                   - name: VIP customer
                     source: merchant
@@ -5700,6 +5704,14 @@ components:
               type: object
             refund:
               description: Total refund amount excluding shipping
+              properties:
+                amount:
+                  $ref: '#/components/schemas/money.schema'
+              required:
+                - amount
+              type: object
+            shippingFee:
+              description: Return shipping fee paid by the customer, whether charged directly or deducted from the refund, store credit, or exchange. "0.00" when the customer paid nothing.
               properties:
                 amount:
                   $ref: '#/components/schemas/money.schema'
