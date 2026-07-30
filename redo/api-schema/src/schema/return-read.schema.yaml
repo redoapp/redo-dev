@@ -520,6 +520,16 @@ properties:
             $ref: ./money.schema.yaml
         required: [amount]
         type: object
+      shippingFee:
+        description:
+          Return shipping fee paid by the customer, whether charged directly or
+          deducted from the refund, store credit, or exchange. "0.00" when the
+          customer paid nothing.
+        properties:
+          amount:
+            $ref: ./money.schema.yaml
+        required: [amount]
+        type: object
       storeCredit:
         description: Total store credit amount
         properties:
