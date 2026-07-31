@@ -8,10 +8,17 @@ properties:
     description: Location name.
     example: East Coast Warehouse
     type: string
+  bin:
+    description: >-
+      Bin or storage-location name within the location (e.g. a shelf or zone
+      label). `null` when no bin is assigned to this inventory level.
+    example: Shelf A-1
+    nullable: true
+    type: string
   quantity:
     description: On-hand quantity at this location.
     example: 120
     type: integer
-required: [location_id, location_name, quantity]
+required: [location_id, location_name, bin, quantity]
 title: Inventory Item Location
 type: object
