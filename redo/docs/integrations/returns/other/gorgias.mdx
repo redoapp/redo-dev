@@ -48,6 +48,24 @@ Merchants can set up this integration themselves from Gorgias.
 Once connected, return data will automatically load into your tickets whenever a
 ticket is created or updated.
 
+## API Authentication
+
+If you use Redo's public API alongside your Gorgias workflow, authenticate every
+request with a Redo API secret using a Bearer token. Create the API secret in
+**Settings** → **Developer** in the Redo Dashboard, then include it in the
+`Authorization` header:
+
+```http
+Authorization: Bearer YOUR_API_SECRET
+```
+
+For return endpoints, the API secret needs the `returns_read` scope. Do not use
+a `key=value` credential format. Requests with a missing or malformed
+`Authorization` header are rejected with `401 Unauthorized`.
+
+See [Authentication](/docs/api-reference/authentication) for API token setup
+and [Access scopes](/docs/api-reference/scopes) for scope details.
+
 ## How Long Does It Take?
 
 Setup takes approximately **5 minutes**.
