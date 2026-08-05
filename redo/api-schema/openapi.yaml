@@ -3670,8 +3670,8 @@ components:
       description: Inventory item list entry.
       properties:
         id:
-          description: Prefixed inventory item ID (`ii_...`).
-          example: ii_5f8e1a2b3c
+          description: Raw inventory item ID.
+          example: '1234567890'
           type: string
         sku:
           description: Stock keeping unit from the linked product.
