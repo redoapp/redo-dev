@@ -2536,7 +2536,7 @@ components:
           - UNKNOWN
         type: string
     inventory-item-id.param:
-      description: Inventory item ID
+      description: Formatted inventory item ID (`ii_...`) or raw decimal database ID
       in: path
       name: inventoryItemId
       required: true
