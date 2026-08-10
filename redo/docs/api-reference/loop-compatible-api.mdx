@@ -1,91 +1,179 @@
 ---
 title: 'Loop-Compatible API'
-description: 'Use Redo with existing Loop Returns integrations'
+description: 'Use Redo with systems built for the Loop Returns warehouse API'
 icon: 'repeat'
 ---
 
 ## Overview
 
-In addition to its own native API, Redo offers a Loop Returns-compatible API.
+The Loop-Compatible API lets an existing Loop Returns warehouse integration work with Redo. It preserves Loop's endpoint paths and response shape while reading and updating Redo returns.
 
-This API allows systems to leverage an existing integration with Loop into an integration with Redo, with very little work.
+## Choose a version
 
-## Supported Endpoints
+<Tabs>
+  <Tab title="v2 (recommended)">
+    Use this base URL:
 
-Redo supports the following Loop-compatible endpoints. All endpoints use the same data formats as described in Loop's documentation: [https://docs.loopreturns.com/api-reference/getting-started](https://docs.loopreturns.com/api-reference/getting-started)
+    ```text
+    https://loop-api.getredo.com/redo/v2/api/v1/warehouse
+    ```
 
-To use these endpoints with Redo, replace `https://api.loopreturns.com` with:
+    v2 improves financial calculations, line-item refund allocation, exchange metadata, return comments, and status outcomes.
+  </Tab>
+  <Tab title="v1 (legacy)">
+    Existing integrations can continue using:
+
+    ```text
+    https://loop-api.getredo.com/api/v1/warehouse
+    ```
+
+    The explicitly versioned alias below is equivalent:
+
+    ```text
+    https://loop-api.getredo.com/redo/v1/api/v1/warehouse
+    ```
+  </Tab>
+</Tabs>
+
+The `/api/v1/warehouse` portion is part of the Loop-compatible route. The preceding `/redo/v2` or `/redo/v1` selects Redo's compatibility implementation.
+
+## Authentication
+
+Create an API client in the [Redo Dashboard](https://app.getredo.com) under **Settings → Developer → Add API Client**. Send its secret as a Bearer token:
+
+```http
+Authorization: Bearer YOUR_API_SECRET
 ```
-https://loop-api.getredo.com
-```
 
-### Return Management
+Read endpoints require the returns read scope. Endpoints that change a return require the returns write scope. See [Authentication](/docs/api-reference/authentication) and [Scopes](/docs/api-reference/scopes) for details.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/warehouse/return/details` | Get details for a specific return |
-| GET | `/api/v1/warehouse/return/list` | Get a list of returns with optional filtering |
-| POST | `/api/v1/warehouse/return/:return_id/process` | Process a return |
-| POST | `/api/v1/warehouse/return/:return_id/flag` | Flag a return for review |
-| POST | `/api/v1/warehouse/return/:return_id/close` | Cancel/reject a return |
-| POST | `/api/v1/warehouse/return/:return_id/cancel` | Reset a return to initial state |
-| POST | `/api/v1/warehouse/return/:return_id/remove` | Remove specific line items from a return |
+## Endpoints
 
-#### Return Identification
+Append these paths to the base URL for your selected version.
 
-When making requests to endpoints with `:return_id` in the path, you can identify the return using multiple methods:
+### Returns
 
-1. **Loop ID (recommended for compatibility)**: Use the `id` field from the return response as the path parameter
-   ```
-   POST /api/v1/warehouse/return/12345/process
-   ```
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/return/details` | Get one return |
+| `GET` | `/return/list` | List and filter returns |
+| `POST` | `/return/:return_id/process` | Process a return |
+| `POST` | `/return/:return_id/flag` | Flag a return for review |
+| `POST` | `/return/:return_id/close` | Reject/cancel a return |
+| `POST` | `/return/:return_id/cancel` | Reset a return to its initial state |
+| `POST` | `/return/:return_id/remove` | Reject selected line items and process the others |
 
-2. **Redo ID**: Use a query parameter `redo_return_id` with Redo's internal ID (the `redo_id` field from responses)
-   ```
-   POST /api/v1/warehouse/return/0/process?redo_return_id=507f1f77bcf86cd799439011
-   ```
+### Notes and reporting
 
-3. **Order Name**: Use a query parameter `order_name`
-   ```
-   GET /api/v1/warehouse/return/details?order_name=#1001
-   ```
-
-4. **Order ID**: Use a query parameter `order_id`
-   ```
-   GET /api/v1/warehouse/return/details?order_id=5678
-   ```
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/return/:return_id/note` | Add a note; JSON body: `{ "content": "..." }` |
+| `GET` | `/return/:return_id/notes` | Get return notes |
+| `GET` | `/reporting/asn` | Get advanced shipping notice records |
 
 <Note>
-  **Understanding Return IDs:**
-  - `id` - Loop-compatible return ID (number) for backwards compatibility
-  - `redo_id` - Redo's internal return identifier (string/ObjectId)
-
-  Both IDs are included in all return response objects, allowing you to use whichever is most convenient for your integration.
+  Loop's `close` operation maps to rejecting/canceling a Redo return. Loop's `cancel` operation maps to resetting a Redo return.
 </Note>
 
-### Notes
+## Identify a return
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/warehouse/return/:return_id/note` | Add a note to a return |
-| GET | `/api/v1/warehouse/return/:return_id/notes` | Get all notes for a return |
+For a route containing `:return_id`, pass the numeric Loop-compatible `id` returned by the API:
 
-### Reporting
+```http
+POST /redo/v2/api/v1/warehouse/return/12345/process
+```
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/warehouse/reporting/asn` | Get advanced shipping notice information |
+You can instead identify a return with one of these query parameters:
 
-<Note>
-  **Important Terminology Differences:**
-  - Loop's "close" endpoint maps to Redo's cancel/reject functionality
-  - Loop's "cancel" endpoint maps to Redo's reset functionality
+| Parameter | Value |
+| --- | --- |
+| `redo_return_id` | The string returned in `redo_id` |
+| `order_name` | The order name, such as `#1001` |
+| `order_id` | The provider order ID |
 
-  Loop's documentation is sometimes incomplete or does not match actual Loop responses. When docs and Loop's actual behavior differ, Redo follows the actual behavior.
-</Note>
+For example:
 
-## Credentials
+```http
+GET /redo/v2/api/v1/warehouse/return/details?redo_return_id=507f1f77bcf86cd799439011
+```
 
-To create an API token, log in to your [Redo Dashboard](https://app.getredo.com), go to **Settings** → **Developer**, and click **Add API Client**. Copy the generated API secret and use it as a Bearer token in the `Authorization` header of your requests.
+## List and ASN filters
 
-See the [Authentication](/docs/api-reference/authentication) page for full details.
+`GET /return/list` accepts:
+
+| Parameter | Description |
+| --- | --- |
+| `from` | Start date |
+| `to` | End date |
+| `filter` | Date field to filter: `created_at` (default) or `updated_at` |
+| `state` | Loop-compatible state: `open`, `review`, `closed`, `cancelled`, or `expired` |
+| `pageSize` | Number of records requested; defaults to `10` |
+| `paginate` | Set to `true` to use cursor pagination |
+| `cursor` | Cursor from the previous page's next-page URL |
+
+`GET /reporting/asn` supports `from`, `to`, `pageSize`, `state`, and `cursor`.
+
+### Pagination
+
+For return lists in either version, send `paginate=true`. The API returns an object with the current records and, when another page exists, a URL to request it:
+
+```json
+{
+  "returns": [],
+  "nextPageUrlString": "https://loop-api.getredo.com/redo/v2/api/v1/warehouse/return/list?pageSize=100&cursor=..."
+}
+```
+
+The same value is also provided in the `nextPageUrl` response header. Follow that URL until the next-page value is absent. Add `paginate=true` to each subsequent request if you want every return-list page to retain the wrapped `{ returns, nextPageUrlString }` response; otherwise subsequent pages use the array response. ASN responses always remain an array and provide the next page through the `nextPageUrl` header.
+
+Without `paginate=true`, `/return/list` returns an array.
+
+## v2 response behavior
+
+v2 keeps the Loop-compatible response structure, including numeric `id` and string `redo_id`, but corrects how important fields are populated.
+
+### Financial fields
+
+All monetary values are decimal strings with two digits after the decimal point.
+
+| Field | v2 meaning |
+| --- | --- |
+| `total` | Refund plus store credit, including original-order shipping where applicable, less an upsell charge |
+| `refund` | Refund value excluding original-order shipping |
+| `gift_card` | Store-credit value excluding original-order shipping |
+| `upsell` | Positive outstanding balance charged for the new order |
+| `return_product_total` | Sum of original prices for returned products |
+| `return_discount_total` | Discounts applied to returned products |
+| `return_tax_total` | Taxes attributed to returned products |
+| `return_total` | Return value before the handling-fee deduction |
+| `return_credit_total` | Credit applied to exchanges plus store credit |
+| `handling_fee` | Non-negative fee deducted from the return value |
+| `exchange_product_total` | Sum of exchange-item prices |
+| `exchange_discount_total` | Discounts on the new exchange order |
+| `exchange_tax_total` | Taxes on the new exchange order |
+| `exchange_total` | Total value of the new exchange order |
+| `exchange_credit_total` | Return credit applied toward exchanges |
+
+At the line-item level, v2 reports the original `price`, the item's discount and tax, and allocates `refund`, `refund_item`, and `refund_tax` proportionally when only part of the return is refunded.
+
+### Other corrected fields
+
+- `outcome` reports `upsell` when a customer charge exists; otherwise it distinguishes refunds, store credit, exchanges, and combined outcomes.
+- Advanced exchanges include parsed numeric product and variant IDs, `sku`, title, discount, allocated tax, and total when available.
+- `line_items[].return_comment` contains the shopper's non-empty return-form answers, joined with line breaks.
+- `line_items[].weight_in_grams` is always numeric, and missing barcodes use an empty string.
+- Shipment labels include only shipments with a carrier, status, and tracking number, and associate the matching line-item IDs.
+- ASN purchase price and outcome use the same v2 return-accounting totals as return details.
+
+## Upgrade from v1 to v2
+
+1. Change only the base path from `/api/v1/warehouse` (or `/redo/v1/api/v1/warehouse`) to `/redo/v2/api/v1/warehouse`.
+2. Keep the same credentials, scopes, endpoint suffixes, return identifiers, and write-operation payloads.
+3. Update any reconciliation logic or assertions that depend on financial values. v2 intentionally changes the totals and line-item values described above.
+4. Verify consumers tolerate the newly populated `return_comment` and exchange metadata fields and the corrected `outcome` priority.
+
+<Warning>
+  Do not compare v1 and v2 financial fields for exact equality. The changed values are the primary compatibility fix in v2, not a formatting-only change.
+</Warning>
+
+Redo follows Loop's observed API behavior when Loop's public documentation and actual responses differ.
