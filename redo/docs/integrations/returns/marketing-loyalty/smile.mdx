@@ -1,0 +1,101 @@
+---
+title: "Smile.io"
+description: "Show Smile.io loyalty points balances and earnable points in Redo Marketing messages"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Smile.io?
+
+Smile.io is a loyalty and rewards platform. Customers earn points for actions
+like placing an order or leaving a review, and redeem those points for discounts
+and other perks.
+
+## What Does the Integration Do?
+
+Once Smile.io is connected, Redo Marketing can personalize your messages with
+each shopper's loyalty data:
+
+- **Points balance**: the shopper's current Smile.io points balance.
+- **Points to earn**: an estimate of the points the shopper would earn by
+  completing the purchase in their cart.
+
+Both values are available as dynamic variables in the Redo message builder, so
+you can use them in abandoned cart and abandoned checkout recovery messages. For
+example, _"You have 3,144 points waiting, and this order would earn you 7,860
+more."_
+
+## Prerequisites
+
+- An active Smile.io program.
+- Redo Marketing enabled on your Redo account.
+- Permission to manage integrations in Redo.
+
+## How to Set It Up
+
+<Steps>
+<Step title="Connect Smile.io in Redo">
+  In the Redo dashboard, go to **Settings** > **Integrations** and find the
+  **Smile.io** card. Click **Connect**.
+
+  You'll be sent to Smile.io to authorize the Redo app. Approve the requested
+  permissions and you'll be returned to Redo with the integration connected.
+</Step>
+
+<Step title="Add the variables to a message">
+  Open a marketing message in the Redo message builder and insert the Smile.io
+  variables where you want the values to appear:
+
+  ```liquid
+  You have {{ smile_points_balance }} points, and this order would earn you
+  {{ smile_points_to_earn }} more.
+  ```
+
+  The variables appear in the builder's dynamic variable list once Smile.io is
+  connected.
+</Step>
+
+<Step title="Send a test message">
+  Preview or send a test to a customer who is enrolled in your Smile.io program
+  to confirm the values render as expected.
+</Step>
+</Steps>
+
+## Available Variables
+
+| Variable               | Description                                                                     | Where it's available                           |
+| ---------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `smile_points_balance` | The customer's current Smile.io points balance                                  | Any Redo Marketing message                     |
+| `smile_points_to_earn` | Estimated points the customer would earn by completing the purchase in the cart | Abandoned cart and abandoned checkout messages |
+
+Redo matches shoppers to Smile.io accounts by email address. If a shopper has no
+Smile.io account, the variables resolve to nothing. Use Liquid's `default`
+filter to supply fallback copy:
+
+```liquid
+You have {{ smile_points_balance | default: "loyalty" }} points waiting.
+```
+
+## How the Points Estimate Works
+
+Smile.io does not expose an endpoint that predicts the points a given order will
+award, so Redo estimates `smile_points_to_earn` from your program's earning
+rules:
+
+- Redo reads your Smile.io earning rules and applies every "points per amount
+  spent" rule to the cart's post-discount subtotal.
+- Rules restricted to a VIP tier are only counted when the shopper is in that
+  tier.
+- Fixed-value rules (for example, a flat 100 points for placing an order) are
+  not included, because Smile.io's API does not distinguish a fixed order reward
+  from other fixed rewards such as following you on social media. If your
+  program uses fixed rewards for purchases, the estimate will be conservative.
+
+The value is an estimate for messaging purposes. The points actually awarded are
+determined by Smile.io when the order is placed.
+
+## How Long Does It Take?
+
+Setup takes less than **5 minutes**.
+
+<IntegrationSupport integrationProvider="Smile.io" />
