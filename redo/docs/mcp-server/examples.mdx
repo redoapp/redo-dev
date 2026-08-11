@@ -1,0 +1,238 @@
+---
+title: "Usage Examples"
+description: "Example prompts for common Redo MCP Server workflows"
+icon: "messages"
+---
+
+## Usage Examples
+
+### Look up orders for a customer
+
+**Prompt:**
+
+> Show me all orders for customer jane@example.com.
+
+The AI will call `list_orders` with an email filter to find all orders for that customer and display a summary of each.
+
+### Get details about an order
+
+**Prompt:**
+
+> Get me the full details for order #1234.
+
+The AI will call `list_orders` to find the order by name, then call `get_order` with the order ID to fetch full details including items, totals, discounts, shipping, and taxes.
+
+### Create a return for an order
+
+**Prompt:**
+
+> Create a return for order #1234. Return the blue hoodie, refund to the original payment method, and use the available prepaid shipping option.
+
+The AI will call `list_orders` if it needs to resolve the order, then call `create_draft_return` to start the return. It will use `manage_draft_return` repeatedly to select items, answer any return-flow questions, choose compensation, set shipment details, and follow the draft's `availableActions`. Once the draft reaches the `ready` step and you confirm the details, the AI will call `submit_draft_return` to create the return.
+
+### Search for returns by status
+
+**Prompt:**
+
+> Show me all open returns.
+
+The AI will call `list_returns` with a status filter to find all open returns and display a summary of each.
+
+### Get details about a return
+
+**Prompt:**
+
+> Get me the details about the return for order #1234.
+
+The AI will call `get_return` to fetch full details including item statuses, compensation amounts, and order information.
+
+### Process a return
+
+**Prompt:**
+
+> Process the return for order #5678 — accept all items.
+
+The AI will call `get_return` to retrieve the return's items and their IDs, confirm the details with you, then call `process_return` to accept each item.
+
+### List return tags
+
+**Prompt:**
+
+> What return tags do we have?
+
+The AI will call `list_return_tags` to fetch every tag defined for your team. Use this to discover the exact stored name — names are case-sensitive — before calling `upsert_return_tag` or `delete_return_tag`.
+
+### Create, recolor, or rename a return tag
+
+**Prompt:**
+
+> Rename the "Damaged" tag to "Damaged in transit".
+
+The AI will call `upsert_return_tag` with the current name, a `pillTheme`, and (for a rename) a `newName`. Renames cascade to every return and saved view filter that referenced the old name, so the AI should confirm with you before creating or renaming a tag.
+
+### Delete a return tag
+
+**Prompt:**
+
+> Delete the "Fraud review" tag.
+
+The AI will call `delete_return_tag` with the tag's name. This permanently deletes the tag and strips it from every return and saved view filter that referenced it, so the AI should always confirm with you before calling it.
+
+### Ask a question about your Redo account
+
+**Prompt:**
+
+> Ask Redo what my return flow is configured to do. What eligibility checks, return options, and fees are set up?
+
+The AI will call `ask_redo` to ask the Redo support AI, which has access to your account's configuration and can describe your specific return flow steps, conditions, and settings.
+
+### Find a customer
+
+**Prompt:**
+
+> Find the customer with email jane@example.com.
+
+The AI will call `list_customers` with an email filter to locate the customer and return a summary including their customer ID, name, and contact details.
+
+### Get details about a customer
+
+**Prompt:**
+
+> Show me everything about customer jane@example.com.
+
+The AI will call `list_customers` to resolve the customer ID if needed, then call `get_customer` to return contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details.
+
+### Look up a discount's configuration
+
+**Prompt:**
+
+> What are the rules on the discount tied to our welcome automation?
+
+The AI will call `get_discount_config` with the discount ID to return the offer, code or prefix, provider, expiration, eligibility, usage limits, and stacking rules.
+
+### Check whether a discount code was used
+
+**Prompt:**
+
+> Was the code SAVE20-A1B2 ever redeemed, and by whom?
+
+The AI will call `get_generated_discount_code` with the code to return its usage records — whether it was used, which customer or order used it, when it expires, and the base discount configuration it came from. It can follow up with `get_discount_config` to describe the underlying offer.
+
+### List marketing campaigns
+
+**Prompt:**
+
+> Show me all email campaigns we sent in the last 30 days.
+
+The AI will call `list_campaigns` with a channel filter and scheduled-date range to return a summary of each campaign — name, channel, status, schedule, and audience counts.
+
+### Get details about a campaign
+
+**Prompt:**
+
+> What templates and audiences are in our "Spring Sale" campaign?
+
+The AI will call `list_campaigns` to resolve the campaign ID if needed, then call `get_campaign` to return its templates (email subject lines or SMS variants), audiences, status, and schedule.
+
+### Review campaign performance
+
+**Prompt:**
+
+> How did our email campaigns perform last month? Which one drove the most revenue?
+
+The AI will call `list_campaigns` to find the relevant campaigns, then call `get_campaign_performance` for the date range to return per-campaign revenue, spend, ROI, and order/click/open/send counts, plus period totals compared to the prior period.
+
+### List customer segments
+
+**Prompt:**
+
+> What segments do we have set up?
+
+The AI will call `list_segments` to return each segment/audience for your team along with its ID and counts.
+
+### Inspect a segment
+
+**Prompt:**
+
+> What conditions define our "VIP customers" segment, and how many people are in it?
+
+The AI will call `list_segments` to resolve the segment ID, then call `get_segment` to return the audience counts and the dynamic condition tree.
+
+### List automations
+
+**Prompt:**
+
+> What automations do we have running, and which ones use Recover?
+
+The AI will call `list_automations` to return each automation's ID, name, enabled state, category, step count, and step types. Use the step-type filter to surface automations for a feature such as Recover.
+
+### Get details about an automation
+
+**Prompt:**
+
+> Walk me through the steps in our abandoned-cart automation.
+
+The AI will call `list_automations` to resolve the automation ID if needed, then call `get_automation` to return its enabled state, category, timestamps, and step configuration. For a step with an opaque template or config ID, it will call `get_automation_step_configuration` to resolve the scenarios, messaging, and settings behind that step.
+
+### Review automation performance
+
+**Prompt:**
+
+> How are our automations performing this quarter compared to last?
+
+The AI will call `get_automation_performance` for the date range to return per-automation revenue, spend, ROI, revenue per recipient, and order/click/open/send counts, plus period totals compared to the prior period.
+
+### Analyze Recover step performance
+
+**Prompt:**
+
+> How is our Recover abandoned-cart automation doing? What's the recovered revenue and reply rate?
+
+The AI will call `list_automations` (filtering by step type `recover`) to find the automation, then call `get_automation_step_performance` with `metricType='recover_conversation'` and `stepTypes=['recover']` for Recover-specific metrics like recovered revenue, reply rate, and conversion rate.
+
+### Inspect a marketing template
+
+**Prompt:**
+
+> Show me the email content for the template used in our welcome automation.
+
+The AI will call `get_automation` to find the step's template ID, then call `get_template` to return the subject line, email builder sections (or SMS content), attachments, and AI config.
+
+### Generate a custom analytics report
+
+**Prompt:**
+
+> What are my top 10 products by return rate this quarter?
+
+The AI will call `generate_custom_analytics_report` with the question, then poll `get_custom_analytics_report` until the report is ready — generation typically takes a minute or two — and share the report link, where you can view the report or download it as a CSV.
+
+### Edit a custom analytics report
+
+**Prompt:**
+
+> Change my top products report to break results down by month and cover the last 6 months instead.
+
+The AI will call `edit_custom_analytics_report` with a full replacement spec describing the entire desired report — metrics, dimensions, filters, and date range — since the spec replaces the report's definition rather than patching it. The previous version stays available while the report regenerates.
+
+### Find existing custom reports
+
+**Prompt:**
+
+> Which custom reports do I have about exchanges?
+
+The AI will call `list_custom_analytics_reports` with a search filter matching titles and requested questions, and return each matching report's title, status, and columns.
+
+## Rate Limits
+
+The server enforces a rate limit of **500 requests per minute** per authenticated user. If you exceed this limit, requests will receive a `429 Too Many Requests` response with a `Retry-After` header indicating when you can retry.
+
+## Privacy Policy
+
+Redo's privacy policy is available at [https://www.getredo.com/en/privacy-policy](https://www.getredo.com/en/privacy-policy).
+
+The MCP server accesses your Redo merchant data on your behalf using your authenticated session. Data is transmitted securely over HTTPS and is not stored beyond what is needed to fulfill each request.
+
+## Support
+
+For help or to report an issue, email [support@getredo.com](mailto:support@getredo.com).
+

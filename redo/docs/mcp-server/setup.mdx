@@ -1,0 +1,118 @@
+---
+title: "Setup Instructions"
+description: "Connect the Redo MCP Server to your preferred AI assistant"
+icon: "plug"
+---
+
+## Setup Instructions
+
+### Authentication
+
+Authentication is handled via OAuth. On first connection, you will be redirected to the Redo merchant app to authorize access. No API keys or manual token management is required.
+
+- Your AI assistant initiates the OAuth flow automatically when it first calls a Redo tool
+- You authorize the connection in your browser through the Redo merchant app
+- The session persists until you revoke access or the token expires
+
+The MCP server only has access to data within your Redo merchant account. Each user authenticates individually.
+
+### OpenAI
+
+#### ChatGPT
+
+1. Open `Apps` in ChatGPT
+2. Search for `Redo`
+3. Click `Install`
+
+To use it in a conversation, click the `+` button in the message composer, select `More`, and choose the Redo connector.
+
+#### Codex
+
+```bash
+codex mcp add redo -- npx -y mcp-remote https://mcp.getredo.com/mcp
+```
+
+### Anthropic
+
+#### Claude Desktop and Claude.ai
+
+Redo is available in Anthropic's official Connectors Directory.
+
+1. Open `Settings` > `Connectors` in Claude
+2. Find `Redo` in the Connectors Directory
+3. Click `Connect` and complete the Redo OAuth login flow
+
+#### Claude Code
+
+```bash
+claude mcp add --transport http redo https://mcp.getredo.com/mcp
+```
+
+### Cursor
+
+[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=redo&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1yZW1vdGUiLCJodHRwczovL21jcC5nZXRyZWRvLmNvbS9tY3AiXX0%3D)
+
+Or install manually: go to `Cursor Settings` > `Tools & MCP` > `New MCP Server`. You can also add to `.cursor/mcp.json` in your project root for project-specific config.
+
+```json
+{
+  "mcpServers": {
+    "redo": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.getredo.com/mcp"]
+    }
+  }
+}
+```
+
+Restart Cursor after saving.
+
+### Manus
+
+1. Go to `Settings` > `My Plugins`
+2. Click `Add Connectors`
+3. Click `Create`
+4. Click `Custom MCP`
+5. Set Server Name to `Redo`
+6. Leave Transport Type as `HTTP`
+7. Set Server URL to `https://mcp.getredo.com/mcp`
+8. Save the connector and complete the Redo OAuth login flow when prompted
+
+### VS Code (GitHub Copilot)
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Server&color=0098FF)](https://vscode.dev/redirect/mcp/install?name=redo&config=%7B%22command%22%3A%20%22npx%22%2C%20%22args%22%3A%20%5B%22-y%22%2C%20%22mcp-remote%22%2C%20%22https%3A//mcp.getredo.com/mcp%22%5D%2C%20%22env%22%3A%20%7B%7D%7D)
+
+Or install manually: open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) and search for `MCP: Add Server`. Select `User Settings` for global config, or add to `.vscode/mcp.json` in your project root.
+
+```json
+{
+  "servers": {
+    "redo": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.getredo.com/mcp"]
+    }
+  }
+}
+```
+
+Reload VS Code after saving.
+
+### Windsurf
+
+Follow the <a href="https://docs.windsurf.com/windsurf/cascade/mcp#mcp-config-json">configure MCP guide</a> using the config below.
+
+```json
+{
+  "mcpServers": {
+    "redo": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.getredo.com/mcp"]
+    }
+  }
+}
+```
+
+## Need to connect another service?
+
+Redo maintains an allowlist of domains that can authenticate with the MCP server. If you want to use a service that is not listed on this page, email [support@getredo.com](mailto:support@getredo.com) with the service name and domain. Our team can review it and add the domain to the allowlist.
