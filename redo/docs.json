@@ -48,6 +48,12 @@
       "href": "https://redo.com/en/demo"
     }
   },
+  "redirects": [
+    {
+      "source": "/docs/guides/developer-tools/redo-mcp-server",
+      "destination": "/docs/mcp-server/introduction"
+    }
+  ],
   "navigation": {
     "tabs": [
       {
@@ -72,10 +78,6 @@
               "/docs/guides/integrations/webhooks",
               "/docs/guides/integrations/hydrogen"
             ]
-          },
-          {
-            "group": "Developer Tools",
-            "pages": ["/docs/guides/developer-tools/redo-mcp-server"]
           },
           {
             "group": "Other",
@@ -200,6 +202,25 @@
           {
             "group": "Endpoints",
             "openapi": { "source": "api-schema/openapi.yaml" }
+          }
+        ]
+      },
+      {
+        "tab": "MCP Server",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "/docs/mcp-server/introduction",
+              "/docs/mcp-server/setup"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "/docs/mcp-server/tools",
+              "/docs/mcp-server/examples"
+            ]
           }
         ]
       }
