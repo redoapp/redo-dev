@@ -1,10 +1,6 @@
 description: Update fulfillment shipment status.
 post:
-  deprecated: true
   description: |
-    **Deprecated.** Part of the legacy Orders API, which is no longer receiving
-    new functionality.
-
     Post a shipment status update or trigger an automation event for a fulfillment.
 
     The status field accepts two types of values:

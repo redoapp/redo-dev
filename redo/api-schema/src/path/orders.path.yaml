@@ -1,11 +1,6 @@
 description: Orders collection.
 post:
-  deprecated: true
-  description: |
-    **Deprecated.** Use `POST /stores/{storeId}/custom/orders` instead, which
-    creates and updates orders in one call.
-
-    Create a new order in the system with line items, customer information, and shipping details.
+  description: Create a new order in the system with line items, customer information, and shipping details.
   operationId: Order create
   requestBody:
     content:

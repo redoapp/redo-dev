@@ -1139,12 +1139,7 @@ paths:
   /stores/{storeId}/orders:
     description: Orders collection.
     post:
-      deprecated: true
-      description: |
-        **Deprecated.** Use `POST /stores/{storeId}/custom/orders` instead, which
-        creates and updates orders in one call.
-
-        Create a new order in the system with line items, customer information, and shipping details.
+      description: Create a new order in the system with line items, customer information, and shipping details.
       operationId: Order create
       requestBody:
         content:
@@ -1194,13 +1189,7 @@ paths:
   /stores/{storeId}/orders/{orderId}:
     description: Single order operations.
     get:
-      deprecated: true
-      description: |
-        **Deprecated.** Part of the legacy Orders API, which is no longer receiving
-        new functionality. New integrations should sync orders with
-        `POST /stores/{storeId}/custom/orders`.
-
-        Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
       operationId: Order get
       responses:
         '200':
@@ -1233,13 +1222,7 @@ paths:
       tags:
         - Orders
     delete:
-      deprecated: true
-      description: |
-        **Deprecated.** Part of the legacy Orders API, which is no longer receiving
-        new functionality. New integrations should sync orders with
-        `POST /stores/{storeId}/custom/orders`.
-
-        Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
       operationId: Order delete
       responses:
         '200':
@@ -1278,12 +1261,7 @@ paths:
   /stores/{storeId}/orders/{orderId}/fulfillments:
     description: Order fulfillments collection.
     post:
-      deprecated: true
-      description: |
-        **Deprecated.** Send fulfillments in the `fulfillments` array of
-        `POST /stores/{storeId}/custom/orders` instead.
-
-        Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+      description: Create a fulfillment for specific line items within an order, including tracking information. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
       operationId: Fulfillment create
       requestBody:
         content:
@@ -1334,11 +1312,7 @@ paths:
   /stores/{storeId}/orders/{orderId}/fulfillments/{fulfillmentId}/shipment-status:
     description: Update fulfillment shipment status.
     post:
-      deprecated: true
       description: |
-        **Deprecated.** Part of the legacy Orders API, which is no longer receiving
-        new functionality.
-
         Post a shipment status update or trigger an automation event for a fulfillment.
 
         The status field accepts two types of values:

@@ -1,12 +1,6 @@
 description: Single order operations.
 get:
-  deprecated: true
-  description: |
-    **Deprecated.** Part of the legacy Orders API, which is no longer receiving
-    new functionality. New integrations should sync orders with
-    `POST /stores/{storeId}/custom/orders`.
-
-    Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+  description: Retrieve an existing order from the system, including all fulfillments. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
   operationId: Order get
   responses:
     "200":
@@ -35,13 +29,7 @@ get:
   summary: Get Order
   tags: [Orders]
 delete:
-  deprecated: true
-  description: |
-    **Deprecated.** Part of the legacy Orders API, which is no longer receiving
-    new functionality. New integrations should sync orders with
-    `POST /stores/{storeId}/custom/orders`.
-
-    Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
+  description: Delete an order from the system. The orderId parameter can be either the external order ID you provided when creating the order, or the internal Redo order ID returned from the create order response.
   operationId: Order delete
   responses:
     "200":
