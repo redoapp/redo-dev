@@ -315,12 +315,49 @@ must conform to this schema for successful synchronization.
   properties: [
     {
       name: "_redo_type",
-      value: "return"           // "return", "package protection", or "both"
+      value: "returns"          // "returns", "package protection", or "both"
     }
   ],
   // ... other standard line item fields
 }
 ```
+
+`priceSet` on this line item is the amount the shopper paid for coverage. It
+drives billing — omit it and the coverage is treated as unpaid.
+
+When `_redo_type` is present it takes precedence over `tags`. Send one or the
+other consistently; sending a `_redo_type` that covers less than the tags do
+will under-report the coverage purchased.
+
+  <Note>
+  Final sale returns coverage is a **separate** purchase from base returns
+  coverage. When the shopper bought it, add a `__final_sale_coverage` property to
+  the same Redo line item:
+  </Note>
+
+```typescript
+properties: [
+  { name: "_redo_type", value: "returns" },
+  { name: "__final_sale_coverage", value: "true" }
+]
+```
+
+Without this property, final sale returns are only applied when your Redo
+settings cover every order.
+
+</Accordion>
+
+<Accordion title="Package Protection Plus">
+  Package Protection Plus is configured in your Redo settings, not on the order
+  payload.
+
+- **Shopper-paid** — include the Redo line item above with
+  `_redo_type: "package protection"` (or `"both"`), priced at what the shopper
+  paid.
+- **Merchant-paid per order** or **all orders covered** — send no Redo line
+  item. Redo applies coverage to every order that falls inside the enabled date
+  range and whose items are not excluded by your protection exclusion tags or
+  collections.
 
 </Accordion>
 
@@ -381,6 +418,31 @@ must conform to this schema for successful synchronization.
           "unit": "g"
         },
         "image": "https://example.com/images/tee.jpg"
+      },
+      {
+        "id": "line_2",
+        "productId": "redo-coverage",
+        "sku": "x-redo",
+        "title": "Redo Returns Coverage",
+        "vendor": "re:do",
+        "quantity": 1,
+        "priceSet": {
+          "presentmentMoney": {
+            "amount": "3.49",
+            "currencyCode": "USD"
+          },
+          "shopMoney": {
+            "amount": "3.49",
+            "currencyCode": "USD"
+          }
+        },
+        "tags": ["returns"],
+        "properties": [
+          {
+            "name": "_redo_type",
+            "value": "returns"
+          }
+        ]
       }
     ],
     "shippingLines": [
@@ -405,7 +467,7 @@ must conform to this schema for successful synchronization.
     "transactions": [
       {
         "paymentId": "pay_abc123",
-        "amount": 65.97,
+        "amount": 69.46,
         "currency": "USD",
         "createdDate": "2025-01-15T10:30:00Z",
         "paymentGateway": "stripe"
