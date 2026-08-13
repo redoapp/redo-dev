@@ -4364,7 +4364,24 @@ components:
       description: Tracking number information
       properties:
         carrier:
-          description: Shipping carrier
+          description: |
+            Shipping carrier. Any string is accepted — Redo resolves it to a known
+            carrier rather than rejecting it.
+
+            Matching ignores case, spacing, and punctuation, so `UPS`, `ups`, and
+            `U P S` are equivalent. Common aliases resolve as well, for example
+            `fedex_ground` to FedEx and `purolator_express` to Purolator.
+
+            If the carrier can't be matched, Redo infers it from the tracking number,
+            so an unrecognized name usually still tracks correctly. Sending a value
+            from the carrier list in the Custom Returns Integration guide is the most
+            reliable option.
+          examples:
+            - ups
+            - usps
+            - fedex
+            - dhl_express
+            - canada_post
           title: Carrier
           type:
             - string
