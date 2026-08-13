@@ -46,7 +46,6 @@ tags:
   - name: Coverage Info
   - name: Coverage Products
   - name: Custom Events
-  - name: Custom Integration
   - name: Customer Portal
   - name: Customer Subscriptions
   - name: Customers
@@ -58,6 +57,10 @@ tags:
   - name: Orders
   - name: Products
   - name: Returns
+  - description:
+      Push orders into Redo from a commerce platform Redo does not support
+      directly, so shoppers can return them.
+    name: Returns Custom Integration
   - name: Storefront
   - name: Webhooks
 paths:
@@ -100,8 +103,9 @@ paths:
   /stores/{storeId}/invoices: { $ref: path/return-payout-object-list.path.yaml }
   # Merchant Admin
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
-  # Orders
+  # Returns Custom Integration
   /stores/{storeId}/custom/orders: { $ref: path/custom-order-sync.path.yaml }
+  # Orders
   /stores/{storeId}/orders: { $ref: path/orders.path.yaml }
   /stores/{storeId}/orders/{orderId}: { $ref: path/order.path.yaml }
   /stores/{storeId}/orders/{orderId}/fulfillments:

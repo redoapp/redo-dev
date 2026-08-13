@@ -200,10 +200,6 @@
             ]
           },
           {
-            "group": "Guides",
-            "pages": ["/docs/guides/integrations/custom-returns-integration"]
-          },
-          {
             "group": "Endpoints",
             "openapi": { "source": "api-schema/openapi.yaml" }
           }
