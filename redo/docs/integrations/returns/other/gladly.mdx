@@ -145,8 +145,7 @@ account manager to get the Redo Returns app code, then follow the steps below.
   activate:
 
   ```bash
-  appcfg apps config create Redo/redo_returns/v1.3.0 \
-    --name redo-returns \
+  appcfg apps config update redo-returns \
     --config '{ "storeId": "<your-redo-store-id>" }' \
     --secrets '{ "apiToken": "<your-redo-api-token>" }' \
     --activate
