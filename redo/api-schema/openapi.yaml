@@ -40,7 +40,6 @@ tags:
   - name: Coverage Info
   - name: Coverage Products
   - name: Custom Events
-  - name: Custom Integration
   - name: Customer Portal
   - name: Customer Subscriptions
   - name: Customers
@@ -52,6 +51,8 @@ tags:
   - name: Orders
   - name: Products
   - name: Returns
+  - description: Push orders into Redo from a commerce platform Redo does not support directly, so shoppers can return them.
+    name: Returns Custom Integration
   - name: Storefront
   - name: Webhooks
 paths:
@@ -1088,9 +1089,15 @@ paths:
   /stores/{storeId}/custom/orders:
     post:
       description: |
-        Sync a custom order to Redo. This endpoint is used for custom integrations
-        to push order data into the Redo system. Syncing the same order ID again
-        updates the existing Redo order.
+        Sync an order to Redo so your shoppers can return it.
+
+        This is the returns integration path for commerce platforms Redo does not
+        support directly. Orders pushed here become returnable: the shopper can look
+        up the order in the return portal, and Redo uses the line items, discounts,
+        and taxes you send to decide what is eligible for return and what to refund.
+
+        Syncing the same order ID again updates the existing Redo order, so this is
+        safe to call on every order create and update.
 
         Important: If Redo protection is attached to this order, include a line item with:
         - vendor: "re:do"
@@ -1153,7 +1160,7 @@ paths:
         - Bearer: []
       summary: Sync Custom Order
       tags:
-        - Custom Integration
+        - Returns Custom Integration
   /stores/{storeId}/orders:
     description: Orders collection.
     post:
@@ -4539,7 +4546,11 @@ components:
       type: object
     custom-order-sync.schema:
       description: |
-        Custom order integration schema for syncing orders to Redo.
+        An order synced into Redo so it can be returned.
+
+        Redo reads the line items, discounts, and taxes below to decide what the
+        shopper is allowed to return and what to refund, so send the values that were
+        actually charged.
 
         Note: If Redo is attached to this order, you must add a single line item with:
         - vendor: "re:do"

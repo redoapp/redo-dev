@@ -1,6 +1,10 @@
 # $schema: https://json-schema.org/draft/2020-12/schema#
 description: |
-  Custom order integration schema for syncing orders to Redo.
+  An order synced into Redo so it can be returned.
+
+  Redo reads the line items, discounts, and taxes below to decide what the
+  shopper is allowed to return and what to refund, so send the values that were
+  actually charged.
 
   Note: If Redo is attached to this order, you must add a single line item with:
   - vendor: "re:do"
