@@ -43,7 +43,7 @@ properties:
     description: Customer information
     title: Customer
   lineItems:
-    description: Order line items
+    description: Order line items. Line item IDs must be unique within an order.
     items:
       $ref: ./custom-order-line-item.schema.yaml
     title: Line Items

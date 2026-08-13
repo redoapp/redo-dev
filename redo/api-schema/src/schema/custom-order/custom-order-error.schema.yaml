@@ -1,0 +1,16 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Error returned by the custom order sync endpoint
+properties:
+  error:
+    description: Human-readable summary of the problem
+    title: Error
+    type: string
+  errors:
+    description:
+      Field-level validation details, present only when the request body fails
+      schema validation. Keys mirror the request body structure.
+    title: Errors
+    type: object
+required: [error]
+title: Custom Order Error
+type: object

@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Response returned when an order is synced successfully
+properties:
+  message:
+    description: Always "Order synced successfully"
+    title: Message
+    type: string
+  orderId:
+    description: The order ID you supplied in the request body
+    title: Order ID
+    type: string
+  redoId:
+    description: The Redo order ID for the synced order
+    title: Redo ID
+    type: string
+required: [message, orderId, redoId]
+title: Custom Order Sync Response
+type: object

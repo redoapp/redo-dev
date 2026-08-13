@@ -2,11 +2,11 @@
 description: Money set containing both presentment and shop currency amounts
 properties:
   presentmentMoney:
-    $ref: ../money.schema.yaml
+    $ref: ./custom-order-money.schema.yaml
     description: Amount in presentment currency
     title: Presentment Money
   shopMoney:
-    $ref: ../money.schema.yaml
+    $ref: ./custom-order-money.schema.yaml
     description: Amount in shop currency
     title: Shop Money
 required: [presentmentMoney, shopMoney]

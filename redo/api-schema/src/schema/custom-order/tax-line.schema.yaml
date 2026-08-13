@@ -6,13 +6,13 @@ properties:
     description: Tax amount
     title: Price Set
   rate:
-    description: Tax rate
+    description: Tax rate as a decimal string. Send null when the rate is unknown.
     title: Rate
     type: [string, "null"]
   title:
-    description: Tax title/name
+    description: Tax title/name. Defaults to "Tax" when omitted.
     title: Title
     type: string
-required: [priceSet]
+required: [priceSet, rate]
 title: Tax Line
 type: object

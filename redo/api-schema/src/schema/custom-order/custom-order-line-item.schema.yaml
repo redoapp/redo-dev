@@ -64,22 +64,26 @@ properties:
     title: Tags
     type: array
   weight:
-    description: Item weight
+    description:
+      Item weight. `value` is stored as grams, so send the weight in grams.
     properties:
       value:
+        description: Weight in grams
         type: number
       unit:
+        description: Unit label. Recorded for reference only; `value` is always
+          read as grams.
         type: string
     required: [value, unit]
     title: Weight
     type: [object, "null"]
   image:
-    description: Primary image URL
+    description: Primary image URL. This is the image Redo displays for the item.
     title: Image
     type: [string, "null"]
   images:
     default: []
-    description: Additional images
+    description: Additional images. Accepted but not currently displayed by Redo.
     items:
       $ref: ./custom-order-line-item-image.schema.yaml
     title: Images

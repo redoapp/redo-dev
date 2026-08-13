@@ -4,11 +4,6 @@ description: "Sync orders to Redo using our custom orders endpoint"
 icon: "code"
 ---
 
-<Note type="info">
-  **Beta Feature**: This integration is currently in beta. APIs and
-  functionality may change as we continue to improve the integration experience.
-</Note>
-
 ## Overview
 
 This guide helps you integrate your custom e-commerce platform or order
@@ -68,7 +63,25 @@ A successful request returns:
 ```json
 {
   "message": "Order synced successfully",
-  "orderId": "your_order_id"
+  "orderId": "your_order_id",
+  "redoId": "68b1f0c2a4d1e90012ab34cd"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `orderId` | The order ID you sent in the request body |
+| `redoId` | The Redo order ID for the synced order |
+
+Syncing the same `id` again updates the existing Redo order, so this endpoint is
+safe to call on every order create and update.
+
+A validation failure returns a `400` with the offending fields:
+
+```json
+{
+  "error": "Invalid order payload",
+  "errors": { "properties": { "lineItems": { "errors": ["Invalid input"] } } }
 }
 ```
 
@@ -173,6 +186,9 @@ must conform to this schema for successful synchronization.
           currency: string;
           createdDate: string;         // ISO 8601 timestamp
           paymentGateway: string;      // Payment processor name
+          additionalDetails?: {        // Required when paymentGateway is "authorize_net"
+            creditCardLastFour: string; // Exactly 4 digits
+          }
         }
       ]
     }
@@ -207,11 +223,11 @@ must conform to this schema for successful synchronization.
           }
         },
         weight?: {
-          value: number;
-          unit: string;
+          value: number;               // Grams
+          unit: string;                // Label only; value is read as grams
         } | null,
-        image?: string | null;           // Primary image URL
-        images?: [                       // Additional images
+        image?: string | null;           // Primary image URL — the one Redo displays
+        images?: [                       // Accepted, but not currently displayed
           {
             url: string;
             data?: string | null;        // Base64 image data
@@ -258,6 +274,11 @@ must conform to this schema for successful synchronization.
 
 - Use string values for amounts to avoid floating-point precision issues
 - Currency codes should follow ISO 4217 standards
+
+### Line Item IDs
+
+- `id` must be unique within an order — duplicate IDs are rejected with a `400`
+- Fulfillment `lineItems[].id` must reference a line item `id` on the same order
 
 ### Quantities
 
@@ -352,8 +373,8 @@ must conform to this schema for successful synchronization.
           }
         },
         "weight": {
-          "value": 0.5,
-          "unit": "lb"
+          "value": 227,
+          "unit": "g"
         },
         "image": "https://example.com/images/tee.jpg"
       }
