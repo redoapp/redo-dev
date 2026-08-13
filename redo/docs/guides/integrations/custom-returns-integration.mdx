@@ -298,6 +298,56 @@ must conform to this schema for successful synchronization.
 - Line item `discounts` should reflect the total discount for all units
 - Shipping `taxLines` and `discounts` follow the same pattern
 
+## Carriers
+
+`fulfillments[].trackingNumbers[].carrier` accepts any string. Redo resolves
+whatever you send to a known carrier rather than rejecting it, so an
+unrecognized value will not fail the request.
+
+### How matching works
+
+<Steps>
+  <Step title="Normalization">
+    Case, surrounding whitespace, spaces, and hyphens are ignored. `UPS`, `ups`,
+    `ups `, and `U-P-S` all match the same carrier.
+  </Step>
+  <Step title="Aliases">
+    Common variations resolve to the right carrier — `fedex_ground` to FedEx,
+    `purolator_express` to Purolator, `dhlgm` to DHL eCommerce, `ontrac` to
+    OnTrac.
+  </Step>
+  <Step title="Tracking number inference">
+    If the name still doesn't match, Redo identifies the carrier from the
+    tracking number itself. A code like `1ZHF69830316763339` is recognized as
+    UPS no matter what the `carrier` field says.
+  </Step>
+</Steps>
+
+<Note>
+  Because inference depends on the tracking number, a carrier name we don't
+  recognize paired with an unusual tracking number format may not resolve. In
+  that case the order still syncs, but the shipment won't be tracked. Sending a
+  value from the list below avoids this.
+</Note>
+
+### Common values
+
+Redo recognizes over 140 carriers. These are the most commonly used:
+
+| Region | Values |
+|--------|--------|
+| US | `ups`, `usps`, `fedex`, `fedex_smart_post`, `ups_mail_innovations`, `on_trac`, `lasership`, `better_trucks`, `veho`, `uniuni`, `axlehire`, `pitney_bowes`, `gls`, `amazon` |
+| Canada | `canada_post`, `purolator`, `canpar`, `intelcom`, `loomis_express`, `chit_chats` |
+| UK & Ireland | `royal_mail`, `evri`, `dpd_uk`, `yodel`, `parcelforce`, `an_post`, `whistl` |
+| Europe | `dhl_express`, `dhl_paket`, `dhl_parcel`, `dpd`, `gls`, `postnl`, `bpost`, `colis_prive`, `chronopost`, `swiss_post`, `poland_post`, `omniva` |
+| Asia Pacific | `australia_post`, `aramex_au`, `nz_post`, `japan_post`, `sf_express`, `china_post`, `singapore_post`, `sendle`, `startrack` |
+| Cross-border | `dhl_ecommerce`, `asendia_usa`, `landmark_global`, `passport`, `seko`, `apc_postal_logistics`, `epost_global`, `omni_parcel` |
+
+Send the carrier, not the service level. `ups` is preferred over `UPS Ground`,
+though both normally resolve. If you use a carrier that isn't listed, send the
+name you have — we'll map it, and you can contact support to have it added
+explicitly.
+
 ## Additional Considerations
 
 <Accordion title="Redo Protection Line Items">
