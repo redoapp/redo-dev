@@ -1,0 +1,46 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Address for custom order integration
+properties:
+  address1:
+    description: Address line 1
+    title: Address Line 1
+    type: string
+  address2:
+    description: Address line 2
+    title: Address Line 2
+    type: [string, "null"]
+  city:
+    description: City
+    title: City
+    type: string
+  company:
+    description: Company name
+    title: Company
+    type: [string, "null"]
+  firstName:
+    description: First name
+    title: First Name
+    type: [string, "null"]
+  lastName:
+    description: Last name
+    title: Last Name
+    type: [string, "null"]
+  provinceCode:
+    description: Province or state code
+    title: Province Code
+    type: string
+  zip:
+    description: Postal/ZIP code
+    title: ZIP
+    type: string
+  countryCode:
+    description: Country code (ISO)
+    title: Country Code
+    type: string
+  phone:
+    description: Phone number
+    title: Phone
+    type: [string, "null"]
+required: [address1, city, provinceCode, zip, countryCode]
+title: Custom Order Address
+type: object

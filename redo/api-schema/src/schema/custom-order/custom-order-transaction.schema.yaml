@@ -1,0 +1,44 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+additionalProperties: true
+description: |
+  Payment transaction for custom order integration.
+
+  Gateway-specific fields may be sent alongside the standard fields. When
+  `paymentGateway` is `authorize_net`, include `additionalDetails` so Redo can
+  issue refunds through Authorize.net.
+properties:
+  paymentId:
+    description: Payment transaction ID
+    title: Payment ID
+    type: string
+  amount:
+    description: Transaction amount
+    title: Amount
+    type: number
+  currency:
+    description: Transaction currency
+    title: Currency
+    type: string
+  createdDate:
+    description: Transaction creation date
+    title: Created Date
+    type: string
+  paymentGateway:
+    description: Payment gateway used, e.g. "authorize_net"
+    title: Payment Gateway
+    type: string
+  additionalDetails:
+    description: Gateway-specific details. Required for Authorize.net refunds.
+    properties:
+      creditCardLastFour:
+        description: Last four digits of the card used for the transaction
+        maxLength: 4
+        minLength: 4
+        title: Credit Card Last Four
+        type: string
+    required: [creditCardLastFour]
+    title: Additional Details
+    type: object
+required: [paymentId, amount, currency, createdDate, paymentGateway]
+title: Custom Order Transaction
+type: object

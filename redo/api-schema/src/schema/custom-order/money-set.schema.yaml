@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Money set containing both presentment and shop currency amounts
+properties:
+  presentmentMoney:
+    $ref: ./custom-order-money.schema.yaml
+    description: Amount in presentment currency
+    title: Presentment Money
+  shopMoney:
+    $ref: ./custom-order-money.schema.yaml
+    description: Amount in shop currency
+    title: Shop Money
+required: [presentmentMoney, shopMoney]
+title: Money Set
+type: object

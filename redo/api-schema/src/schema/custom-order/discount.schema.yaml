@@ -1,0 +1,22 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Discount applied to order or line item
+properties:
+  amountSet:
+    $ref: ./money-set.schema.yaml
+    description: Discount amount
+    title: Amount Set
+  discountId:
+    description: Unique identifier for the discount
+    title: Discount ID
+    type: string
+  discountTitle:
+    description: Title/name of the discount
+    title: Discount Title
+    type: string
+  discountCode:
+    description: Code used to apply the discount
+    title: Discount Code
+    type: string
+required: [amountSet, discountId]
+title: Discount
+type: object

@@ -1,0 +1,16 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Currency amount for custom order integration
+properties:
+  amount:
+    description: Amount as a decimal string
+    examples: ["50.20", "1.78"]
+    title: Amount
+    type: string
+  currencyCode:
+    description: ISO 4217 currency code
+    examples: [USD, EUR]
+    title: Currency Code
+    type: string
+required: [amount, currencyCode]
+title: Custom Order Money
+type: object

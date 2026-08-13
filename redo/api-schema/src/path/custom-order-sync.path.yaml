@@ -1,0 +1,70 @@
+post:
+  description: |
+    Sync a custom order to Redo. This endpoint is used for custom integrations
+    to push order data into the Redo system. Syncing the same order ID again
+    updates the existing Redo order.
+
+    Important: If Redo protection is attached to this order, include a line item with:
+    - vendor: "re:do"
+    - sku: "x-redo"
+    - tags: "returns", "package protection", or "both"
+    - properties: _redo_type with value "return", "package protection", or "both"
+  operationId: Custom Order Sync
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/custom-order/custom-order-sync.schema.yaml"
+    required: true
+  responses:
+    "200":
+      description: Order synced successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-sync-response.schema.yaml"
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description:
+        Invalid order data. `errors` contains the field-level validation
+        details.
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description: Missing or invalid API token
+    "403":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Token does not have access to this store
+    "404":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Store does not exist
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description: Failed to process order
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Sync Custom Order
+  tags:
+    - Custom Integration

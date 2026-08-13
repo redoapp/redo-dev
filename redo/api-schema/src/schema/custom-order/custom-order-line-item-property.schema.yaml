@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Property associated with a line item
+properties:
+  name:
+    description: Property name
+    title: Name
+    type: string
+  value:
+    description: Property value
+    title: Value
+    type: string
+required: [name, value]
+title: Line Item Property
+type: object

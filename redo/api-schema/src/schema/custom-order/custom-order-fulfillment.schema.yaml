@@ -1,0 +1,38 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Fulfillment information for custom order integration
+properties:
+  id:
+    description: Fulfillment ID
+    title: ID
+    type: string
+  trackingNumbers:
+    default: []
+    description: Tracking numbers for this fulfillment
+    items:
+      $ref: ./custom-order-tracking-number.schema.yaml
+    title: Tracking Numbers
+    type: array
+  trackingUrls:
+    default: []
+    description: Tracking URLs
+    items:
+      type: string
+    title: Tracking URLs
+    type: array
+  lineItems:
+    description: Line items included in this fulfillment
+    items:
+      $ref: ./custom-order-fulfillment-line-item.schema.yaml
+    title: Line Items
+    type: array
+  shippingDate:
+    description: Date when shipment was sent
+    title: Shipping Date
+    type: [string, "null"]
+  deliveryDate:
+    description: Date when shipment was delivered
+    title: Delivery Date
+    type: [string, "null"]
+required: [id, lineItems]
+title: Custom Order Fulfillment
+type: object
