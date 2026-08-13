@@ -145,6 +145,15 @@ account manager to get the Redo Returns app code, then follow the steps below.
   activate:
 
   ```bash
+  appcfg apps config create Gladly/redo_returns/v1.3.0 \
+    --name redo-returns \
+    --config '{ "storeId": "<your-redo-store-id>" }' \
+    --secrets '{ "apiToken": "<your-redo-api-token>" }' \
+    --activate
+  ```
+
+  If the configuration name is already taken, but the app is not active try the following:
+  ```bash
   appcfg apps config update redo-returns \
     --config '{ "storeId": "<your-redo-store-id>" }' \
     --secrets '{ "apiToken": "<your-redo-api-token>" }' \
