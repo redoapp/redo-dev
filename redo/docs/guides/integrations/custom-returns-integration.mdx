@@ -322,9 +322,6 @@ must conform to this schema for successful synchronization.
 }
 ```
 
-`priceSet` on this line item is the amount the shopper paid for coverage. It
-drives billing — omit it and the coverage is treated as unpaid.
-
 When `_redo_type` is present it takes precedence over `tags`. Send one or the
 other consistently; sending a `_redo_type` that covers less than the tags do
 will under-report the coverage purchased.
