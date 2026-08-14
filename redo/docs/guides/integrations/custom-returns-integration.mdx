@@ -6,21 +6,10 @@ icon: "code"
 
 ## Overview
 
-This guide helps you integrate your custom e-commerce platform or order
-management system with Redo by syncing orders through our dedicated orders
-endpoint. This integration allows you to programmatically send order data to
-Redo, enabling seamless returns and package protection for your customers.
+Sync orders from a custom e-commerce platform, an unsupported platform, or your
+own middleware into Redo, so your customers get returns and package protection.
 
-## When to Use This Integration
-
-Use the custom integration orders endpoint when:
-
-- You have a custom-built e-commerce platform
-- Your platform isn't directly supported by Redo
-- You need programmatic control over order synchronization
-- You're building a middleware integration between your systems
-
-## Integration Flow
+## Integration flow
 
 ```mermaid
 flowchart TD
@@ -47,11 +36,9 @@ Your `storeId` is in **Settings → Developer** in the Redo Dashboard, where you
 also generate the API secret. See
 [Authentication](/docs/api-reference/authentication) for how to send it.
 
-**The full request and response schema, every field, and a complete example
+The full request and response schema, every field, and a complete example
 payload live in
-[Sync Custom Order](/api-reference/returns-custom-integration/sync-custom-order).**
-This guide covers the parts the schema cannot tell you: what to put in the
-fields, and how Redo interprets them.
+[Sync Custom Order](/api-reference/returns-custom-integration/sync-custom-order).
 
 Syncing the same order `id` again updates the existing Redo order, so the
 endpoint is safe to call on every order create and update.
@@ -60,20 +47,16 @@ endpoint is safe to call on every order create and update.
 
 ### Line item IDs
 
-`id` identifies one line on one order, not a product.
+`id` identifies one line on one order, not a product. Use `productId` and `sku`
+for product identity — those are meant to repeat across orders.
 
-- It must be unique **within** an order — duplicates are rejected with a `400`
-- It must be **stable for that order** across re-syncs. Returns reference it, so
-  regenerating IDs on every sync orphans existing returns
-- Do **not** reuse the same `id` across orders for the same product. Some
-  lookups match on line item ID across a store's orders and will pull in
-  unrelated orders
-- Avoid underscores. `id` is combined with an index internally using `_` as the
-  separator, so an underscore in the ID does not round-trip
+- Unique **within** an order — duplicates are rejected with a `400`
+- **Stable across re-syncs** — returns reference it, so regenerating IDs orphans
+  existing returns
+- Not reused across orders
+- No underscores
 
 A per-order counter such as `ORD1234-1`, `ORD1234-2` satisfies all of these.
-Cross-order product identity belongs in `productId` and `sku`, which are meant
-to repeat.
 
 ### Money
 
@@ -95,8 +78,7 @@ return portal. Send a fulfillment once the order ships, and include
 `deliveryDate` if your return window should start at delivery rather than at
 order creation.
 
-Shipping lines are separate — they carry what the shopper paid for shipping and
-do not affect what is returnable.
+Shipping lines do not affect what is returnable.
 
 ## Coverage
 
@@ -122,19 +104,14 @@ both — you **must** include a line item with these exact values:
 }
 ```
 
-`priceSet` must be the **full** price of the coverage item — the entire amount
-the shopper paid for it, before any splits or deductions. When one line item
-covers more than one type of coverage, send the combined total.
+`priceSet` must be the **full** amount the shopper paid for coverage. When one
+line item covers more than one type, send the combined total.
 
-When `_redo_type` is present it takes precedence over `tags`. Send one or the
-other consistently; sending a `_redo_type` that covers less than the tags do
-will under-report the coverage purchased.
+If both are sent, `_redo_type` wins over `tags`. Keep them in sync.
 
 ### Final sale
 
-Final sale returns coverage is billed separately from base returns coverage, so
-the payload has to say when the shopper bought it. Add `final sale` alongside
-`returns`:
+When the shopper buys final sale returns coverage, mark it alongside `returns`:
 
 ```typescript
 tags: ["returns", "final sale"]
@@ -142,32 +119,16 @@ tags: ["returns", "final sale"]
 properties: [{ name: "_redo_type", value: "returns,final sale" }]
 ```
 
-An explicit property is also accepted, and wins on its own:
-
-```typescript
-properties: [
-  { name: "_redo_type", value: "returns" },
-  { name: "__final_sale_coverage", value: "true" }
-]
-```
-
-Any of these marks the order as final-sale covered **and** as returns covered —
-final sale coverage always implies returns coverage. Without one of them, final
-sale is only applied when your Redo settings cover every order or mark all Redo
-purchases as final sale.
+Final sale coverage always implies returns coverage. Without this, final sale
+only applies if your Redo settings cover every order.
 
 ### Package Protection Plus
 
-Package Protection Plus is configured in your Redo settings, not on the order
-payload.
-
-- **Shopper-paid** — include the Redo line item above with
+- **Shopper-paid** — include the coverage line item with
   `_redo_type: "package protection"` (or `"both"`), priced at what the shopper
   paid.
-- **Merchant-paid per order** or **all orders covered** — send no Redo line
-  item. Redo applies coverage to every order that falls inside the enabled date
-  range and whose items are not excluded by your protection exclusion tags or
-  collections.
+- **Merchant-paid or all orders covered** — send no coverage line item. Redo
+  applies it based on your Redo settings.
 
 ## Next steps
 
