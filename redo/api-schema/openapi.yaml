@@ -1099,16 +1099,15 @@ paths:
         Syncing the same order ID again updates the existing Redo order, so this is
         safe to call on every order create and update.
 
-        For guidance on choosing line item IDs, sending fulfillments, and marking
-        coverage, see the
+        For a walkthrough of the full integration, including field-by-field mapping
+        and a complete example payload, see the
         [Custom Returns Integration guide](/docs/guides/integrations/custom-returns-integration).
 
         Important: If Redo protection is attached to this order, include a line item with:
         - vendor: "re:do"
         - sku: "x-redo"
-        - priceSet: the full price the shopper paid for coverage
-        - tags: "returns", "package protection", "both", or "final sale"
-        - properties: _redo_type with value "returns", "package protection", "both", or "returns,final sale"
+        - tags: "returns", "package protection", or "both"
+        - properties: _redo_type with value "return", "package protection", or "both"
       operationId: Custom Order Sync
       parameters:
         - $ref: '#/components/parameters/store-id.param'
