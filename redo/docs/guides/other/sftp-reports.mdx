@@ -8,32 +8,96 @@ Redo can deliver your custom reports as CSV files to a private, read-only SFTP
 directory on a recurring schedule. This is useful for feeding report data into
 data warehouses, BI tools, or any system that ingests files.
 
-## Get your credentials
+## Connection details
 
-SFTP uses the same credentials as the [Redo API](/docs/api-reference/authentication):
+| Setting  | Value                                          |
+| -------- | ---------------------------------------------- |
+| Host     | `sftp.getredo.com`                             |
+| Port     | 22                                             |
+| Username | Your **Store ID**                              |
+| Auth     | SSH key (recommended) or API token as password |
 
-1. Log in to your [Redo Dashboard](https://app.getredo.com)
-2. Go to **Settings** → **Developer**
-3. Your **Store ID** (shown in the **General** section) is your SFTP username
-4. An **API token** is your SFTP password — click **Add API Client** to create
-   one if you don't have one
+Your Store ID is shown in your [Redo Dashboard](https://app.getredo.com) under
+**Settings** → **Developer** → **General**.
+
+The directory is scoped to your store and is **read-only** — you can list and
+download files, but not upload or delete them.
+
+## Authenticate with an SSH key (recommended)
+
+SSH keys are the best option for automated pipelines: no shared password, and
+you can register a separate key per system and revoke each one independently.
+
+### 1. Generate a key pair
+
+If you don't already have a key, generate one on the machine that will connect:
+
+```bash
+ssh-keygen -t ed25519 -C "redo-sftp" -f ~/.ssh/redo_sftp
+```
+
+This creates a private key (`~/.ssh/redo_sftp`) that stays on your machine, and
+a public key (`~/.ssh/redo_sftp.pub`) that you register with Redo.
+
+Redo accepts **ED25519**, **ECDSA** (nistp256/384/521), and **RSA** public
+keys.
+
+<Warning>
+  Only ever share the `.pub` file. Never upload or send the private key.
+</Warning>
+
+### 2. Register the public key in the Redo Dashboard
+
+1. Copy the public key to your clipboard, e.g.
+   `pbcopy < ~/.ssh/redo_sftp.pub` (macOS) or
+   `cat ~/.ssh/redo_sftp.pub` and copy the output
+2. In the [Redo Dashboard](https://app.getredo.com), go to **Settings** →
+   **Developer**
+3. In the **SSH Keys** card, click **Add SSH key**
+4. Enter a **Name** that identifies the system using the key (e.g. "Analytics
+   workstation")
+5. Paste the public key (one line, starting with `ssh-ed25519`,
+   `ecdsa-sha2-...`, or `ssh-rsa`) and save
+
+You can register up to 10 keys per store. Remove a key from the same card to
+revoke its access immediately.
+
+### 3. Connect
+
+```bash
+sftp -i ~/.ssh/redo_sftp <your-store-id>@sftp.getredo.com
+```
+
+No password prompt should appear. To make this the default for the host, add an
+entry to `~/.ssh/config`:
+
+```
+Host redo-sftp
+    HostName sftp.getredo.com
+    User <your-store-id>
+    IdentityFile ~/.ssh/redo_sftp
+```
+
+Then connect with `sftp redo-sftp`.
+
+## Authenticate with an API token
+
+Alternatively, SFTP accepts the same credentials as the
+[Redo API](/docs/api-reference/authentication):
+
+1. In the [Redo Dashboard](https://app.getredo.com), go to **Settings** →
+   **Developer**
+2. Click **Add API Client** to create an API token if you don't have one
 
 <Warning>
   Your API token is only shown once when created. Store it securely.
 </Warning>
 
-## Connect via SFTP
-
-Connect to `sftp.getredo.com` on port 22 using password authentication:
+Connect and enter the API token when prompted for a password:
 
 ```bash
 sftp <your-store-id>@sftp.getredo.com
 ```
-
-Enter your API token when prompted for a password.
-
-The directory is scoped to your store and is **read-only** — you can list and
-download files, but not upload or delete them.
 
 ## Schedule a report
 
