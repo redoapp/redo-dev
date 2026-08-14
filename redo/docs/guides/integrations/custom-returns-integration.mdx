@@ -330,10 +330,18 @@ other consistently; sending a `_redo_type` that covers less than the tags do
 will under-report the coverage purchased.
 
   <Note>
-  Final sale returns coverage is a **separate** purchase from base returns
-  coverage. When the shopper bought it, add a `__final_sale_coverage` property to
-  the same Redo line item:
+  Final sale returns coverage is billed separately from base returns coverage,
+  so the order payload has to say when the shopper bought it. Add `final sale`
+  alongside `returns`:
   </Note>
+
+```typescript
+tags: ["returns", "final sale"]
+// or
+properties: [{ name: "_redo_type", value: "returns,final sale" }]
+```
+
+An explicit property is also accepted, and wins on its own:
 
 ```typescript
 properties: [
@@ -342,8 +350,10 @@ properties: [
 ]
 ```
 
-Without this property, final sale returns are only applied when your Redo
-settings cover every order.
+Any of these marks the order as final-sale covered **and** as returns covered —
+final sale coverage always implies returns coverage. Without one of them, final
+sale is only applied when your Redo settings cover every order or mark all Redo
+purchases as final sale.
 
 </Accordion>
 
