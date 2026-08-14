@@ -310,7 +310,7 @@ must conform to this schema for successful synchronization.
   id: string,                    // Unique ID for this line item
   vendor: "re:do",              // Exactly "re:do"
   sku: "x-redo",                // Exactly "x-redo"
-  priceSet: { /* Redo fee amount */ },
+  priceSet: { /* Full coverage price paid */ },
   tags: ["returns"],            // One or more: "returns", "package protection", "both"
   properties: [
     {
@@ -321,6 +321,10 @@ must conform to this schema for successful synchronization.
   // ... other standard line item fields
 }
 ```
+
+`priceSet` must be the **full** price of the coverage item — the entire amount
+the shopper paid for it, before any splits or deductions. When one line item
+covers more than one type of coverage, send the combined total.
 
 When `_redo_type` is present it takes precedence over `tags`. Send one or the
 other consistently; sending a `_redo_type` that covers less than the tags do
