@@ -6,8 +6,14 @@ icon: "code"
 
 ## Overview
 
-Sync orders into Redo through our dedicated orders endpoint, so your customers
-get returns and package protection.
+This guide helps you integrate your custom e-commerce platform or order
+management system with Redo by syncing orders through our dedicated orders
+endpoint. This integration allows you to programmatically send order data to
+Redo, enabling seamless returns and package protection for your customers.
+
+Synced orders also feed Redo order tracking. Once you send a fulfillment with
+tracking numbers, Redo tracks the shipment and sends tracking notifications
+according to your Redo settings.
 
 ## When to Use This Integration
 
@@ -86,6 +92,9 @@ returns on unfulfilled items, a line with no fulfillment never appears in the
 return portal. Send a fulfillment once the order ships, and include
 `deliveryDate` if your return window should start at delivery rather than at
 order creation.
+
+Include `trackingNumbers` and `trackingUrls` on the fulfillment — those drive
+order tracking and tracking notifications.
 
 Shipping lines do not affect what is returnable.
 
