@@ -86,6 +86,22 @@ The AI will call `delete_return_tag` with the tag's name. This permanently delet
 
 The AI will call `ask_redo` to ask the Redo support AI, which has access to your account's configuration and can describe your specific return flow steps, conditions, and settings.
 
+### Analyze Commerce Agent conversations
+
+**Prompt:**
+
+> Summarize the themes, shopper objections, and unanswered questions in our 20 most recent Commerce Agent conversations.
+
+The AI will call `list_commerce_agent_conversations` for the recent conversations, then call `get_commerce_agent_conversation` for the transcripts it needs to support the analysis.
+
+### Investigate Recover conversations
+
+**Prompt:**
+
+> Show me replied Recover conversations triggered by checkout abandonment and explain what shoppers asked after the outreach.
+
+The AI will call `list_commerce_agent_conversations` with `status='replied'`, `author='recover'`, and `triggerId='checkout_abandoned'`, then inspect matching transcripts with `get_commerce_agent_conversation`.
+
 ### Find a customer
 
 **Prompt:**
@@ -235,4 +251,3 @@ The MCP server accesses your Redo merchant data on your behalf using your authen
 ## Support
 
 For help or to report an issue, email [support@getredo.com](mailto:support@getredo.com).
-
