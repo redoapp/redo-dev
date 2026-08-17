@@ -5743,6 +5743,32 @@ components:
             - '#123'
           title: Name
           type: string
+        protection:
+          description: The Redo coverage the customer bought on this order.
+          properties:
+            covered:
+              description: Whether the order carried any Redo coverage, meaning returns coverage or package protection.
+              title: Covered
+              type: boolean
+            finalSaleCoverage:
+              description: Whether the order carried Redo final-sale returns coverage.
+              title: Final sale coverage
+              type: boolean
+            packageProtection:
+              description: Whether the order carried Redo package protection.
+              title: Package protection
+              type: boolean
+            returnsCoverage:
+              description: Whether the order carried Redo returns coverage.
+              title: Returns coverage
+              type: boolean
+          required:
+            - covered
+            - returnsCoverage
+            - packageProtection
+            - finalSaleCoverage
+          title: Protection
+          type: object
         shippingCost:
           $ref: '#/components/schemas/money.schema'
           description: The total shipping cost for the order. This includes fees and any related discounts that were refunded.
@@ -5762,6 +5788,7 @@ components:
         - name
         - discounts
         - lineItemsTotal
+        - protection
         - shippingCost
         - total
         - taxes
@@ -6424,6 +6451,63 @@ components:
             - id
           title: Order
           type: object
+        protection:
+          description: The Redo coverage behind this return and who it left paying for the label. Coverage is reported independently of who paid, so a covered order can still leave the merchant or the shopper paying for the label.
+          properties:
+            covered:
+              description: Whether any order on the return carried Redo coverage, meaning returns coverage or package protection.
+              title: Covered
+              type: boolean
+            finalSaleCoverage:
+              description: Whether any order on the return carried Redo final-sale returns coverage.
+              title: Final sale coverage
+              type: boolean
+            labelPayer:
+              description: Who pays for the return label. Null before a payer is settled.
+              enum:
+                - customer
+                - merchant
+                - redo
+                - null
+              title: Label payer
+              type:
+                - string
+                - 'null'
+            labelPayerReason:
+              description: Why the label fell to that payer.
+              enum:
+                - REDO_PAYS_ALL_LABELS
+                - REDO_ORDER_HAS_FINAL_SALE_PROTECTION
+                - REDO_ORDER_HAS_RETURNS_COVERAGE
+                - REDO_ORDER_HAS_WARRANTY_COVERAGE
+                - REDO_RECYCLING_SETTING
+                - MERCHANT_DAMAGED_OR_WRONG_PRODUCT
+                - MERCHANT_SAFETY_NET
+                - MERCHANT_RECYCLING_SETTING
+                - SHOPPER_UNCOVERED
+                - SHOPPER_RECYCLING_SETTING
+                - null
+              title: Label payer reason
+              type:
+                - string
+                - 'null'
+            packageProtection:
+              description: Whether any order on the return carried Redo package protection.
+              title: Package protection
+              type: boolean
+            returnsCoverage:
+              description: Whether any order on the return carried Redo returns coverage.
+              title: Returns coverage
+              type: boolean
+          required:
+            - covered
+            - returnsCoverage
+            - packageProtection
+            - finalSaleCoverage
+            - labelPayer
+            - labelPayerReason
+          title: Protection
+          type: object
         shipment:
           $ref: '#/components/schemas/return-shipment.schema'
           description: Shipment, if has been made
@@ -6557,6 +6641,7 @@ components:
         - source
         - id
         - order
+        - protection
         - items
         - status
         - updatedAt
