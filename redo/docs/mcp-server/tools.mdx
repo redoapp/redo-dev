@@ -6,7 +6,7 @@ icon: "screwdriver-wrench"
 
 ## Features
 
-The Redo MCP Server provides tools across orders, returns, discounts, customers, marketing, and analytics.
+The Redo MCP Server provides tools across orders, returns, discounts, customers, Commerce Agent conversations, marketing, and analytics.
 
 Permission names match those shown in Redo. When a tool lists multiple permissions, having any one of them grants access. An em dash means the tool does not require an additional role permission.
 
@@ -23,6 +23,13 @@ Permission names match those shown in Redo. When a tool lists multiple permissio
 |---|---|---|
 | **list_customers** | Search and list customer records by name, email, phone, or segment membership. Supports pagination. Use to find customer IDs before calling get_customer. | View Customer Details |
 | **get_customer** | Get detailed customer information including contact methods, marketing consent, linked accounts, tags, segment memberships, addresses, custom fields, and loyalty details. | View Customer Details |
+
+### Commerce Agent
+
+| Tool | Description | Required permission |
+|---|---|---|
+| **list_commerce_agent_conversations** | List conversations shown in Commerce Agent > Conversations. Filter by reply status, author (Commerce Agent, Recover, SMS automation, or Campaign), trigger, generation mode, campaign, or automation. These are shopper-agent conversations, not all support tickets. | View Support |
+| **get_commerce_agent_conversation** | Get one conversation's transcript and recorded outbound-message provenance using a topic ID returned by list_commerce_agent_conversations. | View Support |
 
 ### Returns
 
