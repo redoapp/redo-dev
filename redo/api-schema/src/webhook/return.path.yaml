@@ -148,6 +148,13 @@ post:
                 source: merchant
             notes:
               - message: Reviewed by support — approved for exchange
+            protection:
+              covered: true
+              returnsCoverage: true
+              packageProtection: false
+              finalSaleCoverage: false
+              labelPayer: redo
+              labelPayerReason: REDO_ORDER_HAS_RETURNS_COVERAGE
           order:
             id: 64e4da943dd822979a70bd12
             externalId: "1073459971"
@@ -176,6 +183,11 @@ post:
             shippingCost: { amount: "5.99", currency: USD }
             taxes: { amount: "2.40", currency: USD }
             total: { amount: "38.38", currency: USD }
+            protection:
+              covered: true
+              returnsCoverage: true
+              packageProtection: false
+              finalSaleCoverage: false
         schema:
           description: Return event
           properties:
