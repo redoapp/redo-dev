@@ -117,6 +117,22 @@ metafields are stored on the order for reference.
 Send values as strings. Metafields are replaced on every re-sync, so send the
 full set each time.
 
+### Cancellations
+
+To mark an order cancelled, re-sync it with `cancelledAt` set:
+
+```typescript
+cancelledAt: "2026-02-01T00:00:00Z",
+cancelReason: "customer"  // customer, fraud, inventory, declined, other, staff
+```
+
+Redo records the order with a `voided` financial status and stops producing
+order tracking updates for it. Clearing `cancelledAt` on a later sync reinstates
+the order.
+
+Cancelling does not by itself close the return window. To stop items being
+returned, send `returnableQuantity: 0` on every line item.
+
 ## Coverage
 
 ### The Redo coverage line item

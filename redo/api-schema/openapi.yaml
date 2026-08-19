@@ -4679,6 +4679,26 @@ components:
             $ref: '#/components/schemas/custom-order-metafield.schema'
           title: Metafields
           type: array
+        cancelledAt:
+          description: Timestamp the order was cancelled in your system. Omit or send null for live orders. A cancelled order is recorded with a `voided` financial status and stops producing order tracking updates.
+          title: Cancelled At
+          type:
+            - string
+            - 'null'
+        cancelReason:
+          description: Why the order was cancelled.
+          enum:
+            - customer
+            - fraud
+            - inventory
+            - declined
+            - other
+            - staff
+            - null
+          title: Cancel Reason
+          type:
+            - string
+            - 'null'
         updatedAt:
           description: Last update timestamp
           title: Updated At
