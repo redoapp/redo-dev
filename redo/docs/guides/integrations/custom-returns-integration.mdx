@@ -123,12 +123,29 @@ To mark an order cancelled, re-sync it with `cancelledAt` set:
 
 ```typescript
 cancelledAt: "2026-02-01T00:00:00Z",
-cancelReason: "customer"  // customer, fraud, inventory, declined, other, staff
+cancelReason: "customer"
 ```
 
 Redo records the order with a `voided` financial status and stops producing
 order tracking updates for it. Clearing `cancelledAt` on a later sync reinstates
 the order.
+
+`cancelledAt` is what marks the order cancelled. `cancelReason` is optional and
+records why:
+
+| Reason | Use when |
+| --- | --- |
+| `customer` | The shopper asked to cancel the order. |
+| `fraud` | You cancelled the order because you judged it fraudulent. |
+| `inventory` | You could not supply the items, so you cancelled the order. |
+| `declined` | Payment was declined, so the order was never completed. |
+| `staff` | Someone on your team cancelled it, including to correct an order-entry mistake. |
+| `other` | Any reason the values above do not describe. |
+
+Redo stores the reason as a record of the cancellation and does not behave
+differently based on which one you send, so pick the closest match and use
+`other` when nothing fits. Sending a value outside this list is rejected with a
+`400`.
 
 Cancelling does not by itself close the return window. To stop items being
 returned, send `returnableQuantity: 0` on every line item.

@@ -1,0 +1,26 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  Why the order was cancelled. Sent alongside `cancelledAt`, and stored as a
+  record of the cancellation — Redo does not behave differently based on which
+  reason you send.
+
+  * customer: The shopper asked to cancel the order.
+  * fraud: The order was cancelled because it was judged fraudulent.
+  * inventory: The items could not be supplied, so the order was cancelled.
+  * declined: The payment was declined, so the order was never completed.
+  * staff: Someone on your team cancelled the order, including cancelling to
+    correct an order-entry mistake.
+  * other: Any reason the values above do not describe.
+
+  Omit the field or send null to record the cancellation without a reason.
+enum:
+  - customer
+  - fraud
+  - inventory
+  - declined
+  - other
+  - staff
+  - null
+example: customer
+title: Custom Order Cancel Reason
+type: [string, "null"]

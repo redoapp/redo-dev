@@ -95,10 +95,9 @@ properties:
     title: Cancelled At
     type: [string, "null"]
   cancelReason:
-    description: Why the order was cancelled.
-    enum: [customer, fraud, inventory, declined, other, staff, null]
+    $ref: ./custom-order-cancel-reason.schema.yaml
+    description: Why the order was cancelled. Optional, even when cancelled.
     title: Cancel Reason
-    type: [string, "null"]
   updatedAt:
     description: Last update timestamp
     title: Updated At
