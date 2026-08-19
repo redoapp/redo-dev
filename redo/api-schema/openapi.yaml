@@ -4141,6 +4141,27 @@ components:
         - value
       title: Line Item Property
       type: object
+    custom-order-metafield.schema:
+      description: Namespaced key-value pair carried through to Redo
+      properties:
+        namespace:
+          description: Metafield namespace
+          title: Namespace
+          type: string
+        key:
+          description: Metafield key
+          title: Key
+          type: string
+        value:
+          description: Metafield value, sent as a string
+          title: Value
+          type: string
+      required:
+        - namespace
+        - key
+        - value
+      title: Custom Order Metafield
+      type: object
     custom-order-line-item-image.schema:
       description: Image associated with a line item
       properties:
@@ -4280,6 +4301,12 @@ components:
           items:
             type: string
           title: Tags
+          type: array
+        metafields:
+          description: Namespaced key-value pairs for this line item. Redo stores them on the order line and reads them for return flow conditions, withdrawal exclusions, and coverage exclusion rules, which reference a metafield as `namespace.key`.
+          items:
+            $ref: '#/components/schemas/custom-order-metafield.schema'
+          title: Metafields
           type: array
         weight:
           description: Item weight. `value` is stored as grams, so send the weight in grams.
@@ -4645,6 +4672,12 @@ components:
           items:
             type: string
           title: Tags
+          type: array
+        metafields:
+          description: Namespaced key-value pairs for the order as a whole.
+          items:
+            $ref: '#/components/schemas/custom-order-metafield.schema'
+          title: Metafields
           type: array
         updatedAt:
           description: Last update timestamp

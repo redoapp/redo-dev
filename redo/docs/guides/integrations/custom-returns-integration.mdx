@@ -98,6 +98,25 @@ order tracking and tracking notifications.
 
 Shipping lines do not affect what is returnable.
 
+### Metafields
+
+Both the order and each line item accept an optional `metafields` array of
+namespaced key-value pairs:
+
+```typescript
+metafields: [
+  { namespace: "custom", key: "exclude_coverage", value: "true" }
+]
+```
+
+Line item metafields are stored on the Redo order line and are read wherever
+Redo evaluates a metafield, which it addresses as `namespace.key` — return flow
+conditions, withdrawal exclusions, and coverage exclusion rules. Order-level
+metafields are stored on the order for reference.
+
+Send values as strings. Metafields are replaced on every re-sync, so send the
+full set each time.
+
 ## Coverage
 
 ### The Redo coverage line item

@@ -81,6 +81,12 @@ properties:
       type: string
     title: Tags
     type: array
+  metafields:
+    description: Namespaced key-value pairs for the order as a whole.
+    items:
+      $ref: ./custom-order-metafield.schema.yaml
+    title: Metafields
+    type: array
   updatedAt:
     description: Last update timestamp
     title: Updated At
