@@ -4141,6 +4141,27 @@ components:
         - value
       title: Line Item Property
       type: object
+    custom-order-metafield.schema:
+      description: Namespaced key-value pair carried through to Redo
+      properties:
+        namespace:
+          description: Metafield namespace
+          title: Namespace
+          type: string
+        key:
+          description: Metafield key
+          title: Key
+          type: string
+        value:
+          description: Metafield value, sent as a string
+          title: Value
+          type: string
+      required:
+        - namespace
+        - key
+        - value
+      title: Custom Order Metafield
+      type: object
     custom-order-line-item-image.schema:
       description: Image associated with a line item
       properties:
@@ -4280,6 +4301,12 @@ components:
           items:
             type: string
           title: Tags
+          type: array
+        metafields:
+          description: Namespaced key-value pairs for this line item. Redo stores them on the order line and reads them for return flow conditions, withdrawal exclusions, and coverage exclusion rules, which reference a metafield as `namespace.key`.
+          items:
+            $ref: '#/components/schemas/custom-order-metafield.schema'
+          title: Metafields
           type: array
         weight:
           description: Item weight. `value` is stored as grams, so send the weight in grams.
@@ -4510,6 +4537,34 @@ components:
         - countryCode
       title: Custom Order Address
       type: object
+    custom-order-cancel-reason.schema:
+      description: |
+        Why the order was cancelled. Sent alongside `cancelledAt`, and stored as a
+        record of the cancellation — Redo does not behave differently based on which
+        reason you send.
+
+        * customer: The shopper asked to cancel the order.
+        * fraud: The order was cancelled because it was judged fraudulent.
+        * inventory: The items could not be supplied, so the order was cancelled.
+        * declined: The payment was declined, so the order was never completed.
+        * staff: Someone on your team cancelled the order, including cancelling to
+          correct an order-entry mistake.
+        * other: Any reason the values above do not describe.
+
+        Omit the field or send null to record the cancellation without a reason.
+      enum:
+        - customer
+        - fraud
+        - inventory
+        - declined
+        - other
+        - staff
+        - null
+      example: customer
+      title: Custom Order Cancel Reason
+      type:
+        - string
+        - 'null'
     custom-order-transaction.schema:
       additionalProperties: true
       description: |
@@ -4646,6 +4701,22 @@ components:
             type: string
           title: Tags
           type: array
+        metafields:
+          description: Namespaced key-value pairs for the order as a whole.
+          items:
+            $ref: '#/components/schemas/custom-order-metafield.schema'
+          title: Metafields
+          type: array
+        cancelledAt:
+          description: Timestamp the order was cancelled in your system. Omit or send null for live orders. A cancelled order is recorded with a `voided` financial status and stops producing order tracking updates.
+          title: Cancelled At
+          type:
+            - string
+            - 'null'
+        cancelReason:
+          $ref: '#/components/schemas/custom-order-cancel-reason.schema'
+          description: Why the order was cancelled. Optional, even when cancelled.
+          title: Cancel Reason
         updatedAt:
           description: Last update timestamp
           title: Updated At

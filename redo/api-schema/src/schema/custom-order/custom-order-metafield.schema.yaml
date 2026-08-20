@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Namespaced key-value pair carried through to Redo
+properties:
+  namespace:
+    description: Metafield namespace
+    title: Namespace
+    type: string
+  key:
+    description: Metafield key
+    title: Key
+    type: string
+  value:
+    description: Metafield value, sent as a string
+    title: Value
+    type: string
+required: [namespace, key, value]
+title: Custom Order Metafield
+type: object

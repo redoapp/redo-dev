@@ -98,6 +98,58 @@ order tracking and tracking notifications.
 
 Shipping lines do not affect what is returnable.
 
+### Metafields
+
+Both the order and each line item accept an optional `metafields` array of
+namespaced key-value pairs:
+
+```typescript
+metafields: [
+  { namespace: "custom", key: "exclude_coverage", value: "true" }
+]
+```
+
+Line item metafields are stored on the Redo order line and are read wherever
+Redo evaluates a metafield, which it addresses as `namespace.key` — return flow
+conditions, withdrawal exclusions, and coverage exclusion rules. Order-level
+metafields are stored on the order for reference.
+
+Send values as strings. Metafields are replaced on every re-sync, so send the
+full set each time.
+
+### Cancellations
+
+To mark an order cancelled, re-sync it with `cancelledAt` set:
+
+```typescript
+cancelledAt: "2026-02-01T00:00:00Z",
+cancelReason: "customer"
+```
+
+Redo records the order with a `voided` financial status and stops producing
+order tracking updates for it. Clearing `cancelledAt` on a later sync reinstates
+the order.
+
+`cancelledAt` is what marks the order cancelled. `cancelReason` is optional and
+records why:
+
+| Reason | Use when |
+| --- | --- |
+| `customer` | The shopper asked to cancel the order. |
+| `fraud` | You cancelled the order because you judged it fraudulent. |
+| `inventory` | You could not supply the items, so you cancelled the order. |
+| `declined` | Payment was declined, so the order was never completed. |
+| `staff` | Someone on your team cancelled it, including to correct an order-entry mistake. |
+| `other` | Any reason the values above do not describe. |
+
+Redo stores the reason as a record of the cancellation and does not behave
+differently based on which one you send, so pick the closest match and use
+`other` when nothing fits. Sending a value outside this list is rejected with a
+`400`.
+
+Cancelling does not by itself close the return window. To stop items being
+returned, send `returnableQuantity: 0` on every line item.
+
 ## Coverage
 
 ### The Redo coverage line item

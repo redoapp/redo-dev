@@ -63,6 +63,16 @@ properties:
       type: string
     title: Tags
     type: array
+  metafields:
+    description:
+      Namespaced key-value pairs for this line item. Redo stores them on the
+      order line and reads them for return flow conditions, withdrawal
+      exclusions, and coverage exclusion rules, which reference a metafield as
+      `namespace.key`.
+    items:
+      $ref: ./custom-order-metafield.schema.yaml
+    title: Metafields
+    type: array
   weight:
     description:
       Item weight. `value` is stored as grams, so send the weight in grams.
