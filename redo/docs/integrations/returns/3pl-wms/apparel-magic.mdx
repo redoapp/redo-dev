@@ -19,6 +19,20 @@ Products are mapped using SKUs, and returns are linked to the original ApparelMa
 
 **Important Note:** The ApparelMagic integration currently supports returns that reference a single order. Returns spanning multiple orders are not supported at this time.
 
+### Credit Memos and Restocking
+
+The integration can optionally create credit memos in ApparelMagic. These settings are found under **Credit Memo Settings** in the integration's configuration form:
+
+<AccordionGroup>
+<Accordion title="Credit Memo (optional, off by default)" icon="file-invoice-dollar">
+When **Enable credit memo creation** is on, Redo converts the RA into an ApparelMagic credit memo when the return reaches the selected **Trigger Status** (Complete, Delivered, or In Transit). The credit memo is created from the RA, so it reflects the invoice value of the returned items. The credit memo ID is recorded on the return timeline when it is created.
+</Accordion>
+
+<Accordion title="Restocking (optional, off by default)" icon="box-open">
+When **Update inventory restock status** is on, Redo flags each credit memo item as restocked or damaged based on its disposition in Redo, and ApparelMagic restocks the non-damaged items. This applies to all return types, including exchanges and store credit returns.
+</Accordion>
+</AccordionGroup>
+
 ## How to Set It Up
 
 Follow these steps to configure the ApparelMagic integration with Redo.
