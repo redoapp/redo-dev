@@ -1,55 +1,247 @@
 ---
 title: "Gorgias"
-description: "View Redo return data directly within Gorgias support tickets"
+description: "Hand off Redo conversations to your Gorgias support team and view Redo return data inside Gorgias tickets"
 ---
 
 import IntegrationSupport from '/snippets/integration-support.mdx';
 
 ## What is Gorgias?
 
-Gorgias is a customer support helpdesk built for e-commerce. The Redo
-integration adds a sidebar widget to Gorgias that displays return information
-for the customer associated with a support ticket, with direct links back to
-Redo for quick processing.
+Gorgias is a customer support helpdesk built for e-commerce. Connecting Gorgias
+to Redo does two things: it lets Redo hand conversations off to your human
+support team as real Gorgias tickets, and it surfaces the customer's Redo return
+history inside the Gorgias ticket your agents are already looking at.
+
+One connection powers every capability below. You connect Gorgias once, and each
+Redo product that can use it starts using it.
 
 ## What Does the Integration Do?
 
-When a support ticket is created or updated in Gorgias, Redo automatically loads
-the customer's return history from the previous 2 months. The return data is
-displayed alongside the ticket with hyperlinks that take the agent directly to
-the relevant order in Redo.
+| Capability | What it does | Redo product |
+| ---------- | ------------ | ------------ |
+| **Support escalation** | When a conversation needs a human, Redo creates a Gorgias ticket seeded with the conversation transcript. | Support / Commerce Agent |
+| **Resolution sync** | When your agent resolves that ticket in Gorgias, Redo closes its side of the conversation automatically. | Support / Commerce Agent |
+| **Return sidebar** | Shows the customer's recent Redo returns inside the Gorgias ticket, with links straight to the return in Redo. | Returns |
+| **Outreach suppression** | Recover pauses marketing outreach to a customer while they have an open Gorgias ticket, so you never text someone mid-support-issue. | Recover |
+| **Dispute evidence** | Pulls support ticket history into chargeback evidence, showing you tried to resolve the issue. | Reclaim |
+
+## Before You Start
+
+<Note>
+  Gorgias escalation is enabled per store by Redo. Ask your Redo account manager
+  or email **support@getredo.com** to turn it on before you begin — the setup
+  card won't appear in Redo until it's enabled.
+</Note>
+
+You'll need:
+
+- **A Gorgias admin.** Authorizing the connection requires an admin on the
+  Gorgias account.
+- **A free Gorgias integration slot.** Gorgias plans cap how many integrations
+  an account can have. If you're at the cap, Redo can't register the webhook
+  that syncs resolutions back — remove an unused Gorgias integration first.
+- **Your Gorgias subdomain.** The `your-store` part of
+  `your-store.gorgias.com`.
+- **Your Gorgias SMS number** (only if you escalate SMS conversations). This is
+  the number your agents reply from, found in Gorgias under **Settings →
+  Channels → Phone numbers**.
+- **The support settings permission in Redo.** Connecting is gated on it.
 
 ## How to Set It Up
 
-Merchants can set up this integration themselves from Gorgias.
-
 <Steps>
-<Step title="Find Redo in the Gorgias App Store">
-  In Gorgias, find **Redo** in the app store and click **Connect**. You'll be
-  taken to a login screen on Redo's site.
+<Step title="Open the Gorgias integration in Redo">
+  In Redo, go to **Settings → Integrations** and find **Gorgias**. You'll see a
+  row for each product that uses the connection. Click **Connect** on the
+  **Support** row.
 </Step>
 
-<Step title="Log In to Redo">
-  Select your store and log in. You'll be directed to a Redo x Gorgias
-  connection page.
+<Step title="Enter your Gorgias subdomain">
+  Type your subdomain — just `your-store`, not the full URL — and click
+  **Connect with Gorgias**. You'll be sent to Gorgias to authorize Redo.
 </Step>
 
-<Step title="Authorize the Connection">
-  Click **Continue**. This redirects you back to Gorgias to finalize the
-  authorization.
+<Step title="Authorize Redo in Gorgias">
+  Review the permissions and approve. Redo needs permission to read and create
+  customers and tickets — that's what lets it open an escalation ticket on the
+  customer's behalf. Gorgias returns you to Redo when you're done.
 </Step>
 
-<Step title="Complete Setup">
-  After authorizing, you'll be redirected to Redo. Redo will automatically set
-  up the integration in your Gorgias store.
+<Step title="Add your SMS reply number">
+  Redo asks for the Gorgias-owned number your agents reply from. Paste it in
+  (`+15551234567` format) and click **Finish**.
+
+  You can skip this and add it later from the same screen, but SMS escalations
+  need it to thread correctly.
+</Step>
+
+<Step title="Optional — let Gorgias take action in Redo">
+  This is a separate, reverse-direction setup. If you want Gorgias's own AI
+  Agent to look up orders or update addresses in Redo, create a Redo API token
+  under **Settings → Developer** and paste it into Gorgias as a Bearer token
+  where the Redo app asks for credentials.
+
+  Escalation and the return sidebar both work without this.
 </Step>
 </Steps>
 
-Once connected, return data will automatically load into your tickets whenever a
-ticket is created or updated.
+<Info>
+  **If "Connect with Gorgias" doesn't grant enough permission**, use the
+  **Connect with a REST API key instead** link on the same screen. A Gorgias
+  admin creates the key under **Settings → REST API** in Gorgias; the agent
+  email is that admin's login. This path carries the admin's full permissions
+  and is a good fallback for accounts where the app's scopes aren't approved.
+</Info>
+
+## What Escalation Looks Like
+
+### When a conversation escalates
+
+A Redo conversation becomes a Gorgias ticket in two situations:
+
+- **The AI agent hands off.** It does this when a customer asks for a person,
+  when it's blocked from completing an action, when the customer is frustrated,
+  or whenever it tells the customer a human will follow up.
+- **A human hands off manually** from the Redo support inbox.
+
+Escalation happens in real time, at the moment of handoff. It is not a batch or
+a nightly export.
+
+### What the customer sees
+
+The customer gets the agent's own message telling them a person will take over —
+something like *"I'm passing this along to our team, someone will be in touch."*
+The exact wording is generated per conversation, so it varies naturally.
+
+On the chat widget, the message is fixed and follows your handoff setting: the
+"Talk with a live agent" button during business hours, an email capture form
+outside them, or your own custom contact instructions if you've set those.
+
+There is no separate "a ticket has been created" notification. From the
+customer's side it reads as a handoff, not a form submission.
+
+### What lands in Gorgias
+
+A new ticket, **open** and ready to work, containing:
+
+- **The conversation transcript**, seeded as real messages with the correct
+  customer/agent attribution and the original timestamps — so an agent can read
+  the exchange in order rather than as one pasted blob. The most recent 20
+  messages are included.
+- **Subject:** `Escalated from Redo`
+- **Tag:** `Redo Escalation`
+- **The matched Gorgias customer**, resolved by phone or email. Because the
+  ticket is attached to the real customer record, your usual Gorgias sidebar —
+  Shopify order history and all — is right there.
+
+Escalations from SMS and iMessage conversations create an SMS ticket;
+escalations from email and from the chat widget create an email ticket.
+
+### Replying to the customer
+
+Your agent replies in Gorgias, exactly as they would on any other ticket, and it
+goes out from your Gorgias number or email.
+
+<Warning>
+  An escalated SMS conversation does not continue in the customer's original
+  text thread. Redo's messages come from the Redo number and your agent's
+  replies come from your Gorgias number, so on the customer's phone that's a
+  second thread. Same conversation, two lanes. The customer's replies to the
+  original thread stay in Redo, where a human on your team can still answer
+  them.
+</Warning>
+
+### When your agent resolves the ticket
+
+Closing the ticket in Gorgias closes the loop in Redo automatically:
+
+- Redo imports the Gorgias-side replies onto the original conversation, so the
+  full history lives in one place.
+- Redo closes its own version of the ticket.
+- Recover outreach to that customer resumes.
+
+## Finding Your Escalated Tickets in Gorgias
+
+Every escalated ticket carries the **`Redo Escalation`** tag. That tag is the
+hook to build on — it's a supported condition in Gorgias views and rules, which
+the ticket subject is not.
+
+<Steps>
+<Step title="Create a view">
+  In Gorgias, go to **Views → Add view**, and set the filter to **Tag** **is**
+  **Redo Escalation**. Name it something like *Redo escalations* and save. Every
+  handoff from Redo now lands in one place.
+</Step>
+
+<Step title="Route them automatically (optional)">
+  In **Settings → Rules**, create a rule triggered on ticket creation with the
+  same tag condition, and assign to whichever agent or team should own
+  escalations.
+</Step>
+</Steps>
+
+You can also just search `Escalated from Redo` in Gorgias to spot-check that
+tickets are arriving.
+
+## The Return Sidebar
+
+Separately from escalation, the integration adds a sidebar widget to Gorgias
+showing return information for the customer on the ticket.
+
+When a ticket is created or updated, Redo loads that customer's returns from the
+**last 60 days** and displays them alongside the ticket, with links that take
+the agent directly to the return in Redo. If the customer has no recent returns,
+the widget says so — a blank sidebar means something is wrong, not that the
+customer has no returns.
+
+The widget matches on the ticket's customer email.
 
 ## How Long Does It Take?
 
-Setup takes approximately **5 minutes**.
+About **5 minutes**, once Redo has enabled Gorgias escalation for the store.
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="I don't see the Gorgias card in Redo settings">
+  Gorgias escalation is enabled per store. Ask your Redo account manager or
+  email support@getredo.com to enable it. Also confirm your Redo user has the
+  support settings permission.
+</Accordion>
+
+<Accordion title='Redo shows a "resolution sync is not active" warning'>
+  Redo connected, but couldn't register the webhook that tells it when a ticket
+  is resolved — usually because the Gorgias account is at its integration limit.
+  Remove an unused integration in Gorgias, then reconnect from Redo.
+
+  Until this is fixed, escalations still create tickets, but resolving them in
+  Gorgias won't close the Redo conversation or resume Recover outreach.
+</Accordion>
+
+<Accordion title='Redo shows "Gorgias connection needs attention"'>
+  Gorgias is rejecting Redo's credentials, so escalations and ticket sync have
+  stopped. This usually follows a password or permission change on the Gorgias
+  side. Disconnect and reconnect from the same screen.
+</Accordion>
+
+<Accordion title="Conversations aren't escalating">
+  Check, in order: the connection is active in Redo; the connection was made
+  through the Support row (a Gorgias connection made only for Reclaim disputes
+  carries read permissions and can't create tickets); and, for SMS, that the SMS
+  reply number is saved.
+</Accordion>
+
+<Accordion title="The return sidebar is blank">
+  A blank sidebar — as opposed to one saying there are no recent returns — means
+  the widget isn't loading. Reconnect from Redo, which re-installs the widget in
+  Gorgias. Note that the sidebar only covers the last 60 days of returns.
+</Accordion>
+
+<Accordion title="I connected, but Gorgias still asks for credentials">
+  That prompt belongs to the optional reverse-direction setup — Gorgias's AI
+  Agent taking action inside Redo. It needs a Redo API token from **Settings →
+  Developer**. Escalation and the return sidebar are already working without it.
+</Accordion>
+</AccordionGroup>
 
 <IntegrationSupport integrationProvider="Gorgias" />
