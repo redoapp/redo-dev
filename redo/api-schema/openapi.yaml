@@ -59,6 +59,123 @@ tags:
   - name: Webhooks
 paths:
   /stores/{storeId}/bundles:
+    get:
+      description: |
+        List the bundles stored for a store, with each product looked up in your
+        catalog so you get SKUs and names rather than bare identifiers.
+
+        ## Finding one bundle
+
+        Pass `parent_sku` to return just that bundle. The SKU is resolved against
+        your catalog and matched on the underlying product, so a bundle created in
+        the Redo UI — which stores a product title rather than a SKU — is still
+        found. The response includes `sku_resolved`, which distinguishes *no product
+        has that SKU* from *that product has no bundle*. A filtered request returns
+        every match and is never paged.
+
+        ## Products that no longer exist
+
+        Bundles reference products, and a product can be deleted after a bundle is
+        built. Each entry carries `resolved`; when it is `false` the product is gone,
+        and `sku` and `name` are `null`. This is how you find bundles that have
+        quietly stopped working.
+
+        A `null` `sku` on a resolved product is different — the product exists but
+        has no SKU set, which means that bundle cannot be updated through this API
+        and can only be managed from the Bundles page in Redo.
+
+        ## Paging
+
+        Send `X-Page-Size` (default 50, maximum 250) and `X-Page-Continue`. The
+        response body carries `page_continue` when more bundles remain; send it back
+        as `X-Page-Continue` to fetch the next page. It is absent on the last page.
+
+        Requires the [`returns_read`](/docs/api-reference/scopes) scope.
+      operationId: Bundles list
+      parameters:
+        - $ref: '#/components/parameters/bundle-page-continue.param'
+        - $ref: '#/components/parameters/bundle-page-size.param'
+        - $ref: '#/components/parameters/bundle-parent-sku.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bundle-list-response.schema'
+              examples:
+                page:
+                  summary: A page of bundles
+                  value:
+                    bundles:
+                      - parent:
+                          variant_id: '55518673568035'
+                          sku: BUNDLE-STARTER-KIT
+                          name: Starter Kit
+                          resolved: true
+                        children:
+                          - variant_id: '55518673404195'
+                            sku: SOCKS-BLK-L
+                            name: Socks - Black / L
+                            returnable: true
+                            resolved: true
+                          - variant_id: '55518673600803'
+                            sku: TSHIRT-BLK-M
+                            name: T-Shirt - Black / M
+                            returnable: true
+                            resolved: true
+                        return_types:
+                          - return
+                          - warranty
+                    page_continue: '50'
+                dangling_reference:
+                  summary: A bundle pointing at a deleted product
+                  value:
+                    bundles:
+                      - parent:
+                          variant_id: '55518673568035'
+                          sku: BUNDLE-STARTER-KIT
+                          name: Starter Kit
+                          resolved: true
+                        children:
+                          - variant_id: '55518673404195'
+                            sku: SOCKS-BLK-L
+                            name: Socks - Black / L
+                            returnable: true
+                            resolved: true
+                          - variant_id: '40668437479506'
+                            sku: null
+                            name: null
+                            returnable: true
+                            resolved: false
+                        return_types:
+                          - claim
+                          - return
+                          - warranty
+                          - recycle
+                          - withdrawal
+                sku_not_found:
+                  summary: parent_sku matched no product in the catalog
+                  value:
+                    bundles: []
+                    sku_resolved: false
+          description: Success
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid paging headers
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: List bundles
+      tags:
+        - Bundles
     put:
       description: |
         Add or replace bundles, identified by parent SKU.
@@ -2707,6 +2824,29 @@ components:
       scheme: bearer
       type: http
   parameters:
+    bundle-page-continue.param:
+      description: Page marker, from the page_continue field of the previous response
+      example: '50'
+      in: header
+      name: X-Page-Continue
+      schema:
+        type: string
+    bundle-page-size.param:
+      description: Page size, defaults to 50
+      example: 50
+      in: header
+      name: X-Page-Size
+      schema:
+        maximum: 250
+        minimum: 1
+        type: integer
+    bundle-parent-sku.param:
+      description: Return only the bundle whose parent product has this SKU. The SKU is looked up in your catalog, so a bundle created in Redo with a different name is still found.
+      example: BUNDLE-STARTER-KIT
+      in: query
+      name: parent_sku
+      schema:
+        type: string
     store-id.param:
       description: Store ID
       in: path
@@ -2913,6 +3053,124 @@ components:
         example: 64e5a865a58eefeed7f05ea6
         type: string
   schemas:
+    error.schema:
+      description: Problem details. See [RFC 7807 Section 3](https://datatracker.ietf.org/doc/html/rfc7807#section-3).
+      properties:
+        detail:
+          description: Human-readable description of the problem.
+          title: Detail
+          type: string
+        instance:
+          description: A URI reference that identifies this problem.
+          format: uri-reference
+          type: string
+        title:
+          description: Human-readable summary of the problem type.
+          title: Title
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference that identifies the problem type.
+          format: uri-reference
+          type: string
+      title: Problem details
+      type: object
+    bundle-variant.schema:
+      description: A product referenced by a bundle, looked up in your catalog when the bundle is read.
+      properties:
+        variant_id:
+          description: Identifier of the product variant the bundle points at.
+          example: '55518673568035'
+          title: Variant ID
+          type: string
+        sku:
+          description: The variant's SKU, or `null` when it has none or no longer exists. A bundle whose parent has no SKU cannot be updated through this API.
+          example: BUNDLE-STARTER-KIT
+          title: SKU
+          type:
+            - string
+            - 'null'
+        name:
+          description: Product name, with the variant appended when the product has more than one. `null` when the variant no longer exists.
+          example: Starter Kit - Large
+          title: Name
+          type:
+            - string
+            - 'null'
+        resolved:
+          description: Whether the variant was found in your catalog. `false` means the bundle points at a product that has since been deleted, and `sku` and `name` will be `null`.
+          title: Resolved
+          type: boolean
+      required:
+        - variant_id
+        - sku
+        - name
+        - resolved
+      title: Bundle Variant
+      type: object
+    bundle-list-item.schema:
+      description: A stored bundle, with its products resolved against your catalog.
+      properties:
+        parent:
+          allOf:
+            - $ref: '#/components/schemas/bundle-variant.schema'
+          description: The product shoppers buy, which identifies the bundle.
+          title: Parent
+        children:
+          description: The products the bundle contains.
+          items:
+            allOf:
+              - $ref: '#/components/schemas/bundle-variant.schema'
+            properties:
+              returnable:
+                description: Whether this product may be returned on its own.
+                title: Returnable
+                type: boolean
+            required:
+              - returnable
+            type: object
+          title: Children
+          type: array
+        return_types:
+          description: Return types the bundle applies to.
+          items:
+            enum:
+              - claim
+              - return
+              - warranty
+              - recycle
+              - withdrawal
+            type: string
+          title: Return Types
+          type: array
+      required:
+        - parent
+        - children
+        - return_types
+      title: Bundle List Item
+      type: object
+    bundle-list-response.schema:
+      description: A page of stored bundles.
+      properties:
+        bundles:
+          description: The bundles on this page.
+          items:
+            $ref: '#/components/schemas/bundle-list-item.schema'
+          title: Bundles
+          type: array
+        page_continue:
+          description: Send as `X-Page-Continue` to fetch the next page. Absent on the last page, and absent entirely when filtering by `parent_sku`.
+          example: '50'
+          title: Page Continue
+          type: string
+        sku_resolved:
+          description: Present only when `parent_sku` was supplied. `false` means no product in your catalog has that SKU, which is different from the SKU existing but having no bundle.
+          title: SKU Resolved
+          type: boolean
+      required:
+        - bundles
+      title: Bundle List Response
+      type: object
     bundle.schema:
       description: A bundle definition, identified by the SKU of the product that represents the bundle itself.
       properties:
@@ -2968,28 +3226,6 @@ components:
       minItems: 1
       title: Bundle Upsert Request
       type: array
-    error.schema:
-      description: Problem details. See [RFC 7807 Section 3](https://datatracker.ietf.org/doc/html/rfc7807#section-3).
-      properties:
-        detail:
-          description: Human-readable description of the problem.
-          title: Detail
-          type: string
-        instance:
-          description: A URI reference that identifies this problem.
-          format: uri-reference
-          type: string
-        title:
-          description: Human-readable summary of the problem type.
-          title: Title
-          type: string
-        type:
-          default: about:blank
-          description: A URI reference that identifies the problem type.
-          format: uri-reference
-          type: string
-      title: Problem details
-      type: object
     bundle-upsert-response.schema:
       description: Outcome of a bundle upsert, reported for each bundle in the request.
       properties:

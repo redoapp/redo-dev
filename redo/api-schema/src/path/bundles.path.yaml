@@ -1,3 +1,113 @@
+get:
+  description: |
+    List the bundles stored for a store, with each product looked up in your
+    catalog so you get SKUs and names rather than bare identifiers.
+
+    ## Finding one bundle
+
+    Pass `parent_sku` to return just that bundle. The SKU is resolved against
+    your catalog and matched on the underlying product, so a bundle created in
+    the Redo UI — which stores a product title rather than a SKU — is still
+    found. The response includes `sku_resolved`, which distinguishes *no product
+    has that SKU* from *that product has no bundle*. A filtered request returns
+    every match and is never paged.
+
+    ## Products that no longer exist
+
+    Bundles reference products, and a product can be deleted after a bundle is
+    built. Each entry carries `resolved`; when it is `false` the product is gone,
+    and `sku` and `name` are `null`. This is how you find bundles that have
+    quietly stopped working.
+
+    A `null` `sku` on a resolved product is different — the product exists but
+    has no SKU set, which means that bundle cannot be updated through this API
+    and can only be managed from the Bundles page in Redo.
+
+    ## Paging
+
+    Send `X-Page-Size` (default 50, maximum 250) and `X-Page-Continue`. The
+    response body carries `page_continue` when more bundles remain; send it back
+    as `X-Page-Continue` to fetch the next page. It is absent on the last page.
+
+    Requires the [`returns_read`](/docs/api-reference/scopes) scope.
+  operationId: Bundles list
+  parameters:
+    - { $ref: "../param/bundle-page-continue.param.yaml" }
+    - { $ref: "../param/bundle-page-size.param.yaml" }
+    - { $ref: "../param/bundle-parent-sku.param.yaml" }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/bundle-list-response.schema.yaml"
+          examples:
+            page:
+              summary: A page of bundles
+              value:
+                bundles:
+                  - parent:
+                      variant_id: "55518673568035"
+                      sku: BUNDLE-STARTER-KIT
+                      name: Starter Kit
+                      resolved: true
+                    children:
+                      - variant_id: "55518673404195"
+                        sku: SOCKS-BLK-L
+                        name: Socks - Black / L
+                        returnable: true
+                        resolved: true
+                      - variant_id: "55518673600803"
+                        sku: TSHIRT-BLK-M
+                        name: T-Shirt - Black / M
+                        returnable: true
+                        resolved: true
+                    return_types: [return, warranty]
+                page_continue: "50"
+            dangling_reference:
+              summary: A bundle pointing at a deleted product
+              value:
+                bundles:
+                  - parent:
+                      variant_id: "55518673568035"
+                      sku: BUNDLE-STARTER-KIT
+                      name: Starter Kit
+                      resolved: true
+                    children:
+                      - variant_id: "55518673404195"
+                        sku: SOCKS-BLK-L
+                        name: Socks - Black / L
+                        returnable: true
+                        resolved: true
+                      - variant_id: "40668437479506"
+                        sku: null
+                        name: null
+                        returnable: true
+                        resolved: false
+                    return_types: [claim, return, warranty, recycle, withdrawal]
+            sku_not_found:
+              summary: parent_sku matched no product in the catalog
+              value:
+                bundles: []
+                sku_resolved: false
+      description: Success
+    "400":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Invalid paging headers
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: List bundles
+  tags:
+    - Bundles
 put:
   description: |
     Add or replace bundles, identified by parent SKU.

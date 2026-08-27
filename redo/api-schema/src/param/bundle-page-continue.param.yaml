@@ -1,0 +1,5 @@
+description: Page marker, from the page_continue field of the previous response
+example: "50"
+in: header
+name: X-Page-Continue
+schema: { type: string }

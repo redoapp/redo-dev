@@ -1,0 +1,34 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description:
+  A product referenced by a bundle, looked up in your catalog when the bundle
+  is read.
+properties:
+  variant_id:
+    description: Identifier of the product variant the bundle points at.
+    example: "55518673568035"
+    title: Variant ID
+    type: string
+  sku:
+    description:
+      The variant's SKU, or `null` when it has none or no longer exists. A
+      bundle whose parent has no SKU cannot be updated through this API.
+    example: BUNDLE-STARTER-KIT
+    title: SKU
+    type: ["string", "null"]
+  name:
+    description:
+      Product name, with the variant appended when the product has more than
+      one. `null` when the variant no longer exists.
+    example: Starter Kit - Large
+    title: Name
+    type: ["string", "null"]
+  resolved:
+    description:
+      Whether the variant was found in your catalog. `false` means the bundle
+      points at a product that has since been deleted, and `sku` and `name`
+      will be `null`.
+    title: Resolved
+    type: boolean
+required: [variant_id, sku, name, resolved]
+title: Bundle Variant
+type: object

@@ -1,0 +1,8 @@
+description:
+  Return only the bundle whose parent product has this SKU. The SKU is looked
+  up in your catalog, so a bundle created in Redo with a different name is
+  still found.
+example: BUNDLE-STARTER-KIT
+in: query
+name: parent_sku
+schema: { type: string }
