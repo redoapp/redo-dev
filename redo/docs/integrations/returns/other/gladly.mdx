@@ -35,6 +35,11 @@ For each return, agents can see:
 
 All sections are collapsible, so agents only expand what they need.
 
+Agents can also take action on a return without leaving Gladly — look up returns
+by order, pull the customer's return portal link, comment on a return, flag it,
+and update its status. Which of these are available depends on the scopes on
+your API token and the optional settings you turn on during setup.
+
 ### Why It Matters
 
 - **No context-switching** — agents stay in Gladly instead of logging into Redo
@@ -45,144 +50,249 @@ All sections are collapsible, so agents only expand what they need.
 - **Automatic matching** — returns are looked up by customer email with no manual
   search required
 
-## How to Set It Up
+## Before You Start
 
-There are two ways to get set up: Redo can handle the installation for you, or
-you can install the app yourself.
+The Redo app is published in Gladly's app catalog, so there is nothing to build,
+upload, or install from a command line. Setup is creating one app configuration
+in Gladly's admin. Redo can do this for you, or you can do it yourself.
 
-### Prerequisites
+<Note>
+  Gladly maintains their own version of these instructions at
+  [Redo App Platform Installation](https://help.gladly.com/docs/redo-app-platform-installation).
+  If the two ever disagree about a field in the Gladly UI, Gladly's doc is the
+  one to follow.
+</Note>
+
+You'll need:
 
 <AccordionGroup>
-<Accordion title="Gladly Environment" icon="circle-check">
-  A Gladly environment (production or UAT) with admin access.
+<Accordion title="Administrator access in Gladly" icon="circle-check">
+  Creating an app configuration requires the Administrator role. A Gladly
+  environment (production or UAT) works equally well.
 </Accordion>
 
-<Accordion title="Gladly API Key" icon="key">
-  Log in to Gladly and generate an API key for your account. Save it somewhere
-  secure.
+<Accordion title="Access to Settings → Developer in Redo" icon="store">
+  This is where your **Store ID** and your **API tokens** live. The Store ID is
+  on the General card, labeled *Your Store ID*, with a click-to-copy button. Your
+  Redo account manager can also give it to you.
 </Accordion>
 
-<Accordion title="Redo Store ID" icon="store">
-  You can find this in your Redo dashboard, or ask your Redo account manager.
+<Accordion title="A dedicated Redo API token for Gladly" icon="key">
+  In Redo, go to **Settings → Developer → API tokens** and create a token
+  dedicated to Gladly — not one you already use elsewhere, so you can revoke it
+  without breaking anything else. In the scope picker, check:
+
+  | Scope | Required? | Why |
+  | ----- | --------- | --- |
+  | **Returns → Read** (`returns_read`) | Required | Powers the Card and return lookup |
+  | **Orders → Read** (`orders_read`) | Required | Powers order lookup and the return portal link |
+  | **Returns → Write** (`returns_write`) | Only if agents will comment on, flag, or update returns | Enables the write actions |
+
+  Leave everything else unchecked. In particular, do **not** grant
+  **Orders → Write** or **Customers → Write** — the app never needs them, and a
+  token is only as safe as its narrowest scope.
+
+  Once saved, the token list shows scopes by their raw names (`returns_read` and
+  so on), which is how you can confirm you got them right.
+
+  <Warning>
+    The token is shown only once, when you create it. It starts with
+    `redo_sk_`. Copy it and store it somewhere secure before closing the dialog
+    — if you lose it, you'll have to issue a new one.
+  </Warning>
+</Accordion>
+
+<Accordion title="Your return portal URL" icon="link">
+  Every Redo store has one. To find yours, open
+
+  ```
+  https://api.getredo.com/v2.2/stores/<your-store-id>/customer-portal
+  ```
+
+  in a browser. It redirects to your store's return portal — either a
+  `returns.getredo.com` widget URL or your own domain if you use a custom portal
+  domain. Take the base URL it lands on, ending in `/returns-portal/`, and drop
+  anything after that (`/login`, an order id, and so on).
 </Accordion>
 </AccordionGroup>
+
+### Two Decisions to Make First
+
+Both are off (or restricted) by default. Decide now so you can set them while
+you're in the configuration form.
+
+| Setting | Default | What turning it on does |
+| ------- | ------- | ----------------------- |
+| **Return status updates** | Disabled | Lets agents and Sidekick reopen, complete, and reject returns. It never issues refunds, store credit, or exchanges. |
+| **Show gift card codes** | Masked | Unmasks full gift card codes in the Card. Masked shows only the amount and last 4 characters. |
+
+## How to Set It Up
 
 ### Option A: Redo Handles It
 
 This is the easiest path. Send the following to your Redo account manager or to
 **support@getredo.com**:
 
-| Item                      | Where to Find It                            | Example                              |
-| ------------------------- | ------------------------------------------- | ------------------------------------ |
-| **Gladly API User Email** | The email you use to log in to Gladly       | `api-user@yourcompany.com`           |
+| Item                      | Where to Find It                            | Example                             |
+| ------------------------- | ------------------------------------------- | ----------------------------------- |
+| **Gladly API User Email** | The email you use to log in to Gladly       | `api-user@yourcompany.com`          |
 | **Gladly API Key**        | Generated from your Gladly account          | `gasd54654sdfas6ew65216dsfa8961352` |
-| **Redo Store ID**         | Redo dashboard or your Redo account manager | `123asdf456789010`           |
+| **Redo Store ID**         | Redo dashboard or your Redo account manager | `123asdf456789010`                  |
 
 Once we have these, we will:
 
-1. Contact Gladly Support to get the app framework set up in your environment.
-2. Build and install the Redo Returns app.
-3. Configure the app with your store ID and API credentials.
-4. Activate the app and confirm everything is working.
-5. Let you know when it's live.
+1. Create the Redo app configuration in your Gladly environment.
+2. Configure it with your Store ID, API secret, and return portal URL.
+3. Activate the configuration and add the Card to your Customer Profile layout.
+4. Confirm everything is working and let you know when it's live.
 
-Typical turnaround is a few business days, depending on Gladly Support's
-response time.
+Typical turnaround is a couple of business days.
 
-### Option B: Self-Installation
-
-If you prefer to manage the installation yourself, reach out to your Redo
-account manager to get the Redo Returns app code, then follow the steps below.
+### Option B: Set It Up Yourself
 
 <Steps>
-<Step title="Contact Gladly Support">
-  Gladly needs to enable the app framework for your environment before you can
-  install any app. Reach out to Gladly Support and let them know you'd like to
-  install the Redo Returns app.
+<Step title="Open App Developer Tools">
+  In Gladly, open **Settings** from the left sidebar and scroll to the
+  **App Developer Tools** section.
+
+  ![Gladly settings sidebar with the App Developer Tools section](/docs/images/integrations/gladly/gladly-settings-app-developer-tools.png)
 </Step>
 
-<Step title="Install the Gladly App CLI">
-  If you don't already have the `appcfg` CLI tool, follow Gladly's documentation
-  to install it.
+<Step title="Go to Apps and create a configuration">
+  Click **Apps**, then click **Create Configuration**.
+
+  ![Gladly Apps page with the Create Configuration button](/docs/images/integrations/gladly/gladly-apps-create-configuration.png)
 </Step>
 
-<Step title="Set Environment Variables">
-  Open a terminal and set these environment variables with your own values:
+<Step title="Name the configuration">
+  Enter a configuration name. You'll see this name across Gladly, so make it
+  recognizable — `Redo` is a good choice.
+
+  ![Add App Platform Configuration dialog](/docs/images/integrations/gladly/gladly-add-app-configuration.png)
+</Step>
+
+<Step title="Select the Redo app">
+  Under **External App**, open the dropdown and select **gladly.com/redo**. If
+  more than one version is listed, pick the highest one.
+
+  ![Selecting gladly.com/redo from the External App dropdown](/docs/images/integrations/gladly/gladly-select-redo-app.png)
+</Step>
+
+<Step title="Enter your Redo credentials">
+  Selecting the app reveals its configuration fields. Fill in:
+
+  | Field | Value |
+  | ----- | ----- |
+  | **Store ID** | From Redo, **Settings → Developer** → General card |
+  | **API secret** | The `redo_sk_…` token you created for Gladly |
+  | **Return portal URL** | Your portal base URL, ending in `/returns-portal/` |
+</Step>
+
+<Step title="Set the optional toggles">
+  Turn on **return status updates** if agents should be able to reopen, complete,
+  and reject returns. Turn on **show gift card codes** if agents should see full
+  codes rather than the masked amount and last 4 characters. Both are covered in
+  [Two Decisions to Make First](#two-decisions-to-make-first) above.
+</Step>
+
+<Step title="Activate and save">
+  Flip the configuration from **inactive** to active, then click **Save**.
+</Step>
+
+<Step title="Add the Card to the Customer Profile layout">
+  The configuration alone doesn't put anything on screen. In Gladly, add the
+  **Redo Returns & Claims** Card to your Customer Profile layout so agents
+  actually see it.
+</Step>
+
+<Step title="Register the actions with Gladly Support">
+  Agent actions have to be registered by Gladly before they'll run. Contact
+  Gladly Support and ask them to register these forms:
+
+  - `lookupReturnsByOrder`
+  - `getReturnPortalLink`
+  - `addReturnComment`
+  - `flagReturn`
+  - `updateReturnStatus`
+
+  The Card itself displays return data without this step — registration is what
+  enables the actions.
+</Step>
+
+<Step title="Verify">
+  Open a Customer Profile in Gladly for a customer you know has returns in Redo.
+  The Redo Returns & Claims Card should be visible and populated, and the actions
+  you registered should be available.
+</Step>
+</Steps>
+
+<Accordion title="Already installed with the appcfg CLI?" icon="terminal">
+  Before Redo was published to Gladly's catalog, installs went through the
+  `appcfg` CLI against `Redo/redo_returns/…`. Those installs keep working, but
+  they don't pick up new app versions.
+
+  To move to the catalog app, create a new configuration with the steps above,
+  confirm the Card renders, then deactivate the old configuration. Running both
+  at once will show the Card twice.
+
+  For reference, the old flow was:
 
   ```bash
   export GLADLY_APP_CFG_HOST=yourcompany.us.gladly.com
   export GLADLY_APP_CFG_USER=api-user@yourcompany.com
-  export GLADLY_APP_CFG_TOKEN=C1ueqSAcNRS6B3Tg2I9mQG18PM7NlELq
-  ```
-</Step>
-
-<Step title="Build the App">
-  Navigate to the root of the Redo Returns app code, then build:
-
-  ```bash
+  export GLADLY_APP_CFG_TOKEN=<gladly-api-token>
   export GLADLY_APP_CFG_ROOT=<path-to-app-code>
+
   appcfg build
-  ```
-
-  This produces a `.zip` file for the next step.
-</Step>
-
-<Step title="Install the App">
-  Install the built app into your Gladly environment:
-
-  ```bash
   appcfg apps install -f <path-to-zip-file>
-  ```
-</Step>
-
-<Step title="Enable the App">
-  Contact Gladly Support and ask them to enable the application you installed.
-  The name will be **redo_returns**.
-</Step>
-
-<Step title="Configure and Activate">
-  Create the app configuration with your Redo Store ID and API token, then
-  activate:
-
-  ```bash
-  appcfg apps config create Gladly/redo_returns/v1.3.0 \
+  appcfg apps config create Redo/redo_returns/v1.3.0 \
     --name redo-returns \
     --config '{ "storeId": "<your-redo-store-id>" }' \
     --secrets '{ "apiToken": "<your-redo-api-token>" }' \
     --activate
   ```
-
-  If the configuration name is already taken, but the app is not active try the following:
-  ```bash
-  appcfg apps config update redo-returns \
-    --config '{ "storeId": "<your-redo-store-id>" }' \
-    --secrets '{ "apiToken": "<your-redo-api-token>" }' \
-    --activate
-  ```
-
-  Replace `<your-redo-store-id>` with your Redo Store ID and
-  `<your-redo-api-token>` with the API token provided by your Redo account
-  manager.
-</Step>
-
-<Step title="Verify">
-  Open Gladly and confirm that the Redo Returns card is visible when navigating
-  to a customer.
-</Step>
-</Steps>
+</Accordion>
 
 ## Troubleshooting
 
 <AccordionGroup>
-<Accordion title="App Installation Fails">
-  Double-check that your environment variables are set correctly and that Gladly
-  Support has enabled app installation for your environment.
+<Accordion title="The Redo app isn't in the External App dropdown">
+  The dropdown only lists apps available to your environment. If
+  **gladly.com/redo** isn't there, contact Gladly Support and ask them to make
+  the Redo app available to your environment, or reach out to your Redo account
+  manager.
 </Accordion>
 
-<Accordion title="Configuration Errors">
-  Make sure your Store ID and API token are correct. The Store ID should match
-  exactly what's in your Redo dashboard.
+<Accordion title="The Card shows no data">
+  Check, in order:
+
+  1. **The email on the Customer Profile.** Returns are matched by email, so a
+     profile with a different email than the one used on the order won't match
+     anything.
+  2. **The Store ID and API secret.** Both must match exactly what's in Redo
+     under **Settings → Developer**.
+  3. **The token's scopes.** Without **Returns → Read** and **Orders → Read**, the
+     lookups return nothing.
+</Accordion>
+
+<Accordion title="The Card isn't visible at all">
+  A missing Card — as opposed to an empty one — usually means it hasn't been
+  added to the Customer Profile layout, or the configuration is still inactive.
+  Check both.
+</Accordion>
+
+<Accordion title="Agents can't comment, flag, or update returns">
+  Two things gate the actions: the forms have to be registered by Gladly Support,
+  and the token needs **Returns → Write**. Status updates additionally require the
+  **return status updates** setting to be enabled on the configuration.
 </Accordion>
 </AccordionGroup>
+
+## Getting Help from Gladly
+
+Team Manager and Administrator roles can reach Gladly Support from the hamburger
+menu in Gladly, Monday through Friday, 6 AM to 6 PM Pacific. Their installation
+guide lives at
+[help.gladly.com](https://help.gladly.com/docs/redo-app-platform-installation).
 
 <IntegrationSupport integrationProvider="Gladly" />
