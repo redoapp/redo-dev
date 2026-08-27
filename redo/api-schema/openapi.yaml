@@ -86,9 +86,17 @@ paths:
 
         ## Paging
 
-        Send `X-Page-Size` (default 50, maximum 250) and `X-Page-Continue`. The
-        response body carries `page_continue` when more bundles remain; send it back
-        as `X-Page-Continue` to fetch the next page. It is absent on the last page.
+        Send `X-Page-Size` to choose how many bundles come back, up to 250. It
+        defaults to 50.
+
+        When more bundles remain, the response carries an `X-Page-Next` header. Send
+        that value back as `X-Page-Continue` to fetch the next page. The header is
+        absent on the last page, and absent entirely when filtering by `parent_sku`,
+        since a filtered request returns every match at once.
+
+        Treat the cursor as opaque. It encodes a position that is not guaranteed to
+        stay the same shape, and bundles can be added or removed between pages — so a
+        bundle may be missed or repeated if the list changes while you are walking it.
 
         Requires the [`returns_read`](/docs/api-reference/scopes) scope.
       operationId: Bundles list
@@ -126,7 +134,6 @@ paths:
                         return_types:
                           - return
                           - warranty
-                    page_continue: '50'
                 dangling_reference:
                   summary: A bundle pointing at a deleted product
                   value:
@@ -159,12 +166,21 @@ paths:
                     bundles: []
                     sku_resolved: false
           description: Success
+          headers:
+            X-Page-Next:
+              $ref: '#/components/headers/page-next.header'
         '400':
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/error.schema'
-          description: Invalid paging headers
+          description: Invalid `X-Page-Size`, or a malformed `X-Page-Continue` cursor
+        '500':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: The bundle lookup did not complete
         default:
           content:
             application/problem+json:
@@ -2825,8 +2841,8 @@ components:
       type: http
   parameters:
     bundle-page-continue.param:
-      description: Page marker, from the page_continue field of the previous response
-      example: '50'
+      description: Page marker, from the X-Page-Next header of the previous response
+      example: eyJvZmZzZXQiOjUwfQ==
       in: header
       name: X-Page-Continue
       schema:
@@ -3158,11 +3174,6 @@ components:
             $ref: '#/components/schemas/bundle-list-item.schema'
           title: Bundles
           type: array
-        page_continue:
-          description: Send as `X-Page-Continue` to fetch the next page. Absent on the last page, and absent entirely when filtering by `parent_sku`.
-          example: '50'
-          title: Page Continue
-          type: string
         sku_resolved:
           description: Present only when `parent_sku` was supplied. `false` means no product in your catalog has that SKU, which is different from the SKU existing but having no bundle.
           title: SKU Resolved

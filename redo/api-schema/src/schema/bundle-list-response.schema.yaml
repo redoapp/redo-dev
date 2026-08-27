@@ -6,13 +6,6 @@ properties:
     items: { $ref: ./bundle-list-item.schema.yaml }
     title: Bundles
     type: array
-  page_continue:
-    description:
-      Send as `X-Page-Continue` to fetch the next page. Absent on the last
-      page, and absent entirely when filtering by `parent_sku`.
-    example: "50"
-    title: Page Continue
-    type: string
   sku_resolved:
     description:
       Present only when `parent_sku` was supplied. `false` means no product in
