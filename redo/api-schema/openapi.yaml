@@ -89,8 +89,20 @@ paths:
         A SKU that cannot be matched to a product in your store is skipped rather
         than failing the whole request. **Check `results` rather than the status
         code** — a `200` means the request was processed, not that every bundle was
-        stored. Each entry reports `applied` or `failed`, and `failed` almost always
-        means one of the SKUs does not exist in your store.
+        stored. Each entry reports `applied` or `failed`.
+
+        A bundle fails if its parent SKU or **any** of its child SKUs cannot be
+        matched, so a single unmatched child is enough to skip the whole bundle.
+        There are two common causes:
+
+        - The SKU is wrong, or belongs to a product that has since been deleted.
+        - The product exists but **its variant has no SKU set**. Products can be
+          created in your store without one, and gift cards frequently have none.
+          Such products cannot be referenced here at all, and a bundle built on one
+          can only be managed from the Bundles page in Redo.
+
+        If a bundle keeps failing and you are confident the product exists, check
+        that a SKU is actually filled in on the variant.
 
         ## One at a time
 
