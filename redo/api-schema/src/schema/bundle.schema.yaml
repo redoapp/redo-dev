@@ -1,0 +1,45 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description:
+  A bundle definition, identified by the SKU of the product that represents the
+  bundle itself.
+properties:
+  parent_sku:
+    description:
+      SKU of the product shoppers buy. This identifies the bundle, and is what a
+      later request replaces.
+    example: BUNDLE-STARTER-KIT
+    title: Parent SKU
+    type: string
+  children_skus:
+    description: The products contained in the bundle.
+    items:
+      properties:
+        sku:
+          description: SKU of a product included in the bundle.
+          example: SOCKS-BLK-L
+          title: SKU
+          type: string
+        quantity:
+          default: 1
+          description: How many units of this SKU the bundle contains.
+          example: 2
+          minimum: 1
+          title: Quantity
+          type: integer
+      required: [sku]
+      type: object
+    minItems: 1
+    title: Children SKUs
+    type: array
+  return_types:
+    description:
+      Return types this bundle applies to. Omit the field to apply the bundle to
+      every return type.
+    items:
+      enum: [claim, return, warranty, recycle, withdrawal]
+      type: string
+    title: Return Types
+    type: array
+required: [parent_sku, children_skus]
+title: Bundle
+type: object
