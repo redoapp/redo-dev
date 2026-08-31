@@ -89,9 +89,9 @@ Before Redo can configure your integration, make sure the following are in place
 
 <Steps>
   <Step title="Grant Redo Access to Your NetSuite Instance">
-    Redo needs temporary admin access to your NetSuite account to deploy the integration scripts and configure the necessary roles and credentials.
+    Redo needs admin access to your NetSuite account to deploy the integration scripts and configure the necessary roles and credentials.
 
-    Add `system@getredo.com` as an admin user in NetSuite. Access can be revoked after setup is complete.
+    Add `system@getredo.com` as an admin user in NetSuite.
   </Step>
 
   <Step title="Share Your Configuration Preferences">
@@ -139,7 +139,7 @@ Before Redo can configure your integration, make sure the following are in place
   </Accordion>
 
   <Accordion title="Does Redo need permanent admin access to my NetSuite account?">
-    No. Admin access is only needed during initial setup to deploy the SuiteCloud scripts and configure the integration role. Once setup is complete, Redo uses a dedicated integration user with a scoped role. Admin access can be revoked at that point.
+    Admin access is used during initial setup to deploy the SuiteCloud scripts and configure the integration role. After setup, day-to-day operation uses token-based authentication with a scoped role rather than interactive admin sessions. However, the user and role the tokens were created under must remain active and unchanged: NetSuite invalidates the tokens if the user is deactivated or the role is edited, which breaks the integration and also blocks future token regeneration and script updates. If you need to change user access or roles, coordinate with Redo support first so we can re-issue credentials without downtime.
   </Accordion>
 
   <Accordion title="Can I customize the field mappings or add additional fields?">
