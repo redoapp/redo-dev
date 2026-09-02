@@ -53,6 +53,22 @@ There are two ways to connect Rise.ai to Redo:
 
 ## How to Set It Up (OAuth — Beta)
 
+### Prerequisites
+
+<AccordionGroup>
+<Accordion title="Rise.ai 2.0 account" icon="circle-check">
+  The OAuth install only works for accounts that Rise.ai has migrated to
+  **Rise.ai 2.0**. Migration is done by your Rise.ai account manager, not by
+  Redo. If your account is still on the legacy Rise.ai platform, use the
+  **Legacy API key** setup below.
+</Accordion>
+<Accordion title="Redo app enabled for your Rise.ai workspace" icon="circle-check">
+  After migration, Rise.ai must also enable the Redo app for your workspace.
+  If you have been migrated and the install still fails, ask your Rise.ai
+  account manager to confirm the Redo app is enabled for your store.
+</Accordion>
+</AccordionGroup>
+
 <Steps>
 <Step title="Open the Rise.ai integration settings">
   In the Redo merchant dashboard, go to **Settings** > **Returns & Claims** >
@@ -86,6 +102,17 @@ custom trigger setup is required.
 
 The OAuth setup is **immediate** — there is no waiting period and no need to
 contact Redo support to finalize the connection.
+
+## Troubleshooting
+
+<Accordion title='Rise.ai shows "This installation link is invalid"'>
+  Rise.ai rejected the install before redirecting back to Redo, so nothing was
+  connected. This means one of the [prerequisites](#prerequisites) above is not
+  met: your account is not on Rise.ai 2.0 yet, or Rise.ai has not enabled the
+  Redo app for your workspace. Confirm both with your Rise.ai account manager,
+  then click **Connect with Rise.ai** again to generate a fresh link. Use the
+  legacy setup below in the meantime if needed.
+</Accordion>
 
 ## Legacy API Key Setup
 
