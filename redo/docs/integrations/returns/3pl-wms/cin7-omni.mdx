@@ -1,0 +1,220 @@
+---
+title: "Cin7 Omni"
+description: "Connect Cin7 Omni to Redo for automated credit note creation and return processing"
+---
+
+import IntegrationSupport from "/snippets/integration-support.mdx";
+
+## What is Cin7 Omni?
+
+Cin7 Omni is a cloud inventory and order management platform used by product brands and wholesalers to manage stock, sales orders, and fulfillment across multiple channels and warehouses. Many merchants use Cin7 Omni as the system of record for orders and inventory.
+
+**Primary Purpose:** Cin7 Omni keeps stock levels, sales orders, and financial documents in one place. For merchants using Cin7 Omni, keeping return data in sync is critical for accurate inventory counts, correct customer credits, and clean accounting.
+
+## What Does the Integration Do?
+
+When a return is approved in Redo, the integration automatically creates a **Credit Note** in Cin7 Omni against the original sales order. The credit note lists the returned items and quantities, records the refund or store credit owed to the customer as a payment, and approves the credit note so it is ready for your warehouse to receive.
+
+Returns are matched to Cin7 Omni sales orders using the order name from your ecommerce platform (for example, `#1234`). Returned items are matched to sales order lines by SKU, or by barcode when a SKU is not available.
+
+When your team completes the credit note in Cin7 Omni, Redo can automatically process the return. This releases the refund, store credit, or exchange to the customer without anyone needing to process the return manually in Redo.
+
+The integration also supports adding custom fields to each credit note, so you can carry Redo data such as return type and compensation method into your Cin7 Omni reporting.
+
+## How to Set It Up
+
+### Prerequisites
+
+Before you begin, ensure you have:
+
+<AccordionGroup>
+<Accordion title="Active Cin7 Omni Account" icon="circle-check">
+You must have an active Cin7 Omni subscription with API access enabled for your account.
+</Accordion>
+
+<Accordion title="Orders Synced to Cin7 Omni" icon="box">
+Your sales orders must already exist in Cin7 Omni, typically through your ecommerce platform connection. Each sales order's **Reference** must contain the order name from your ecommerce platform (for example, `#1234`). Credit notes cannot be created for orders that do not exist as sales orders in Cin7 Omni.
+</Accordion>
+
+<Accordion title="Product SKUs or Barcodes Aligned" icon="barcode">
+Product SKUs (or barcodes) on your Cin7 Omni sales orders must match the SKUs or barcodes of the products in Redo. The integration uses them to match returned items to the original sales order lines.
+</Accordion>
+
+<Accordion title="Administrative Access to Redo" icon="key">
+You need administrative access to your Redo merchant dashboard to configure integrations.
+</Accordion>
+</AccordionGroup>
+
+### Create an API Connection in Cin7 Omni
+
+<Steps>
+<Step title="Add a New API Connection">
+1. Log in to Cin7 Omni
+2. Go to **Settings** > **Integrations & API** > **API v1**
+3. Click **Add New API Connection**
+4. Give the connection a descriptive name, such as `Redo Returns`
+</Step>
+
+<Step title="Set Permissions">
+Enable the following permissions on the connection. All of them are required for the returns integration to work.
+
+| Cin7 Omni Resource | Permissions Required |
+| ------------------ | -------------------- |
+| Sales Orders       | Read                 |
+| Credit Notes       | Create, Read, Update |
+| Payments           | Create               |
+
+</Step>
+
+<Step title="Save and Copy the Credentials">
+Save the connection. Cin7 Omni shows the **API username** for your account and generates a unique **API key** for this connection. Copy both and store them securely. If you lose the key, you will need to generate a new one.
+
+<Warning>
+Permissions are tied to the API key that was generated with them. If you change the permissions on an existing connection, you must **regenerate the API key** and enter the new key in Redo. The old key will keep the old permissions.
+</Warning>
+</Step>
+</Steps>
+
+### Configuration Steps
+
+<Steps>
+<Step title="Navigate to Integrations">
+1. Log in to your Redo merchant dashboard
+2. Go to **Settings** > **Returns & Claims** > **Integrations**
+3. Locate the **"Cin7 Omni"** card in the list of available integrations
+</Step>
+
+<Step title="Enable Returns">
+Open the Cin7 Omni integration and enable **Returns**.
+</Step>
+
+<Step title="Enter Connection Details">
+In the configuration form, provide the following information:
+
+<ParamField path="apiUsername" type="string" required>
+The API username shown on your Cin7 Omni API connection.
+</ParamField>
+
+<ParamField path="apiKey" type="string" required>
+The API key generated for your Cin7 Omni API connection. This credential should be kept secure and never shared publicly.
+</ParamField>
+
+<ParamField path="baseUrl" type="string" required>
+The address Redo uses to reach your Cin7 Omni account. It must end in `/api/v1`.
+
+**Default (most merchants):** `https://api.cin7.com/api/v1`
+
+**Custom gateway:** Some merchants access Cin7 Omni through a partner or reseller gateway instead of Cin7 directly. In that case, enter the gateway address your partner provided, keeping the `/api/v1` ending. For example: `https://api.example-partner.com/gateway/cin7/your-company/api/v1`
+
+If you are not sure, use the default.
+
+</ParamField>
+</Step>
+
+<Step title="Choose Sync Options">
+<ParamField path="createReturns" type="boolean">
+**Create returns in Cin7 Omni.** When enabled, Redo creates a credit note in Cin7 Omni when a return is approved. Enabled by default.
+</ParamField>
+
+<ParamField path="processReturns" type="boolean">
+**Process returns from Cin7 Omni.** When enabled, Redo automatically processes the return when the credit note is completed in Cin7 Omni. Enabled by default.
+</ParamField>
+</Step>
+
+<Step title="Configure Credit Note Custom Fields (Optional)">
+If you use custom fields on credit notes in Cin7 Omni, you can have Redo populate them:
+
+- **Return type custom field key:** the name of the Cin7 Omni custom field that should receive the Redo return type (return, exchange, or claim)
+- **Compensation method custom field key:** the name of the Cin7 Omni custom field that should receive the compensation method (refund, store credit, or exchange)
+- **Additional fields:** any fixed field name and value pairs you want stamped on every credit note Redo creates
+
+Leave these blank if you do not use custom fields.
+
+</Step>
+
+<Step title="Save Configuration">
+Review all settings carefully and click **Save**.
+</Step>
+
+<Step title="Test the Integration">
+Create a test return to verify the integration is working correctly:
+
+1. Initiate a test return through your Redo return portal and approve it
+2. Check the return timeline in Redo for a "Credit Note successfully created in Cin7Omni" entry
+3. Log in to Cin7 Omni to verify the credit note was created
+4. Confirm the credit note:
+   - References the correct sales order
+   - Contains the correct products, quantities, and SKUs
+   - Shows a payment for the refund or store credit amount
+   - Is approved
+5. Complete the credit note in Cin7 Omni and confirm the return is processed in Redo
+
+</Step>
+</Steps>
+
+## How Long Does It Take?
+
+### Setup Timeline
+
+Setup is typically completed in under an hour once you have your Cin7 Omni API credentials.
+
+### Operational Timing
+
+- **Credit note creation:** Credit notes are created within a few seconds of the return being approved in Redo. If Cin7 Omni is temporarily unavailable, Redo keeps retrying automatically for several days.
+- **Return processing:** Redo checks Cin7 Omni for completed credit notes on a regular schedule. Returns are typically processed in Redo within a few minutes of the credit note being completed in Cin7 Omni.
+
+## Important Considerations
+
+- Cin7 Omni requires a payment to be recorded before a credit note can be approved. If Redo cannot determine the refund amount for a return, the credit note is still created but stays in **Draft** until it is approved manually in Cin7 Omni.
+- Retrying credit note creation from Redo is safe. If a credit note already exists for the return, Redo reuses it rather than creating a duplicate.
+- If a return contains items that are not on the original sales order, those items cannot be included on the credit note.
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Credit Note Creation Failed: Not Found">
+Redo could not find the sales order in Cin7 Omni, or could not reach your Cin7 Omni account.
+
+**Solution:**
+- Check the **Base URL** in Redo. It must end in `/api/v1`. Most merchants should use `https://api.cin7.com/api/v1`.
+- Verify the sales order exists in Cin7 Omni and that its **Reference** matches the order name in Redo exactly (for example, `#1234`)
+- Confirm orders are syncing correctly from your ecommerce platform to Cin7 Omni
+</Accordion>
+
+<Accordion title="Credit Note Creation Failed: Forbidden">
+The API key does not have the permissions the integration needs. Cin7 Omni typically reports which resource is missing, such as "does not have read privileges enabled for the resource SalesOrders".
+
+**Solution:**
+- In Cin7 Omni, open the API connection whose key is entered in Redo and confirm it has Read on Sales Orders, Create/Read/Update on Credit Notes, and Create on Payments
+- If you changed the permissions on an existing connection, **regenerate the API key** and enter the new key in Redo
+- If you have several API connections, make sure the key in Redo belongs to the connection you updated
+</Accordion>
+
+<Accordion title="Credit Note Stays in Draft">
+Redo created the credit note but could not record a payment, so Cin7 Omni would not allow approval.
+
+**Solution:**
+- Approve the credit note manually in Cin7 Omni
+- Contact Redo support if this happens repeatedly so we can review the refund calculation for your store
+</Accordion>
+
+<Accordion title="Return Not Processed After Completing the Credit Note">
+The credit note was completed in Cin7 Omni, but the return is still open in Redo.
+
+**Solution:**
+- Confirm **Process returns from Cin7 Omni** is enabled in Redo
+- Allow a few minutes for the next scheduled check
+- Verify the credit note in Cin7 Omni is fully completed, not just approved
+</Accordion>
+
+<Accordion title="Returned Item Missing From Credit Note">
+A returned product could not be matched to a line on the Cin7 Omni sales order.
+
+**Solution:**
+- Verify the product SKU or barcode in Redo matches the sales order line in Cin7 Omni exactly
+- Check that the product was on the original order
+- Ensure no SKU changes occurred after the order was placed
+</Accordion>
+</AccordionGroup>
+
+<IntegrationSupport integrationProvider="Cin7 Omni" />
