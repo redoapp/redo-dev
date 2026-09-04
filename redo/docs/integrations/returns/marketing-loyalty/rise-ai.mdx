@@ -20,30 +20,10 @@ keeps all store credit and rewards consolidated within Rise.ai.
 
 There are two ways to connect Rise.ai to Redo:
 
-- **OAuth (Beta)** — A self-serve, one-click install from the Redo merchant
-  dashboard. Still in active development — see the warning below before
-  enabling on a production store.
+- **OAuth (Recommended)** — A self-serve, one-click install from the Redo merchant
+  dashboard.
 - **Legacy API key** — The original setup that uses a Rise.ai workflow trigger
-  URL. Stable and the recommended path until OAuth exits beta.
-
-<Warning>
-  **OAuth is in beta and still under active development.** Behavior may change
-  without notice, and edge cases around token refresh, wallet creation, and
-  error handling are still being hardened. Before enabling OAuth on a
-  production store, take the following precautions:
-
-  - Test the full return-to-store-credit flow on a staging or low-volume store
-    first.
-  - Verify that issued credits appear correctly in Rise.ai before relying on
-    the integration for live returns.
-  - Keep your legacy API key configuration available so you can fall back if
-    you hit issues.
-  - If you see unexpected behavior, contact **support@getredo.com**
-    immediately.
-
-  If you are not comfortable troubleshooting an in-development integration, use
-  the **Legacy API key** setup below instead.
-</Warning>
+  URL. Use this if OAuth is not available for your Rise.ai account.
 
 <Note>
   Rise.ai store credit issuance currently supports **Shopify orders only**. For
@@ -51,7 +31,7 @@ There are two ways to connect Rise.ai to Redo:
   type.
 </Note>
 
-## How to Set It Up (OAuth — Beta)
+## How to Set It Up (OAuth)
 
 ### Prerequisites
 
@@ -117,8 +97,7 @@ contact Redo support to finalize the connection.
 ## Legacy API Key Setup
 
 <Note>
-  This is the **stable, recommended path** until OAuth exits beta. Available
-  only to merchants on a Rise.ai Enterprise plan.
+  Available only to merchants on a Rise.ai Enterprise plan.
 </Note>
 
 <Accordion title="Show legacy API key setup steps">
