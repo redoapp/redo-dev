@@ -134,6 +134,14 @@ To add or update refunds later without resending the full order, call
 refunds. Matching `id` values replace the existing refund; new `id` values are
 appended.
 
+<Warning>
+Syncing refunds does not update the order's `current_*` totals (price,
+subtotal, tax). Redo uses refund `lineItems` to reduce returnable quantity and
+recalculates refund amounts from line item prices at return time — not from
+`current_total_price`. If you need post-refund totals reflected elsewhere,
+re-sync the full order with updated line item quantities or amounts.
+</Warning>
+
 ### Cancellations
 
 To mark an order cancelled, re-sync it with `cancelledAt` set:
