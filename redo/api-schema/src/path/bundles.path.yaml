@@ -1,0 +1,156 @@
+put:
+  description: |
+    Add or replace bundles, identified by parent SKU.
+
+    A bundle groups several products under one product that shoppers buy. When a
+    bundle is returned, Redo uses this definition to break it back into the
+    products it contains.
+
+    Send the same payload whether a bundle is new or already exists. Bundles are
+    added to the store's existing list, and a bundle whose parent SKU already
+    exists is replaced. **Bundles you do not send are left alone — this endpoint
+    never deletes.** To remove a bundle, use the Bundles page in Redo.
+
+    ## Quantities
+
+    `quantity` is the number of units of a child SKU the bundle contains, and it
+    affects how a refund is divided across the bundle. A bundle containing four
+    of one item refunds differently from one containing a single unit.
+
+    ## Return types
+
+    `return_types` limits the bundle to specific return types. Omit it and the
+    bundle applies to all of them. Sending it replaces whatever was previously
+    set, so include it on every request if you rely on it.
+
+    ## Confirming what was stored
+
+    A SKU that cannot be matched to a product in your store is skipped rather
+    than failing the whole request. **Check `results` rather than the status
+    code** — a `200` means the request was processed, not that every bundle was
+    stored. Each entry reports `applied` or `failed`.
+
+    A bundle fails if its parent SKU or **any** of its child SKUs cannot be
+    matched, so a single unmatched child is enough to skip the whole bundle.
+    There are two common causes:
+
+    - The SKU is wrong, or belongs to a product that has since been deleted.
+    - The product exists but **its variant has no SKU set**. Products can be
+      created in your store without one, and gift cards frequently have none.
+      Such products cannot be referenced here at all, and a bundle built on one
+      can only be managed from the Bundles page in Redo.
+
+    If a bundle keeps failing and you are confident the product exists, check
+    that a SKU is actually filled in on the variant.
+
+    ## One at a time
+
+    Only one bundle upload can run per store, and this endpoint shares that limit
+    with the CSV upload in Redo. A request that arrives while another is running
+    returns `409 Conflict` and can be retried.
+
+    Send at most 100 bundles per request. Larger sets should be split into
+    batches. Requests are processed while you wait, so a large batch containing
+    many unmatched SKUs can take some seconds to return.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
+  operationId: Bundles upsert
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/bundle-upsert-request.schema.yaml"
+        examples:
+          single_bundle:
+            summary: One bundle containing two products
+            value:
+              - parent_sku: BUNDLE-STARTER-KIT
+                children_skus:
+                  - sku: SOCKS-BLK-L
+                    quantity: 1
+                  - sku: TSHIRT-BLK-M
+                    quantity: 2
+          restricted_return_types:
+            summary: A bundle that only applies to returns and warranties
+            value:
+              - parent_sku: BUNDLE-BEDDING
+                children_skus:
+                  - sku: SHEET-QUEEN-WHT
+                    quantity: 1
+                  - sku: PILLOWCASE-WHT
+                    quantity: 2
+                return_types: [return, warranty]
+          multiple_bundles:
+            summary: Several bundles in one request
+            value:
+              - parent_sku: BUNDLE-STARTER-KIT
+                children_skus:
+                  - sku: SOCKS-BLK-L
+                    quantity: 1
+                  - sku: TSHIRT-BLK-M
+                    quantity: 1
+              - parent_sku: BUNDLE-DELUXE-KIT
+                children_skus:
+                  - sku: SOCKS-BLK-L
+                    quantity: 1
+                  - sku: TSHIRT-BLK-M
+                    quantity: 4
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/bundle-upsert-response.schema.yaml"
+          examples:
+            all_applied:
+              summary: Every bundle stored
+              value:
+                total_count: 2
+                applied_count: 2
+                failed_count: 0
+                results:
+                  - parent_sku: BUNDLE-STARTER-KIT
+                    status: applied
+                  - parent_sku: BUNDLE-DELUXE-KIT
+                    status: applied
+            partial_failure:
+              summary: One bundle skipped because a SKU was not found
+              value:
+                total_count: 2
+                applied_count: 1
+                failed_count: 1
+                results:
+                  - parent_sku: BUNDLE-STARTER-KIT
+                    status: applied
+                  - parent_sku: BUNDLE-DELUXE-KIT
+                    status: failed
+      description:
+        Request processed. Check `results` to see which bundles were stored.
+    "400":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description:
+        Invalid request body, an unrecognized return type, or more than 100
+        bundles
+    "409":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: A bundle upload is already in progress for this store
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Add or replace bundles
+  tags:
+    - Bundles

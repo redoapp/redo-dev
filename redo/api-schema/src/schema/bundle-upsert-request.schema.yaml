@@ -1,0 +1,10 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description:
+  Bundles to add or replace. Send the same payload whether a bundle is new or
+  already exists. Between 1 and 100 per request.
+items:
+  $ref: ./bundle.schema.yaml
+maxItems: 100
+minItems: 1
+title: Bundle Upsert Request
+type: array
