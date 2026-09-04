@@ -87,6 +87,13 @@ properties:
       $ref: ./custom-order-metafield.schema.yaml
     title: Metafields
     type: array
+  refunds:
+    default: []
+    description: Refunds recorded against this order
+    items:
+      $ref: ./custom-order-refund.schema.yaml
+    title: Refunds
+    type: array
   cancelledAt:
     description:
       Timestamp the order was cancelled in your system. Omit or send null for

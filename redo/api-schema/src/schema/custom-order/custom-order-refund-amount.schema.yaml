@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A non-line-item refund amount on a custom integration order
+properties:
+  amountSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded amount
+    title: Amount Set
+  taxAmountSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded tax on this amount
+    title: Tax Amount Set
+  reason:
+    description: Optional reason for the refund
+    title: Reason
+    type: string
+required: [amountSet]
+title: Custom Order Refund Amount
+type: object

@@ -1,0 +1,13 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Request body for updating refunds on a custom integration order
+properties:
+  refunds:
+    description: Refunds to create or replace by `id`
+    items:
+      $ref: ./custom-order-refund.schema.yaml
+    minItems: 1
+    title: Refunds
+    type: array
+required: [refunds]
+title: Custom Order Refunds Update Request
+type: object

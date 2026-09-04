@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Response returned when custom order refunds are updated successfully
+properties:
+  message:
+    description: Always "Order refunds updated successfully"
+    title: Message
+    type: string
+  orderId:
+    description: The order ID from the URL path
+    title: Order ID
+    type: string
+  redoId:
+    description: The Redo order ID for the synced order
+    title: Redo ID
+    type: string
+required: [message, orderId, redoId]
+title: Custom Order Refunds Update Response
+type: object

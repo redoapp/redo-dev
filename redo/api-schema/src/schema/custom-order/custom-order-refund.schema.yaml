@@ -1,0 +1,39 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A refund recorded against a custom integration order
+properties:
+  id:
+    description: Refund ID in your system
+    title: ID
+    type: string
+  createdAt:
+    description: When the refund was created
+    title: Created At
+    type: string
+  note:
+    description: Optional note about the refund
+    title: Note
+    type: [string, "null"]
+  lineItems:
+    default: []
+    description: Line items refunded in this refund
+    items:
+      $ref: ./custom-order-refund-line-item.schema.yaml
+    title: Line Items
+    type: array
+  shippingRefunds:
+    default: []
+    description: Shipping amounts refunded outside line items
+    items:
+      $ref: ./custom-order-refund-amount.schema.yaml
+    title: Shipping Refunds
+    type: array
+  orderLevelRefunds:
+    default: []
+    description: Order-level refunds not tied to a specific line item
+    items:
+      $ref: ./custom-order-refund-amount.schema.yaml
+    title: Order Level Refunds
+    type: array
+required: [id, createdAt]
+title: Custom Order Refund
+type: object

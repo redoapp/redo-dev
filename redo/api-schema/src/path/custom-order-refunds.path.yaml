@@ -1,0 +1,81 @@
+post:
+  description: |
+    Add or update refunds on a previously synced custom integration order.
+
+    Send one or more refunds in the request body. A refund whose `id` already
+    exists on the order is replaced; new `id` values are appended.
+
+    This endpoint merges into the stored order payload and re-syncs it, so you
+    can use it when refunds happen after the original order sync without resending
+    the full order.
+  operationId: Update Custom Order Refunds
+  parameters:
+    - $ref: "../param/store-id.param.yaml"
+    - description: Order ID in your system
+      in: path
+      name: orderId
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schema/custom-order/custom-order-refunds-update-request.schema.yaml"
+    required: true
+  responses:
+    "200":
+      description: Order refunds updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-refunds-update-response.schema.yaml"
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description:
+        Invalid refunds data. `errors` contains the field-level validation
+        details.
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description: Missing or invalid API token
+    "403":
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Token does not have access to this store
+    "404":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description: Order not found
+    "422":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description: Stored order payload is not a valid custom order
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "../schema/custom-order/custom-order-error.schema.yaml"
+      description: Failed to update refunds
+    default:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../schema/error.schema.yaml"
+      description: Error
+  security:
+    - Bearer: []
+  summary: Update Custom Order Refunds
+  tags:
+    - Returns Custom Integration

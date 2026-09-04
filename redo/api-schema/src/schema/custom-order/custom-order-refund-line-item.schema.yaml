@@ -1,0 +1,23 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A refunded line item on a custom integration order
+properties:
+  lineItemId:
+    description: Must match a `lineItems[].id` on this order
+    title: Line Item ID
+    type: string
+  quantity:
+    description: Quantity refunded on this line
+    title: Quantity
+    type: integer
+    minimum: 1
+  subtotalSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded line subtotal (pre-tax)
+    title: Subtotal Set
+  totalTaxSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded tax on this line
+    title: Total Tax Set
+required: [lineItemId, quantity, subtotalSet, totalTaxSet]
+title: Custom Order Refund Line Item
+type: object

@@ -1165,6 +1165,86 @@ paths:
       summary: Sync Custom Order
       tags:
         - Returns Custom Integration
+  /stores/{storeId}/custom/orders/{orderId}/refunds:
+    post:
+      description: |
+        Add or update refunds on a previously synced custom integration order.
+
+        Send one or more refunds in the request body. A refund whose `id` already
+        exists on the order is replaced; new `id` values are appended.
+
+        This endpoint merges into the stored order payload and re-syncs it, so you
+        can use it when refunds happen after the original order sync without resending
+        the full order.
+      operationId: Update Custom Order Refunds
+      parameters:
+        - $ref: '#/components/parameters/store-id.param'
+        - description: Order ID in your system
+          in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-order-refunds-update-request.schema'
+        required: true
+      responses:
+        '200':
+          description: Order refunds updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-order-refunds-update-response.schema'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-order-error.schema'
+          description: Invalid refunds data. `errors` contains the field-level validation details.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-order-error.schema'
+          description: Missing or invalid API token
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Token does not have access to this store
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-order-error.schema'
+          description: Order not found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-order-error.schema'
+          description: Stored order payload is not a valid custom order
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-order-error.schema'
+          description: Failed to update refunds
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Update Custom Order Refunds
+      tags:
+        - Returns Custom Integration
   /stores/{storeId}/orders:
     description: Orders collection.
     post:
@@ -4537,6 +4617,95 @@ components:
         - countryCode
       title: Custom Order Address
       type: object
+    custom-order-refund-line-item.schema:
+      description: A refunded line item on a custom integration order
+      properties:
+        lineItemId:
+          description: Must match a `lineItems[].id` on this order
+          title: Line Item ID
+          type: string
+        quantity:
+          description: Quantity refunded on this line
+          title: Quantity
+          type: integer
+          minimum: 1
+        subtotalSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded line subtotal (pre-tax)
+          title: Subtotal Set
+        totalTaxSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded tax on this line
+          title: Total Tax Set
+      required:
+        - lineItemId
+        - quantity
+        - subtotalSet
+        - totalTaxSet
+      title: Custom Order Refund Line Item
+      type: object
+    custom-order-refund-amount.schema:
+      description: A non-line-item refund amount on a custom integration order
+      properties:
+        amountSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded amount
+          title: Amount Set
+        taxAmountSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded tax on this amount
+          title: Tax Amount Set
+        reason:
+          description: Optional reason for the refund
+          title: Reason
+          type: string
+      required:
+        - amountSet
+      title: Custom Order Refund Amount
+      type: object
+    custom-order-refund.schema:
+      description: A refund recorded against a custom integration order
+      properties:
+        id:
+          description: Refund ID in your system
+          title: ID
+          type: string
+        createdAt:
+          description: When the refund was created
+          title: Created At
+          type: string
+        note:
+          description: Optional note about the refund
+          title: Note
+          type:
+            - string
+            - 'null'
+        lineItems:
+          default: []
+          description: Line items refunded in this refund
+          items:
+            $ref: '#/components/schemas/custom-order-refund-line-item.schema'
+          title: Line Items
+          type: array
+        shippingRefunds:
+          default: []
+          description: Shipping amounts refunded outside line items
+          items:
+            $ref: '#/components/schemas/custom-order-refund-amount.schema'
+          title: Shipping Refunds
+          type: array
+        orderLevelRefunds:
+          default: []
+          description: Order-level refunds not tied to a specific line item
+          items:
+            $ref: '#/components/schemas/custom-order-refund-amount.schema'
+          title: Order Level Refunds
+          type: array
+      required:
+        - id
+        - createdAt
+      title: Custom Order Refund
+      type: object
     custom-order-cancel-reason.schema:
       description: |
         Why the order was cancelled. Sent alongside `cancelledAt`, and stored as a
@@ -4707,6 +4876,13 @@ components:
             $ref: '#/components/schemas/custom-order-metafield.schema'
           title: Metafields
           type: array
+        refunds:
+          default: []
+          description: Refunds recorded against this order
+          items:
+            $ref: '#/components/schemas/custom-order-refund.schema'
+          title: Refunds
+          type: array
         cancelledAt:
           description: Timestamp the order was cancelled in your system. Omit or send null for live orders. A cancelled order is recorded with a `voided` financial status and stops producing order tracking updates.
           title: Cancelled At
@@ -4778,6 +4954,41 @@ components:
       required:
         - error
       title: Custom Order Error
+      type: object
+    custom-order-refunds-update-request.schema:
+      description: Request body for updating refunds on a custom integration order
+      properties:
+        refunds:
+          description: Refunds to create or replace by `id`
+          items:
+            $ref: '#/components/schemas/custom-order-refund.schema'
+          minItems: 1
+          title: Refunds
+          type: array
+      required:
+        - refunds
+      title: Custom Order Refunds Update Request
+      type: object
+    custom-order-refunds-update-response.schema:
+      description: Response returned when custom order refunds are updated successfully
+      properties:
+        message:
+          description: Always "Order refunds updated successfully"
+          title: Message
+          type: string
+        orderId:
+          description: The order ID from the URL path
+          title: Order ID
+          type: string
+        redoId:
+          description: The Redo order ID for the synced order
+          title: Redo ID
+          type: string
+      required:
+        - message
+        - orderId
+        - redoId
+      title: Custom Order Refunds Update Response
       type: object
     orders-api-line-item.schema:
       description: Line item in the order.

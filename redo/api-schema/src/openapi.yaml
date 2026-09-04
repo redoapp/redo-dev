@@ -105,6 +105,8 @@ paths:
   /stores/{storeId}/admin: { $ref: path/admin.path.yaml }
   # Returns Custom Integration
   /stores/{storeId}/custom/orders: { $ref: path/custom-order-sync.path.yaml }
+  /stores/{storeId}/custom/orders/{orderId}/refunds:
+    { $ref: path/custom-order-refunds.path.yaml }
   # Orders
   /stores/{storeId}/orders: { $ref: path/orders.path.yaml }
   /stores/{storeId}/orders/{orderId}: { $ref: path/order.path.yaml }
