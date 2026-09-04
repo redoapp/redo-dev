@@ -167,17 +167,28 @@ both — you **must** include a line item with these exact values:
   properties: [
     {
       name: "_redo_type",
-      value: "returns"          // "returns", "package protection", or "both"
+      value: "returns"          // "returns", "package protection", "both", or "final sale"
     }
   ],
   // ... other standard line item fields
 }
 ```
 
-`priceSet` must be the **full** amount the shopper paid for coverage. When one
-line item covers more than one type, send the combined total.
+Send **one** coverage line item per order. When the shopper bought more than one
+kind of coverage, use `"both"` (or a comma-separated value such as
+`"returns,package protection"`) and set `priceSet` to the combined total. If you
+send separate line items instead, each one must carry only the amount the
+shopper paid for that coverage — Redo bills each item on its own.
 
-If both are sent, `_redo_type` wins over `tags`. Keep them in sync.
+`priceSet` must be the **full** amount the shopper paid for coverage.
+
+If both are sent, `_redo_type` wins over `tags` — the tags are ignored entirely,
+not merged. Keep them in sync.
+
+Values are matched case-insensitively, and spaces, underscores, and hyphens are
+interchangeable, so `"Package_Protection"` and `"package protection"` are the
+same value. A value Redo does not recognize is treated as returns coverage, so
+send a recognized value or omit `_redo_type` rather than passing a placeholder.
 
 ### Final sale
 
@@ -187,10 +198,17 @@ When the shopper buys final sale returns coverage, mark it alongside `returns`:
 tags: ["returns", "final sale"]
 // or
 properties: [{ name: "_redo_type", value: "returns,final sale" }]
+// or, alongside any coverage value
+properties: [
+  { name: "_redo_type", value: "returns" },
+  { name: "__final_sale_coverage", value: "true" }
+]
 ```
 
-Final sale coverage always implies returns coverage. Without this, final sale
-only applies if your Redo settings cover every order.
+Final sale coverage always implies returns coverage. Without one of these
+signals, final sale applies only when your Redo settings cover every order or
+treat every Redo purchase as final sale. Final sale coverage also requires
+final sale returns to be enabled for the order's shipping country.
 
 ### Package Protection Plus
 

@@ -1103,11 +1103,19 @@ paths:
         and a complete example payload, see the
         [Custom Returns Integration guide](/docs/guides/integrations/custom-returns-integration).
 
-        Important: If Redo protection is attached to this order, include a line item with:
+        Important: If Redo coverage is attached to this order, include a single
+        coverage line item with:
         - vendor: "re:do"
         - sku: "x-redo"
-        - tags: "returns", "package protection", or "both"
-        - properties: _redo_type with value "return", "package protection", or "both"
+        - priceSet: the full amount the shopper paid for coverage
+        - properties: _redo_type with value "returns", "package protection",
+          "both", or "final sale" (comma-separate to combine, e.g.
+          "returns,package protection")
+        - tags: the same values, read only when _redo_type is absent
+
+        Matching ignores case, and treats spaces, underscores, and hyphens as
+        equivalent, so "Package_Protection" and "package protection" are the same
+        value. A value Redo does not recognize is treated as returns coverage.
       operationId: Custom Order Sync
       parameters:
         - $ref: '#/components/parameters/store-id.param'
@@ -4297,7 +4305,7 @@ components:
           type: array
         tags:
           default: []
-          description: Tags (use "returns", "package protection", or "both" for Redo items)
+          description: Tags. On a Redo coverage line item, use "returns", "package protection", "both", or "final sale". Read only when the `_redo_type` property is absent.
           items:
             type: string
           title: Tags
