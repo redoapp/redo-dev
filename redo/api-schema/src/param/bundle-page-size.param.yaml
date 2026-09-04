@@ -1,0 +1,5 @@
+description: Page size, defaults to 50
+example: 50
+in: header
+name: X-Page-Size
+schema: { maximum: 250, minimum: 1, type: integer }
