@@ -117,6 +117,7 @@ paths:
     { $ref: path/products-bulk-upload.path.yaml }
   # Returns
   /returns/{returnId}: { $ref: path/return.path.yaml }
+  /returns/{returnId}/approve: { $ref: path/return-approve.path.yaml }
   /returns/{returnId}/comments: { $ref: path/return-comments.path.yaml }
   /returns/{returnId}/process: { $ref: path/return-process.path.yaml }
   /returns/{returnId}/status: { $ref: path/return-status.path.yaml }
