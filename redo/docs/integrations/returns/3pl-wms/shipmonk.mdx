@@ -59,7 +59,7 @@ In ShipMonk, go to **Settings > Stores**, find the row whose **Type** matches th
 </Accordion>
 
 <Accordion title="Products and Orders Synced to ShipMonk" icon="box">
-Your products and orders must already be synced to ShipMonk, typically through your e-commerce platform (Shopify, BigCommerce, etc.). Returns cannot be created for products or orders that don't exist in ShipMonk's system.
+Your products and orders must already be synced to ShipMonk, typically through your e-commerce platform (Shopify, BigCommerce, etc.). By default, returns cannot be created for orders that don't exist in ShipMonk's system. If some of your orders are fulfilled outside ShipMonk, see the **Blind returns fallback** setting below.
 </Accordion>
 </AccordionGroup>
 
@@ -80,6 +80,7 @@ In the configuration form, provide:
 - **Store ID** (required): Your ShipMonk store identifier
 - **API Key** (required): Your ShipMonk API key for authentication
 - **Sandbox Mode** (optional): Enable this to use ShipMonk's sandbox environment for testing before going live
+- **Blind returns fallback** (optional): Create the RMA in ShipMonk even when the original order can't be found there, for example orders fulfilled by another warehouse or merged by ShipMonk. The RMA is built from the return's SKUs, quantities, and tracking number, but is not linked to a ShipMonk order.
 
 Click **Save** to complete the connection.
 </Step>
