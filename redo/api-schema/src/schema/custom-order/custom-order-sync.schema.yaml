@@ -109,6 +109,16 @@ properties:
       $ref: ./custom-order-transaction.schema.yaml
     title: Transactions
     type: array
+  refunds:
+    default: []
+    description:
+      Refunds already issued against this order. Redo uses them to work out what
+      has already been returned to the shopper and to derive the order's
+      financial status. Send the full set on every sync.
+    items:
+      $ref: ./custom-order-refund.schema.yaml
+    title: Refunds
+    type: array
 required:
   [
     id,

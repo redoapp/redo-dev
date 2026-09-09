@@ -150,6 +150,55 @@ differently based on which one you send, so pick the closest match and use
 Cancelling does not by itself close the return window. To stop items being
 returned, send `returnableQuantity: 0` on every line item.
 
+### Refunds
+
+Send refunds you have already issued against the order in the `refunds` array.
+Redo does not issue these refunds; it reads them to know what the shopper has
+already been paid back, and to derive the order's financial status.
+
+```typescript
+refunds: [
+  {
+    id: "refund-1",
+    createdAt: "2026-02-01T00:00:00Z",
+    note: "Damaged in transit",
+    lineItems: [
+      {
+        lineItemId: "line-1",
+        quantity: 1,
+        subtotalSet: {
+          shopMoney: { amount: "20.00", currencyCode: "USD" },
+          presentmentMoney: { amount: "20.00", currencyCode: "USD" },
+        },
+        totalTaxSet: {
+          shopMoney: { amount: "1.60", currencyCode: "USD" },
+          presentmentMoney: { amount: "1.60", currencyCode: "USD" },
+        },
+      },
+    ],
+    shippingRefunds: [],
+    orderLevelRefunds: [],
+  },
+]
+```
+
+`lineItemId` must match the `id` of a line item on the same order. A refund line
+referencing an unknown line item is ignored, so re-sync the order with its line
+items whenever you send refunds against them.
+
+Use `shippingRefunds` for refunded shipping and `orderLevelRefunds` for amounts
+refunded against the order as a whole, such as a goodwill adjustment. Both take
+an `amountSet`, an optional `taxAmountSet`, and an optional free-text `reason`.
+Send those amounts as positive values.
+
+Refunds are replaced on every re-sync, so send the full set each time, using a
+stable `id` per refund.
+
+Redo derives the order's financial status from what you send: `paid` with no
+refunds, `partially_refunded` while the refunded total is below the order total,
+and `refunded` once it reaches it. A cancelled order is `voided` regardless of
+refunds.
+
 ## Coverage
 
 ### The Redo coverage line item

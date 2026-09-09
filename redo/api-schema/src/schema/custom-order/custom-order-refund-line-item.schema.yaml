@@ -1,0 +1,27 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  A line item refunded by a refund on a custom order.
+
+  `lineItemId` must match the `id` of a line item on the same order. A refund
+  line item that references an unknown line item is ignored.
+properties:
+  lineItemId:
+    description: ID of the order line item being refunded
+    title: Line Item ID
+    type: string
+  quantity:
+    description: Quantity refunded. Must be greater than zero.
+    minimum: 1
+    title: Quantity
+    type: integer
+  subtotalSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded amount for this line, excluding tax
+    title: Subtotal Set
+  totalTaxSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded tax for this line
+    title: Total Tax Set
+required: [lineItemId, quantity, subtotalSet, totalTaxSet]
+title: Custom Order Refund Line Item
+type: object
