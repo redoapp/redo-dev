@@ -1,0 +1,20 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: |
+  A refunded amount that is not tied to a line item, used for shipping refunds
+  and order-level refunds. Send amounts as positive values.
+properties:
+  amountSet:
+    $ref: ./money-set.schema.yaml
+    description: Refunded amount, excluding tax
+    title: Amount Set
+  taxAmountSet:
+    $ref: ./money-set.schema.yaml
+    description: Tax refunded with this amount. Defaults to zero.
+    title: Tax Amount Set
+  reason:
+    description: Free-text reason recorded with the refund
+    title: Reason
+    type: string
+required: [amountSet]
+title: Custom Order Refund Amount
+type: object

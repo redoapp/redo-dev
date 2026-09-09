@@ -4615,6 +4615,106 @@ components:
         - paymentGateway
       title: Custom Order Transaction
       type: object
+    custom-order-refund-line-item.schema:
+      description: |
+        A line item refunded by a refund on a custom order.
+
+        `lineItemId` must match the `id` of a line item on the same order. A refund
+        line item that references an unknown line item is ignored.
+      properties:
+        lineItemId:
+          description: ID of the order line item being refunded
+          title: Line Item ID
+          type: string
+        quantity:
+          description: Quantity refunded. Must be greater than zero.
+          minimum: 1
+          title: Quantity
+          type: integer
+        subtotalSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded amount for this line, excluding tax
+          title: Subtotal Set
+        totalTaxSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded tax for this line
+          title: Total Tax Set
+      required:
+        - lineItemId
+        - quantity
+        - subtotalSet
+        - totalTaxSet
+      title: Custom Order Refund Line Item
+      type: object
+    custom-order-refund-amount.schema:
+      description: |
+        A refunded amount that is not tied to a line item, used for shipping refunds
+        and order-level refunds. Send amounts as positive values.
+      properties:
+        amountSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Refunded amount, excluding tax
+          title: Amount Set
+        taxAmountSet:
+          $ref: '#/components/schemas/money-set.schema'
+          description: Tax refunded with this amount. Defaults to zero.
+          title: Tax Amount Set
+        reason:
+          description: Free-text reason recorded with the refund
+          title: Reason
+          type: string
+      required:
+        - amountSet
+      title: Custom Order Refund Amount
+      type: object
+    custom-order-refund.schema:
+      description: |
+        A refund already issued against the order in your system.
+
+        Refunds are informational: Redo uses them to know what has already been
+        returned to the shopper, and does not issue them. Send every refund on the
+        order each time you sync it.
+      properties:
+        id:
+          description: Refund ID in external system. Unique within the order.
+          title: ID
+          type: string
+        createdAt:
+          description: Timestamp the refund was issued
+          title: Created At
+          type: string
+        note:
+          description: Note recorded with the refund
+          title: Note
+          type:
+            - string
+            - 'null'
+        lineItems:
+          default: []
+          description: Line items refunded by this refund
+          items:
+            $ref: '#/components/schemas/custom-order-refund-line-item.schema'
+          title: Line Items
+          type: array
+        shippingRefunds:
+          default: []
+          description: Shipping amounts refunded by this refund
+          items:
+            $ref: '#/components/schemas/custom-order-refund-amount.schema'
+          title: Shipping Refunds
+          type: array
+        orderLevelRefunds:
+          default: []
+          description: Amounts refunded against the order as a whole rather than a line item or shipping, such as a goodwill adjustment.
+          items:
+            $ref: '#/components/schemas/custom-order-refund-amount.schema'
+          title: Order Level Refunds
+          type: array
+      required:
+        - id
+        - createdAt
+      title: Custom Order Refund
+      type: object
     custom-order-sync.schema:
       description: |
         An order synced into Redo so it can be returned.
@@ -4727,6 +4827,13 @@ components:
           items:
             $ref: '#/components/schemas/custom-order-transaction.schema'
           title: Transactions
+          type: array
+        refunds:
+          default: []
+          description: Refunds already issued against this order. Redo uses them to work out what has already been returned to the shopper and to derive the order's financial status. Send the full set on every sync.
+          items:
+            $ref: '#/components/schemas/custom-order-refund.schema'
+          title: Refunds
           type: array
       required:
         - id
