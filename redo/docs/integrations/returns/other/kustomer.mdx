@@ -1,0 +1,157 @@
+---
+title: "Kustomer"
+description: "Sync Redo return, exchange, and order data to Kustomer customer timelines"
+---
+
+import IntegrationSupport from '/snippets/integration-support.mdx';
+
+## What is Kustomer?
+
+Kustomer is a customer service CRM platform that organizes all customer
+interactions into a single timeline view. Instead of siloed tickets, agents see a
+complete history of every conversation, order, and event for each customer.
+
+## What Does the Integration Do?
+
+The Redo integration automatically syncs return data into Kustomer as structured
+timeline cards. When a return is created or updated in Redo, the data appears on
+the customer's timeline in Kustomer, giving agents full visibility into return
+details without leaving their workspace.
+
+For each return, agents can see:
+
+- **Return information** — status, outcome type, return method, order number
+- **Customer details** — name, email, country, shipping and billing addresses
+- **Charge breakdown** — total return value, refund amount, store credit,
+  exchange value, handling fee, and order context
+- **Items** — returned items summary, exchange items, and primary return reason
+- **Tracking** — carrier, tracking number, label status, and tracking URLs
+- **Metadata** — Redo return ID, trigger type, timestamps, and refund details
+
+### Why It Matters
+
+- **No context-switching** — agents stay in Kustomer instead of logging into Redo
+  separately
+- **Real-time updates** — return cards update automatically whenever the return
+  status changes in Redo
+- **Idempotent syncing** — each return maps to a single timeline card, so
+  duplicate webhooks never create duplicate entries
+- **Automatic customer matching** — returns are matched to Kustomer customers by
+  email address, and new customers are created automatically if needed
+
+## How to Set It Up
+
+The Redo app is available in the Kustomer App Directory for all Kustomer
+organizations to install.
+
+### Prerequisites
+
+<AccordionGroup>
+<Accordion title="Kustomer Environment" icon="circle-check">
+  A Kustomer organization with admin access.
+</Accordion>
+
+<Accordion title="Redo Account" icon="store">
+  An active Redo account with webhook access. Contact your Redo account manager
+  if you're unsure.
+</Accordion>
+</AccordionGroup>
+
+### Installation
+
+<Steps>
+<Step title="Install the Redo App from the Kustomer App Directory">
+  In Kustomer, go to **Settings > App Directory** and search for **Redo**. Click
+  **Install** to add the app to your organization. This sets up the Klass
+  (data schema), workflow, and insight card automatically.
+</Step>
+
+<Step title="Send the Webhook URL to Redo">
+  After installation, locate the **Redo Returns** inbound webhook URL in your
+  Kustomer settings. Send this URL to your Redo account manager or to
+  **support@getredo.com** so Redo can configure your team's webhooks.
+</Step>
+
+<Step title="Verify the Connection">
+  Once Redo has configured the webhook, create or update a test return. Within a
+  few moments, a **Redo Return** card should appear on the customer's timeline in
+  Kustomer.
+</Step>
+</Steps>
+
+## How It Works
+
+The integration uses four components inside Kustomer:
+
+| Component              | Purpose                                                              |
+| ---------------------- | -------------------------------------------------------------------- |
+| **Klass** (`redo_return`) | Defines the data schema — all the fields that make up a Redo Return card |
+| **Inbound Webhook**    | A form hook endpoint that receives POST requests from Redo           |
+| **Workflow**           | Automation that processes incoming webhooks, finds or creates customers, and creates or updates KObjects |
+| **Insight Card**       | The visual layout agents see when viewing a Redo Return on the timeline |
+
+### Data Flow
+
+```
+Redo return created/updated
+    |
+    v
+Redo sends webhook (Public API format)
+    |
+    v
+Kustomer inbound webhook receives POST
+    |
+    v
+Workflow triggers:
+    |-- Find existing KObject by return ID
+    |       |
+    |   Found? --> Update existing card
+    |       |
+    |   Not found? --> Find customer by email
+    |                       |
+    |                   Found? --> Create card on existing customer
+    |                       |
+    |                   Not found? --> Create customer, then create card
+    |
+    v
+Agent sees "Redo Return" card on customer timeline
+```
+
+Each return is tracked by its Redo return ID (`externalId`), ensuring that
+repeated webhooks for the same return always update the existing card rather than
+creating duplicates.
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Return Card Not Appearing">
+  Verify that Redo has configured the webhook URL for your team. Check the
+  workflow logs in Kustomer at **Settings > Platform > Workflows >
+  redo-return-sync > View Logs** for any errors.
+</Accordion>
+
+<Accordion title="Customer Not Found">
+  The workflow matches customers by email address. If the customer's email in
+  Redo doesn't match any customer in Kustomer, a new customer profile will be
+  created automatically. Check that the return has a valid email address in Redo.
+</Accordion>
+
+<Accordion title="Financial Fields Show Incorrect Values">
+  Financial fields (refund, store credit, exchange) are mapped from
+  `return.totals.*` in the Redo payload. If values look wrong, verify the return
+  data in Redo and check the workflow mapping in Kustomer.
+</Accordion>
+
+<Accordion title="Stale Data on Existing Cards">
+  Return cards only update when Redo sends a new webhook for that return. If a
+  card shows outdated information, trigger a return update in Redo (e.g., by
+  changing the return status) to send a fresh webhook.
+</Accordion>
+</AccordionGroup>
+
+## How Long Does It Take?
+
+Setup takes approximately **10 minutes** — install the app, send the webhook URL
+to Redo, and verify the connection.
+
+<IntegrationSupport integrationProvider="Kustomer" />
