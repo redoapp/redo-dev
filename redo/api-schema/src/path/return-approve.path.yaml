@@ -1,0 +1,77 @@
+description: Approve return.
+parameters:
+  - { $ref: ../param/return-id.param.yaml }
+post:
+  description: |
+    **BETA**: This endpoint is in beta and subject to change.
+
+    Approve a return so the customer can proceed with shipping items back. All
+    items on the return must be in `open` status. Optionally configure per-item
+    settings such as whether the customer must ship each item back. Setting
+    `shipBack` to `false` for an item creates a green return where the customer
+    keeps the item.
+  operationId: Return approve
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            customerNotes:
+              description: Notes to share with the customer upon approval.
+              type: string
+            items:
+              description:
+                Per-item approval configuration. If omitted, all items are
+                approved with default settings (ship back required).
+              items:
+                properties:
+                  id:
+                    description: Return item ID.
+                    example: "64e4d5e837572a4813b73e41"
+                    type: string
+                  shipBack:
+                    default: true
+                    description:
+                      Whether the customer must ship this item back. Defaults to
+                      true. Setting to false creates a green return where the
+                      customer keeps the item.
+                    type: boolean
+                required:
+                  - id
+                type: object
+              type: array
+          type: object
+    required: false
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              order:
+                $ref: ../schema/order-read.schema.yaml
+                description: The original order associated with the return.
+              return:
+                $ref: ../schema/return-read.schema.yaml
+                description: The updated return after approval.
+            required:
+              - return
+              - order
+            type: object
+      description: Return approved successfully
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description:
+        Bad request (e.g., invalid item IDs or items not in open status)
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Approve Return
+  tags: [Returns]
+summary: Approve return
