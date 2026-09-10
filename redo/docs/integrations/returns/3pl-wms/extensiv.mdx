@@ -23,21 +23,17 @@ When Extensiv finishes receiving the items, it fires a **`ReceiptComplete`** web
 
 ## How to Set It Up
 
-<Note>
-**Extensiv setup is handled by Redo support, not self-serve.** The Extensiv integration does not yet have a configuration form in the Redo merchant dashboard. To connect Extensiv to your Redo account, contact [Redo support](mailto:support@getredo.com) with the credentials below and we'll provision the integration for you.
-</Note>
-
 ### Prerequisites
 
-Before reaching out to Redo support, make sure you have the following from your Extensiv account:
+You need administrative access to your Redo merchant dashboard to configure integrations. Before you start, make sure you have the following from your Extensiv account:
 
 <AccordionGroup>
 <Accordion title="Active Extensiv Account" icon="circle-check">
 You must have an active Extensiv (3PL Warehouse Manager) account with API access enabled at `secure-wms.com`.
 </Accordion>
 
-<Accordion title="OAuth Client ID and Client Secret" icon="key">
-Extensiv uses OAuth 2.0 client credentials. Your Extensiv admin can provision an API client and provide the **Client ID** and **Client Secret**. Redo exchanges these for an access token at `https://secure-wms.com/AuthServer/api/Token` and refreshes the token automatically before it expires.
+<Accordion title="OAuth Client ID, Client Secret, and User Login" icon="key">
+Extensiv uses OAuth 2.0 client credentials. Your Extensiv admin can create an API application (**Settings** → **Integrations** → **API** in Extensiv) and provide the **Client ID**, **Client Secret**, and the **User Login** associated with that application. Redo exchanges these for an access token at `https://secure-wms.com/AuthServer/api/Token` and refreshes the token automatically before it expires.
 </Accordion>
 
 <Accordion title="Customer ID" icon="user">
@@ -49,19 +45,19 @@ The numeric Extensiv **Facility ID** for the warehouse that will receive returns
 </Accordion>
 
 <Accordion title="Webhook Setup at Extensiv" icon="bell">
-Your Extensiv admin must enable the **`ReceiptComplete`** webhook event and point it at the webhook URL Redo provides during onboarding. Redo's webhook handler validates each event with Extensiv's RSA-signed payloads, so no shared secret is required — only the subscription itself.
+Your Extensiv admin must enable the **`ReceiptComplete`** webhook event and point it at Redo's Extensiv webhook URL. Contact [Redo support](mailto:support@getredo.com) if you don't have the URL. Redo's webhook handler validates each event with Extensiv's RSA-signed payloads, so no shared secret is required — only the subscription itself.
 </Accordion>
 </AccordionGroup>
 
 ### Configuration Steps
 
 <Steps>
-<Step title="Send Credentials to Redo Support">
-Email [support@getredo.com](mailto:support@getredo.com) with your Extensiv **Client ID**, **Client Secret**, **Customer ID**, and **Facility ID**. Mention which Redo team the integration is for.
+<Step title="Open the Extensiv Integration in Redo">
+In your Redo dashboard, go to **Settings** → **Integrations** and select **Extensiv** from the integrations catalog.
 </Step>
 
-<Step title="Redo Provisions the Integration">
-Redo support will create the Extensiv integration record on your team and confirm when it's active. You don't need to take action in the Redo dashboard.
+<Step title="Enter Your Credentials and Connect">
+Click **Connect** on the **Returns** row to open the credentials form. Enter your Extensiv **Client ID**, **Client Secret**, **User Login**, **Customer ID**, and **Facility ID**, then click **Connect**. The client secret is stored securely and is not displayed again after saving. The integration shows **Connected** once the credentials are saved.
 </Step>
 
 <Step title="Subscribe the Webhook in Extensiv">
@@ -92,11 +88,11 @@ If a return has multiple shipments (for example, a single return covering items 
 
 | Step                       | Time           | Description                                                          |
 | -------------------------- | -------------- | -------------------------------------------------------------------- |
-| Gather Credentials         | 1-2 days       | Get OAuth client, Customer ID, and Facility ID from your 3PL/Extensiv admin |
-| Redo Support Provisioning  | 1 business day | Redo creates and validates the integration on your team              |
+| Gather Credentials         | 1-2 days       | Get OAuth client, User Login, Customer ID, and Facility ID from your 3PL/Extensiv admin |
+| Connect in Redo            | 5 minutes      | Enter credentials in the Redo dashboard                              |
 | Configure Webhook          | 10-15 minutes  | Subscribe `ReceiptComplete` in Extensiv                              |
 | First Return Test          | 10-15 minutes  | Create test return and verify the receiver + auto-processing flow    |
-| **Total Setup**            | **2-3 business days** | End-to-end, dependent on Extensiv admin availability          |
+| **Total Setup**            | **1-2 business days** | End-to-end, dependent on Extensiv admin availability          |
 
 ### Operational Timing
 
