@@ -1,0 +1,24 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: Request body for setting external identifiers on return items.
+properties:
+  items:
+    description: >-
+      List of return items to update. Each entry must include the return item
+      `id` and the `externalIdentifier` to assign to it.
+    items:
+      properties:
+        externalIdentifier:
+          description: Merchant-supplied identifier for this return item.
+          title: External Identifier
+          type: string
+        id:
+          description: Return item ID.
+          title: ID
+          type: string
+      required: [id, externalIdentifier]
+      type: object
+    title: Items
+    type: array
+required: [items]
+title: Return Item Identifiers Request
+type: object
