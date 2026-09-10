@@ -1,0 +1,39 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description:
+  Outcome of a bundle upsert, reported for each bundle in the request.
+properties:
+  total_count:
+    description: Number of bundles in the request.
+    title: Total Count
+    type: integer
+  applied_count:
+    description: Number of bundles now stored as requested.
+    title: Applied Count
+    type: integer
+  failed_count:
+    description: Number of bundles that were not stored.
+    title: Failed Count
+    type: integer
+  results:
+    description: One entry per bundle, in the order they were submitted.
+    items:
+      properties:
+        parent_sku:
+          description: Parent SKU of the bundle this result describes.
+          title: Parent SKU
+          type: string
+        status:
+          description:
+            "`applied` means the stored bundle matches the request. `failed`
+            means it does not, most often because a SKU could not be matched to
+            a product."
+          enum: [applied, failed]
+          title: Status
+          type: string
+      required: [parent_sku, status]
+      type: object
+    title: Results
+    type: array
+required: [total_count, applied_count, failed_count, results]
+title: Bundle Upsert Response
+type: object
