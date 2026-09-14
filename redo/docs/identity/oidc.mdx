@@ -1,0 +1,126 @@
+---
+title: "OpenID Connect"
+description: "Reference for Redo as an OpenID Connect relying party"
+icon: "key"
+---
+
+Redo acts as an [OpenID Connect
+1.0](https://openid.net/specs/openid-connect-core-1_0.html) relying party for
+Merchant App sign-in. For IdP setup, see [SSO with
+OIDC](/docs/identity/merchant-sso-oidc).
+
+## Client registration
+
+Register Redo in your IdP with these values.
+
+| Setting                  | Value                                         |
+| ------------------------ | --------------------------------------------- |
+| Client type              | Confidential                                  |
+| Grant type               | `authorization_code`                          |
+| Response type            | `code`                                        |
+| Redirect URI             | `https://app.getredo.com/login/oidc/callback` |
+| Post-logout redirect URI | Not used                                      |
+| Scopes                   | `openid email profile`                        |
+| Token endpoint auth      | `client_secret_basic`                         |
+| ID token signing         | `RS256`                                       |
+
+## Redo configuration
+
+Set under **Settings** → **General** → **Single sign-on**.
+
+| Field         | Type       | Description                                                                                                                 |
+| ------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Issuer URL    | `string`   | Must equal the `issuer` in the discovery document, and the `iss` claim of every ID token. Stored without a trailing slash.   |
+| Client ID     | `string`   |                                                                                                                             |
+| Client secret | `string`   | Stored encrypted; write-only after save                                                                                     |
+| Email domains | `string[]` | Lowercase domains. A sign-in email matches when its domain equals one of these exactly; subdomains don't match.             |
+| Require SSO   | `boolean`  | When `true`, password and email-code sign-in are rejected for matching domains. Default `false`.                            |
+
+One configuration per store.
+
+## Endpoints used
+
+Redo resolves all provider endpoints from
+`<issuer>/.well-known/openid-configuration` per [OpenID Connect
+Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html), and
+caches the document and JWKS for up to one hour.
+
+| Endpoint                 | Use                                                   |
+| ------------------------ | ----------------------------------------------------- |
+| `authorization_endpoint` | Browser redirect to start sign-in                     |
+| `token_endpoint`         | Code exchange, authenticated with the client secret   |
+| `jwks_uri`               | ID token signature verification                       |
+| `userinfo_endpoint`      | Fetched only if the ID token has no `email` claim     |
+
+## Authorization request
+
+Redo redirects the browser to `authorization_endpoint` with:
+
+| Parameter               | Value                                          |
+| ----------------------- | ---------------------------------------------- |
+| `response_type`         | `code`                                         |
+| `client_id`             | Configured client ID                           |
+| `redirect_uri`          | `https://app.getredo.com/login/oidc/callback`  |
+| `scope`                 | `openid email profile`                         |
+| `state`                 | Opaque, single-use, bound to the browser session |
+| `nonce`                 | Opaque, single-use, verified against the ID token |
+| `code_challenge`        | PKCE challenge                                 |
+| `code_challenge_method` | `S256`                                         |
+| `login_hint`            | The email address entered on the sign-in page  |
+
+PKCE is sent in addition to the client secret. Providers that don't support
+PKCE ignore the parameters.
+
+## ID token validation
+
+Redo rejects the sign-in unless all of the following hold, per [OIDC Core
+§3.1.3.7](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation):
+
+- Signature verifies against a key in `jwks_uri` using `RS256`
+- `iss` equals the configured issuer
+- `aud` contains the client ID, and `azp` equals it when present
+- `exp` is in the future and `iat` is within the last 10 minutes (with 60
+  seconds of clock skew allowed)
+- `nonce` matches the value sent in the authorization request
+
+## Claims
+
+| Claim   | Use                                                                                                |
+| ------- | -------------------------------------------------------------------------------------------------- |
+| `email` | Required. Matched case-insensitively against the store's users. Read from UserInfo if absent from the ID token. |
+| `sub`   | Logged for support; not used for matching                                                          |
+
+All other claims, including `email_verified`, `name`, `groups`, and
+`roles`, are ignored. Users are not created at sign-in; see
+[SCIM](/docs/identity/scim) for provisioning.
+
+## Sign-in flow
+
+1. The user enters an email address at `https://app.getredo.com/login`
+2. If the domain matches the store's **Email domains**, Redo issues the
+   authorization request above. Otherwise the existing password or email-code
+   flow continues.
+3. The IdP redirects to the redirect URI with `code` and `state`
+4. Redo validates `state`, exchanges the code, validates the ID token, and
+   resolves `email` to a user
+5. Redo starts a session with that user's roles. Session lifetime is the same
+   as for other sign-in methods.
+
+Redo doesn't support IdP-initiated sign-in or RP-initiated logout. Signing
+out of Redo ends the Redo session only.
+
+## Errors
+
+Errors are shown on the sign-in page. Provider errors returned on the
+redirect URI are shown with their `error` code.
+
+| Message                                                    | Cause                                                                              |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Single sign-on isn't set up for this email domain          | Email domain isn't in **Email domains**                                            |
+| Couldn't reach your identity provider                      | Discovery or JWKS fetch failed, or the discovery `issuer` didn't match             |
+| Your identity provider denied the sign-in                  | Authorization endpoint returned `error`, e.g. `access_denied`                      |
+| Your identity provider rejected Redo's credentials         | Token endpoint returned [`invalid_client`](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2) |
+| Your identity provider didn't return an email address      | No `email` claim in the ID token or UserInfo                                       |
+| No Redo user matches this email address                    | `email` doesn't match a user on the store                                          |
+| Sign-in expired, please try again                          | `state` missing, reused, or older than 10 minutes                                  |
+| Password sign-in is disabled for this account              | **Require SSO** is on for the user's domain                                        |
