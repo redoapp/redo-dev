@@ -1,0 +1,124 @@
+---
+title: "User Provisioning with SCIM"
+description: "Provision, update, and deactivate Merchant App users from your identity provider with SCIM 2.0"
+icon: "users-gear"
+---
+
+Redo exposes a [SCIM 2.0](https://datatracker.ietf.org/doc/html/rfc7644)
+service provider so your identity provider (IdP) can create, update, and
+deactivate Merchant App users and assign their roles. Pair it with [single
+sign-on](/docs/identity/merchant-sso-oidc) so the IdP owns the
+whole user lifecycle. Endpoint and attribute details are in the [SCIM
+reference](/docs/identity/scim).
+
+| Setting        | Value                                 |
+| -------------- | ------------------------------------- |
+| Base URL       | `https://api.getredo.com/scim/v2`     |
+| Authentication | `Authorization: Bearer <SCIM token>`  |
+| Unique user ID | `userName` (the user's email address) |
+
+## Prerequisites
+
+- The **Admin** role in Redo
+- Admin access to your IdP, with an IdP that supports SCIM for custom
+  applications (see [Provider notes](#provider-notes))
+
+## Generate a SCIM token
+
+1. In the [Redo Dashboard](https://app.getredo.com), go to **Settings** →
+   **General** → **Single sign-on**
+2. Under **Provisioning**, click **Generate SCIM token** and copy it
+
+The token is shown once. Generating a new token revokes the previous one, so
+update your IdP in the same sitting.
+
+## Provider notes
+
+<AccordionGroup>
+<Accordion title="Okta">
+  Follow [Connect your SCIM app to
+  Okta](https://developer.okta.com/docs/guides/scim-provisioning-integration-connect/main/).
+  On the Redo app integration, enable SCIM provisioning under **General** →
+  **App Settings**, then on the **Provisioning** tab set:
+
+  - **SCIM connector base URL**: `https://api.getredo.com/scim/v2`
+  - **Unique identifier field for users**: `userName`
+  - **Supported provisioning actions**: Push New Users, Push Profile Updates,
+    Push Groups
+  - **Authentication Mode**: HTTP Header, with the SCIM token
+
+  Under **To App**, enable **Create Users**, **Update User Attributes**, and
+  **Deactivate Users**. Use **Push Groups** to assign roles.
+</Accordion>
+
+<Accordion title="Microsoft Entra ID">
+  Follow [Configure automatic user
+  provisioning](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/configure-automatic-user-provisioning-portal)
+  on the Redo enterprise application. Set **Tenant URL** to
+  `https://api.getredo.com/scim/v2` and **Secret Token** to the SCIM token,
+  then **Test Connection**.
+
+  Entra provisions only users and groups assigned to the application, and
+  runs incremental cycles roughly every 40 minutes. See [SCIM in
+  Entra](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups)
+  for attribute mapping details.
+</Accordion>
+
+<Accordion title="Google Workspace">
+  Google Workspace [supports automated
+  provisioning](https://support.google.com/a/answer/6087519) only for apps in
+  its catalog, not for custom SCIM endpoints. Manage users in Redo directly
+  or through another provisioning tool.
+</Accordion>
+</AccordionGroup>
+
+## What provisioning does
+
+- **Create**: the user appears under **Settings** → **General** → **Users**
+  with no roles unless a pushed group assigns one. No invitation email is
+  sent.
+- **Update**: names sync. The email address is the identifier and can't
+  change.
+- **Deactivate**: sessions end immediately. The user is kept and can be
+  reactivated; nothing is hard-deleted.
+
+Full semantics are in the [SCIM reference](/docs/identity/scim#users).
+
+## Roles
+
+Pushed SCIM groups map to Redo **roles** by name. A group's display name must
+match an existing role under **Settings** → **General** → **Roles**;
+otherwise the push is rejected. Group membership then adds or removes that
+role on each member. Roles you assign manually in Redo aren't touched.
+
+<Note>
+  SCIM groups don't create Redo **Groups** (**Settings** → **General** →
+  **Groups**), which are pools of users for routing support conversations.
+</Note>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Test Connection fails with 401">
+  The token was pasted incorrectly or has been revoked by generating a new
+  one. Generate a fresh token in Redo and update the IdP.
+</Accordion>
+
+<Accordion title="User is created in the IdP but can't sign in">
+  Confirm the user is `active` and that `userName` matches the email the IdP
+  asserts at SSO sign-in. If SSO isn't configured for their domain, they can
+  sign in with the email code.
+</Accordion>
+
+<Accordion title="Group push fails with 400">
+  The group's display name doesn't match a role name exactly. Rename the
+  group in your IdP, or create a role with that name under **Settings** →
+  **General** → **Roles** and retry.
+</Accordion>
+
+<Accordion title="A user was deactivated in the IdP but still has access">
+  Check the IdP's provisioning log for a failed `PATCH` or `DELETE`, and
+  confirm the user is assigned to the Redo application. Entra applies changes
+  on its next provisioning cycle rather than immediately.
+</Accordion>
+</AccordionGroup>

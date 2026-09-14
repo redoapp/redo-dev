@@ -112,11 +112,15 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["/docs/identity/introduction", "/docs/identity/merchant-sso-oidc"]
+            "pages": [
+              "/docs/identity/introduction",
+              "/docs/identity/merchant-sso-oidc",
+              "/docs/identity/scim-provisioning"
+            ]
           },
           {
             "group": "Reference",
-            "pages": ["/docs/identity/oidc"]
+            "pages": ["/docs/identity/oidc", "/docs/identity/scim"]
           }
         ]
       },
