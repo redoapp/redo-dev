@@ -216,6 +216,14 @@ properties:
           required: [id]
           title: Order item
           type: object
+        externalIdentifier:
+          description: >-
+            Merchant-supplied external identifier for this return item. Set via
+            `PUT /stores/{storeId}/returns/{returnId}/item-identifiers`. Null if
+            not set.
+          nullable: true
+          title: External Identifier
+          type: string
         externalReturnLineItemId:
           description: External return line item ID
           title: External Return Line Item ID
