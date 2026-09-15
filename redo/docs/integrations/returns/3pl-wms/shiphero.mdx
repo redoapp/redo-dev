@@ -117,10 +117,10 @@ Open the ShipHero integration and click **Manage** to change these at any time.
 
 These control what Redo does when ShipHero reports a status on the RMA.
 
-- **Processable statuses**: The ShipHero statuses that tell Redo to process the return. Defaults to **Complete** and **Warehouse Complete**. Leave both unselected to turn off automatic processing.
-- **Trust RMA status only**: Process every item on the RMA as soon as ShipHero reports it complete, without checking per-item received quantities. Use this if your warehouse doesn't report received counts.
+- **Processable statuses**: Statuses that tell Redo to process the return. Defaults to **Complete** and **Warehouse Complete**; leave both unselected to turn off automatic processing.
+- **Trust RMA status only**: Process all items as soon as ShipHero marks the RMA complete, without checking per-item received quantities. Use this if your warehouse doesn't report received counts.
 - **ShipHero statuses that mean rejected**: Free-text statuses that mark the return rejected in Redo. Case-insensitive.
-- **ShipHero statuses that flag for manual processing**: Free-text statuses that hold the return for your team to review rather than processing it.
+- **ShipHero statuses that flag for manual processing**: Free-text statuses that hold the return for your team to review instead of processing it.
 
 A given status can only appear in one of these three lists.
 
@@ -131,9 +131,9 @@ A given status can only appear in one of these three lists.
 
 ### Advanced settings
 
-- **Restock items in ShipHero through Redo**: When you process a return in Redo and mark items to restock, Redo adds them back to ShipHero inventory in the bin chosen for each item.
-- **Exchange hold delay (seconds)**: How long Redo waits after creating an exchange order before placing the ShipHero fulfillment hold. The delay gives ShipHero time to finish importing the order so the hold sticks. Defaults to 45 seconds.
-- **Common bins**: Saved ShipHero bin names, offered when you pick where to restock an item. Use **Validate** to confirm a bin exists in ShipHero.
+- **Restock items in ShipHero through Redo**: When you process a return in Redo, restocked items are added back to ShipHero inventory in the bin chosen for each item.
+- **Exchange hold delay (seconds)**: How long Redo waits after creating an exchange order before placing the ShipHero fulfillment hold, giving ShipHero time to import the order first. Defaults to 45 seconds.
+- **Common bins**: Saved bin names, offered when you pick where to restock an item. Use **Validate** to confirm a bin exists in ShipHero.
 
 ## Choosing a Warehouse
 
