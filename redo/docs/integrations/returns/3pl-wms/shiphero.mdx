@@ -58,7 +58,7 @@ You must have an active account with ShipHero.
 </Step>
 
 <Step title="Navigate to Integrations">
-Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard and locate the **ShipHero** card.
+Go to **Settings** > **General** > **Integrations** in your Redo dashboard and locate the **ShipHero** card.
 </Step>
 
 <Step title="Connect ShipHero">
@@ -73,7 +73,7 @@ Click **Connect** on the ShipHero integration card.
 </Step>
 
 <Step title="Complete Setup">
-Click **Connect** to complete the setup.
+Click **Save** to complete the setup.
 </Step>
 
 <Step title="Test the Integration">
@@ -100,9 +100,7 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
 </Step>
 
 <Step title="Return Status Updates">
-  **Every 15-30 minutes**. ShipHero sends updates to Redo on a scheduled basis,
-  so there may be a delay between when the warehouse updates return status in
-  ShipHero and when it appears in Redo.
+**Automatic via webhook**. ShipHero sends return status changes to Redo as warehouse staff receive and process the return.
 </Step>
 
 <Step title="Warehouse Processing">
@@ -110,6 +108,26 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
   arrive at the facility.
 </Step>
 </Steps>
+
+## Settings
+
+Open the ShipHero integration and click **Manage** to change these at any time.
+
+### Return status handling
+
+These control what Redo does when ShipHero reports a status on the RMA.
+
+- **Processable Statuses**: Statuses that tell Redo to process the return. Defaults to **Complete** and **Warehouse Complete**; leave both unselected to turn off automatic processing.
+- **Trust RMA status only**: Process all items as soon as ShipHero marks the RMA complete, without checking per-item received quantities. Use this if your warehouse doesn't report received counts.
+- **ShipHero statuses that mean rejected**: Free-text statuses that mark the return rejected in Redo.
+- **ShipHero statuses that flag for manual processing**: Free-text statuses that hold the return for your team to review instead of processing it.
+
+Status matching is case-insensitive, and a given status can only appear in one of these three lists.
+
+### Status updates sent back to ShipHero
+
+- **Update status on rejection**: Set a custom status on the ShipHero RMA when a return is rejected in Redo.
+- **Update status on reset**: Set a custom status on the ShipHero RMA when a return is reset.
 
 ## Troubleshooting
 
