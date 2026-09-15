@@ -78,9 +78,9 @@ Permission names match those shown in Redo. When a tool lists multiple permissio
 
 | Tool | Description | Required permission |
 |---|---|---|
-| **generate_custom_analytics_report** | Generate a custom analytics report from a plain-English question. Returns immediately with a report ID and URL while the report is prepared; the finished report appears on your Redo analytics page and can be viewed or downloaded as a CSV. | Other |
-| **edit_custom_analytics_report** | Regenerate an existing report from a full replacement spec describing the desired metrics, dimensions, filters, and date range. The previous version stays available while the new one is prepared. | Other |
-| **get_custom_analytics_report** | Get a report's current state — status (preparing, ready, or failed with an error message), title, requested question, columns, and report URL once ready. Use to poll after generating or editing a report. | Other |
+| **generate_custom_analytics_report** | Create a report from a plain-English question and provide a link when it is ready. The AI asks for clarification or approval when needed. | Other |
+| **edit_custom_analytics_report** | Update an existing report and wait for completion. If the request cannot be supported, the report stays unchanged. | Other |
+| **get_custom_analytics_report** | Get a report's current status, title, requested question, columns, and report link when ready. | Other |
 | **list_custom_analytics_reports** | List your custom reports, most recent first, with ID, title, status, and columns. Supports searching by title or requested question. | Other |
 
 ### Discounts
