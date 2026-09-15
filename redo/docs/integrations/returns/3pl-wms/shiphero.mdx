@@ -58,7 +58,7 @@ You must have an active account with ShipHero.
 </Step>
 
 <Step title="Navigate to Integrations">
-Go to **Settings** > **Returns & Claims** > **Integrations** in your Redo dashboard and locate the **ShipHero** card.
+Go to **Settings** > **General** > **Integrations** in your Redo dashboard and locate the **ShipHero** card.
 </Step>
 
 <Step title="Connect ShipHero">
@@ -69,11 +69,20 @@ Click **Connect** on the ShipHero integration card.
   In the configuration form, provide:
 
   - **Refresh Token** (required): Paste your ShipHero refresh token
-  - **Customer Account ID** (optional): Only required if using an access token from a child account
+  - **Customer Account ID** (optional): Required if your refresh token belongs to a child account
+
+  Everything else can be left at its defaults for now. See [Settings](#settings) below.
 </Step>
 
 <Step title="Complete Setup">
-Click **Connect** to complete the setup.
+Click **Save** to complete the setup.
+
+<Note>
+  You don't need to create a webhook in ShipHero. Redo registers its own
+  **Return Update** webhook on your ShipHero account as part of connecting. If
+  that fails, the connection is rejected and nothing is saved, so a successful
+  save means the webhook is in place.
+</Note>
 </Step>
 
 <Step title="Test the Integration">
@@ -100,9 +109,8 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
 </Step>
 
 <Step title="Return Status Updates">
-  **Every 15-30 minutes**. ShipHero sends updates to Redo on a scheduled basis,
-  so there may be a delay between when the warehouse updates return status in
-  ShipHero and when it appears in Redo.
+  **Real-time**. ShipHero pushes each return update to Redo over a webhook as
+  your warehouse works the RMA. Redo does not poll on a schedule.
 </Step>
 
 <Step title="Warehouse Processing">
@@ -110,6 +118,48 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
   arrive at the facility.
 </Step>
 </Steps>
+
+## Settings
+
+Open the ShipHero integration and click **Manage** to change these at any time.
+
+### Return status handling
+
+These control what Redo does when ShipHero reports a status on the RMA.
+
+- **Processable statuses**: The ShipHero statuses that tell Redo to process the return. Defaults to **Complete** and **Warehouse Complete**. Leave both unselected to turn off automatic processing.
+- **Trust RMA status only**: Process every item on the RMA as soon as ShipHero reports it complete, without checking per-item received quantities. Use this if your warehouse doesn't report received counts.
+- **ShipHero statuses that mean rejected**: Free-text statuses that mark the return rejected in Redo. Case-insensitive.
+- **ShipHero statuses that flag for manual processing**: Free-text statuses that hold the return for your team to review rather than processing it.
+
+A given status can only appear in one of these three lists.
+
+### Status updates sent back to ShipHero
+
+- **Update status on rejection**: Set a custom status on the ShipHero RMA when a return is rejected in Redo.
+- **Update status on reset**: Set a custom status on the ShipHero RMA when a return is reset.
+
+### Advanced settings
+
+- **Restock items in ShipHero through Redo**: When you process a return in Redo and mark items to restock, Redo adds them back to ShipHero inventory in the bin chosen for each item.
+- **Exchange hold delay (seconds)**: How long Redo waits after creating an exchange order before placing the ShipHero fulfillment hold. The delay gives ShipHero time to finish importing the order so the hold sticks. Defaults to 45 seconds.
+- **Common bins**: Saved ShipHero bin names, offered when you pick where to restock an item. Use **Validate** to confirm a bin exists in ShipHero.
+
+## Choosing a Warehouse
+
+By default, Redo matches the return address on the RMA against your ShipHero warehouses, falling back to your first warehouse if none match.
+
+To route returns to a specific warehouse, go to **Settings** > **Returns & claims** > **Shipping**, open the return address, and under **External return hub** choose **ShipHero** and pick the warehouse.
+
+## When Redo Doesn't Create an RMA
+
+Redo skips RMA creation when:
+
+- The return doesn't need a shipping label.
+- The return is routed to a Redo Returns Center rather than your own warehouse.
+- The return is for a warranty registration or another order that only exists in Redo, since there's no ShipHero order to attach the RMA to.
+
+Keep-it items are left off the RMA, since nothing is shipped back.
 
 ## Troubleshooting
 
@@ -122,6 +172,38 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
   ShipHero. The email is not passed to Redo — only the refresh token matters.
   Once you have the token, enter it in the Redo integration form and complete
   setup as normal.
+</Accordion>
+
+<Accordion title="Connecting fails with a customer account ID error" icon="triangle-exclamation">
+  If your refresh token belongs to a child account, ShipHero needs to know which
+  account the request is for.
+
+  **Fix:** Enter your **Customer Account ID** in the integration form and
+  connect again.
+</Accordion>
+
+<Accordion title="No ShipHero order found for the order" icon="triangle-exclamation">
+  Redo attaches every RMA to the matching ShipHero order, looking it up by the
+  order's ID and order number. If neither matches, the RMA can't be created.
+
+  **Fix:** Confirm the order exists in ShipHero and that its partner order ID or
+  order number matches the one on the original order.
+</Accordion>
+
+<Accordion title="SKU does not exist on the order" icon="triangle-exclamation">
+  ShipHero rejects return line items whose SKU isn't on the original ShipHero
+  order. This usually means the SKU was changed after the order was placed.
+
+  **Fix:** Align the SKU in ShipHero with the one on the original order.
+</Accordion>
+
+<Accordion title="Returns stopped syncing after working previously" icon="triangle-exclamation">
+  ShipHero refresh tokens don't expire on their own, but they stop working if
+  the third-party user is removed or the ShipHero account is canceled. Once a
+  token is rejected, it never becomes valid again.
+
+  **Fix:** Create a new third-party user and refresh token in ShipHero, then
+  paste the new token into the **Refresh Token** field and save.
 </Accordion>
 </AccordionGroup>
 
