@@ -76,13 +76,6 @@ Click **Connect** on the ShipHero integration card.
 
 <Step title="Complete Setup">
 Click **Save** to complete the setup.
-
-<Note>
-  You don't need to create a webhook in ShipHero. Redo registers its own
-  **Return Update** webhook on your ShipHero account as part of connecting. If
-  that fails, the connection is rejected and nothing is saved, so a successful
-  save means the webhook is in place.
-</Note>
 </Step>
 
 <Step title="Test the Integration">
@@ -109,8 +102,8 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
 </Step>
 
 <Step title="Return Status Updates">
-  **Real-time**. ShipHero pushes each return update to Redo over a webhook as
-  your warehouse works the RMA. Redo does not poll on a schedule.
+  **Real-time**. ShipHero sends each return update to Redo as your warehouse
+  works the RMA.
 </Step>
 
 <Step title="Warehouse Processing">
@@ -172,38 +165,6 @@ Keep-it items are left off the RMA, since nothing is shipped back.
   ShipHero. The email is not passed to Redo — only the refresh token matters.
   Once you have the token, enter it in the Redo integration form and complete
   setup as normal.
-</Accordion>
-
-<Accordion title="Connecting fails with a customer account ID error" icon="triangle-exclamation">
-  If your refresh token belongs to a child account, ShipHero needs to know which
-  account the request is for.
-
-  **Fix:** Enter your **Customer Account ID** in the integration form and
-  connect again.
-</Accordion>
-
-<Accordion title="No ShipHero order found for the order" icon="triangle-exclamation">
-  Redo attaches every RMA to the matching ShipHero order, looking it up by the
-  order's ID and order number. If neither matches, the RMA can't be created.
-
-  **Fix:** Confirm the order exists in ShipHero and that its partner order ID or
-  order number matches the one on the original order.
-</Accordion>
-
-<Accordion title="SKU does not exist on the order" icon="triangle-exclamation">
-  ShipHero rejects return line items whose SKU isn't on the original ShipHero
-  order. This usually means the SKU was changed after the order was placed.
-
-  **Fix:** Align the SKU in ShipHero with the one on the original order.
-</Accordion>
-
-<Accordion title="Returns stopped syncing after working previously" icon="triangle-exclamation">
-  ShipHero refresh tokens don't expire on their own, but they stop working if
-  the third-party user is removed or the ShipHero account is canceled. Once a
-  token is rejected, it never becomes valid again.
-
-  **Fix:** Create a new third-party user and refresh token in ShipHero, then
-  paste the new token into the **Refresh Token** field and save.
 </Accordion>
 </AccordionGroup>
 
