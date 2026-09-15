@@ -1,0 +1,39 @@
+---
+title: "Introduction"
+description: "Identity and access for the Redo Merchant App: single sign-on and user provisioning"
+icon: "hand-wave"
+---
+
+## Identity and access
+
+Redo integrates with your identity provider so it can own authentication and
+the user lifecycle for the Merchant App:
+
+- **Single sign-on** with OpenID Connect, so your team signs in with your
+  IdP instead of a Redo password
+- **User provisioning** with SCIM 2.0, so your IdP creates, updates, and
+  deactivates users and assigns their roles
+
+Roles and permissions themselves remain in Redo under **Settings** →
+**General** → **Roles**.
+
+<CardGroup cols={2}>
+  <Card title="Set up single sign-on" icon="key" href="/docs/identity/merchant-sso-oidc">
+    Configure OIDC login with Okta, Microsoft Entra ID, Google Workspace, or
+    any conformant provider
+  </Card>
+
+  <Card title="Set up user provisioning" icon="users-gear" href="/docs/identity/scim-provisioning">
+    Connect your IdP's SCIM client to Redo and map groups to roles
+  </Card>
+
+  <Card title="OpenID Connect reference" icon="book" href="/docs/identity/oidc">
+    Client registration values, authorization request parameters, token
+    validation, and claims
+  </Card>
+
+  <Card title="SCIM reference" icon="book" href="/docs/identity/scim">
+    Endpoints, attributes, filters, and error responses for the SCIM 2.0
+    service provider
+  </Card>
+</CardGroup>
