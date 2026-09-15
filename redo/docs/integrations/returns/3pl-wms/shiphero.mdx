@@ -117,12 +117,12 @@ Open the ShipHero integration and click **Manage** to change these at any time.
 
 These control what Redo does when ShipHero reports a status on the RMA.
 
-- **Processable statuses**: Statuses that tell Redo to process the return. Defaults to **Complete** and **Warehouse Complete**; leave both unselected to turn off automatic processing.
+- **Processable Statuses**: Statuses that tell Redo to process the return. Defaults to **Complete** and **Warehouse Complete**; leave both unselected to turn off automatic processing.
 - **Trust RMA status only**: Process all items as soon as ShipHero marks the RMA complete, without checking per-item received quantities. Use this if your warehouse doesn't report received counts.
-- **ShipHero statuses that mean rejected**: Free-text statuses that mark the return rejected in Redo. Case-insensitive.
+- **ShipHero statuses that mean rejected**: Free-text statuses that mark the return rejected in Redo.
 - **ShipHero statuses that flag for manual processing**: Free-text statuses that hold the return for your team to review instead of processing it.
 
-A given status can only appear in one of these three lists.
+Status matching is case-insensitive, and a given status can only appear in one of these three lists.
 
 ### Status updates sent back to ShipHero
 
