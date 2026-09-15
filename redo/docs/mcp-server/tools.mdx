@@ -78,10 +78,54 @@ Permission names match those shown in Redo. When a tool lists multiple permissio
 
 | Tool | Description | Required permission |
 |---|---|---|
-| **generate_custom_analytics_report** | Generate a custom analytics report from a plain-English question. Returns immediately with a report ID and URL while the report is prepared; the finished report appears on your Redo analytics page and can be viewed or downloaded as a CSV. | Other |
-| **edit_custom_analytics_report** | Regenerate an existing report from a full replacement spec describing the desired metrics, dimensions, filters, and date range. The previous version stays available while the new one is prepared. | Other |
-| **get_custom_analytics_report** | Get a report's current state — status (preparing, ready, or failed with an error message), title, requested question, columns, and report URL once ready. Use to poll after generating or editing a report. | Other |
+| **generate_custom_analytics_report** | Create a report from a plain-English question. Waits for completion or returns a clarification request without creating a report. | Other |
+| **edit_custom_analytics_report** | Update a report from a full replacement spec. Validates the query before saving and waits for completion. | Other |
+| **get_custom_analytics_report** | Get a report's current status, title, requested question, columns, and report URL when ready. Generation and editing no longer require polling. | Other |
 | **list_custom_analytics_reports** | List your custom reports, most recent first, with ID, title, status, and columns. Supports searching by title or requested question. | Other |
+
+#### Generate a report
+
+Call `generate_custom_analytics_report` with a plain-English `question`.
+The call waits for a result instead of returning a `preparing` status.
+The tool names remain unchanged.
+
+| Response status | Result | Next action |
+|---|---|---|
+| `ready` | The report exists. The response includes `customReportId` and `reportUrl`. | Open the report URL to view the report or download a CSV. |
+| `needs_clarification` with `confirmationId` | The proposal has limitations. The response does not include a report URL. | Explain the limitations and obtain approval before confirming the proposal. |
+| `needs_clarification` without `confirmationId` | The request needs revision. The response does not include a report URL. | Ask for a revised question. |
+
+To confirm a proposal:
+
+1. Explain all returned limitations.
+2. Explain that compilation validation does not guarantee runtime success.
+3. Obtain the merchant's explicit approval.
+4. Call `generate_custom_analytics_report` with the original `question` and the returned `confirmationId`.
+
+The confirmation applies to that exact proposal.
+For a revised question, omit `confirmationId` to start a new proposal.
+Do not construct a report URL from a clarification response.
+
+#### Edit a report
+
+Call `edit_custom_analytics_report` with the report ID and a full replacement
+`reportSpec`. Include all desired metrics, dimensions, filters, and dates.
+The spec replaces the report definition; it is not a partial update.
+
+The tool validates the query before changing the report and waits for the update.
+A successful response includes status `ready` and `reportUrl`.
+If the request requires unsupported changes or limitations, the report stays unchanged.
+Ask for a revised spec instead of confirming through `confirmationId`.
+The edit tool does not accept that argument.
+
+<Note>
+  Validation checks the query schema, semantic rules, and compilation into SQL.
+  It does not execute report rows or guarantee that Snowflake accepts every generated query.
+  Data or service errors can still occur when creating, editing, or viewing a report.
+</Note>
+
+Query validation runs inside the report agent.
+The public MCP server does not expose the agent's internal `validate` and `generate` tools.
 
 ### Discounts
 

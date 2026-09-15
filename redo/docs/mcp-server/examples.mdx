@@ -220,7 +220,23 @@ The AI will call `get_automation` to find the step's template ID, then call `get
 
 > What are my top 10 products by return rate this quarter?
 
-The AI will call `generate_custom_analytics_report` with the question, then poll `get_custom_analytics_report` until the report is ready — generation typically takes a minute or two — and share the report link, where you can view the report or download it as a CSV.
+The AI calls `generate_custom_analytics_report` with the question and waits for
+the result. When the status is `ready`, it shares the returned `reportUrl`.
+You can use that URL to view the report or download a CSV. The AI does not need
+to poll `get_custom_analytics_report`.
+
+If the tool returns `needs_clarification`, it does not create a report or return
+a report URL. The AI explains the limitations and the next action:
+
+- With a `confirmationId`, the AI asks for your approval of the proposal and its limitations.
+- Without a `confirmationId`, the AI asks you to revise the question.
+
+After your explicit approval, the AI calls the same tool with the original
+question and the returned `confirmationId`. If you change the question, the AI
+omits `confirmationId` and requests a new proposal.
+
+The AI also explains that compilation validation does not execute report rows
+or guarantee runtime success.
 
 ### Edit a custom analytics report
 
@@ -228,7 +244,15 @@ The AI will call `generate_custom_analytics_report` with the question, then poll
 
 > Change my top products report to break results down by month and cover the last 6 months instead.
 
-The AI will call `edit_custom_analytics_report` with a full replacement spec describing the entire desired report — metrics, dimensions, filters, and date range — since the spec replaces the report's definition rather than patching it. The previous version stays available while the report regenerates.
+The AI calls `edit_custom_analytics_report` with the report ID and a full
+replacement spec. The spec includes all desired metrics, dimensions, filters,
+and dates, not just the changed fields.
+
+The tool validates the query before changing the report and waits for the
+update. A successful response includes status `ready` and a report URL, without
+polling. If the request requires unsupported changes or limitations, the report
+stays unchanged and the AI asks for a revised spec. The edit tool does not
+accept `confirmationId`.
 
 ### Find existing custom reports
 
