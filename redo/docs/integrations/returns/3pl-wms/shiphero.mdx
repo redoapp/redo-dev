@@ -69,9 +69,7 @@ Click **Connect** on the ShipHero integration card.
   In the configuration form, provide:
 
   - **Refresh Token** (required): Paste your ShipHero refresh token
-  - **Customer Account ID** (optional): Required if your refresh token belongs to a child account
-
-  Everything else can be left at its defaults for now. See [Settings](#settings) below.
+  - **Customer Account ID** (optional): Only required if using an access token from a child account
 </Step>
 
 <Step title="Complete Setup">
@@ -102,8 +100,7 @@ Create a test return, generate a shipping label, and verify the RMA appears in S
 </Step>
 
 <Step title="Return Status Updates">
-  **Real-time**. ShipHero sends each return update to Redo as your warehouse
-  works the RMA.
+**Near real-time (within seconds)** via ShipHero webhooks when warehouse staff receive and process the return in ShipHero.
 </Step>
 
 <Step title="Warehouse Processing">
