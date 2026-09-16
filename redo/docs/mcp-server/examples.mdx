@@ -220,7 +220,12 @@ The AI will call `get_automation` to find the step's template ID, then call `get
 
 > What are my top 10 products by return rate this quarter?
 
-The AI will call `generate_custom_analytics_report` with the question, then poll `get_custom_analytics_report` until the report is ready — generation typically takes a minute or two — and share the report link, where you can view the report or download it as a CSV.
+The AI creates the report and waits for completion before sharing the report
+link. You can use the link to view the report or download a CSV.
+
+If the proposed report omits or substitutes part of your request, the AI
+explains the limitations and asks for your approval before creating it.
+If the request cannot be supported, the AI asks you to revise the question.
 
 ### Edit a custom analytics report
 
@@ -228,7 +233,9 @@ The AI will call `generate_custom_analytics_report` with the question, then poll
 
 > Change my top products report to break results down by month and cover the last 6 months instead.
 
-The AI will call `edit_custom_analytics_report` with a full replacement spec describing the entire desired report — metrics, dimensions, filters, and date range — since the spec replaces the report's definition rather than patching it. The previous version stays available while the report regenerates.
+The AI checks the requested changes and waits for the update to finish before
+sharing the report link. If the changes cannot be supported, the report stays
+unchanged and the AI asks you to revise the request.
 
 ### Find existing custom reports
 
