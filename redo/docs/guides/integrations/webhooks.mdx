@@ -109,7 +109,13 @@ Return events notify you when returns are created or updated in your store.
         },
         "quantity": 1,
         "reason": "Too big",
-        "upc": "012345678905"
+        "upc": "012345678905",
+        "processingImages": [
+          "https://files.getredo.com/images/inspection-1.jpg"
+        ],
+        "customerImages": [
+          "https://files.getredo.com/images/customer-damage-1.jpg"
+        ]
       }
     ],
     "source": {
@@ -196,6 +202,17 @@ Return events notify you when returns are created or updated in your store.
 
 <ResponseField name="return.items[].upc" type="string">
   Universal Product Code (barcode) for the returned item, snapshotted from the product at return-creation time. `null` if no barcode was recorded for the item.
+</ResponseField>
+
+The public return API and the `return` webhook topic expose the following image
+arrays on each `return.items[]` item:
+
+<ResponseField name="return.items[].processingImages" type="array">
+  Image URLs added by the merchant or warehouse while processing the return item. This does not include customer-uploaded images. The array is empty when no processing images have been added.
+</ResponseField>
+
+<ResponseField name="return.items[].customerImages" type="array">
+  Image URLs uploaded by the customer for the return item. These come from image-type input answers in the customer's return flow. The array is empty when no customer images have been uploaded.
 </ResponseField>
 
 <ResponseField name="order" type="object">

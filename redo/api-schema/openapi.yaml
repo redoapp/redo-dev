@@ -2327,6 +2327,10 @@ webhooks:
                       - Too big
                     reasonCodes:
                       - size_too_large
+                    processingImages:
+                      - https://files.getredo.com/images/inspection-1.jpg
+                    customerImages:
+                      - https://files.getredo.com/images/customer-damage-1.jpg
                     customerComment: Runs larger than expected
                     multipleChoiceQuestions:
                       - question: What was wrong with the fit?
@@ -6366,6 +6370,18 @@ components:
                 title: Outcome
                 type: string
                 nullable: true
+              processingImages:
+                description: Image URLs added by the merchant or warehouse while processing this return item. This does not include customer-uploaded images. Empty when no processing images have been added.
+                items:
+                  type: string
+                title: Processing Images
+                type: array
+              customerImages:
+                description: Image URLs uploaded by the customer for this return item. These are populated from image-type input answers in the customer's return flow. Empty when no customer images have been uploaded.
+                items:
+                  type: string
+                title: Customer Images
+                type: array
               shipmentGroupIds:
                 description: IDs of the shipment groups this return item belongs to
                 items:
