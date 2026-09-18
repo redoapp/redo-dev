@@ -42,6 +42,10 @@ info:
   version: 2.2.1
 openapi: 3.1.0
 tags:
+  - description:
+      Group several products under one product shoppers buy, so a returned
+      bundle can be broken back into the products it contains.
+    name: Bundles
   - name: Checkout Buttons
   - name: Coverage Info
   - name: Coverage Products
@@ -64,6 +68,8 @@ tags:
   - name: Storefront
   - name: Webhooks
 paths:
+  # Bundles
+  /stores/{storeId}/bundles: { $ref: path/bundles.path.yaml }
   # Checkout Buttons
   /stores/{storeId}/checkout-buttons-ui:
     { $ref: path/checkout-buttons-ui.path.yaml }
