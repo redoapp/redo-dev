@@ -49,6 +49,10 @@ post:
                   - Too big
                 reasonCodes:
                   - size_too_large
+                processingImages:
+                  - https://files.getredo.com/images/inspection-1.jpg
+                customerImages:
+                  - https://files.getredo.com/images/customer-damage-1.jpg
                 customerComment: Runs larger than expected
                 multipleChoiceQuestions:
                   - question: What was wrong with the fit?
