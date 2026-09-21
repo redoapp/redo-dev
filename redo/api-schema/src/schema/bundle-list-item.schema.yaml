@@ -14,7 +14,13 @@ properties:
           description: Whether this product may be returned on its own.
           title: Returnable
           type: boolean
-      required: [returnable]
+        quantity:
+          description: How many units of this product the bundle contains.
+          example: 2
+          minimum: 1
+          title: Quantity
+          type: integer
+      required: [returnable, quantity]
       type: object
     title: Children
     type: array

@@ -73,6 +73,16 @@ paths:
         has that SKU* from *that product has no bundle*. A filtered request returns
         every match and is never paged.
 
+        Your store does not require SKUs to be unique. If the SKU is on more than
+        one variant, the bundles of every such variant are returned; use each
+        entry's `parent.variant_id` to tell them apart.
+
+        ## Quantities
+
+        Each child carries `quantity`, the number of units of that product in the
+        bundle. It mirrors what you send on `PUT`; a child listed twice there comes
+        back once, with the quantities added together.
+
         ## Products that no longer exist
 
         Bundles reference products, and a product can be deleted after a bundle is
@@ -125,11 +135,13 @@ paths:
                             sku: SOCKS-BLK-L
                             name: Socks - Black / L
                             returnable: true
+                            quantity: 1
                             resolved: true
                           - variant_id: '55518673600803'
                             sku: TSHIRT-BLK-M
                             name: T-Shirt - Black / M
                             returnable: true
+                            quantity: 2
                             resolved: true
                         return_types:
                           - return
@@ -148,11 +160,13 @@ paths:
                             sku: SOCKS-BLK-L
                             name: Socks - Black / L
                             returnable: true
+                            quantity: 1
                             resolved: true
                           - variant_id: '40668437479506'
                             sku: null
                             name: null
                             returnable: true
+                            quantity: 1
                             resolved: false
                         return_types:
                           - claim
@@ -203,13 +217,19 @@ paths:
         Send the same payload whether a bundle is new or already exists. Bundles are
         added to the store's existing list, and a bundle whose parent SKU already
         exists is replaced. **Bundles you do not send are left alone — this endpoint
-        never deletes.** To remove a bundle, use the Bundles page in Redo.
+        never deletes.** To remove a bundle, call
+        `DELETE /stores/{storeId}/bundles/{parentSku}`.
+
+        Entries in one request that share a `parent_sku` are merged into a single
+        bundle: their children are combined and the first entry's `return_types`
+        win. `total_count` reflects the merged count.
 
         ## Quantities
 
         `quantity` is the number of units of a child SKU the bundle contains, and it
         affects how a refund is divided across the bundle. A bundle containing four
-        of one item refunds differently from one containing a single unit.
+        of one item refunds differently from one containing a single unit. The
+        maximum per child is 100.
 
         ## Return types
 
@@ -222,11 +242,12 @@ paths:
         A SKU that cannot be matched to a product in your store is skipped rather
         than failing the whole request. **Check `results` rather than the status
         code** — a `200` means the request was processed, not that every bundle was
-        stored. Each entry reports `applied` or `failed`.
+        stored, and is returned even when every bundle failed. Each entry reports
+        `applied`, `failed`, or `ambiguous`; the counts summarise them.
 
         A bundle fails if its parent SKU or **any** of its child SKUs cannot be
         matched, so a single unmatched child is enough to skip the whole bundle.
-        There are two common causes:
+        `unresolved_skus` names each SKU that failed. There are two common causes:
 
         - The SKU is wrong, or belongs to a product that has since been deleted.
         - The product exists but **its variant has no SKU set**. Products can be
@@ -236,6 +257,20 @@ paths:
 
         If a bundle keeps failing and you are confident the product exists, check
         that a SKU is actually filled in on the variant.
+
+        ## Shared SKUs
+
+        Your store does not require SKUs to be unique. If a parent or child SKU is
+        on more than one variant, the bundle is not stored and its result is
+        `ambiguous`, with `ambiguous_skus` listing each such SKU and the
+        `variant_ids` that carry it. Resend the bundle with a choice made:
+        `parent_variant_id` for the parent, or `variant_id` on the child. A choice
+        that is not one of the listed variants is reported as ambiguous again.
+
+        Bundles whose SKUs are unique need none of this, and an explicit choice on
+        a unique SKU is harmless.
+
+        SKUs are matched exactly, so they are case-sensitive.
 
         ## One at a time
 
@@ -249,8 +284,6 @@ paths:
 
         Requires the [`returns_write`](/docs/api-reference/scopes) scope.
       operationId: Bundles upsert
-      parameters:
-        - $ref: '#/components/parameters/store-id.param'
       requestBody:
         content:
           application/json:
@@ -278,6 +311,17 @@ paths:
                     return_types:
                       - return
                       - warranty
+              shared_sku:
+                summary: Choosing a variant after an ambiguous result
+                value:
+                  - parent_sku: BUNDLE-STARTER-KIT
+                    parent_variant_id: '55518673568035'
+                    children_skus:
+                      - sku: SOCKS-BLK-L
+                        quantity: 1
+                      - sku: TSHIRT-BLK-M
+                        quantity: 2
+                        variant_id: '55518673600803'
               multiple_bundles:
                 summary: Several bundles in one request
                 value:
@@ -307,6 +351,7 @@ paths:
                     total_count: 2
                     applied_count: 2
                     failed_count: 0
+                    ambiguous_count: 0
                     results:
                       - parent_sku: BUNDLE-STARTER-KIT
                         status: applied
@@ -318,18 +363,36 @@ paths:
                     total_count: 2
                     applied_count: 1
                     failed_count: 1
+                    ambiguous_count: 0
                     results:
                       - parent_sku: BUNDLE-STARTER-KIT
                         status: applied
                       - parent_sku: BUNDLE-DELUXE-KIT
                         status: failed
+                        unresolved_skus:
+                          - TSHIRT-BLK-XL
+                ambiguous:
+                  summary: A SKU is on more than one variant
+                  value:
+                    total_count: 1
+                    applied_count: 0
+                    failed_count: 0
+                    ambiguous_count: 1
+                    results:
+                      - parent_sku: BUNDLE-STARTER-KIT
+                        status: ambiguous
+                        ambiguous_skus:
+                          - sku: TSHIRT-BLK-M
+                            variant_ids:
+                              - '55518673600803'
+                              - '55518673633571'
           description: Request processed. Check `results` to see which bundles were stored.
         '400':
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/error.schema'
-          description: Invalid request body, an unrecognized return type, or more than 100 bundles
+          description: Invalid request body, an unrecognized return type, a blank SKU, a quantity above 100, or more than 100 bundles
         '409':
           content:
             application/problem+json:
@@ -347,6 +410,86 @@ paths:
       summary: Add or replace bundles
       tags:
         - Bundles
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Bundles
+  /stores/{storeId}/bundles/{parentSku}:
+    delete:
+      description: |
+        Remove one bundle, identified by the SKU of its parent product.
+
+        The SKU is resolved against your catalog and the bundle attached to that
+        product is removed, so a bundle created in the Redo UI under a product name
+        is found too. Bundles are never partially removed; the whole definition
+        goes.
+
+        ## Shared SKUs
+
+        Your store does not require SKUs to be unique, so a SKU can be on more than
+        one variant. When that happens the request returns `409 Conflict` with the
+        `variant_ids` that carry the SKU, and nothing is removed. Resend with one of
+        them as `variant_id` to remove that variant's bundle. `GET /bundles?parent_sku=`
+        shows which variant each bundle belongs to.
+
+        ## Not found
+
+        `404` is returned both when no product has the SKU and when the product
+        exists but has no bundle. The `detail` says which.
+
+        Requires the [`returns_write`](/docs/api-reference/scopes) scope.
+      operationId: Bundle delete
+      parameters:
+        - $ref: '#/components/parameters/bundle-variant-id.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bundle-delete-response.schema'
+              example:
+                parent_sku: BUNDLE-STARTER-KIT
+                variant_id: '55518673568035'
+          description: The bundle was removed
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/bundle-ambiguous-sku-error.schema'
+          description: The path SKU is empty (`com.getredo.api:bundles/invalid-request`), or `variant_id` is not one of the variants carrying the SKU — the response lists the valid `variant_ids`.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No product has this SKU, or the product has no bundle (`com.getredo.api:bundles/not-found`)
+        '409':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/bundle-ambiguous-sku-error.schema'
+              example:
+                type: com.getredo.api:bundles/ambiguous-sku
+                title: Parent SKU matches more than one variant
+                detail: SKU BUNDLE-STARTER-KIT is on 2 variants. Pass ?variant_id= to choose one.
+                variant_ids:
+                  - '55518673568035'
+                  - '55518673600803'
+          description: The SKU is on more than one variant and no `variant_id` was given (`com.getredo.api:bundles/ambiguous-sku`)
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Delete a bundle
+      tags:
+        - Bundles
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/bundle-parent-sku-path.param'
+    summary: Bundle
   /stores/{storeId}/checkout-buttons-ui:
     description: Generate HTML and CSS for checkout buttons to enable or disable returns coverage.
     get:
@@ -2844,6 +2987,14 @@ components:
       scheme: bearer
       type: http
   parameters:
+    store-id.param:
+      description: Store ID
+      in: path
+      name: storeId
+      required: true
+      schema:
+        example: 64e5a8a1af49a89df37e4ee7
+        type: string
     bundle-page-continue.param:
       description: Page marker, from the X-Page-Next header of the previous response
       example: eyJvZmZzZXQiOjUwfQ==
@@ -2861,19 +3012,26 @@ components:
         minimum: 1
         type: integer
     bundle-parent-sku.param:
-      description: Return only the bundle whose parent product has this SKU. The SKU is looked up in your catalog, so a bundle created in Redo with a different name is still found.
+      description: Return only bundles whose parent product has this SKU. The SKU is looked up in your catalog and matched exactly (case-sensitive), so a bundle created in Redo under a product name is still found. If the SKU is on more than one variant, the bundles of every such variant are returned.
       example: BUNDLE-STARTER-KIT
       in: query
       name: parent_sku
       schema:
         type: string
-    store-id.param:
-      description: Store ID
+    bundle-parent-sku-path.param:
+      description: SKU of the product that represents the bundle. Case-sensitive and URL-encoded.
+      example: BUNDLE-STARTER-KIT
       in: path
-      name: storeId
+      name: parentSku
       required: true
       schema:
-        example: 64e5a8a1af49a89df37e4ee7
+        type: string
+    bundle-variant-id.param:
+      description: Which variant to act on when the parent SKU is on more than one variant. Take the value from the `variant_ids` of a `409` response.
+      example: '55518673568035'
+      in: query
+      name: variant_id
+      schema:
         type: string
     page-continue.param:
       description: Page marker, from X-Page-Next header
@@ -3146,8 +3304,15 @@ components:
                 description: Whether this product may be returned on its own.
                 title: Returnable
                 type: boolean
+              quantity:
+                description: How many units of this product the bundle contains.
+                example: 2
+                minimum: 1
+                title: Quantity
+                type: integer
             required:
               - returnable
+              - quantity
             type: object
           title: Children
           type: array
@@ -3190,16 +3355,21 @@ components:
       description: A bundle definition, identified by the SKU of the product that represents the bundle itself.
       properties:
         parent_sku:
-          description: SKU of the product shoppers buy. This identifies the bundle, and is what a later request replaces.
+          description: SKU of the product shoppers buy. This identifies the bundle, and is what a later request replaces. Matched exactly, so it is case-sensitive.
           example: BUNDLE-STARTER-KIT
           title: Parent SKU
           type: string
+        parent_variant_id:
+          description: Which variant to use when `parent_sku` is on more than one variant in your catalog. Only needed after a result of `ambiguous`; take the value from its `variant_ids`.
+          example: '55518673568035'
+          title: Parent Variant ID
+          type: string
         children_skus:
-          description: The products contained in the bundle.
+          description: The products contained in the bundle. Listing the same SKU twice adds the quantities together.
           items:
             properties:
               sku:
-                description: SKU of a product included in the bundle.
+                description: SKU of a product included in the bundle. Case-sensitive.
                 example: SOCKS-BLK-L
                 title: SKU
                 type: string
@@ -3207,9 +3377,15 @@ components:
                 default: 1
                 description: How many units of this SKU the bundle contains.
                 example: 2
+                maximum: 100
                 minimum: 1
                 title: Quantity
                 type: integer
+              variant_id:
+                description: Which variant to use when `sku` is on more than one variant in your catalog. Only needed after a result of `ambiguous`.
+                example: '55518673404195'
+                title: Variant ID
+                type: string
             required:
               - sku
             type: object
@@ -3217,7 +3393,7 @@ components:
           title: Children SKUs
           type: array
         return_types:
-          description: Return types this bundle applies to. Omit the field to apply the bundle to every return type.
+          description: Return types this bundle applies to. Omit the field, or send an empty list, to apply the bundle to every return type.
           items:
             enum:
               - claim
@@ -3245,7 +3421,7 @@ components:
       description: Outcome of a bundle upsert, reported for each bundle in the request.
       properties:
         total_count:
-          description: Number of bundles in the request.
+          description: Number of bundles processed. Entries in the request that share a `parent_sku` are merged into one bundle first, so this can be lower than the number sent.
           title: Total Count
           type: integer
         applied_count:
@@ -3253,8 +3429,12 @@ components:
           title: Applied Count
           type: integer
         failed_count:
-          description: Number of bundles that were not stored.
+          description: Number of bundles that were not stored because a SKU was not found.
           title: Failed Count
+          type: integer
+        ambiguous_count:
+          description: Number of bundles that were not stored because a SKU is on more than one variant and no variant was chosen.
+          title: Ambiguous Count
           type: integer
         results:
           description: One entry per bundle, in the order they were submitted.
@@ -3265,12 +3445,38 @@ components:
                 title: Parent SKU
                 type: string
               status:
-                description: '`applied` means the stored bundle matches the request. `failed` means it does not, most often because a SKU could not be matched to a product.'
+                description: '`applied` means the stored bundle matches the request. `failed` means a SKU could not be matched to a product; see `unresolved_skus`. `ambiguous` means a SKU is on more than one variant; see `ambiguous_skus` and resend with a variant chosen.'
                 enum:
                   - applied
                   - failed
+                  - ambiguous
                 title: Status
                 type: string
+              unresolved_skus:
+                description: The SKUs that matched no product. Present when `status` is `failed`. Contains the parent SKU itself when that is the one that failed.
+                items:
+                  type: string
+                title: Unresolved SKUs
+                type: array
+              ambiguous_skus:
+                description: Each SKU that is on more than one variant, with the variants to choose from. Present when `status` is `ambiguous`.
+                items:
+                  properties:
+                    sku:
+                      title: SKU
+                      type: string
+                    variant_ids:
+                      description: Variants that carry this SKU.
+                      items:
+                        type: string
+                      title: Variant IDs
+                      type: array
+                  required:
+                    - sku
+                    - variant_ids
+                  type: object
+                title: Ambiguous SKUs
+                type: array
             required:
               - parent_sku
               - status
@@ -3281,8 +3487,42 @@ components:
         - total_count
         - applied_count
         - failed_count
+        - ambiguous_count
         - results
       title: Bundle Upsert Response
+      type: object
+    bundle-delete-response.schema:
+      description: The bundle that was removed.
+      properties:
+        parent_sku:
+          description: Parent SKU the request named.
+          example: BUNDLE-STARTER-KIT
+          title: Parent SKU
+          type: string
+        variant_id:
+          description: The parent variant whose bundle was removed.
+          example: '55518673568035'
+          title: Variant ID
+          type: string
+      required:
+        - parent_sku
+        - variant_id
+      title: Bundle Delete Response
+      type: object
+    bundle-ambiguous-sku-error.schema:
+      allOf:
+        - $ref: '#/components/schemas/error.schema'
+      description: Problem details for a parent SKU that is on more than one variant, listing the variants to choose from.
+      properties:
+        variant_ids:
+          description: Variants that carry the SKU. Pass one as `variant_id`.
+          items:
+            type: string
+          title: Variant IDs
+          type: array
+      required:
+        - variant_ids
+      title: Ambiguous SKU problem details
       type: object
     money.schema:
       description: Currency amount

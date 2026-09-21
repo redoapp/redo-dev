@@ -1,0 +1,78 @@
+delete:
+  description: |
+    Remove one bundle, identified by the SKU of its parent product.
+
+    The SKU is resolved against your catalog and the bundle attached to that
+    product is removed, so a bundle created in the Redo UI under a product name
+    is found too. Bundles are never partially removed; the whole definition
+    goes.
+
+    ## Shared SKUs
+
+    Your store does not require SKUs to be unique, so a SKU can be on more than
+    one variant. When that happens the request returns `409 Conflict` with the
+    `variant_ids` that carry the SKU, and nothing is removed. Resend with one of
+    them as `variant_id` to remove that variant's bundle. `GET /bundles?parent_sku=`
+    shows which variant each bundle belongs to.
+
+    ## Not found
+
+    `404` is returned both when no product has the SKU and when the product
+    exists but has no bundle. The `detail` says which.
+
+    Requires the [`returns_write`](/docs/api-reference/scopes) scope.
+  operationId: Bundle delete
+  parameters:
+    - { $ref: ../param/bundle-variant-id.param.yaml }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema: { $ref: ../schema/bundle-delete-response.schema.yaml }
+          example:
+            parent_sku: BUNDLE-STARTER-KIT
+            variant_id: "55518673568035"
+      description: The bundle was removed
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/bundle-ambiguous-sku-error.schema.yaml }
+      description:
+        The path SKU is empty (`com.getredo.api:bundles/invalid-request`), or
+        `variant_id` is not one of the variants carrying the SKU — the response
+        lists the valid `variant_ids`.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description:
+        No product has this SKU, or the product has no bundle
+        (`com.getredo.api:bundles/not-found`)
+    "409":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/bundle-ambiguous-sku-error.schema.yaml }
+          example:
+            type: com.getredo.api:bundles/ambiguous-sku
+            title: Parent SKU matches more than one variant
+            detail:
+              SKU BUNDLE-STARTER-KIT is on 2 variants. Pass ?variant_id= to
+              choose one.
+            variant_ids: ["55518673568035", "55518673600803"]
+      description:
+        The SKU is on more than one variant and no `variant_id` was given
+        (`com.getredo.api:bundles/ambiguous-sku`)
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Delete a bundle
+  tags:
+    - Bundles
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/bundle-parent-sku-path.param.yaml }
+summary: Bundle

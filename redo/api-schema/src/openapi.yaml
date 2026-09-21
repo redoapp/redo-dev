@@ -70,6 +70,7 @@ tags:
 paths:
   # Bundles
   /stores/{storeId}/bundles: { $ref: path/bundles.path.yaml }
+  /stores/{storeId}/bundles/{parentSku}: { $ref: path/bundle.path.yaml }
   # Checkout Buttons
   /stores/{storeId}/checkout-buttons-ui:
     { $ref: path/checkout-buttons-ui.path.yaml }

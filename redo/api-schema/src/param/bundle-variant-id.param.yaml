@@ -1,0 +1,7 @@
+description:
+  Which variant to act on when the parent SKU is on more than one variant.
+  Take the value from the `variant_ids` of a `409` response.
+example: "55518673568035"
+in: query
+name: variant_id
+schema: { type: string }

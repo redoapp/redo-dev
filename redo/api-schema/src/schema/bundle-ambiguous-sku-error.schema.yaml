@@ -1,0 +1,14 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+allOf: [{ $ref: ./error.schema.yaml }]
+description:
+  Problem details for a parent SKU that is on more than one variant, listing
+  the variants to choose from.
+properties:
+  variant_ids:
+    description: Variants that carry the SKU. Pass one as `variant_id`.
+    items: { type: string }
+    title: Variant IDs
+    type: array
+required: [variant_ids]
+title: Ambiguous SKU problem details
+type: object

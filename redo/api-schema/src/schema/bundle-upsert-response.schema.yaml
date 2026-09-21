@@ -3,7 +3,10 @@ description:
   Outcome of a bundle upsert, reported for each bundle in the request.
 properties:
   total_count:
-    description: Number of bundles in the request.
+    description:
+      Number of bundles processed. Entries in the request that share a
+      `parent_sku` are merged into one bundle first, so this can be lower than
+      the number sent.
     title: Total Count
     type: integer
   applied_count:
@@ -11,8 +14,14 @@ properties:
     title: Applied Count
     type: integer
   failed_count:
-    description: Number of bundles that were not stored.
+    description: Number of bundles that were not stored because a SKU was not found.
     title: Failed Count
+    type: integer
+  ambiguous_count:
+    description:
+      Number of bundles that were not stored because a SKU is on more than one
+      variant and no variant was chosen.
+    title: Ambiguous Count
     type: integer
   results:
     description: One entry per bundle, in the order they were submitted.
@@ -25,15 +34,42 @@ properties:
         status:
           description:
             "`applied` means the stored bundle matches the request. `failed`
-            means it does not, most often because a SKU could not be matched to
-            a product."
-          enum: [applied, failed]
+            means a SKU could not be matched to a product; see
+            `unresolved_skus`. `ambiguous` means a SKU is on more than one
+            variant; see `ambiguous_skus` and resend with a variant chosen."
+          enum: [applied, failed, ambiguous]
           title: Status
           type: string
+        unresolved_skus:
+          description:
+            The SKUs that matched no product. Present when `status` is
+            `failed`. Contains the parent SKU itself when that is the one that
+            failed.
+          items: { type: string }
+          title: Unresolved SKUs
+          type: array
+        ambiguous_skus:
+          description:
+            Each SKU that is on more than one variant, with the variants to
+            choose from. Present when `status` is `ambiguous`.
+          items:
+            properties:
+              sku:
+                title: SKU
+                type: string
+              variant_ids:
+                description: Variants that carry this SKU.
+                items: { type: string }
+                title: Variant IDs
+                type: array
+            required: [sku, variant_ids]
+            type: object
+          title: Ambiguous SKUs
+          type: array
       required: [parent_sku, status]
       type: object
     title: Results
     type: array
-required: [total_count, applied_count, failed_count, results]
+required: [total_count, applied_count, failed_count, ambiguous_count, results]
 title: Bundle Upsert Response
 type: object
