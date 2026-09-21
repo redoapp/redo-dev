@@ -1,0 +1,18 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A page of stored bundles.
+properties:
+  bundles:
+    description: The bundles on this page.
+    items: { $ref: ./bundle-list-item.schema.yaml }
+    title: Bundles
+    type: array
+  sku_resolved:
+    description:
+      Present only when `parent_sku` was supplied. `false` means no product in
+      your catalog has that SKU, which is different from the SKU existing but
+      having no bundle.
+    title: SKU Resolved
+    type: boolean
+required: [bundles]
+title: Bundle List Response
+type: object
