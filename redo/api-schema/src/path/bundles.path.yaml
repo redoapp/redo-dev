@@ -1,51 +1,34 @@
 get:
   description: |
-    List the bundles stored for a store, with each product looked up in your
-    catalog so you get SKUs and names rather than bare identifiers.
+    List the bundles stored for a store. Each product is looked up in your
+    catalog, so you get SKUs and names rather than bare identifiers.
 
     ## Finding one bundle
 
-    Pass `parent_sku` to return just that bundle. The SKU is resolved against
-    your catalog and matched on the underlying product, so a bundle created in
-    the Redo UI — which stores a product title rather than a SKU — is still
-    found. The response includes `sku_resolved`, which distinguishes *no product
-    has that SKU* from *that product has no bundle*. A filtered request returns
-    every match and is never paged.
-
-    Your store does not require SKUs to be unique. If the SKU is on more than
-    one variant, the bundles of every such variant are returned; use each
-    entry's `parent.variant_id` to tell them apart.
+    Pass `parent_sku` to return just that bundle. The lookup goes through your
+    catalog, so a bundle created in the Redo UI is found too. `sku_resolved`
+    tells you whether the SKU exists at all, as opposed to existing but having
+    no bundle. If the SKU is on more than one variant, you get every matching
+    bundle; use `parent.variant_id` to tell them apart. Filtered requests are
+    not paged.
 
     ## Quantities
 
     Each child carries `quantity`, the number of units of that product in the
-    bundle. It mirrors what you send on `PUT`; a child listed twice there comes
-    back once, with the quantities added together.
+    bundle. This mirrors what you send on `PUT`.
 
     ## Products that no longer exist
 
-    Bundles reference products, and a product can be deleted after a bundle is
-    built. Each entry carries `resolved`; when it is `false` the product is gone,
-    and `sku` and `name` are `null`. This is how you find bundles that have
-    quietly stopped working.
-
-    A `null` `sku` on a resolved product is different — the product exists but
-    has no SKU set, which means that bundle cannot be updated through this API
-    and can only be managed from the Bundles page in Redo.
+    A product can be deleted after a bundle is built. When that happens the
+    entry has `resolved: false` and `sku` and `name` are `null`. A resolved
+    product with a `null` `sku` simply has no SKU set; such a bundle can only be
+    managed from the Bundles page in Redo.
 
     ## Paging
 
-    Send `X-Page-Size` to choose how many bundles come back, up to 250. It
-    defaults to 50.
-
-    When more bundles remain, the response carries an `X-Page-Next` header. Send
-    that value back as `X-Page-Continue` to fetch the next page. The header is
-    absent on the last page, and absent entirely when filtering by `parent_sku`,
-    since a filtered request returns every match at once.
-
-    Treat the cursor as opaque. It encodes a position that is not guaranteed to
-    stay the same shape, and bundles can be added or removed between pages — so a
-    bundle may be missed or repeated if the list changes while you are walking it.
+    `X-Page-Size` sets the page size, up to 250 (default 50). When more bundles
+    remain, the response includes an `X-Page-Next` header; send it back as
+    `X-Page-Continue` for the next page. Treat the cursor as opaque.
 
     Requires the [`returns_read`](/docs/api-reference/scopes) scope.
   operationId: Bundles list
@@ -142,77 +125,57 @@ put:
   description: |
     Add or replace bundles, identified by parent SKU.
 
-    A bundle groups several products under one product that shoppers buy. When a
-    bundle is returned, Redo uses this definition to break it back into the
+    A bundle groups several products under one product that shoppers buy. When
+    a bundle is returned, Redo uses this definition to break it back into the
     products it contains.
 
-    Send the same payload whether a bundle is new or already exists. Bundles are
-    added to the store's existing list, and a bundle whose parent SKU already
-    exists is replaced. **Bundles you do not send are left alone — this endpoint
-    never deletes.** To remove a bundle, call
+    Send the same payload whether a bundle is new or already exists. A bundle
+    whose parent SKU is already stored is replaced; bundles you do not send are
+    left alone. To remove a bundle, call
     `DELETE /stores/{storeId}/bundles/{parentSku}`.
 
-    Entries in one request that share a `parent_sku` are merged into a single
-    bundle: their children are combined and the first entry's `return_types`
-    win. `total_count` reflects the merged count.
+    ## If your store reuses SKUs
+
+    Your store does not require SKUs to be unique. If the same SKU can be on
+    more than one variant, always send `parent_variant_id` and
+    `children_skus[].variant_id` so Redo knows which variant you mean. Without
+    them, a bundle containing a shared SKU is not stored and its result is
+    `ambiguous`, listing the `variant_ids` to choose from. Stores with unique
+    SKUs can leave these fields out.
 
     ## Quantities
 
-    `quantity` is the number of units of a child SKU the bundle contains, and it
-    affects how a refund is divided across the bundle. A bundle containing four
-    of one item refunds differently from one containing a single unit. The
-    maximum per child is 100.
+    `quantity` is how many units of a child the bundle contains, and it affects
+    how a refund is split across the bundle. Maximum 100 per child. Listing the
+    same child twice adds the quantities together.
 
     ## Return types
 
-    `return_types` limits the bundle to specific return types. Omit it and the
-    bundle applies to all of them. Sending it replaces whatever was previously
-    set, so include it on every request if you rely on it.
+    `return_types` limits the bundle to specific return types. Omit it to apply
+    the bundle to all of them. It replaces whatever was previously set, so
+    include it on every request if you rely on it.
 
-    ## Confirming what was stored
+    ## Reading the response
 
-    A SKU that cannot be matched to a product in your store is skipped rather
-    than failing the whole request. **Check `results` rather than the status
-    code** — a `200` means the request was processed, not that every bundle was
-    stored, and is returned even when every bundle failed. Each entry reports
-    `applied`, `failed`, or `ambiguous`; the counts summarise them.
+    A `200` means the request was processed, not that every bundle was stored.
+    Check each entry in `results`:
 
-    A bundle fails if its parent SKU or **any** of its child SKUs cannot be
-    matched, so a single unmatched child is enough to skip the whole bundle.
-    `unresolved_skus` names each SKU that failed. There are two common causes:
+    - `applied` — stored as requested.
+    - `failed` — a SKU matched no product. `unresolved_skus` names each one.
+      Common causes are a typo, a deleted product, or a variant with no SKU
+      set.
+    - `ambiguous` — a SKU is on more than one variant and no variant was given.
+      See above.
 
-    - The SKU is wrong, or belongs to a product that has since been deleted.
-    - The product exists but **its variant has no SKU set**. Products can be
-      created in your store without one, and gift cards frequently have none.
-      Such products cannot be referenced here at all, and a bundle built on one
-      can only be managed from the Bundles page in Redo.
+    A single bad child is enough to skip the whole bundle. SKUs are matched
+    exactly and are case-sensitive.
 
-    If a bundle keeps failing and you are confident the product exists, check
-    that a SKU is actually filled in on the variant.
+    ## Limits
 
-    ## Shared SKUs
-
-    Your store does not require SKUs to be unique. If a parent or child SKU is
-    on more than one variant, the bundle is not stored and its result is
-    `ambiguous`, with `ambiguous_skus` listing each such SKU and the
-    `variant_ids` that carry it. Resend the bundle with a choice made:
-    `parent_variant_id` for the parent, or `variant_id` on the child. A choice
-    that is not one of the listed variants is reported as ambiguous again.
-
-    Bundles whose SKUs are unique need none of this, and an explicit choice on
-    a unique SKU is harmless.
-
-    SKUs are matched exactly, so they are case-sensitive.
-
-    ## One at a time
-
-    Only one bundle upload can run per store, and this endpoint shares that limit
-    with the CSV upload in Redo. A request that arrives while another is running
-    returns `409 Conflict` and can be retried.
-
-    Send at most 100 bundles per request. Larger sets should be split into
-    batches. Requests are processed while you wait, so a large batch containing
-    many unmatched SKUs can take some seconds to return.
+    Send at most 100 bundles per request; split larger sets into batches.
+    Entries that share a `parent_sku` are merged into one bundle. Only one
+    upload can run per store at a time, shared with the CSV upload in Redo; a
+    request that arrives during another returns `409` and can be retried.
 
     Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Bundles upsert

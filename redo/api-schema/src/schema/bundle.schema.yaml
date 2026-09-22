@@ -5,23 +5,19 @@ description:
 properties:
   parent_sku:
     description:
-      SKU of the product shoppers buy. This identifies the bundle, and is what a
-      later request replaces. Matched exactly, so it is case-sensitive.
+      SKU of the product shoppers buy. Identifies the bundle. Case-sensitive.
     example: BUNDLE-STARTER-KIT
     title: Parent SKU
     type: string
   parent_variant_id:
     description:
-      Which variant to use when `parent_sku` is on more than one variant in
-      your catalog. Only needed after a result of `ambiguous`; take the value
-      from its `variant_ids`.
+      The parent variant. Send it if `parent_sku` may be on more than one
+      variant in your catalog.
     example: "55518673568035"
     title: Parent Variant ID
     type: string
   children_skus:
-    description:
-      The products contained in the bundle. Listing the same SKU twice adds the
-      quantities together.
+    description: The products contained in the bundle.
     items:
       properties:
         sku:
@@ -39,8 +35,8 @@ properties:
           type: integer
         variant_id:
           description:
-            Which variant to use when `sku` is on more than one variant in your
-            catalog. Only needed after a result of `ambiguous`.
+            The child variant. Send it if `sku` may be on more than one variant
+            in your catalog.
           example: "55518673404195"
           title: Variant ID
           type: string
@@ -50,9 +46,7 @@ properties:
     title: Children SKUs
     type: array
   return_types:
-    description:
-      Return types this bundle applies to. Omit the field, or send an empty
-      list, to apply the bundle to every return type.
+    description: Return types this bundle applies to. Omit to apply to all.
     items:
       enum: [claim, return, warranty, recycle, withdrawal]
       type: string

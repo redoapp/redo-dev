@@ -1,8 +1,6 @@
 description:
-  Return only bundles whose parent product has this SKU. The SKU is looked up
-  in your catalog and matched exactly (case-sensitive), so a bundle created in
-  Redo under a product name is still found. If the SKU is on more than one
-  variant, the bundles of every such variant are returned.
+  Return only bundles whose parent product has this SKU. Case-sensitive. If the
+  SKU is on more than one variant, every matching bundle is returned.
 example: BUNDLE-STARTER-KIT
 in: query
 name: parent_sku

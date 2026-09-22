@@ -4,9 +4,8 @@ description:
 properties:
   total_count:
     description:
-      Number of bundles processed. Entries in the request that share a
-      `parent_sku` are merged into one bundle first, so this can be lower than
-      the number sent.
+      Number of bundles processed, after merging entries that share a
+      `parent_sku`.
     title: Total Count
     type: integer
   applied_count:
@@ -14,13 +13,13 @@ properties:
     title: Applied Count
     type: integer
   failed_count:
-    description: Number of bundles that were not stored because a SKU was not found.
+    description: Number of bundles skipped because a SKU was not found.
     title: Failed Count
     type: integer
   ambiguous_count:
     description:
-      Number of bundles that were not stored because a SKU is on more than one
-      variant and no variant was chosen.
+      Number of bundles skipped because a SKU is on more than one variant and
+      no variant was given.
     title: Ambiguous Count
     type: integer
   results:
@@ -33,25 +32,22 @@ properties:
           type: string
         status:
           description:
-            "`applied` means the stored bundle matches the request. `failed`
-            means a SKU could not be matched to a product; see
-            `unresolved_skus`. `ambiguous` means a SKU is on more than one
-            variant; see `ambiguous_skus` and resend with a variant chosen."
+            "`applied`: stored as requested. `failed`: a SKU matched no
+            product; see `unresolved_skus`. `ambiguous`: a SKU is on more than
+            one variant and no variant was given; see `ambiguous_skus`."
           enum: [applied, failed, ambiguous]
           title: Status
           type: string
         unresolved_skus:
           description:
-            The SKUs that matched no product. Present when `status` is
-            `failed`. Contains the parent SKU itself when that is the one that
-            failed.
+            SKUs that matched no product. Present when `status` is `failed`.
           items: { type: string }
           title: Unresolved SKUs
           type: array
         ambiguous_skus:
           description:
-            Each SKU that is on more than one variant, with the variants to
-            choose from. Present when `status` is `ambiguous`.
+            SKUs on more than one variant, with the variants to choose from.
+            Present when `status` is `ambiguous`.
           items:
             properties:
               sku:

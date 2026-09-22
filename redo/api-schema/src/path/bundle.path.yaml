@@ -1,24 +1,15 @@
 delete:
   description: |
-    Remove one bundle, identified by the SKU of its parent product.
+    Remove one bundle, identified by the SKU of its parent product. The SKU is
+    looked up in your catalog, so a bundle created in the Redo UI is found too.
 
-    The SKU is resolved against your catalog and the bundle attached to that
-    product is removed, so a bundle created in the Redo UI under a product name
-    is found too. Bundles are never partially removed; the whole definition
-    goes.
+    If your store reuses SKUs across variants, always send `variant_id` so Redo
+    knows which variant's bundle to remove. Use
+    `GET /stores/{storeId}/bundles?parent_sku=` to see which variant each
+    bundle belongs to.
 
-    ## Shared SKUs
-
-    Your store does not require SKUs to be unique, so a SKU can be on more than
-    one variant. When that happens the request returns `409 Conflict` with the
-    `variant_ids` that carry the SKU, and nothing is removed. Resend with one of
-    them as `variant_id` to remove that variant's bundle. `GET /bundles?parent_sku=`
-    shows which variant each bundle belongs to.
-
-    ## Not found
-
-    `404` is returned both when no product has the SKU and when the product
-    exists but has no bundle. The `detail` says which.
+    `404` means either no product has the SKU or the product has no bundle;
+    `detail` says which.
 
     Requires the [`returns_write`](/docs/api-reference/scopes) scope.
   operationId: Bundle delete
@@ -38,9 +29,8 @@ delete:
         application/problem+json:
           schema: { $ref: ../schema/bundle-ambiguous-sku-error.schema.yaml }
       description:
-        The path SKU is empty (`com.getredo.api:bundles/invalid-request`), or
-        `variant_id` is not one of the variants carrying the SKU — the response
-        lists the valid `variant_ids`.
+        The path SKU is empty, or `variant_id` is not one of the variants
+        carrying the SKU (the response lists the valid `variant_ids`)
     "404":
       content:
         application/problem+json:
@@ -60,8 +50,8 @@ delete:
               choose one.
             variant_ids: ["55518673568035", "55518673600803"]
       description:
-        The SKU is on more than one variant and no `variant_id` was given
-        (`com.getredo.api:bundles/ambiguous-sku`)
+        The SKU is on more than one variant and no `variant_id` was given; the
+        response lists the `variant_ids` to choose from
     default:
       content:
         application/problem+json:
