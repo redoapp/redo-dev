@@ -1,0 +1,16 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: The bundle that was removed.
+properties:
+  parent_sku:
+    description: Parent SKU the request named.
+    example: BUNDLE-STARTER-KIT
+    title: Parent SKU
+    type: string
+  variant_id:
+    description: The parent variant whose bundle was removed.
+    example: "55518673568035"
+    title: Variant ID
+    type: string
+required: [parent_sku, variant_id]
+title: Bundle Delete Response
+type: object

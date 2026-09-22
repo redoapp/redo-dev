@@ -1,0 +1,71 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description:
+  Outcome of a bundle upsert, reported for each bundle in the request.
+properties:
+  total_count:
+    description:
+      Number of bundles processed, after merging entries that share a
+      `parent_sku`.
+    title: Total Count
+    type: integer
+  applied_count:
+    description: Number of bundles now stored as requested.
+    title: Applied Count
+    type: integer
+  failed_count:
+    description: Number of bundles skipped because a SKU was not found.
+    title: Failed Count
+    type: integer
+  ambiguous_count:
+    description:
+      Number of bundles skipped because a SKU is on more than one variant and
+      no variant was given.
+    title: Ambiguous Count
+    type: integer
+  results:
+    description: One entry per bundle, in the order they were submitted.
+    items:
+      properties:
+        parent_sku:
+          description: Parent SKU of the bundle this result describes.
+          title: Parent SKU
+          type: string
+        status:
+          description:
+            "`applied`: stored as requested. `failed`: a SKU matched no
+            product; see `unresolved_skus`. `ambiguous`: a SKU is on more than
+            one variant and no variant was given; see `ambiguous_skus`."
+          enum: [applied, failed, ambiguous]
+          title: Status
+          type: string
+        unresolved_skus:
+          description:
+            SKUs that matched no product. Present when `status` is `failed`.
+          items: { type: string }
+          title: Unresolved SKUs
+          type: array
+        ambiguous_skus:
+          description:
+            SKUs on more than one variant, with the variants to choose from.
+            Present when `status` is `ambiguous`.
+          items:
+            properties:
+              sku:
+                title: SKU
+                type: string
+              variant_ids:
+                description: Variants that carry this SKU.
+                items: { type: string }
+                title: Variant IDs
+                type: array
+            required: [sku, variant_ids]
+            type: object
+          title: Ambiguous SKUs
+          type: array
+      required: [parent_sku, status]
+      type: object
+    title: Results
+    type: array
+required: [total_count, applied_count, failed_count, ambiguous_count, results]
+title: Bundle Upsert Response
+type: object

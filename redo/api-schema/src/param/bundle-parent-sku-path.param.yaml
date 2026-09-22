@@ -1,0 +1,8 @@
+description:
+  SKU of the product that represents the bundle. Case-sensitive and
+  URL-encoded.
+example: BUNDLE-STARTER-KIT
+in: path
+name: parentSku
+required: true
+schema: { type: string }

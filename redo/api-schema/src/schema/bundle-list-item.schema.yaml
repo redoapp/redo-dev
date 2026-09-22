@@ -1,0 +1,36 @@
+# $schema: https://json-schema.org/draft/2020-12/schema#
+description: A stored bundle, with its products resolved against your catalog.
+properties:
+  parent:
+    allOf: [{ $ref: ./bundle-variant.schema.yaml }]
+    description: The product shoppers buy, which identifies the bundle.
+    title: Parent
+  children:
+    description: The products the bundle contains.
+    items:
+      allOf: [{ $ref: ./bundle-variant.schema.yaml }]
+      properties:
+        returnable:
+          description: Whether this product may be returned on its own.
+          title: Returnable
+          type: boolean
+        quantity:
+          description: How many units of this product the bundle contains.
+          example: 2
+          minimum: 1
+          title: Quantity
+          type: integer
+      required: [returnable, quantity]
+      type: object
+    title: Children
+    type: array
+  return_types:
+    description: Return types the bundle applies to.
+    items:
+      enum: [claim, return, warranty, recycle, withdrawal]
+      type: string
+    title: Return Types
+    type: array
+required: [parent, children, return_types]
+title: Bundle List Item
+type: object

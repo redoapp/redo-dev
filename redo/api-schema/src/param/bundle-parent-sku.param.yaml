@@ -1,0 +1,7 @@
+description:
+  Return only bundles whose parent product has this SKU. Case-sensitive. If the
+  SKU is on more than one variant, every matching bundle is returned.
+example: BUNDLE-STARTER-KIT
+in: query
+name: parent_sku
+schema: { type: string }

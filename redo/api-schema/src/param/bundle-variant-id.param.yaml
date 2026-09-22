@@ -1,0 +1,7 @@
+description:
+  The parent variant. Send it if the SKU may be on more than one variant in
+  your catalog.
+example: "55518673568035"
+in: query
+name: variant_id
+schema: { type: string }
