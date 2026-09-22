@@ -23,6 +23,21 @@ properties:
       - UNKNOWN
     example: PRODUCT
     type: string
+  lot_number:
+    description: >-
+      Lot number, when this item is a tracked lot. Null for inventory that is
+      not lot-tracked.
+    example: LOT-2026-03
+    nullable: true
+    type: string
+  expiration_date:
+    description: >-
+      Expiration date of the lot (ISO 8601 date). Null when the item is not a
+      lot, or when the lot was created without a recorded expiry.
+    example: "2027-03-15"
+    format: date
+    nullable: true
+    type: string
   quantity:
     description: >-
       On-hand quantity. When `location_id` is supplied as a query filter, this
@@ -49,6 +64,8 @@ required:
   - sku
   - name
   - kind
+  - lot_number
+  - expiration_date
   - quantity
   - locations
   - created_at
