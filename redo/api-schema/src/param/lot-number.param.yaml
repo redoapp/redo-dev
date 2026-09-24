@@ -1,0 +1,5 @@
+description: Filter by lot number. Exact match, case-sensitive.
+example: LOT-2026-03
+in: query
+name: lot_number
+schema: { type: string }

@@ -11,6 +11,8 @@ get:
     - { $ref: ../param/page-size.param.yaml }
     - { $ref: ../param/location-id.param.yaml }
     - { $ref: ../param/inventory-item-kind.param.yaml }
+    - { $ref: ../param/sku.param.yaml }
+    - { $ref: ../param/lot-number.param.yaml }
   responses:
     "200":
       content:

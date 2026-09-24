@@ -1220,6 +1220,8 @@ paths:
         - $ref: '#/components/parameters/page-size.param'
         - $ref: '#/components/parameters/location-id.param'
         - $ref: '#/components/parameters/inventory-item-kind.param'
+        - $ref: '#/components/parameters/sku.param'
+        - $ref: '#/components/parameters/lot-number.param'
       responses:
         '200':
           content:
@@ -3058,6 +3060,20 @@ components:
           - UNDECLARED
           - UNKNOWN
         type: string
+    sku.param:
+      description: Filter by product SKU
+      example: TSH-BLK-M
+      in: query
+      name: sku
+      schema:
+        type: string
+    lot-number.param:
+      description: Filter by lot number. Exact match, case-sensitive.
+      example: LOT-2026-03
+      in: query
+      name: lot_number
+      schema:
+        type: string
     inventory-item-id.param:
       description: Inventory item ID
       in: path
@@ -3071,13 +3087,6 @@ components:
       example: prd_1a2b3c4d5e
       in: query
       name: product_id
-      schema:
-        type: string
-    sku.param:
-      description: Filter by product SKU
-      example: TSH-BLK-M
-      in: query
-      name: sku
       schema:
         type: string
     updated-at-min.param:
@@ -4486,6 +4495,17 @@ components:
             - UNKNOWN
           example: PRODUCT
           type: string
+        lot_number:
+          description: Lot number, when this item is a tracked lot. Null for inventory that is not lot-tracked.
+          example: LOT-2026-03
+          nullable: true
+          type: string
+        expiration_date:
+          description: Expiration date of the lot (ISO 8601 date). Null when the item is not a lot, or when the lot was created without a recorded expiry.
+          example: '2027-03-15'
+          format: date
+          nullable: true
+          type: string
         quantity:
           description: On-hand quantity. When `location_id` is supplied as a query filter, this is the quantity at that location; otherwise it is the total across all locations.
           example: 250
@@ -4510,6 +4530,8 @@ components:
         - sku
         - name
         - kind
+        - lot_number
+        - expiration_date
         - quantity
         - locations
         - created_at
