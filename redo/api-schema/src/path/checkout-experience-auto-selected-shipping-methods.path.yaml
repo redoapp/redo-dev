@@ -1,0 +1,63 @@
+put:
+  description: |
+    Choose which shipping methods are shown first at checkout, in priority
+    order. The first one available is pre-selected for the shopper, and methods
+    not listed follow in their usual order.
+
+    Send only the methods to put first, not every method. The list replaces the
+    current one; send an empty list to turn auto-selection off. Read the current
+    list from `autoSelectedShippingMethodIds` on the checkout experience.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout auto-selected shipping methods set
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/checkout-auto-selected-shipping-methods-request.schema.yaml
+        examples:
+          preselect_one:
+            summary: Show Express first and pre-select it
+            value:
+              shippingMethodIds: [66b2f1c9e4b0a1d2c3f4a5c8]
+          turn_off:
+            summary: Turn auto-selection off
+            value:
+              shippingMethodIds: []
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-write-response.schema.yaml
+      description: Updated
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        Invalid request body, a repeated shipping method, a shipping method that
+        is not part of the experience, or a store configuration that cannot use
+        auto-selection. Returned with type
+        `com.getredo.api:checkout/invalid-request`.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Set auto-selected shipping methods
+  tags: [Checkout Experiences]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/checkout-experience-id.param.yaml }
+summary: Auto-Selected Shipping Methods

@@ -30,7 +30,7 @@ properties:
           type: string
           description: "Human-readable price for this method: 'FREE', a formatted amount like '$5.99', 'DYNAMIC' for carrier-calculated rates, 'CUSTOM' for merchant-scripted rates, or '-' when no price is configured. Reflects only the FIRST configured price, so a method that prices by cart weight or cart value, or that has a free-shipping threshold, may read 'FREE' while most carts are charged something else. Call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for every price and the conditions each applies to."
       required: [id, name, description, priceDisplay]
-    description: "Shipping methods this experience offers. Not necessarily checkout display order — that is set separately with `PUT /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-method-order`. Summary only: call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for prices, carriers, conditions, and constraints."
+    description: "Shipping methods this experience offers. Summary only: call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for prices, carriers, conditions, constraints, and which methods are auto-selected."
 required: [id, name, active, createdAt, methods]
 description: "A checkout experience: a named group of shipping methods shown together at checkout. It does not decide who sees it — the checkout tree does. An experience can also group checkout widgets and a post-purchase upsell page; this summary covers only its shipping methods."
 title: "Checkout experience summary"

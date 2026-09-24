@@ -23,6 +23,11 @@ properties:
     description: "Days of fulfillment delay assumed for delivery estimates across this experience. Omitted when the experience uses the store-level value. A whole number of days, zero or more."
     type: integer
     minimum: 0
+  autoSelectedShippingMethodIds:
+    description: "Shipping methods shown first at checkout, in this order, as IDs from `methods`. The first one available is pre-selected for the shopper; methods not listed follow in their usual order. Omitted when auto-selection is off for this experience."
+    type: array
+    items:
+      type: string
 required: [id, name, active, createdAt, methods]
 description: "A checkout experience: a named group of shipping methods shown together at checkout. It does not decide who sees it — the checkout tree does. An experience can also group checkout widgets and a post-purchase upsell page; neither is covered here."
 title: "Checkout experience"

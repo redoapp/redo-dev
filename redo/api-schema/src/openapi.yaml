@@ -86,8 +86,8 @@ paths:
     { $ref: path/checkout-experience.path.yaml }
   /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/duplicate:
     { $ref: path/checkout-experience-duplicate.path.yaml }
-  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-method-order:
-    { $ref: path/checkout-experience-shipping-method-order.path.yaml }
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/auto-selected-shipping-methods:
+    { $ref: path/checkout-experience-auto-selected-shipping-methods.path.yaml }
   /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods:
     { $ref: path/checkout-shipping-methods.path.yaml }
   /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods/{shippingMethodId}:

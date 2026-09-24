@@ -1,0 +1,11 @@
+properties:
+  shippingMethodIds:
+    description: >-
+      Shipping method IDs to show first, highest priority first; the first
+      available is pre-selected. Replaces the current list. Send an empty list
+      to turn auto-selection off.
+    items: { type: string }
+    type: array
+required: [shippingMethodIds]
+title: Auto-selected shipping methods request
+type: object
