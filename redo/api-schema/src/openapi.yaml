@@ -47,6 +47,11 @@ tags:
       bundle can be broken back into the products it contains.
     name: Bundles
   - name: Checkout Buttons
+  - description:
+      Manage the shipping methods shown at checkout. A checkout experience is a
+      named group of shipping methods; the store's checkout tree decides which
+      shoppers see which experience.
+    name: Checkout Experiences
   - name: Coverage Info
   - name: Coverage Products
   - name: Custom Events
@@ -74,6 +79,19 @@ paths:
   # Checkout Buttons
   /stores/{storeId}/checkout-buttons-ui:
     { $ref: path/checkout-buttons-ui.path.yaml }
+  # Checkout Experiences
+  /stores/{storeId}/checkout-experiences:
+    { $ref: path/checkout-experiences.path.yaml }
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}:
+    { $ref: path/checkout-experience.path.yaml }
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/duplicate:
+    { $ref: path/checkout-experience-duplicate.path.yaml }
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-method-order:
+    { $ref: path/checkout-experience-shipping-method-order.path.yaml }
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods:
+    { $ref: path/checkout-shipping-methods.path.yaml }
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods/{shippingMethodId}:
+    { $ref: path/checkout-shipping-method.path.yaml }
   # Coverage Info
   /stores/{storeId}/coverage-info: { $ref: path/coverage-info.path.yaml }
   # Coverage Products

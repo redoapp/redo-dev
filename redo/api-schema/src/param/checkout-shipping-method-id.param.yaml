@@ -1,0 +1,7 @@
+description: Shipping method ID, from the checkout experience's `methods`.
+in: path
+name: shippingMethodId
+required: true
+schema:
+  example: 66b2f1c9e4b0a1d2c3f4a5c7
+  type: string

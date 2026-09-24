@@ -1,0 +1,91 @@
+delete:
+  description: |
+    Permanently remove a shipping method from a checkout experience. If the
+    experience is live, shoppers stop seeing the method as soon as the change
+    propagates.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout shipping method delete
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-shipping-method-write-response.schema.yaml
+      description: Deleted
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience or shipping method with this ID exists for the
+        store. Returned with type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Delete shipping method
+  tags: [Checkout Experiences]
+description: Shipping method.
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/checkout-experience-id.param.yaml }
+  - { $ref: ../param/checkout-shipping-method-id.param.yaml }
+put:
+  description: |
+    Replace a shipping method's configuration. The request replaces the whole
+    method, so read it from the experience first and send it back with your
+    changes applied. Configuration the API does not expose, such as shipping
+    discount rules, is kept from the existing method, as is `priceConstraints`
+    when you omit it.
+
+    To change only the fulfillment delay on a dynamic method, send its current
+    configuration with a new `fulfillmentDelayDaysOverride`. Leaving the field
+    out removes the method's override, so the experience's value applies.
+
+    A method's `type` can be changed between `fixed` and `dynamic`.
+    Script-priced (`custom`) methods cannot be edited through the API.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout shipping method update
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/checkout-shipping-method-input.schema.yaml }
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-shipping-method-write-response.schema.yaml
+      description: Updated
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        Invalid shipping method: a missing or inconsistent field, a carrier the
+        store cannot quote, a fulfillment delay that is not a whole number of
+        days zero or more, or a configuration incompatible with landed costs.
+        Returned with type `com.getredo.api:checkout/invalid-request`.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience or shipping method with this ID exists for the
+        store. Returned with type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Update shipping method
+  tags: [Checkout Experiences]
+summary: Shipping Method

@@ -39,6 +39,8 @@ tags:
   - description: Group several products under one product shoppers buy, so a returned bundle can be broken back into the products it contains.
     name: Bundles
   - name: Checkout Buttons
+  - description: Manage the shipping methods shown at checkout. A checkout experience is a named group of shipping methods; the store's checkout tree decides which shoppers see which experience.
+    name: Checkout Experiences
   - name: Coverage Info
   - name: Coverage Products
   - name: Custom Events
@@ -470,6 +472,514 @@ paths:
       tags:
         - Checkout Buttons
     summary: Checkout buttons UI
+  /stores/{storeId}/checkout-experiences:
+    get:
+      description: |
+        List the store's checkout experiences with a summary of each one's shipping
+        methods. For prices, carriers, conditions, and fulfillment delays, get the
+        experience by ID.
+
+        `active` tells you whether an experience is reachable in the store's live
+        checkout tree, which decides which shoppers see which experience.
+
+        Requires the [`checkout_read`](/docs/api-reference/scopes) scope.
+      operationId: Checkout experiences list
+      parameters:
+        - $ref: '#/components/parameters/checkout-experience-active.param'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-experience-list-response.schema'
+          description: Success
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: List checkout experiences
+      tags:
+        - Checkout Experiences
+    post:
+      description: |
+        Create an empty checkout experience. It has no shipping methods and is not
+        live until the store's checkout tree routes shoppers to it; add methods with
+        `POST /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods`.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout experience create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/checkout-experience-create-request.schema'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-experience-write-response.schema'
+          description: Created
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body or a blank name. Returned with type `com.getredo.api:checkout/invalid-request`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create checkout experience
+      tags:
+        - Checkout Experiences
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+    summary: Checkout Experiences
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}:
+    delete:
+      description: |
+        Permanently delete a checkout experience and its shipping methods.
+
+        An experience that is live in the store's checkout tree cannot be deleted:
+        route the checkout tree away from it first. Deleting it would leave checkout
+        pointing at an experience that no longer exists.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout experience delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-experience-write-response.schema'
+          description: Deleted
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        '409':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: The experience is live in the checkout tree. Returned with type `com.getredo.api:checkout/live-experience`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Delete checkout experience
+      tags:
+        - Checkout Experiences
+    description: Checkout experience.
+    get:
+      description: |
+        Get a checkout experience with the full configuration of each shipping
+        method: prices and the cart conditions they apply to, carrier services,
+        markups, price constraints, and fulfillment delays.
+
+        ## Fulfillment delay
+
+        `fulfillmentDelayDaysOverride` is the number of days Redo assumes an order
+        takes to leave the warehouse when it estimates delivery dates. It can be set
+        on the experience, and on individual dynamic shipping methods, where it
+        overrides the experience's value. When neither is set, the store-level value
+        applies.
+
+        Requires the [`checkout_read`](/docs/api-reference/scopes) scope.
+      operationId: Checkout experience get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  checkoutExperience:
+                    $ref: '#/components/schemas/checkout-experience.schema'
+                required:
+                  - checkoutExperience
+                type: object
+              examples:
+                experience:
+                  summary: An experience with a flat rate and a live carrier rate
+                  value:
+                    checkoutExperience:
+                      id: 66b2f1c9e4b0a1d2c3f4a5b6
+                      name: Standard rates
+                      active: true
+                      createdAt: '2026-08-12T15:04:05.000Z'
+                      fulfillmentDelayDaysOverride: 2
+                      methods:
+                        - id: 66b2f1c9e4b0a1d2c3f4a5c7
+                          name: Standard
+                          description: 5-8 business days
+                          type: fixed
+                          priceDisplay: $5.99
+                          rates:
+                            - price: '5.99'
+                              currency: USD
+                              conditions: []
+                              enabled: true
+                        - id: 66b2f1c9e4b0a1d2c3f4a5c8
+                          name: Ground
+                          description: Quoted live
+                          type: dynamic
+                          priceDisplay: DYNAMIC
+                          fulfillmentDelayDaysOverride: 3
+                          carrierServices:
+                            - carrier: FedEx
+                              service: FEDEX_GROUND
+                              enabled: true
+          description: Success
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Get checkout experience
+      tags:
+        - Checkout Experiences
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/checkout-experience-id.param'
+    patch:
+      description: |
+        Change a checkout experience's settings. Only the fields you send are
+        changed.
+
+        Set `fulfillmentDelayDaysOverride` to change how many days of fulfillment
+        delay delivery estimates assume across the experience, or send `null` to
+        remove the override so the store-level value applies again.
+
+        Changes to an experience that is live in the checkout tree take effect for
+        shoppers immediately.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout experience update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/checkout-experience-update-request.schema'
+            examples:
+              set_delay:
+                summary: Assume two days of fulfillment delay
+                value:
+                  fulfillmentDelayDaysOverride: 2
+              clear_delay:
+                summary: Fall back to the store-level delay
+                value:
+                  fulfillmentDelayDaysOverride: null
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-experience-write-response.schema'
+          description: Updated
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body, a blank name, a fulfillment delay that is not a whole number of days zero or more, or landed costs enabled over an incompatible shipping method. Returned with type `com.getredo.api:checkout/invalid-request`.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Update checkout experience
+      tags:
+        - Checkout Experiences
+    summary: Checkout Experience
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/duplicate:
+    post:
+      description: |
+        Copy a checkout experience, including its settings and shipping methods.
+        The copy's shipping methods get new IDs, and the copy is not live until the
+        store's checkout tree routes shoppers to it.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout experience duplicate
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-experience-write-response.schema'
+          description: The copy was created. `checkoutExperienceId` is the copy's ID.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Duplicate checkout experience
+      tags:
+        - Checkout Experiences
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/checkout-experience-id.param'
+    summary: Checkout Experience Duplicate
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-method-order:
+    put:
+      description: |
+        Set the order a checkout experience's shipping methods are shown in at
+        checkout. List every shipping method in the experience exactly once; a
+        partial list, a repeated ID, or an ID from another experience is rejected.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout shipping method order set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/checkout-shipping-method-order-request.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-experience-write-response.schema'
+          description: Updated
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Invalid request body, or the list is not every shipping method in the experience exactly once. Returned with type `com.getredo.api:checkout/invalid-request`.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Set shipping method order
+      tags:
+        - Checkout Experiences
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/checkout-experience-id.param'
+    summary: Shipping Method Order
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods:
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/checkout-experience-id.param'
+    post:
+      description: |
+        Add a shipping method to a checkout experience.
+
+        - A `fixed` method is a price you set, served by Redo with no carrier
+          involved. It needs `rates`.
+        - A `dynamic` method quotes live carrier rates through Redo. It needs
+          `carrierServices` or a `serviceLevel`, and every carrier must be one the
+          store has an account or setting for.
+
+        Script-priced (`custom`) methods cannot be created through the API.
+        Shipping discount rules are configured by Redo and cannot be set here.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout shipping method create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/checkout-shipping-method-input.schema'
+            examples:
+              flat_rate:
+                summary: A flat-rate method
+                value:
+                  type: fixed
+                  name: Standard
+                  description: 5-8 business days
+                  rates:
+                    - price: '5.99'
+                      currency: USD
+              live_rate_with_delay:
+                summary: A live carrier rate that assumes three days to ship
+                value:
+                  type: dynamic
+                  name: Ground
+                  description: Quoted live
+                  carrierServices:
+                    - carrier: FedEx
+                      service: FEDEX_GROUND
+                  fulfillmentDelayDaysOverride: 3
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-shipping-method-write-response.schema'
+          description: Created
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: 'Invalid shipping method: a missing or inconsistent field, a carrier the store cannot quote, a fulfillment delay that is not a whole number of days zero or more, or a configuration incompatible with landed costs. Returned with type `com.getredo.api:checkout/invalid-request`.'
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Create shipping method
+      tags:
+        - Checkout Experiences
+    summary: Shipping Methods
+  /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods/{shippingMethodId}:
+    delete:
+      description: |
+        Permanently remove a shipping method from a checkout experience. If the
+        experience is live, shoppers stop seeing the method as soon as the change
+        propagates.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout shipping method delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-shipping-method-write-response.schema'
+          description: Deleted
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience or shipping method with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Delete shipping method
+      tags:
+        - Checkout Experiences
+    description: Shipping method.
+    parameters:
+      - $ref: '#/components/parameters/store-id.param'
+      - $ref: '#/components/parameters/checkout-experience-id.param'
+      - $ref: '#/components/parameters/checkout-shipping-method-id.param'
+    put:
+      description: |
+        Replace a shipping method's configuration. The request replaces the whole
+        method, so read it from the experience first and send it back with your
+        changes applied. Configuration the API does not expose, such as shipping
+        discount rules, is kept from the existing method, as is `priceConstraints`
+        when you omit it.
+
+        To change only the fulfillment delay on a dynamic method, send its current
+        configuration with a new `fulfillmentDelayDaysOverride`. Leaving the field
+        out removes the method's override, so the experience's value applies.
+
+        A method's `type` can be changed between `fixed` and `dynamic`.
+        Script-priced (`custom`) methods cannot be edited through the API.
+
+        Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+      operationId: Checkout shipping method update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/checkout-shipping-method-input.schema'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkout-shipping-method-write-response.schema'
+          description: Updated
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: 'Invalid shipping method: a missing or inconsistent field, a carrier the store cannot quote, a fulfillment delay that is not a whole number of days zero or more, or a configuration incompatible with landed costs. Returned with type `com.getredo.api:checkout/invalid-request`.'
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: No checkout experience or shipping method with this ID exists for the store. Returned with type `com.getredo.api:checkout/not-found`.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/error.schema'
+          description: Error
+      security:
+        - Bearer: []
+      summary: Update shipping method
+      tags:
+        - Checkout Experiences
+    summary: Shipping Method
   /stores/{storeId}/coverage-info:
     description: Navigate to the coverage info page.
     get:
@@ -2989,6 +3499,32 @@ components:
       name: variant_id
       schema:
         type: string
+    checkout-experience-active.param:
+      description: '`true` returns only experiences reachable in the store''s live checkout tree, `false` only those that are not. Omit to return both.'
+      in: query
+      name: active
+      required: false
+      schema:
+        enum:
+          - 'true'
+          - 'false'
+        type: string
+    checkout-experience-id.param:
+      description: Checkout experience ID.
+      in: path
+      name: checkoutExperienceId
+      required: true
+      schema:
+        example: 66b2f1c9e4b0a1d2c3f4a5b6
+        type: string
+    checkout-shipping-method-id.param:
+      description: Shipping method ID, from the checkout experience's `methods`.
+      in: path
+      name: shippingMethodId
+      required: true
+      schema:
+        example: 66b2f1c9e4b0a1d2c3f4a5c7
+        type: string
     page-continue.param:
       description: Page marker, from X-Page-Next header
       example: 64df700931a04885276c3364
@@ -3487,6 +4023,1974 @@ components:
         - variant_ids
       title: Ambiguous SKU problem details
       type: object
+    checkout-experience-summary.schema:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Checkout experience ID. Pass it to `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for full detail.
+        name:
+          type: string
+          description: Merchant-facing name of the checkout experience.
+        active:
+          type: boolean
+          description: True when this experience is reachable in the team's live checkout tree, i.e. real shoppers can be served it.
+        createdAt:
+          type: string
+          description: Creation timestamp, ISO 8601 UTC.
+        methods:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Shipping method ID, unique within the team.
+              name:
+                type: string
+                description: Shopper-facing name of the shipping method as it appears at checkout, e.g. 'Standard'.
+              description:
+                type: string
+                description: Shopper-facing description shown next to the method.
+              priceDisplay:
+                type: string
+                description: 'Human-readable price for this method: ''FREE'', a formatted amount like ''$5.99'', ''DYNAMIC'' for carrier-calculated rates, ''CUSTOM'' for merchant-scripted rates, or ''-'' when no price is configured. Reflects only the FIRST configured price, so a method that prices by cart weight or cart value, or that has a free-shipping threshold, may read ''FREE'' while most carts are charged something else. Call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for every price and the conditions each applies to.'
+            required:
+              - id
+              - name
+              - description
+              - priceDisplay
+          description: 'Shipping methods this experience offers. Not necessarily checkout display order — that is set separately with `PUT /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-method-order`. Summary only: call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for prices, carriers, conditions, and constraints.'
+      required:
+        - id
+        - name
+        - active
+        - createdAt
+        - methods
+      description: 'A checkout experience: a named group of shipping methods shown together at checkout. It does not decide who sees it — the checkout tree does. An experience can also group checkout widgets and a post-purchase upsell page; this summary covers only its shipping methods.'
+      title: Checkout experience summary
+    checkout-experience-list-response.schema:
+      type: object
+      properties:
+        checkoutExperiences:
+          type: array
+          items:
+            $ref: '#/components/schemas/checkout-experience-summary.schema'
+          description: The team's checkout experiences matching the filter. An experience that is not active is fully configured but unreachable — no shopper can currently be served it.
+        totalCount:
+          type: integer
+          minimum: -9007199254740991
+          maximum: 9007199254740991
+          description: Number of checkout experiences returned.
+      required:
+        - checkoutExperiences
+        - totalCount
+      title: Checkout experience list
+    checkout-experience-create-request.schema:
+      properties:
+        name:
+          description: Merchant-facing name for the new checkout experience. Must not be blank.
+          example: Free shipping test
+          type: string
+      required:
+        - name
+      title: Checkout experience create request
+      type: object
+    checkout-experience-write-response.schema:
+      type: object
+      properties:
+        checkoutExperienceId:
+          type: string
+          description: The checkout experience that was written. Read it back with `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}`.
+      required:
+        - checkoutExperienceId
+      title: Checkout experience write result
+    checkout-shipping-method.schema:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Shipping method ID.
+        name:
+          type: string
+          description: Shopper-facing name of the shipping method as it appears at checkout. May contain customer-name template variables — '{customer_name}', '{customer_name:first}', '{customer_name:last}' — which are substituted per shopper. Preserve them when rewriting this field, or personalization is silently dropped; see `fallbackName` for what is shown when the shopper's name is unknown.
+        description:
+          type: string
+          description: Shopper-facing description shown next to the method at checkout. Like `name`, it may contain customer-name template variables; see `fallbackDescription`.
+        type:
+          type: string
+          enum:
+            - fixed
+            - dynamic
+            - custom
+          description: 'How the price is produced: ''fixed'' is a merchant-set price served by Redo with no carrier involved, ''dynamic'' is quoted live from the carriers listed in `carrierServices`, ''custom'' is produced by a merchant-authored script.'
+        priceDisplay:
+          type: string
+          description: 'Human-readable price: ''FREE'', a formatted amount like ''$5.99'', ''DYNAMIC'' for carrier-calculated rates, ''CUSTOM'' for merchant-scripted rates, or ''-'' when no price is configured. Reflects only the first entry in `rates`, so on a method with several it can read ''FREE'' or show the cheapest tier while most carts are charged something else — read `rates` for the full picture.'
+        fallbackName:
+          description: Shopper-facing name used in place of `name` when `name` contains customer-name template variables and the shopper's name is not available at quote time. Ignored when `name` has no variables. Omitted when the merchant has not set one, in which case an unpersonalized `name` renders with the variables emptied out.
+          type: string
+        fallbackDescription:
+          description: 'Shopper-facing description used in place of `description` under the same condition as `fallbackName`: `description` contains customer-name template variables and the shopper''s name is not available. Omitted when the merchant has not set one.'
+          type: string
+        serviceCode:
+          description: Identifier the storefront platform uses for this shipping option at checkout. Omitted when the merchant has not set one.
+          type: string
+        coverageTypes:
+          description: Redo coverage bundled into this shipping method. Omitted when no coverage is bundled.
+          type: object
+          properties:
+            return:
+              description: True when return coverage is included. Omitted when never configured.
+              type: boolean
+            packageProtection:
+              description: True when package protection is included. Omitted when never configured.
+              type: boolean
+        orderTags:
+          description: Tags applied to the order when this method is bought. Omitted when the merchant has configured no tags.
+          type: array
+          items:
+            type: string
+        shippingDiscountRules:
+          description: 'Shipping discounts applied to this method, in order. READ ONLY: these are configured by Redo, not by the merchant, and they sync to a live storefront-platform function, so writing them here would put the stored rules and the deployed function out of step. Creating or updating a shipping method carries them over untouched. Omitted when the method has no discount rules.'
+          type: array
+          items:
+            type: object
+            properties:
+              minCartPrice:
+                description: Cart total at or above which the discount applies. Omitted when the rule has no lower bound.
+                type: number
+              maxCartPrice:
+                description: Cart total at or below which the discount applies. Omitted when the rule has no upper bound.
+                type: number
+              currency:
+                description: Currency the cart bounds and discount amount are expressed in. Omitted when the rule sets neither cart bounds nor a flat discount amount.
+                type: string
+              discountAmount:
+                description: Flat amount taken off the shipping price, as a decimal string. Omitted when the rule discounts by percentage instead.
+                type: string
+              discountPercentage:
+                description: Percentage taken off the shipping price, as a decimal string (e.g. '50' means half off). Omitted when the rule discounts by a flat amount instead.
+                type: string
+        fulfillmentDelayDaysOverride:
+          description: Days of fulfillment delay assumed for delivery estimates on this method, overriding the experience-level value. Omitted when the method does not override the experience-level value. A whole number of days, zero or more.
+          type: integer
+          minimum: 0
+        addLandedCostsOverride:
+          description: True when landed costs (duties and import fees) are added to this method's price, overriding the experience-level setting. Omitted when the method does not override it.
+          type: boolean
+        priceConstraints:
+          description: Bounds the method's sold price must stay within. Omitted when the merchant has set no price or margin constraints.
+          type: object
+          properties:
+            kind:
+              type: string
+              enum:
+                - DEFAULT
+                - RELATIVE_TO_OTHER_RATE_TABLE
+              description: 'How the bounds are expressed: ''DEFAULT'' bounds the price absolutely, ''RELATIVE_TO_OTHER_RATE_TABLE'' bounds it against another shipping method''s price.'
+            currency:
+              type: string
+              enum:
+                - AED
+                - AFN
+                - ALL
+                - AMD
+                - ANG
+                - AOA
+                - ARS
+                - AUD
+                - AWG
+                - AZN
+                - BAM
+                - BBD
+                - BDT
+                - BGN
+                - BHD
+                - BIF
+                - BMD
+                - BND
+                - BOB
+                - BOV
+                - BRL
+                - BSD
+                - BTN
+                - BWP
+                - BYN
+                - BZD
+                - CAD
+                - CDF
+                - CHF
+                - CLP
+                - CNY
+                - COP
+                - CRC
+                - CUC
+                - CUP
+                - CVE
+                - CZK
+                - DJF
+                - DKK
+                - DOP
+                - DZD
+                - EGP
+                - ERN
+                - ETB
+                - EUR
+                - FJD
+                - FKP
+                - GBP
+                - GEL
+                - GHS
+                - GIP
+                - GMD
+                - GNF
+                - GTQ
+                - GYD
+                - HKD
+                - HNL
+                - HTG
+                - HUF
+                - IDR
+                - ILS
+                - INR
+                - IQD
+                - IRR
+                - ISK
+                - JMD
+                - JOD
+                - JPY
+                - KES
+                - KGS
+                - KHR
+                - KMF
+                - KPW
+                - KRW
+                - KWD
+                - KYD
+                - KZT
+                - LAK
+                - LBP
+                - LKR
+                - LRD
+                - LSL
+                - LYD
+                - MAD
+                - MDL
+                - MGA
+                - MKD
+                - MMK
+                - MNT
+                - MOP
+                - MRU
+                - MUR
+                - MVR
+                - MWK
+                - MXN
+                - MYR
+                - MZN
+                - NAD
+                - NGN
+                - NIO
+                - NOK
+                - NPR
+                - NZD
+                - OMR
+                - PAB
+                - PEN
+                - PGK
+                - PHP
+                - PKR
+                - PLN
+                - PYG
+                - QAR
+                - RON
+                - RSD
+                - RUB
+                - RWF
+                - SAR
+                - SBD
+                - SCR
+                - SDG
+                - SEK
+                - SGD
+                - SHP
+                - SLE
+                - SOS
+                - SRD
+                - SSP
+                - STN
+                - SVC
+                - SYP
+                - SZL
+                - THB
+                - TJS
+                - TMT
+                - TND
+                - TOP
+                - TRY
+                - TTD
+                - TWD
+                - TZS
+                - UAH
+                - UGX
+                - USD
+                - UYU
+                - UYW
+                - UZS
+                - VED
+                - VES
+                - VND
+                - VUV
+                - WST
+                - XAF
+                - XAG
+                - XAU
+                - XBA
+                - XBB
+                - XBC
+                - XBD
+                - XCD
+                - XDR
+                - XOF
+                - XPD
+                - XPF
+                - XPT
+                - XSU
+                - XTS
+                - XUA
+                - XXX
+                - YER
+                - ZAR
+                - ZMW
+                - ZWG
+                - ZWL
+                - BYR
+                - HRK
+                - JEP
+                - KID
+                - LTL
+                - LVL
+                - SLL
+                - STD
+                - USDC
+                - VEF
+              description: Currency all bounds are expressed in.
+            minPrice:
+              description: Lowest price this method may be sold at. Present only on 'DEFAULT' constraints, and omitted when no lower bound is set.
+              type: number
+            maxPrice:
+              description: Highest price this method may be sold at. Present only on 'DEFAULT' constraints, and omitted when no upper bound is set.
+              type: number
+            marginAtLeast:
+              description: Suggested lower margin bound. Omitted when no lower margin bound is set.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omitted when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omitted when unset.
+                  type: number
+            marginAtMost:
+              description: Suggested upper margin bound. Omitted when no upper margin bound is set.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omitted when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omitted when unset.
+                  type: number
+            relativeToMethodId:
+              description: ID of the shipping method this method's price is bounded against. Matches the `id` of another method in this same response. Present only on 'RELATIVE_TO_OTHER_RATE_TABLE' constraints.
+              type: string
+            byAtLeast:
+              description: How far above the referenced method's price this method must sit. Present only on 'RELATIVE_TO_OTHER_RATE_TABLE' constraints, and omitted when unset.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omitted when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omitted when unset.
+                  type: number
+            byAtMost:
+              description: How far above the referenced method's price this method may sit. Present only on 'RELATIVE_TO_OTHER_RATE_TABLE' constraints, and omitted when unset.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omitted when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omitted when unset.
+                  type: number
+            absoluteMinimumPrice:
+              description: 'Floor applied after the relative bound: the effective minimum is the greater of this and the referenced price plus `byAtLeast`. Present only on ''RELATIVE_TO_OTHER_RATE_TABLE'' constraints, and omitted when unset.'
+              type: number
+          required:
+            - kind
+            - currency
+        rates:
+          description: Fixed methods only. Every configured price, in order. More than one entry means the price varies by cart weight or cart value; a single entry with empty `conditions` is a flat price.
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: string
+                description: This rate's price as a decimal string, e.g. '5.99'. '0' means free shipping for carts matching `conditions`.
+              currency:
+                type: string
+                description: Currency of `price`.
+              conditions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - weight
+                        - price
+                      description: 'What this condition is measured against: ''weight'' uses the cart''s total weight, ''price'' uses the cart''s total value.'
+                    minGrams:
+                      description: Inclusive lower bound of cart weight in grams. Present only on weight conditions.
+                      type: number
+                    maxGrams:
+                      description: Inclusive upper bound of cart weight in grams. Present only on weight conditions.
+                      type: number
+                    minPrice:
+                      description: Inclusive lower bound of cart value. Present only on cart-value conditions.
+                      type: number
+                    maxPrice:
+                      description: Inclusive upper bound of cart value. Present only on cart-value conditions.
+                      type: number
+                    currency:
+                      description: Currency the price bounds are expressed in. Present only on cart-value conditions.
+                      type: string
+                  required:
+                    - type
+                description: Cart weight or cart value conditions this price applies to. Empty when the price applies to every cart.
+              enabled:
+                description: Whether the merchant has this rate turned on. Defaults to true, and is omitted only on records predating the flag.
+                type: boolean
+            required:
+              - price
+              - currency
+              - conditions
+        carrierServices:
+          description: Dynamic methods only. The carrier services this method quotes live rates from. This is the answer to 'which carrier do my checkout rates come from' — the rates are fetched by Redo from these carriers. Empty means no carrier service has been pinned, so the method draws on whatever the account has available.
+          type: array
+          items:
+            type: object
+            properties:
+              carrier:
+                type: string
+                enum:
+                  - FedEx
+                  - UPS
+                  - UPSSurePost
+                  - USPS
+                  - USPSReturns
+                  - UspsShip
+                  - FedExSmartPost
+                  - AmazonShipping
+                  - DHLExpress
+                  - DhlEcs
+                  - Veho
+                  - APC
+                  - FirstMile
+                  - AustraliaPost
+                  - CanadaPost
+                  - GSO
+                  - AsendiaUsa
+                  - RoyalMailV3
+                  - SpeeDee
+                  - PassportGlobal
+                  - ePostGlobal
+                  - LandmarkGlobal
+                  - ETA Express
+                  - OnTracV3
+                  - GlobalE
+                  - UPSMailInnovations
+                  - Purolator
+                  - UniUni
+                  - StallionExpress
+                  - EcomExpress
+                  - ChitChats
+                  - PostNL
+                  - Intelcom
+                  - FleetOptics
+                  - ICS
+                  - WhizDelivery
+                  - Tik Tok
+                  - CanparExpress
+                  - GOFO
+                  - P2P
+                description: Carrier this method draws a live rate from.
+              service:
+                type: string
+                description: Carrier-specific service code, e.g. 'fedex_ground' or 'usps_priority'. The valid set differs per carrier, so this is not a single closed enum.
+              enabled:
+                description: Whether the merchant has this carrier service turned on. A disabled service is configured but not quoted. Defaults to true, and is omitted only on records predating the flag.
+                type: boolean
+              markup:
+                description: Markup applied to this carrier service specifically, on top of any method-level markup. Omitted when no per-service markup is set.
+                type: object
+                properties:
+                  amount:
+                    description: Flat amount added on top of the carrier rate, as a decimal string. Omitted when only a percentage markup is set, or none.
+                    type: string
+                  percentage:
+                    description: Percentage added on top of the carrier rate, as a decimal string (e.g. '10' means +10%). Omitted when only a flat markup is set, or none.
+                    type: string
+            required:
+              - carrier
+              - service
+        rateSelection:
+          description: Dynamic methods only. Which of the eligible live carrier rates is shown to the shopper. Omitted when the merchant has not chosen a preset.
+          type: string
+          enum:
+            - cheapest
+            - fastest
+            - custom
+        serviceLevel:
+          description: Dynamic methods only. When set, the cheapest carrier service delivering within this service level's window is used. Omitted when the method is not bucketed by service level.
+          type: string
+          enum:
+            - Standard
+            - Plus
+            - Express
+        excludedCarriers:
+          description: Dynamic methods only. Carriers never considered for this method. Omitted when no carrier is excluded.
+          type: array
+          items:
+            type: string
+            enum:
+              - FedEx
+              - UPS
+              - UPSSurePost
+              - USPS
+              - USPSReturns
+              - UspsShip
+              - FedExSmartPost
+              - AmazonShipping
+              - DHLExpress
+              - DhlEcs
+              - Veho
+              - APC
+              - FirstMile
+              - AustraliaPost
+              - CanadaPost
+              - GSO
+              - AsendiaUsa
+              - RoyalMailV3
+              - SpeeDee
+              - PassportGlobal
+              - ePostGlobal
+              - LandmarkGlobal
+              - ETA Express
+              - OnTracV3
+              - GlobalE
+              - UPSMailInnovations
+              - Purolator
+              - UniUni
+              - StallionExpress
+              - EcomExpress
+              - ChitChats
+              - PostNL
+              - Intelcom
+              - FleetOptics
+              - ICS
+              - WhizDelivery
+              - Tik Tok
+              - CanparExpress
+              - GOFO
+              - P2P
+        markup:
+          description: Dynamic methods only. Markup applied to every live carrier rate on this method, on top of which per-carrier-service markups still apply. Omitted when no method-level markup is set.
+          type: object
+          properties:
+            amount:
+              description: Flat amount added on top of every carrier rate. Omitted when only a percentage markup is set, or none.
+              type: object
+              properties:
+                currency:
+                  type: string
+                  enum:
+                    - AED
+                    - AFN
+                    - ALL
+                    - AMD
+                    - ANG
+                    - AOA
+                    - ARS
+                    - AUD
+                    - AWG
+                    - AZN
+                    - BAM
+                    - BBD
+                    - BDT
+                    - BGN
+                    - BHD
+                    - BIF
+                    - BMD
+                    - BND
+                    - BOB
+                    - BOV
+                    - BRL
+                    - BSD
+                    - BTN
+                    - BWP
+                    - BYN
+                    - BZD
+                    - CAD
+                    - CDF
+                    - CHF
+                    - CLP
+                    - CNY
+                    - COP
+                    - CRC
+                    - CUC
+                    - CUP
+                    - CVE
+                    - CZK
+                    - DJF
+                    - DKK
+                    - DOP
+                    - DZD
+                    - EGP
+                    - ERN
+                    - ETB
+                    - EUR
+                    - FJD
+                    - FKP
+                    - GBP
+                    - GEL
+                    - GHS
+                    - GIP
+                    - GMD
+                    - GNF
+                    - GTQ
+                    - GYD
+                    - HKD
+                    - HNL
+                    - HTG
+                    - HUF
+                    - IDR
+                    - ILS
+                    - INR
+                    - IQD
+                    - IRR
+                    - ISK
+                    - JMD
+                    - JOD
+                    - JPY
+                    - KES
+                    - KGS
+                    - KHR
+                    - KMF
+                    - KPW
+                    - KRW
+                    - KWD
+                    - KYD
+                    - KZT
+                    - LAK
+                    - LBP
+                    - LKR
+                    - LRD
+                    - LSL
+                    - LYD
+                    - MAD
+                    - MDL
+                    - MGA
+                    - MKD
+                    - MMK
+                    - MNT
+                    - MOP
+                    - MRU
+                    - MUR
+                    - MVR
+                    - MWK
+                    - MXN
+                    - MYR
+                    - MZN
+                    - NAD
+                    - NGN
+                    - NIO
+                    - NOK
+                    - NPR
+                    - NZD
+                    - OMR
+                    - PAB
+                    - PEN
+                    - PGK
+                    - PHP
+                    - PKR
+                    - PLN
+                    - PYG
+                    - QAR
+                    - RON
+                    - RSD
+                    - RUB
+                    - RWF
+                    - SAR
+                    - SBD
+                    - SCR
+                    - SDG
+                    - SEK
+                    - SGD
+                    - SHP
+                    - SLE
+                    - SOS
+                    - SRD
+                    - SSP
+                    - STN
+                    - SVC
+                    - SYP
+                    - SZL
+                    - THB
+                    - TJS
+                    - TMT
+                    - TND
+                    - TOP
+                    - TRY
+                    - TTD
+                    - TWD
+                    - TZS
+                    - UAH
+                    - UGX
+                    - USD
+                    - UYU
+                    - UYW
+                    - UZS
+                    - VED
+                    - VES
+                    - VND
+                    - VUV
+                    - WST
+                    - XAF
+                    - XAG
+                    - XAU
+                    - XBA
+                    - XBB
+                    - XBC
+                    - XBD
+                    - XCD
+                    - XDR
+                    - XOF
+                    - XPD
+                    - XPF
+                    - XPT
+                    - XSU
+                    - XTS
+                    - XUA
+                    - XXX
+                    - YER
+                    - ZAR
+                    - ZMW
+                    - ZWG
+                    - ZWL
+                    - BYR
+                    - HRK
+                    - JEP
+                    - KID
+                    - LTL
+                    - LVL
+                    - SLL
+                    - STD
+                    - USDC
+                    - VEF
+                  description: Currency of the flat markup.
+                value:
+                  type: string
+                  description: Flat markup as a decimal string.
+              required:
+                - currency
+                - value
+            percentage:
+              description: Percentage added on top of every carrier rate, as a decimal string (e.g. '10' means +10%). Omitted when only a flat markup is set, or none.
+              type: string
+        rounding:
+          description: Dynamic methods only. How the marked-up price is rounded before it is shown. Omitted when prices are shown unrounded.
+          type: string
+          enum:
+            - NEAREST_WHOLE
+            - NEAREST_WHOLE_MINUS_ONE
+            - NEAREST_WHOLE_MINUS_FIVE
+            - NEAREST_HALF
+            - NEAREST_QUARTER
+            - NEAREST_TENTH
+            - NEAREST_TWENTIETH
+        priceBounds:
+          description: Dynamic methods only. Hard clamp applied after markup and rounding. Omitted when the price is not clamped.
+          type: object
+          properties:
+            currency:
+              type: string
+              enum:
+                - AED
+                - AFN
+                - ALL
+                - AMD
+                - ANG
+                - AOA
+                - ARS
+                - AUD
+                - AWG
+                - AZN
+                - BAM
+                - BBD
+                - BDT
+                - BGN
+                - BHD
+                - BIF
+                - BMD
+                - BND
+                - BOB
+                - BOV
+                - BRL
+                - BSD
+                - BTN
+                - BWP
+                - BYN
+                - BZD
+                - CAD
+                - CDF
+                - CHF
+                - CLP
+                - CNY
+                - COP
+                - CRC
+                - CUC
+                - CUP
+                - CVE
+                - CZK
+                - DJF
+                - DKK
+                - DOP
+                - DZD
+                - EGP
+                - ERN
+                - ETB
+                - EUR
+                - FJD
+                - FKP
+                - GBP
+                - GEL
+                - GHS
+                - GIP
+                - GMD
+                - GNF
+                - GTQ
+                - GYD
+                - HKD
+                - HNL
+                - HTG
+                - HUF
+                - IDR
+                - ILS
+                - INR
+                - IQD
+                - IRR
+                - ISK
+                - JMD
+                - JOD
+                - JPY
+                - KES
+                - KGS
+                - KHR
+                - KMF
+                - KPW
+                - KRW
+                - KWD
+                - KYD
+                - KZT
+                - LAK
+                - LBP
+                - LKR
+                - LRD
+                - LSL
+                - LYD
+                - MAD
+                - MDL
+                - MGA
+                - MKD
+                - MMK
+                - MNT
+                - MOP
+                - MRU
+                - MUR
+                - MVR
+                - MWK
+                - MXN
+                - MYR
+                - MZN
+                - NAD
+                - NGN
+                - NIO
+                - NOK
+                - NPR
+                - NZD
+                - OMR
+                - PAB
+                - PEN
+                - PGK
+                - PHP
+                - PKR
+                - PLN
+                - PYG
+                - QAR
+                - RON
+                - RSD
+                - RUB
+                - RWF
+                - SAR
+                - SBD
+                - SCR
+                - SDG
+                - SEK
+                - SGD
+                - SHP
+                - SLE
+                - SOS
+                - SRD
+                - SSP
+                - STN
+                - SVC
+                - SYP
+                - SZL
+                - THB
+                - TJS
+                - TMT
+                - TND
+                - TOP
+                - TRY
+                - TTD
+                - TWD
+                - TZS
+                - UAH
+                - UGX
+                - USD
+                - UYU
+                - UYW
+                - UZS
+                - VED
+                - VES
+                - VND
+                - VUV
+                - WST
+                - XAF
+                - XAG
+                - XAU
+                - XBA
+                - XBB
+                - XBC
+                - XBD
+                - XCD
+                - XDR
+                - XOF
+                - XPD
+                - XPF
+                - XPT
+                - XSU
+                - XTS
+                - XUA
+                - XXX
+                - YER
+                - ZAR
+                - ZMW
+                - ZWG
+                - ZWL
+                - BYR
+                - HRK
+                - JEP
+                - KID
+                - LTL
+                - LVL
+                - SLL
+                - STD
+                - USDC
+                - VEF
+              description: Currency of the bounds.
+            minimum:
+              description: Lowest price ever shown, as a decimal string. Omitted when there is no floor.
+              type: string
+            maximum:
+              description: Highest price ever shown, as a decimal string. Omitted when there is no ceiling.
+              type: string
+          required:
+            - currency
+      required:
+        - id
+        - name
+        - description
+        - type
+        - priceDisplay
+      title: Shipping method
+    checkout-experience.schema:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Checkout experience ID.
+        name:
+          type: string
+          description: Merchant-facing name of the checkout experience.
+        active:
+          type: boolean
+          description: True when this experience is reachable in the team's live checkout tree.
+        createdAt:
+          type: string
+          description: Creation timestamp, ISO 8601 UTC.
+        methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/checkout-shipping-method.schema'
+          description: Shipping methods offered by this experience.
+        addLandedCosts:
+          description: True when landed costs (duties and import fees) are added to every method's price in this experience. Omitted when the merchant has never configured it.
+          type: boolean
+        fulfillmentDelayDaysOverride:
+          description: Days of fulfillment delay assumed for delivery estimates across this experience. Omitted when the experience uses the store-level value. A whole number of days, zero or more.
+          type: integer
+          minimum: 0
+      required:
+        - id
+        - name
+        - active
+        - createdAt
+        - methods
+      description: 'A checkout experience: a named group of shipping methods shown together at checkout. It does not decide who sees it — the checkout tree does. An experience can also group checkout widgets and a post-purchase upsell page; neither is covered here.'
+      title: Checkout experience
+    checkout-experience-update-request.schema:
+      description: Only the fields you send are changed.
+      properties:
+        name:
+          description: New merchant-facing name. Must not be blank.
+          type: string
+        addLandedCosts:
+          description: Add landed costs (duties and import fees) to every shipping method's price in this experience. Enabling it fails if a method uses a carrier service that does not support landed cost calculation.
+          type: boolean
+        fulfillmentDelayDaysOverride:
+          description: Days of fulfillment delay to assume for delivery estimates across this experience, overriding the store-level value. A whole number of days, zero or more. Send `null` to remove the override so the store-level value applies again.
+          minimum: 0
+          type:
+            - integer
+            - 'null'
+      title: Checkout experience update request
+      type: object
+    checkout-shipping-method-order-request.schema:
+      properties:
+        orderedShippingMethodIds:
+          description: Shipping method IDs in display order, first shown first. Must list every shipping method in the experience exactly once.
+          items:
+            type: string
+          type: array
+      required:
+        - orderedShippingMethodIds
+      title: Shipping method order request
+      type: object
+    checkout-shipping-method-input.schema:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - fixed
+            - dynamic
+          description: How the price is produced. 'fixed' is a merchant-set price served by Redo with no carrier involved and requires `rates`. 'dynamic' quotes live carrier rates through Redo and requires either `carrierServices` or `serviceLevel`. Custom (script-priced) methods cannot be created or edited here.
+        name:
+          type: string
+          description: Shopper-facing name of the shipping method as it appears at checkout, e.g. 'Standard'. May contain customer-name template variables — '{customer_name}', '{customer_name:first}', '{customer_name:last}' — which are substituted per shopper. Send them back verbatim when you are not deliberately changing them, or you will silently strip the merchant's personalization.
+        description:
+          type: string
+          description: Shopper-facing description shown next to the method at checkout. Like `name`, it may contain customer-name template variables.
+        fallbackName:
+          description: Shopper-facing name used in place of `name` when `name` contains customer-name template variables and the shopper's name is not available at quote time. Ignored when `name` has no variables.
+          type: string
+        fallbackDescription:
+          description: Shopper-facing description used in place of `description` under the same condition as `fallbackName`.
+          type: string
+        serviceCode:
+          description: Identifier the storefront platform uses for this shipping option at checkout.
+          type: string
+        coverageTypes:
+          description: Redo coverage bundled into this shipping method.
+          type: object
+          properties:
+            return:
+              description: Include return coverage with this method.
+              type: boolean
+            packageProtection:
+              description: Include package protection with this method.
+              type: boolean
+        orderTags:
+          description: Tags applied to the order when this method is bought.
+          type: array
+          items:
+            type: string
+        addLandedCostsOverride:
+          description: Add landed costs (duties and import fees) to this method's price, overriding the experience-level setting.
+          type: boolean
+        rates:
+          description: Fixed methods only, and required for them. One entry per price. A single entry with no `conditions` is a flat price; multiple entries express weight or cart-value ranges and free-shipping thresholds.
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: string
+                description: Price for this rate as a decimal string, e.g. '5.99'. Use '0' for free shipping.
+              currency:
+                type: string
+                description: ISO currency code for `price`, e.g. 'USD'.
+              enabled:
+                description: Whether this rate is active. Defaults to true.
+                type: boolean
+              conditions:
+                description: Cart weight or cart value ranges this rate applies to. Omit or pass an empty array for a flat price that applies to every cart.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - weight
+                        - price
+                      description: 'What this condition is measured against: ''weight'' for cart weight, ''price'' for cart value.'
+                    minGrams:
+                      description: Inclusive lower bound of cart weight. Weight conditions only.
+                      type: number
+                    maxGrams:
+                      description: Inclusive upper bound of cart weight. Weight conditions only.
+                      type: number
+                    minPrice:
+                      description: Inclusive lower bound of cart value. Price conditions only.
+                      type: number
+                    maxPrice:
+                      description: Inclusive upper bound of cart value. Price conditions only.
+                      type: number
+                    currency:
+                      description: Currency of the cart value bounds. Price conditions only.
+                      type: string
+                  required:
+                    - type
+            required:
+              - price
+              - currency
+        carrierServices:
+          description: Dynamic methods only. The carrier services to quote live rates from. Required unless `serviceLevel` is set.
+          type: array
+          items:
+            type: object
+            properties:
+              carrier:
+                type: string
+                enum:
+                  - FedEx
+                  - UPS
+                  - UPSSurePost
+                  - USPS
+                  - USPSReturns
+                  - UspsShip
+                  - FedExSmartPost
+                  - AmazonShipping
+                  - DHLExpress
+                  - DhlEcs
+                  - Veho
+                  - APC
+                  - FirstMile
+                  - AustraliaPost
+                  - CanadaPost
+                  - GSO
+                  - AsendiaUsa
+                  - RoyalMailV3
+                  - SpeeDee
+                  - PassportGlobal
+                  - ePostGlobal
+                  - LandmarkGlobal
+                  - ETA Express
+                  - OnTracV3
+                  - GlobalE
+                  - UPSMailInnovations
+                  - Purolator
+                  - UniUni
+                  - StallionExpress
+                  - EcomExpress
+                  - ChitChats
+                  - PostNL
+                  - Intelcom
+                  - FleetOptics
+                  - ICS
+                  - WhizDelivery
+                  - Tik Tok
+                  - CanparExpress
+                  - GOFO
+                  - P2P
+                description: Carrier to quote live rates from. Values are display-cased, e.g. 'FedEx', 'UPS', 'USPS'.
+              service:
+                type: string
+                description: Carrier-specific service code, e.g. 'FEDEX_GROUND' for FedEx or 'Ground' for UPS. The valid set differs per carrier; read an existing dynamic method with `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` to see the codes this store already uses.
+              enabled:
+                description: Whether this carrier service is quoted. Defaults to true.
+                type: boolean
+              markup:
+                description: Markup applied to this carrier service specifically.
+                type: object
+                properties:
+                  amount:
+                    description: Flat markup for this service, as a decimal string.
+                    type: string
+                  percentage:
+                    description: Percentage markup for this service, as a decimal string.
+                    type: string
+            required:
+              - carrier
+              - service
+        rateSelection:
+          description: 'Dynamic methods only. Which of the eligible live rates to show the shopper. Values are lowercase: ''cheapest'', ''fastest''.'
+          type: string
+          enum:
+            - cheapest
+            - fastest
+            - custom
+        serviceLevel:
+          description: Dynamic methods only. Quote the cheapest carrier service delivering within this service level's window instead of pinning carrier services.
+          type: string
+          enum:
+            - Standard
+            - Plus
+            - Express
+        excludedCarriers:
+          description: Dynamic methods only. Carriers excluded from this method's candidate set.
+          type: array
+          items:
+            type: string
+            enum:
+              - FedEx
+              - UPS
+              - UPSSurePost
+              - USPS
+              - USPSReturns
+              - UspsShip
+              - FedExSmartPost
+              - AmazonShipping
+              - DHLExpress
+              - DhlEcs
+              - Veho
+              - APC
+              - FirstMile
+              - AustraliaPost
+              - CanadaPost
+              - GSO
+              - AsendiaUsa
+              - RoyalMailV3
+              - SpeeDee
+              - PassportGlobal
+              - ePostGlobal
+              - LandmarkGlobal
+              - ETA Express
+              - OnTracV3
+              - GlobalE
+              - UPSMailInnovations
+              - Purolator
+              - UniUni
+              - StallionExpress
+              - EcomExpress
+              - ChitChats
+              - PostNL
+              - Intelcom
+              - FleetOptics
+              - ICS
+              - WhizDelivery
+              - Tik Tok
+              - CanparExpress
+              - GOFO
+              - P2P
+        markup:
+          description: Dynamic methods only. Markup applied to every live carrier rate on this method.
+          type: object
+          properties:
+            amount:
+              description: Flat markup as a decimal string.
+              type: string
+            currency:
+              description: Currency of the flat markup. Required when `amount` is set.
+              type: string
+              enum:
+                - AED
+                - AFN
+                - ALL
+                - AMD
+                - ANG
+                - AOA
+                - ARS
+                - AUD
+                - AWG
+                - AZN
+                - BAM
+                - BBD
+                - BDT
+                - BGN
+                - BHD
+                - BIF
+                - BMD
+                - BND
+                - BOB
+                - BOV
+                - BRL
+                - BSD
+                - BTN
+                - BWP
+                - BYN
+                - BZD
+                - CAD
+                - CDF
+                - CHF
+                - CLP
+                - CNY
+                - COP
+                - CRC
+                - CUC
+                - CUP
+                - CVE
+                - CZK
+                - DJF
+                - DKK
+                - DOP
+                - DZD
+                - EGP
+                - ERN
+                - ETB
+                - EUR
+                - FJD
+                - FKP
+                - GBP
+                - GEL
+                - GHS
+                - GIP
+                - GMD
+                - GNF
+                - GTQ
+                - GYD
+                - HKD
+                - HNL
+                - HTG
+                - HUF
+                - IDR
+                - ILS
+                - INR
+                - IQD
+                - IRR
+                - ISK
+                - JMD
+                - JOD
+                - JPY
+                - KES
+                - KGS
+                - KHR
+                - KMF
+                - KPW
+                - KRW
+                - KWD
+                - KYD
+                - KZT
+                - LAK
+                - LBP
+                - LKR
+                - LRD
+                - LSL
+                - LYD
+                - MAD
+                - MDL
+                - MGA
+                - MKD
+                - MMK
+                - MNT
+                - MOP
+                - MRU
+                - MUR
+                - MVR
+                - MWK
+                - MXN
+                - MYR
+                - MZN
+                - NAD
+                - NGN
+                - NIO
+                - NOK
+                - NPR
+                - NZD
+                - OMR
+                - PAB
+                - PEN
+                - PGK
+                - PHP
+                - PKR
+                - PLN
+                - PYG
+                - QAR
+                - RON
+                - RSD
+                - RUB
+                - RWF
+                - SAR
+                - SBD
+                - SCR
+                - SDG
+                - SEK
+                - SGD
+                - SHP
+                - SLE
+                - SOS
+                - SRD
+                - SSP
+                - STN
+                - SVC
+                - SYP
+                - SZL
+                - THB
+                - TJS
+                - TMT
+                - TND
+                - TOP
+                - TRY
+                - TTD
+                - TWD
+                - TZS
+                - UAH
+                - UGX
+                - USD
+                - UYU
+                - UYW
+                - UZS
+                - VED
+                - VES
+                - VND
+                - VUV
+                - WST
+                - XAF
+                - XAG
+                - XAU
+                - XBA
+                - XBB
+                - XBC
+                - XBD
+                - XCD
+                - XDR
+                - XOF
+                - XPD
+                - XPF
+                - XPT
+                - XSU
+                - XTS
+                - XUA
+                - XXX
+                - YER
+                - ZAR
+                - ZMW
+                - ZWG
+                - ZWL
+                - BYR
+                - HRK
+                - JEP
+                - KID
+                - LTL
+                - LVL
+                - SLL
+                - STD
+                - USDC
+                - VEF
+            percentage:
+              description: Percentage markup as a decimal string, e.g. '10' for +10%.
+              type: string
+        rounding:
+          description: Dynamic methods only. How to round the marked-up price before showing it.
+          type: string
+          enum:
+            - NEAREST_WHOLE
+            - NEAREST_WHOLE_MINUS_ONE
+            - NEAREST_WHOLE_MINUS_FIVE
+            - NEAREST_HALF
+            - NEAREST_QUARTER
+            - NEAREST_TENTH
+            - NEAREST_TWENTIETH
+        priceBounds:
+          description: Dynamic methods only. Hard clamp applied after markup and rounding.
+          type: object
+          properties:
+            currency:
+              type: string
+              enum:
+                - AED
+                - AFN
+                - ALL
+                - AMD
+                - ANG
+                - AOA
+                - ARS
+                - AUD
+                - AWG
+                - AZN
+                - BAM
+                - BBD
+                - BDT
+                - BGN
+                - BHD
+                - BIF
+                - BMD
+                - BND
+                - BOB
+                - BOV
+                - BRL
+                - BSD
+                - BTN
+                - BWP
+                - BYN
+                - BZD
+                - CAD
+                - CDF
+                - CHF
+                - CLP
+                - CNY
+                - COP
+                - CRC
+                - CUC
+                - CUP
+                - CVE
+                - CZK
+                - DJF
+                - DKK
+                - DOP
+                - DZD
+                - EGP
+                - ERN
+                - ETB
+                - EUR
+                - FJD
+                - FKP
+                - GBP
+                - GEL
+                - GHS
+                - GIP
+                - GMD
+                - GNF
+                - GTQ
+                - GYD
+                - HKD
+                - HNL
+                - HTG
+                - HUF
+                - IDR
+                - ILS
+                - INR
+                - IQD
+                - IRR
+                - ISK
+                - JMD
+                - JOD
+                - JPY
+                - KES
+                - KGS
+                - KHR
+                - KMF
+                - KPW
+                - KRW
+                - KWD
+                - KYD
+                - KZT
+                - LAK
+                - LBP
+                - LKR
+                - LRD
+                - LSL
+                - LYD
+                - MAD
+                - MDL
+                - MGA
+                - MKD
+                - MMK
+                - MNT
+                - MOP
+                - MRU
+                - MUR
+                - MVR
+                - MWK
+                - MXN
+                - MYR
+                - MZN
+                - NAD
+                - NGN
+                - NIO
+                - NOK
+                - NPR
+                - NZD
+                - OMR
+                - PAB
+                - PEN
+                - PGK
+                - PHP
+                - PKR
+                - PLN
+                - PYG
+                - QAR
+                - RON
+                - RSD
+                - RUB
+                - RWF
+                - SAR
+                - SBD
+                - SCR
+                - SDG
+                - SEK
+                - SGD
+                - SHP
+                - SLE
+                - SOS
+                - SRD
+                - SSP
+                - STN
+                - SVC
+                - SYP
+                - SZL
+                - THB
+                - TJS
+                - TMT
+                - TND
+                - TOP
+                - TRY
+                - TTD
+                - TWD
+                - TZS
+                - UAH
+                - UGX
+                - USD
+                - UYU
+                - UYW
+                - UZS
+                - VED
+                - VES
+                - VND
+                - VUV
+                - WST
+                - XAF
+                - XAG
+                - XAU
+                - XBA
+                - XBB
+                - XBC
+                - XBD
+                - XCD
+                - XDR
+                - XOF
+                - XPD
+                - XPF
+                - XPT
+                - XSU
+                - XTS
+                - XUA
+                - XXX
+                - YER
+                - ZAR
+                - ZMW
+                - ZWG
+                - ZWL
+                - BYR
+                - HRK
+                - JEP
+                - KID
+                - LTL
+                - LVL
+                - SLL
+                - STD
+                - USDC
+                - VEF
+              description: Currency of the bounds.
+            minimum:
+              description: Lowest price ever shown, as a decimal string.
+              type: string
+            maximum:
+              description: Highest price ever shown, as a decimal string.
+              type: string
+          required:
+            - currency
+        fulfillmentDelayDaysOverride:
+          description: Dynamic methods only. Days of fulfillment delay assumed for delivery estimates, overriding the experience-level value. A whole number of days, zero or more.
+          type: integer
+          minimum: 0
+        priceConstraints:
+          description: Bounds the final price this method may be sold at, after every other pricing rule has run. Omit to leave the method's existing constraint untouched; send one to replace it outright. There is no way to clear a constraint through this API.
+          type: object
+          properties:
+            kind:
+              type: string
+              enum:
+                - DEFAULT
+                - RELATIVE_TO_OTHER_RATE_TABLE
+              description: 'How the bounds are expressed: ''DEFAULT'' bounds the price absolutely, ''RELATIVE_TO_OTHER_RATE_TABLE'' bounds it against another shipping method''s price.'
+            currency:
+              type: string
+              enum:
+                - AED
+                - AFN
+                - ALL
+                - AMD
+                - ANG
+                - AOA
+                - ARS
+                - AUD
+                - AWG
+                - AZN
+                - BAM
+                - BBD
+                - BDT
+                - BGN
+                - BHD
+                - BIF
+                - BMD
+                - BND
+                - BOB
+                - BOV
+                - BRL
+                - BSD
+                - BTN
+                - BWP
+                - BYN
+                - BZD
+                - CAD
+                - CDF
+                - CHF
+                - CLP
+                - CNY
+                - COP
+                - CRC
+                - CUC
+                - CUP
+                - CVE
+                - CZK
+                - DJF
+                - DKK
+                - DOP
+                - DZD
+                - EGP
+                - ERN
+                - ETB
+                - EUR
+                - FJD
+                - FKP
+                - GBP
+                - GEL
+                - GHS
+                - GIP
+                - GMD
+                - GNF
+                - GTQ
+                - GYD
+                - HKD
+                - HNL
+                - HTG
+                - HUF
+                - IDR
+                - ILS
+                - INR
+                - IQD
+                - IRR
+                - ISK
+                - JMD
+                - JOD
+                - JPY
+                - KES
+                - KGS
+                - KHR
+                - KMF
+                - KPW
+                - KRW
+                - KWD
+                - KYD
+                - KZT
+                - LAK
+                - LBP
+                - LKR
+                - LRD
+                - LSL
+                - LYD
+                - MAD
+                - MDL
+                - MGA
+                - MKD
+                - MMK
+                - MNT
+                - MOP
+                - MRU
+                - MUR
+                - MVR
+                - MWK
+                - MXN
+                - MYR
+                - MZN
+                - NAD
+                - NGN
+                - NIO
+                - NOK
+                - NPR
+                - NZD
+                - OMR
+                - PAB
+                - PEN
+                - PGK
+                - PHP
+                - PKR
+                - PLN
+                - PYG
+                - QAR
+                - RON
+                - RSD
+                - RUB
+                - RWF
+                - SAR
+                - SBD
+                - SCR
+                - SDG
+                - SEK
+                - SGD
+                - SHP
+                - SLE
+                - SOS
+                - SRD
+                - SSP
+                - STN
+                - SVC
+                - SYP
+                - SZL
+                - THB
+                - TJS
+                - TMT
+                - TND
+                - TOP
+                - TRY
+                - TTD
+                - TWD
+                - TZS
+                - UAH
+                - UGX
+                - USD
+                - UYU
+                - UYW
+                - UZS
+                - VED
+                - VES
+                - VND
+                - VUV
+                - WST
+                - XAF
+                - XAG
+                - XAU
+                - XBA
+                - XBB
+                - XBC
+                - XBD
+                - XCD
+                - XDR
+                - XOF
+                - XPD
+                - XPF
+                - XPT
+                - XSU
+                - XTS
+                - XUA
+                - XXX
+                - YER
+                - ZAR
+                - ZMW
+                - ZWG
+                - ZWL
+                - BYR
+                - HRK
+                - JEP
+                - KID
+                - LTL
+                - LVL
+                - SLL
+                - STD
+                - USDC
+                - VEF
+              description: Currency all bounds are expressed in.
+            minPrice:
+              description: Lowest price this method may be sold at. 'DEFAULT' constraints only.
+              type: number
+            maxPrice:
+              description: Highest price this method may be sold at. 'DEFAULT' constraints only.
+              type: number
+            marginAtLeast:
+              description: Suggested lower margin bound. Omit when there is none.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omit when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omit when unset.
+                  type: number
+            marginAtMost:
+              description: Suggested upper margin bound. Omit when there is none.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omit when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omit when unset.
+                  type: number
+            relativeToMethodId:
+              description: ID of the shipping method this method's price is bounded against, from the same checkout experience. Required for, and only valid on, 'RELATIVE_TO_OTHER_RATE_TABLE' constraints.
+              type: string
+            byAtLeast:
+              description: How far above the referenced method's price this method must sit. 'RELATIVE_TO_OTHER_RATE_TABLE' constraints only.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omit when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omit when unset.
+                  type: number
+            byAtMost:
+              description: How far above the referenced method's price this method may sit. 'RELATIVE_TO_OTHER_RATE_TABLE' constraints only.
+              type: object
+              properties:
+                amount:
+                  description: Absolute amount of the bound. Omit when unset.
+                  type: number
+                percentage:
+                  description: Percentage form of the bound. Omit when unset.
+                  type: number
+            absoluteMinimumPrice:
+              description: 'Floor applied after the relative bound: the effective minimum is the greater of this and the referenced price plus `byAtLeast`. ''RELATIVE_TO_OTHER_RATE_TABLE'' constraints only.'
+              type: number
+          required:
+            - kind
+            - currency
+      required:
+        - type
+        - name
+        - description
+      title: Shipping method input
+    checkout-shipping-method-write-response.schema:
+      type: object
+      properties:
+        checkoutExperienceId:
+          type: string
+          description: The checkout experience the method belongs to.
+        shippingMethodId:
+          type: string
+          description: The shipping method that was written. Read it back with `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}`.
+      required:
+        - checkoutExperienceId
+        - shippingMethodId
+      title: Shipping method write result
     money.schema:
       description: Currency amount
       properties:

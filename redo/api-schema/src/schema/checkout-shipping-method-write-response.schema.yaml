@@ -1,0 +1,10 @@
+type: object
+properties:
+  checkoutExperienceId:
+    type: string
+    description: "The checkout experience the method belongs to."
+  shippingMethodId:
+    type: string
+    description: "The shipping method that was written. Read it back with `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}`."
+required: [checkoutExperienceId, shippingMethodId]
+title: "Shipping method write result"

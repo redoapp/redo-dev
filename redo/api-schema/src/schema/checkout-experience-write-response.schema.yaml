@@ -1,0 +1,7 @@
+type: object
+properties:
+  checkoutExperienceId:
+    type: string
+    description: "The checkout experience that was written. Read it back with `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}`."
+required: [checkoutExperienceId]
+title: "Checkout experience write result"

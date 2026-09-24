@@ -1,0 +1,49 @@
+put:
+  description: |
+    Set the order a checkout experience's shipping methods are shown in at
+    checkout. List every shipping method in the experience exactly once; a
+    partial list, a repeated ID, or an ID from another experience is rejected.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout shipping method order set
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../schema/checkout-shipping-method-order-request.schema.yaml
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-write-response.schema.yaml
+      description: Updated
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        Invalid request body, or the list is not every shipping method in the
+        experience exactly once. Returned with type
+        `com.getredo.api:checkout/invalid-request`.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Set shipping method order
+  tags: [Checkout Experiences]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/checkout-experience-id.param.yaml }
+summary: Shipping Method Order

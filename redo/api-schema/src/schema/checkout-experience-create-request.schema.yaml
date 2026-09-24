@@ -1,0 +1,9 @@
+properties:
+  name:
+    description:
+      Merchant-facing name for the new checkout experience. Must not be blank.
+    example: Free shipping test
+    type: string
+required: [name]
+title: Checkout experience create request
+type: object
