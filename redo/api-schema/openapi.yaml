@@ -663,10 +663,6 @@ paths:
         Change a checkout experience's settings. Only the fields you send are
         changed.
 
-        Set `fulfillmentDelayDaysOverride` to change how many days of fulfillment
-        delay delivery estimates assume across the experience, or send `null` to
-        remove the override so the store-level value applies again.
-
         Changes to an experience that is live in the checkout tree take effect for
         shoppers immediately.
 
@@ -938,11 +934,7 @@ paths:
         method, so read it from the experience first and send it back with your
         changes applied. Configuration the API does not expose, such as shipping
         discount rules, is kept from the existing method, as is `priceConstraints`
-        when you omit it.
-
-        To change only the fulfillment delay on a dynamic method, send its current
-        configuration with a new `fulfillmentDelayDaysOverride`. Leaving the field
-        out removes the method's override, so the experience's value applies.
+        when you omit it. Any other optional field you leave out is cleared.
 
         A method's `type` can be changed between `fixed` and `dynamic`.
         Script-priced (`custom`) methods cannot be edited through the API.

@@ -40,11 +40,7 @@ put:
     method, so read it from the experience first and send it back with your
     changes applied. Configuration the API does not expose, such as shipping
     discount rules, is kept from the existing method, as is `priceConstraints`
-    when you omit it.
-
-    To change only the fulfillment delay on a dynamic method, send its current
-    configuration with a new `fulfillmentDelayDaysOverride`. Leaving the field
-    out removes the method's override, so the experience's value applies.
+    when you omit it. Any other optional field you leave out is cleared.
 
     A method's `type` can be changed between `fixed` and `dynamic`.
     Script-priced (`custom`) methods cannot be edited through the API.
