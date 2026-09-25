@@ -2,9 +2,11 @@ delete:
   description: |
     Permanently delete a checkout experience and its shipping methods.
 
-    An experience that is live in the store's checkout tree cannot be deleted:
-    route the checkout tree away from it first. Deleting it would leave checkout
-    pointing at an experience that no longer exists.
+    An experience that is live in the store's checkout tree cannot be deleted,
+    because checkout would be left pointing at an experience that no longer
+    exists. The checkout tree cannot be changed through the API: first update
+    the store's checkout routing in the Redo dashboard so it no longer serves
+    this experience, then delete it.
 
     Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
   operationId: Checkout experience delete
