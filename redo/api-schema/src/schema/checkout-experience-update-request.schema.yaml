@@ -1,0 +1,23 @@
+description: Only the fields you send are changed.
+properties:
+  name:
+    description: New merchant-facing name. Must not be blank.
+    example: Holiday rates
+    type: string
+  addLandedCosts:
+    description: >-
+      Add landed costs (duties and import fees) to every shipping method's price
+      in this experience. Enabling it fails if a method uses a carrier service
+      that does not support landed cost calculation.
+    type: boolean
+  fulfillmentDelayDaysOverride:
+    description: >-
+      Days of fulfillment delay to assume for delivery estimates across this
+      experience, overriding the store-level value. A whole number of days, zero
+      or more. Send `null` to remove the override so the store-level value
+      applies again.
+    example: 2
+    minimum: 0
+    type: [integer, "null"]
+title: Checkout experience update request
+type: object

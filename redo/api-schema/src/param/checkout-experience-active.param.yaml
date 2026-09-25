@@ -1,0 +1,9 @@
+description: >-
+  `true` returns only experiences reachable in the store's live checkout tree,
+  `false` only those that are not. Omit to return both.
+in: query
+name: active
+required: false
+schema:
+  enum: ["true", "false"]
+  type: string

@@ -1,0 +1,40 @@
+post:
+  description: |
+    Copy a checkout experience, including its settings and shipping methods.
+    The copy's shipping methods get new IDs, and the copy is not live until the
+    store's checkout tree routes shoppers to it.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout experience duplicate
+  responses:
+    "201":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            copied:
+              summary: The copy's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5d2
+      description: The copy was created. `checkoutExperienceId` is the copy's ID.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Duplicate checkout experience
+  tags: [Checkout Experiences]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/checkout-experience-id.param.yaml }
+summary: Checkout Experience Duplicate

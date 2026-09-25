@@ -1,0 +1,104 @@
+get:
+  description: |
+    List the store's checkout experiences with a summary of each one's shipping
+    methods. For prices, carriers, conditions, and fulfillment delays, get the
+    experience by ID.
+
+    `active` tells you whether an experience is reachable in the store's live
+    checkout tree, which decides which shoppers see which experience.
+
+    Requires the [`checkout_read`](/docs/api-reference/scopes) scope.
+  operationId: Checkout experiences list
+  parameters:
+    - { $ref: ../param/checkout-experience-active.param.yaml }
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-list-response.schema.yaml
+          examples:
+            experiences:
+              summary: A live experience and a draft
+              value:
+                checkoutExperiences:
+                  - id: 66b2f1c9e4b0a1d2c3f4a5b6
+                    name: Standard rates
+                    active: true
+                    createdAt: "2026-08-12T15:04:05.000Z"
+                    methods:
+                      - id: 66b2f1c9e4b0a1d2c3f4a5c7
+                        name: Standard
+                        description: 5-8 business days
+                        priceDisplay: $5.99
+                      - id: 66b2f1c9e4b0a1d2c3f4a5c8
+                        name: Ground
+                        description: Quoted live
+                        priceDisplay: DYNAMIC
+                  - id: 66b2f1c9e4b0a1d2c3f4a5d1
+                    name: Holiday rates
+                    active: false
+                    createdAt: "2026-09-01T09:30:00.000Z"
+                    methods: []
+                totalCount: 2
+      description: Success
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: List checkout experiences
+  tags: [Checkout Experiences]
+post:
+  description: |
+    Create an empty checkout experience. It has no shipping methods and is not
+    live until the store's checkout tree routes shoppers to it; add methods with
+    `POST /stores/{storeId}/checkout-experiences/{checkoutExperienceId}/shipping-methods`.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout experience create
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/checkout-experience-create-request.schema.yaml }
+    required: true
+  responses:
+    "201":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            created:
+              summary: The new experience's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5d1
+      description: Created
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            blank_name:
+              summary: A blank name
+              value:
+                type: com.getredo.api:checkout/invalid-request
+                title: Invalid checkout configuration
+                detail: A checkout experience name cannot be blank.
+      description: >-
+        Invalid request body or a blank name. Returned with type
+        `com.getredo.api:checkout/invalid-request`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create checkout experience
+  tags: [Checkout Experiences]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+summary: Checkout Experiences

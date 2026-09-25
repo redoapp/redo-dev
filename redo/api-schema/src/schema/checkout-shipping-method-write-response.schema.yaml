@@ -1,0 +1,14 @@
+properties:
+  checkoutExperienceId:
+    description: The checkout experience the method belongs to.
+    example: 66b2f1c9e4b0a1d2c3f4a5b6
+    type: string
+  shippingMethodId:
+    description:
+      The shipping method that was written. Read it back with `GET
+      /stores/{storeId}/checkout-experiences/{checkoutExperienceId}`.
+    example: 66b2f1c9e4b0a1d2c3f4a5c7
+    type: string
+required: [checkoutExperienceId, shippingMethodId]
+title: Shipping method write result
+type: object

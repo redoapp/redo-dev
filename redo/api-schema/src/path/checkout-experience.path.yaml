@@ -1,0 +1,210 @@
+delete:
+  description: |
+    Permanently delete a checkout experience and its shipping methods.
+
+    An experience that is live in the store's checkout tree cannot be deleted,
+    because checkout would be left pointing at an experience that no longer
+    exists. The checkout tree cannot be changed through the API: first update
+    the store's checkout routing in the Redo dashboard so it no longer serves
+    this experience, then delete it.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout experience delete
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            deleted:
+              summary: The deleted experience's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5d1
+      description: Deleted
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    "409":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            live:
+              summary: The experience is live
+              value:
+                type: com.getredo.api:checkout/live-experience
+                title: Checkout experience is live
+                detail: >-
+                  Checkout experience "Standard rates"
+                  (66b2f1c9e4b0a1d2c3f4a5b6) is active in the checkout tree and
+                  cannot be deleted while shoppers are being served it. Repoint
+                  the checkout tree away from it first, then delete it.
+      description: >-
+        The experience is live in the checkout tree. Returned with type
+        `com.getredo.api:checkout/live-experience`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Delete checkout experience
+  tags: [Checkout Experiences]
+description: Checkout experience.
+get:
+  description: |
+    Get a checkout experience with the full configuration of each shipping
+    method: prices and the cart conditions they apply to, carrier services,
+    markups, price constraints, and fulfillment delays.
+
+    Requires the [`checkout_read`](/docs/api-reference/scopes) scope.
+  operationId: Checkout experience get
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              checkoutExperience:
+                $ref: ../schema/checkout-experience.schema.yaml
+            required: [checkoutExperience]
+            type: object
+          examples:
+            experience:
+              summary: An experience with a flat rate and a live carrier rate
+              value:
+                checkoutExperience:
+                  id: 66b2f1c9e4b0a1d2c3f4a5b6
+                  name: Standard rates
+                  active: true
+                  createdAt: "2026-08-12T15:04:05.000Z"
+                  fulfillmentDelayDaysOverride: 2
+                  methods:
+                    - id: 66b2f1c9e4b0a1d2c3f4a5c7
+                      name: Standard
+                      description: 5-8 business days
+                      type: fixed
+                      priceDisplay: $5.99
+                      rates:
+                        - price: "5.99"
+                          currency: USD
+                          conditions: []
+                          enabled: true
+                    - id: 66b2f1c9e4b0a1d2c3f4a5c8
+                      name: Ground
+                      description: Quoted live
+                      type: dynamic
+                      priceDisplay: DYNAMIC
+                      fulfillmentDelayDaysOverride: 3
+                      carrierServices:
+                        - carrier: FedEx
+                          service: FEDEX_GROUND
+                          enabled: true
+      description: Success
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            not_found:
+              summary: No such experience for this store
+              value:
+                type: com.getredo.api:checkout/not-found
+                title: Not found
+                detail: Checkout experience not found
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Get checkout experience
+  tags: [Checkout Experiences]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/checkout-experience-id.param.yaml }
+patch:
+  description: |
+    Change a checkout experience's settings. Only the fields you send are
+    changed.
+
+    Changes to an experience that is live in the checkout tree take effect for
+    shoppers immediately.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout experience update
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/checkout-experience-update-request.schema.yaml }
+        examples:
+          rename:
+            summary: Rename the experience
+            value:
+              name: Holiday rates
+          set_delay:
+            summary: Assume two days of fulfillment delay
+            value:
+              fulfillmentDelayDaysOverride: 2
+          clear_delay:
+            summary: Fall back to the store-level delay
+            value:
+              fulfillmentDelayDaysOverride: null
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            updated:
+              summary: The updated experience's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5b6
+      description: Updated
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            invalid_delay:
+              summary: A negative or fractional fulfillment delay
+              value:
+                type: com.getredo.api:checkout/invalid-request
+                title: Invalid checkout configuration
+                detail: >-
+                  fulfillmentDelayDaysOverride must be a whole number of days,
+                  zero or more.
+      description: >-
+        Invalid request body, a blank name, a fulfillment delay that is not a
+        whole number of days zero or more, or landed costs enabled over an
+        incompatible shipping method. Returned with type
+        `com.getredo.api:checkout/invalid-request`.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Update checkout experience
+  tags: [Checkout Experiences]
+summary: Checkout Experience

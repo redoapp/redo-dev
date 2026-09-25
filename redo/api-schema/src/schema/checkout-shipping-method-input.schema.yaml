@@ -1,0 +1,312 @@
+properties:
+  type:
+    description: >-
+      How the price is produced. 'fixed' is a merchant-set price served by Redo
+      with no carrier involved and requires `rates`. 'dynamic' quotes live
+      carrier rates through Redo and requires either `carrierServices` or
+      `serviceLevel`. Custom (script-priced) methods cannot be created or edited
+      here.
+    enum: [fixed, dynamic]
+    type: string
+  name:
+    description: >-
+      Shopper-facing name of the shipping method as it appears at checkout, e.g.
+      'Standard'. May contain customer-name template variables —
+      '{customer_name}', '{customer_name:first}', '{customer_name:last}' — which
+      are substituted per shopper. Send them back verbatim when you are not
+      deliberately changing them, or you will silently strip the merchant's
+      personalization.
+    example: Standard
+    type: string
+  description:
+    description: >-
+      Shopper-facing description shown next to the method at checkout. Like
+      `name`, it may contain customer-name template variables.
+    example: 5-8 business days
+    type: string
+  fallbackName:
+    description:
+      Shopper-facing name used in place of `name` when `name` contains
+      customer-name template variables and the shopper's name is not available
+      at quote time. Ignored when `name` has no variables.
+    type: string
+  fallbackDescription:
+    description:
+      Shopper-facing description used in place of `description` under the same
+      condition as `fallbackName`.
+    type: string
+  serviceCode:
+    description:
+      Identifier the storefront platform uses for this shipping option at
+      checkout.
+    type: string
+  coverageTypes:
+    description: Redo coverage bundled into this shipping method.
+    properties:
+      return:
+        description: Include return coverage with this method.
+        type: boolean
+      packageProtection:
+        description: Include package protection with this method.
+        type: boolean
+    type: object
+  orderTags:
+    description: Tags applied to the order when this method is bought.
+    items:
+      type: string
+    type: array
+  addLandedCostsOverride:
+    description:
+      Add landed costs (duties and import fees) to this method's price,
+      overriding the experience-level setting.
+    type: boolean
+  rates:
+    description:
+      Fixed methods only, and required for them. One entry per price. A single
+      entry with no `conditions` is a flat price; multiple entries express
+      weight or cart-value ranges and free-shipping thresholds.
+    items:
+      properties:
+        price:
+          description:
+            Price for this rate as a decimal string, e.g. '5.99'. Use '0' for
+            free shipping.
+          example: "5.99"
+          type: string
+        currency:
+          description: ISO currency code for `price`, e.g. 'USD'.
+          example: USD
+          type: string
+        enabled:
+          description: Whether this rate is active. Defaults to true.
+          type: boolean
+        conditions:
+          description:
+            Cart weight or cart value ranges this rate applies to. Omit or pass
+            an empty array for a flat price that applies to every cart.
+          items:
+            properties:
+              type:
+                description: >-
+                  What this condition is measured against: 'weight' for cart
+                  weight, 'price' for cart value.
+                enum: [weight, price]
+                type: string
+              minGrams:
+                description:
+                  Inclusive lower bound of cart weight. Weight conditions only.
+                type: number
+              maxGrams:
+                description:
+                  Inclusive upper bound of cart weight. Weight conditions only.
+                type: number
+              minPrice:
+                description:
+                  Inclusive lower bound of cart value. Price conditions only.
+                type: number
+              maxPrice:
+                description:
+                  Inclusive upper bound of cart value. Price conditions only.
+                type: number
+              currency:
+                description:
+                  Currency of the cart value bounds. Price conditions only.
+                type: string
+            required: [type]
+            type: object
+          type: array
+      required: [price, currency]
+      type: object
+    type: array
+  carrierServices:
+    description:
+      Dynamic methods only. The carrier services to quote live rates from.
+      Required unless `serviceLevel` is set.
+    items:
+      properties:
+        carrier:
+          description: >-
+            Carrier to quote live rates from. Values are display-cased, e.g.
+            'FedEx', 'UPS', 'USPS'.
+          enum: [FedEx, UPS, UPSSurePost, USPS, USPSReturns, UspsShip, FedExSmartPost, AmazonShipping, DHLExpress, DhlEcs, Veho, APC, FirstMile, AustraliaPost, CanadaPost, GSO, AsendiaUsa, RoyalMailV3, SpeeDee, PassportGlobal, ePostGlobal, LandmarkGlobal, ETA Express, OnTracV3, GlobalE, UPSMailInnovations, Purolator, UniUni, StallionExpress, EcomExpress, ChitChats, PostNL, Intelcom, FleetOptics, ICS, WhizDelivery, Tik Tok, CanparExpress, GOFO, P2P]
+          example: FedEx
+          type: string
+        service:
+          description: >-
+            Carrier-specific service code, e.g. 'FEDEX_GROUND' for FedEx or
+            'Ground' for UPS. The valid set differs per carrier; read an
+            existing dynamic method with `GET
+            /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` to
+            see the codes this store already uses.
+          example: FEDEX_GROUND
+          type: string
+        enabled:
+          description: Whether this carrier service is quoted. Defaults to true.
+          type: boolean
+        markup:
+          description: Markup applied to this carrier service specifically.
+          properties:
+            amount:
+              description: Flat markup for this service, as a decimal string.
+              type: string
+            percentage:
+              description:
+                Percentage markup for this service, as a decimal string.
+              type: string
+          type: object
+      required: [carrier, service]
+      type: object
+    type: array
+  rateSelection:
+    description: >-
+      Dynamic methods only. Which of the eligible live rates to show the
+      shopper. Values are lowercase: 'cheapest', 'fastest'.
+    enum: [cheapest, fastest, custom]
+    type: string
+  serviceLevel:
+    description:
+      Dynamic methods only. Quote the cheapest carrier service delivering within
+      this service level's window instead of pinning carrier services.
+    enum: [Standard, Plus, Express]
+    type: string
+  excludedCarriers:
+    description:
+      Dynamic methods only. Carriers excluded from this method's candidate set.
+    items:
+      enum: [FedEx, UPS, UPSSurePost, USPS, USPSReturns, UspsShip, FedExSmartPost, AmazonShipping, DHLExpress, DhlEcs, Veho, APC, FirstMile, AustraliaPost, CanadaPost, GSO, AsendiaUsa, RoyalMailV3, SpeeDee, PassportGlobal, ePostGlobal, LandmarkGlobal, ETA Express, OnTracV3, GlobalE, UPSMailInnovations, Purolator, UniUni, StallionExpress, EcomExpress, ChitChats, PostNL, Intelcom, FleetOptics, ICS, WhizDelivery, Tik Tok, CanparExpress, GOFO, P2P]
+      type: string
+    type: array
+  markup:
+    description:
+      Dynamic methods only. Markup applied to every live carrier rate on this
+      method.
+    properties:
+      amount:
+        description: Flat markup as a decimal string.
+        type: string
+      currency:
+        description: Currency of the flat markup. Required when `amount` is set.
+        enum: [AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BOV, BRL, BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP, STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UYW, UZS, VED, VES, VND, VUV, WST, XAF, XAG, XAU, XBA, XBB, XBC, XBD, XCD, XDR, XOF, XPD, XPF, XPT, XSU, XTS, XUA, XXX, YER, ZAR, ZMW, ZWG, ZWL, BYR, HRK, JEP, KID, LTL, LVL, SLL, STD, USDC, VEF]
+        type: string
+      percentage:
+        description: Percentage markup as a decimal string, e.g. '10' for +10%.
+        example: "10"
+        type: string
+    type: object
+  rounding:
+    description:
+      Dynamic methods only. How to round the marked-up price before showing it.
+    enum: [NEAREST_WHOLE, NEAREST_WHOLE_MINUS_ONE, NEAREST_WHOLE_MINUS_FIVE, NEAREST_HALF, NEAREST_QUARTER, NEAREST_TENTH, NEAREST_TWENTIETH]
+    type: string
+  priceBounds:
+    description:
+      Dynamic methods only. Hard clamp applied after markup and rounding.
+    properties:
+      currency:
+        description: Currency of the bounds.
+        enum: [AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BOV, BRL, BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP, STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UYW, UZS, VED, VES, VND, VUV, WST, XAF, XAG, XAU, XBA, XBB, XBC, XBD, XCD, XDR, XOF, XPD, XPF, XPT, XSU, XTS, XUA, XXX, YER, ZAR, ZMW, ZWG, ZWL, BYR, HRK, JEP, KID, LTL, LVL, SLL, STD, USDC, VEF]
+        type: string
+      minimum:
+        description: Lowest price ever shown, as a decimal string.
+        type: string
+      maximum:
+        description: Highest price ever shown, as a decimal string.
+        type: string
+    required: [currency]
+    type: object
+  fulfillmentDelayDaysOverride:
+    description: >-
+      Dynamic methods only. Days Redo assumes an order takes to ship when it
+      estimates delivery dates for this method, overriding the experience's
+      `fulfillmentDelayDaysOverride`. Omit it to use the experience's value. A
+      whole number of days, zero or more.
+    example: 3
+    minimum: 0
+    type: integer
+  priceConstraints:
+    description:
+      Bounds the final price this method may be sold at, after every other
+      pricing rule has run. Omit to leave the method's existing constraint
+      untouched; send one to replace it outright. There is no way to clear a
+      constraint through this API.
+    properties:
+      kind:
+        description: >-
+          How the bounds are expressed: 'DEFAULT' bounds the price absolutely,
+          'RELATIVE_TO_OTHER_RATE_TABLE' bounds it against another shipping
+          method's price.
+        enum: [DEFAULT, RELATIVE_TO_OTHER_RATE_TABLE]
+        type: string
+      currency:
+        description: Currency all bounds are expressed in.
+        enum: [AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BOV, BRL, BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP, STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UYW, UZS, VED, VES, VND, VUV, WST, XAF, XAG, XAU, XBA, XBB, XBC, XBD, XCD, XDR, XOF, XPD, XPF, XPT, XSU, XTS, XUA, XXX, YER, ZAR, ZMW, ZWG, ZWL, BYR, HRK, JEP, KID, LTL, LVL, SLL, STD, USDC, VEF]
+        type: string
+      minPrice:
+        description:
+          Lowest price this method may be sold at. 'DEFAULT' constraints only.
+        type: number
+      maxPrice:
+        description:
+          Highest price this method may be sold at. 'DEFAULT' constraints only.
+        type: number
+      marginAtLeast:
+        description: Suggested lower margin bound. Omit when there is none.
+        properties:
+          amount:
+            description: Absolute amount of the bound. Omit when unset.
+            type: number
+          percentage:
+            description: Percentage form of the bound. Omit when unset.
+            type: number
+        type: object
+      marginAtMost:
+        description: Suggested upper margin bound. Omit when there is none.
+        properties:
+          amount:
+            description: Absolute amount of the bound. Omit when unset.
+            type: number
+          percentage:
+            description: Percentage form of the bound. Omit when unset.
+            type: number
+        type: object
+      relativeToMethodId:
+        description: >-
+          ID of the shipping method this method's price is bounded against, from
+          the same checkout experience. Required for, and only valid on,
+          'RELATIVE_TO_OTHER_RATE_TABLE' constraints.
+        type: string
+      byAtLeast:
+        description: >-
+          How far above the referenced method's price this method must sit.
+          'RELATIVE_TO_OTHER_RATE_TABLE' constraints only.
+        properties:
+          amount:
+            description: Absolute amount of the bound. Omit when unset.
+            type: number
+          percentage:
+            description: Percentage form of the bound. Omit when unset.
+            type: number
+        type: object
+      byAtMost:
+        description: >-
+          How far above the referenced method's price this method may sit.
+          'RELATIVE_TO_OTHER_RATE_TABLE' constraints only.
+        properties:
+          amount:
+            description: Absolute amount of the bound. Omit when unset.
+            type: number
+          percentage:
+            description: Percentage form of the bound. Omit when unset.
+            type: number
+        type: object
+      absoluteMinimumPrice:
+        description: >-
+          Floor applied after the relative bound: the effective minimum is the
+          greater of this and the referenced price plus `byAtLeast`.
+          'RELATIVE_TO_OTHER_RATE_TABLE' constraints only.
+        type: number
+    required: [kind, currency]
+    type: object
+required: [type, name, description]
+title: Shipping method input
+type: object

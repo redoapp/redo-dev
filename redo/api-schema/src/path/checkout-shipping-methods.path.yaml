@@ -1,0 +1,89 @@
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/checkout-experience-id.param.yaml }
+post:
+  description: |
+    Add a shipping method to a checkout experience.
+
+    - A `fixed` method is a price you set, served by Redo with no carrier
+      involved. It needs `rates`.
+    - A `dynamic` method quotes live carrier rates through Redo. It needs
+      `carrierServices` or a `serviceLevel`, and every carrier must be one the
+      store has an account or setting for.
+
+    Script-priced (`custom`) methods cannot be created through the API.
+    Shipping discount rules are configured by Redo and cannot be set here.
+
+    Requires the [`checkout_write`](/docs/api-reference/scopes) scope.
+  operationId: Checkout shipping method create
+  requestBody:
+    content:
+      application/json:
+        schema: { $ref: ../schema/checkout-shipping-method-input.schema.yaml }
+        examples:
+          flat_rate:
+            summary: A flat-rate method
+            value:
+              type: fixed
+              name: Standard
+              description: 5-8 business days
+              rates:
+                - price: "5.99"
+                  currency: USD
+          live_rate_with_delay:
+            summary: A live carrier rate that assumes three days to ship
+            value:
+              type: dynamic
+              name: Ground
+              description: Quoted live
+              carrierServices:
+                - carrier: FedEx
+                  service: FEDEX_GROUND
+              fulfillmentDelayDaysOverride: 3
+    required: true
+  responses:
+    "201":
+      content:
+        application/json:
+          schema:
+            $ref: ../schema/checkout-shipping-method-write-response.schema.yaml
+          examples:
+            created:
+              summary: The new shipping method's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5b6
+                shippingMethodId: 66b2f1c9e4b0a1d2c3f4a5c9
+      description: Created
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            missing_rates:
+              summary: A fixed method with no rates
+              value:
+                type: com.getredo.api:checkout/invalid-request
+                title: Invalid checkout configuration
+                detail: A fixed shipping method needs at least one entry in rates.
+      description: >-
+        Invalid shipping method: a missing or inconsistent field, a carrier the
+        store cannot quote, a fulfillment delay that is not a whole number of
+        days zero or more, or a configuration incompatible with landed costs.
+        Returned with type `com.getredo.api:checkout/invalid-request`.
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: >-
+        No checkout experience with this ID exists for the store. Returned with
+        type `com.getredo.api:checkout/not-found`.
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Create shipping method
+  tags: [Checkout Experiences]
+summary: Shipping Methods
