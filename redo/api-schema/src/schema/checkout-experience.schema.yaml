@@ -20,7 +20,7 @@ properties:
     description: "True when landed costs (duties and import fees) are added to every method's price in this experience. Omitted when the merchant has never configured it."
     type: boolean
   fulfillmentDelayDaysOverride:
-    description: "Days of fulfillment delay assumed for delivery estimates across this experience. Omitted when the experience uses the store-level value. A whole number of days, zero or more."
+    description: "Days Redo assumes an order takes to ship when it estimates delivery dates, for every shipping method in this experience. A dynamic method's own `fulfillmentDelayDaysOverride` takes precedence. Omitted when the experience uses the store-level value. A whole number of days, zero or more."
     type: integer
     minimum: 0
   autoSelectedShippingMethodIds:

@@ -45,14 +45,6 @@ get:
     method: prices and the cart conditions they apply to, carrier services,
     markups, price constraints, and fulfillment delays.
 
-    ## Fulfillment delay
-
-    `fulfillmentDelayDaysOverride` is the number of days Redo assumes an order
-    takes to leave the warehouse when it estimates delivery dates. It can be set
-    on the experience, and on individual dynamic shipping methods, where it
-    overrides the experience's value. When neither is set, the store-level value
-    applies.
-
     Requires the [`checkout_read`](/docs/api-reference/scopes) scope.
   operationId: Checkout experience get
   responses:

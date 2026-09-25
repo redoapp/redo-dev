@@ -593,14 +593,6 @@ paths:
         method: prices and the cart conditions they apply to, carrier services,
         markups, price constraints, and fulfillment delays.
 
-        ## Fulfillment delay
-
-        `fulfillmentDelayDaysOverride` is the number of days Redo assumes an order
-        takes to leave the warehouse when it estimates delivery dates. It can be set
-        on the experience, and on individual dynamic shipping methods, where it
-        overrides the experience's value. When neither is set, the store-level value
-        applies.
-
         Requires the [`checkout_read`](/docs/api-reference/scopes) scope.
       operationId: Checkout experience get
       responses:
@@ -4187,7 +4179,7 @@ components:
                 description: Percentage taken off the shipping price, as a decimal string (e.g. '50' means half off). Omitted when the rule discounts by a flat amount instead.
                 type: string
         fulfillmentDelayDaysOverride:
-          description: Days of fulfillment delay assumed for delivery estimates on this method, overriding the experience-level value. Omitted when the method does not override the experience-level value. A whole number of days, zero or more.
+          description: Dynamic methods only. Days Redo assumes an order takes to ship when it estimates delivery dates for this method, overriding the experience's `fulfillmentDelayDaysOverride`. Omitted when the method uses the experience's value, or the store-level value if the experience sets none. A whole number of days, zero or more.
           type: integer
           minimum: 0
         addLandedCostsOverride:
@@ -5067,7 +5059,7 @@ components:
           description: True when landed costs (duties and import fees) are added to every method's price in this experience. Omitted when the merchant has never configured it.
           type: boolean
         fulfillmentDelayDaysOverride:
-          description: Days of fulfillment delay assumed for delivery estimates across this experience. Omitted when the experience uses the store-level value. A whole number of days, zero or more.
+          description: Days Redo assumes an order takes to ship when it estimates delivery dates, for every shipping method in this experience. A dynamic method's own `fulfillmentDelayDaysOverride` takes precedence. Omitted when the experience uses the store-level value. A whole number of days, zero or more.
           type: integer
           minimum: 0
         autoSelectedShippingMethodIds:
@@ -5737,7 +5729,7 @@ components:
           required:
             - currency
         fulfillmentDelayDaysOverride:
-          description: Dynamic methods only. Days of fulfillment delay assumed for delivery estimates, overriding the experience-level value. A whole number of days, zero or more.
+          description: Dynamic methods only. Days Redo assumes an order takes to ship when it estimates delivery dates for this method, overriding the experience's `fulfillmentDelayDaysOverride`. Omit it to use the experience's value. A whole number of days, zero or more.
           type: integer
           minimum: 0
         priceConstraints:

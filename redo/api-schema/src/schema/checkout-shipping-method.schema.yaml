@@ -62,7 +62,7 @@ properties:
           description: "Percentage taken off the shipping price, as a decimal string (e.g. '50' means half off). Omitted when the rule discounts by a flat amount instead."
           type: string
   fulfillmentDelayDaysOverride:
-    description: "Days of fulfillment delay assumed for delivery estimates on this method, overriding the experience-level value. Omitted when the method does not override the experience-level value. A whole number of days, zero or more."
+    description: "Dynamic methods only. Days Redo assumes an order takes to ship when it estimates delivery dates for this method, overriding the experience's `fulfillmentDelayDaysOverride`. Omitted when the method uses the experience's value, or the store-level value if the experience sets none. A whole number of days, zero or more."
     type: integer
     minimum: 0
   addLandedCostsOverride:
