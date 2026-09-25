@@ -151,6 +151,8 @@ import IntegrationSupport from "/snippets/integration-support.mdx";
 ## Do not
 
 - Skip frontmatter on any MDX file
+- Change a published page's URL without adding a redirect in `redo/docs.json`
+  (see DEVELOPMENT.md, "Moving or renaming pages")
 - Use absolute URLs for internal links
 - Include untested code examples
 - Make assumptions - always ask for clarification

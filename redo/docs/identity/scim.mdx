@@ -1,0 +1,149 @@
+---
+title: "SCIM"
+description: "Reference for the Redo SCIM 2.0 service provider"
+icon: "users-gear"
+---
+
+Redo implements the [SCIM 2.0 protocol](https://datatracker.ietf.org/doc/html/rfc7644)
+and [core schema](https://datatracker.ietf.org/doc/html/rfc7643) for
+provisioning Merchant App users. For IdP setup, see [User Provisioning with
+SCIM](/docs/identity/scim-provisioning).
+
+**Base URL:** `https://api.getredo.com/scim/v2`
+
+## Authentication
+
+Every request carries a store-scoped SCIM token, generated under **Settings**
+→ **General** → **Single sign-on** → **Provisioning**:
+
+```http
+Authorization: Bearer <SCIM token>
+Content-Type: application/scim+json
+```
+
+Requests without a valid token receive `401`.
+
+## Discovery
+
+| Path                     | Description                                           |
+| ------------------------ | ----------------------------------------------------- |
+| `/ServiceProviderConfig` | Supported features: `patch`, `filter`, no `bulk`, no `sort`, no `etag` |
+| `/ResourceTypes`         | `User` and `Group`                                    |
+| `/Schemas`               | Core `User` and `Group` schemas                       |
+
+## Filtering and pagination
+
+List endpoints accept a `filter` parameter using `eq` on the attributes
+listed per resource below. Other operators and attributes return `400` with
+`scimType` `invalidFilter`.
+
+Results are paginated with `startIndex` (1-based) and `count`; responses
+include `totalResults`, `startIndex`, and `itemsPerPage` per [RFC 7644
+§3.4.2.4](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.4).
+
+## Users
+
+Schema: `urn:ietf:params:scim:schemas:core:2.0:User`
+([RFC 7643 §4.1](https://datatracker.ietf.org/doc/html/rfc7643#section-4.1)).
+Attributes not listed are accepted and ignored. The enterprise User extension
+is not supported.
+
+| Attribute         | Notes                                                 |
+| ----------------- | ----------------------------------------------------- |
+| `id`              | Assigned by Redo. Read-only.                          |
+| `externalId`      | Stored and returned. Filterable.                      |
+| `userName`        | Required. The user's email address; unique per store. Filterable. Immutable after creation. |
+| `name.givenName`  | First name                                            |
+| `name.familyName` | Last name                                             |
+| `emails`          | The `primary` entry must equal `userName`             |
+| `active`          | `false` deactivates the user; `true` reactivates      |
+| `groups`          | Read-only. Groups the user belongs to.                |
+| `meta`            | `resourceType`, `created`, `lastModified`, `location` |
+
+| Method   | Path          | Notes                                                                                                         |
+| -------- | ------------- | ------------------------------------------------------------------------------------------------------------- |
+| `GET`    | `/Users`      | Filters: `userName eq "…"`, `externalId eq "…"`                                                               |
+| `POST`   | `/Users`      | `409` with `scimType` `uniqueness` if `userName` exists                                                       |
+| `GET`    | `/Users/{id}` |                                                                                                               |
+| `PUT`    | `/Users/{id}` | Full replace. `userName` must be unchanged.                                                                   |
+| `PATCH`  | `/Users/{id}` | `add`, `replace`, `remove` per [RFC 7644 §3.5.2](https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2) |
+| `DELETE` | `/Users/{id}` | Deactivates the user (equivalent to `active: false`) and returns `204`. Users are never hard-deleted.         |
+
+Setting `active` to `false` ends the user's active Merchant App sessions
+immediately.
+
+### Create a user
+
+```json
+POST /scim/v2/Users
+
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+  "userName": "jane@example.com",
+  "name": { "givenName": "Jane", "familyName": "Doe" },
+  "emails": [{ "value": "jane@example.com", "primary": true }],
+  "externalId": "00u1abcd2EFGHijkl3x7",
+  "active": true
+}
+```
+
+### Deactivate a user
+
+```json
+PATCH /scim/v2/Users/{id}
+
+{
+  "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+  "Operations": [{ "op": "replace", "path": "active", "value": false }]
+}
+```
+
+## Groups
+
+Schema: `urn:ietf:params:scim:schemas:core:2.0:Group`
+([RFC 7643 §4.2](https://datatracker.ietf.org/doc/html/rfc7643#section-4.2)).
+A group corresponds to a Redo role; `displayName` must equal the name of an
+existing role.
+
+| Attribute     | Notes                                                                  |
+| ------------- | ---------------------------------------------------------------------- |
+| `id`          | Assigned by Redo. Read-only.                                           |
+| `externalId`  | Stored and returned                                                    |
+| `displayName` | Required. Must match an existing role name; otherwise `400` with `scimType` `invalidValue`. Filterable. |
+| `members`     | `value` is a user `id`. Membership grants the role; removal revokes it. |
+
+| Method   | Path           | Notes                                                             |
+| -------- | -------------- | ----------------------------------------------------------------- |
+| `GET`    | `/Groups`      | Filter: `displayName eq "…"`                                      |
+| `POST`   | `/Groups`      |                                                                   |
+| `GET`    | `/Groups/{id}` |                                                                   |
+| `PUT`    | `/Groups/{id}` | Full replace of `displayName` and `members`                       |
+| `PATCH`  | `/Groups/{id}` | `add` / `remove` on `members`; `replace` on `displayName` or `members` |
+| `DELETE` | `/Groups/{id}` | Stops managing the role through SCIM. The role and its current assignments remain. |
+
+Only roles that correspond to a SCIM group are managed by SCIM. Roles
+assigned manually in Redo are not affected by group operations.
+
+## Errors
+
+Errors use `urn:ietf:params:scim:api:messages:2.0:Error` with `status`,
+`detail`, and where applicable `scimType`
+([RFC 7644 §3.12](https://datatracker.ietf.org/doc/html/rfc7644#section-3.12)).
+
+| Status | `scimType`      | Meaning                                              |
+| ------ | --------------- | ---------------------------------------------------- |
+| `400`  | `invalidValue`  | Group `displayName` doesn't match a role; invalid attribute value |
+| `400`  | `invalidFilter` | Unsupported filter attribute or operator             |
+| `400`  | `mutability`    | Attempt to change `userName`                         |
+| `401`  |                 | Missing, revoked, or malformed SCIM token            |
+| `404`  |                 | Unknown resource `id`                                |
+| `409`  | `uniqueness`    | `userName` already exists                            |
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+  "status": "409",
+  "scimType": "uniqueness",
+  "detail": "A user with userName jane@example.com already exists"
+}
+```
