@@ -14,6 +14,11 @@ delete:
         application/json:
           schema:
             $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            deleted:
+              summary: The deleted experience's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5d1
       description: Deleted
     "404":
       content:
@@ -26,6 +31,17 @@ delete:
       content:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            live:
+              summary: The experience is live
+              value:
+                type: com.getredo.api:checkout/live-experience
+                title: Checkout experience is live
+                detail: >-
+                  Checkout experience "Standard rates"
+                  (66b2f1c9e4b0a1d2c3f4a5b6) is active in the checkout tree and
+                  cannot be deleted while shoppers are being served it. Repoint
+                  the checkout tree away from it first, then delete it.
       description: >-
         The experience is live in the checkout tree. Returned with type
         `com.getredo.api:checkout/live-experience`.
@@ -93,6 +109,13 @@ get:
       content:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            not_found:
+              summary: No such experience for this store
+              value:
+                type: com.getredo.api:checkout/not-found
+                title: Not found
+                detail: Checkout experience not found
       description: >-
         No checkout experience with this ID exists for the store. Returned with
         type `com.getredo.api:checkout/not-found`.
@@ -123,6 +146,10 @@ patch:
       application/json:
         schema: { $ref: ../schema/checkout-experience-update-request.schema.yaml }
         examples:
+          rename:
+            summary: Rename the experience
+            value:
+              name: Holiday rates
           set_delay:
             summary: Assume two days of fulfillment delay
             value:
@@ -138,11 +165,25 @@ patch:
         application/json:
           schema:
             $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            updated:
+              summary: The updated experience's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5b6
       description: Updated
     "400":
       content:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            invalid_delay:
+              summary: A negative or fractional fulfillment delay
+              value:
+                type: com.getredo.api:checkout/invalid-request
+                title: Invalid checkout configuration
+                detail: >-
+                  fulfillmentDelayDaysOverride must be a whole number of days,
+                  zero or more.
       description: >-
         Invalid request body, a blank name, a fulfillment delay that is not a
         whole number of days zero or more, or landed costs enabled over an

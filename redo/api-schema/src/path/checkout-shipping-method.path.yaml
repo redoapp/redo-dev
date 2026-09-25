@@ -12,11 +12,24 @@ delete:
         application/json:
           schema:
             $ref: ../schema/checkout-shipping-method-write-response.schema.yaml
+          examples:
+            deleted:
+              summary: The deleted shipping method's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5b6
+                shippingMethodId: 66b2f1c9e4b0a1d2c3f4a5c7
       description: Deleted
     "404":
       content:
         application/problem+json:
           schema: { $ref: ../schema/error.schema.yaml }
+          examples:
+            method_not_found:
+              summary: No such shipping method on this experience
+              value:
+                type: com.getredo.api:checkout/not-found
+                title: Not found
+                detail: Shipping method not found
       description: >-
         No checkout experience or shipping method with this ID exists for the
         store. Returned with type `com.getredo.api:checkout/not-found`.
@@ -51,6 +64,16 @@ put:
     content:
       application/json:
         schema: { $ref: ../schema/checkout-shipping-method-input.schema.yaml }
+        examples:
+          reprice:
+            summary: Reprice a flat-rate method
+            value:
+              type: fixed
+              name: Standard
+              description: 5-8 business days
+              rates:
+                - price: "6.49"
+                  currency: USD
     required: true
   responses:
     "200":
@@ -58,6 +81,12 @@ put:
         application/json:
           schema:
             $ref: ../schema/checkout-shipping-method-write-response.schema.yaml
+          examples:
+            updated:
+              summary: The updated shipping method's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5b6
+                shippingMethodId: 66b2f1c9e4b0a1d2c3f4a5c7
       description: Updated
     "400":
       content:

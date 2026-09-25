@@ -12,6 +12,11 @@ post:
         application/json:
           schema:
             $ref: ../schema/checkout-experience-write-response.schema.yaml
+          examples:
+            copied:
+              summary: The copy's ID
+              value:
+                checkoutExperienceId: 66b2f1c9e4b0a1d2c3f4a5d2
       description: The copy was created. `checkoutExperienceId` is the copy's ID.
     "404":
       content:

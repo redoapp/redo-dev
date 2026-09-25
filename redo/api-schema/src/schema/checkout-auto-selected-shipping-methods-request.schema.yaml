@@ -4,6 +4,7 @@ properties:
       Shipping method IDs to show first, highest priority first; the first
       available is pre-selected. Replaces the current list. Send an empty list
       to turn auto-selection off.
+    example: [66b2f1c9e4b0a1d2c3f4a5c8]
     items: { type: string }
     type: array
 required: [shippingMethodIds]

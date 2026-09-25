@@ -1,13 +1,17 @@
-type: object
 properties:
   checkoutExperiences:
-    type: array
+    description:
+      The team's checkout experiences matching the filter. An experience that is
+      not active is fully configured but unreachable — no shopper can currently
+      be served it.
     items: { $ref: ./checkout-experience-summary.schema.yaml }
-    description: "The team's checkout experiences matching the filter. An experience that is not active is fully configured but unreachable — no shopper can currently be served it."
+    type: array
   totalCount:
-    type: integer
-    minimum: -9007199254740991
+    description: Number of checkout experiences returned.
+    example: 2
     maximum: 9007199254740991
-    description: "Number of checkout experiences returned."
+    minimum: -9007199254740991
+    type: integer
 required: [checkoutExperiences, totalCount]
-title: "Checkout experience list"
+title: Checkout experience list
+type: object

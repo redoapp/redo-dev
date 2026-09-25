@@ -1,36 +1,66 @@
-type: object
+description: >-
+  A checkout experience: a named group of shipping methods shown together at
+  checkout. It does not decide who sees it — the checkout tree does. An
+  experience can also group checkout widgets and a post-purchase upsell page;
+  this summary covers only its shipping methods.
 properties:
   id:
+    description:
+      Checkout experience ID. Pass it to `GET
+      /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for full
+      detail.
+    example: 66b2f1c9e4b0a1d2c3f4a5b6
     type: string
-    description: "Checkout experience ID. Pass it to `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for full detail."
   name:
+    description: Merchant-facing name of the checkout experience.
+    example: Standard rates
     type: string
-    description: "Merchant-facing name of the checkout experience."
   active:
+    description:
+      True when this experience is reachable in the team's live checkout tree,
+      i.e. real shoppers can be served it.
+    example: true
     type: boolean
-    description: "True when this experience is reachable in the team's live checkout tree, i.e. real shoppers can be served it."
   createdAt:
+    description: Creation timestamp, ISO 8601 UTC.
+    example: "2026-08-12T15:04:05.000Z"
     type: string
-    description: "Creation timestamp, ISO 8601 UTC."
   methods:
-    type: array
+    description: >-
+      Shipping methods this experience offers. Summary only: call `GET
+      /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for prices,
+      carriers, conditions, constraints, and which methods are auto-selected.
     items:
-      type: object
       properties:
         id:
+          description: Shipping method ID, unique within the team.
+          example: 66b2f1c9e4b0a1d2c3f4a5c7
           type: string
-          description: "Shipping method ID, unique within the team."
         name:
+          description:
+            Shopper-facing name of the shipping method as it appears at
+            checkout, e.g. 'Standard'.
+          example: Standard
           type: string
-          description: "Shopper-facing name of the shipping method as it appears at checkout, e.g. 'Standard'."
         description:
+          description: Shopper-facing description shown next to the method.
+          example: 5-8 business days
           type: string
-          description: "Shopper-facing description shown next to the method."
         priceDisplay:
+          description: >-
+            Human-readable price for this method: 'FREE', a formatted amount
+            like '$5.99', 'DYNAMIC' for carrier-calculated rates, 'CUSTOM' for
+            merchant-scripted rates, or '-' when no price is configured.
+            Reflects only the FIRST configured price, so a method that prices by
+            cart weight or cart value, or that has a free-shipping threshold,
+            may read 'FREE' while most carts are charged something else. Call
+            `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}`
+            for every price and the conditions each applies to.
+          example: $5.99
           type: string
-          description: "Human-readable price for this method: 'FREE', a formatted amount like '$5.99', 'DYNAMIC' for carrier-calculated rates, 'CUSTOM' for merchant-scripted rates, or '-' when no price is configured. Reflects only the FIRST configured price, so a method that prices by cart weight or cart value, or that has a free-shipping threshold, may read 'FREE' while most carts are charged something else. Call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for every price and the conditions each applies to."
       required: [id, name, description, priceDisplay]
-    description: "Shipping methods this experience offers. Summary only: call `GET /stores/{storeId}/checkout-experiences/{checkoutExperienceId}` for prices, carriers, conditions, constraints, and which methods are auto-selected."
+      type: object
+    type: array
 required: [id, name, active, createdAt, methods]
-description: "A checkout experience: a named group of shipping methods shown together at checkout. It does not decide who sees it — the checkout tree does. An experience can also group checkout widgets and a post-purchase upsell page; this summary covers only its shipping methods."
-title: "Checkout experience summary"
+title: Checkout experience summary
+type: object

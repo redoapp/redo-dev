@@ -1,33 +1,56 @@
-type: object
+description: >-
+  A checkout experience: a named group of shipping methods shown together at
+  checkout. It does not decide who sees it — the checkout tree does. An
+  experience can also group checkout widgets and a post-purchase upsell page;
+  neither is covered here.
 properties:
   id:
+    description: Checkout experience ID.
+    example: 66b2f1c9e4b0a1d2c3f4a5b6
     type: string
-    description: "Checkout experience ID."
   name:
+    description: Merchant-facing name of the checkout experience.
+    example: Standard rates
     type: string
-    description: "Merchant-facing name of the checkout experience."
   active:
+    description:
+      True when this experience is reachable in the team's live checkout tree.
+    example: true
     type: boolean
-    description: "True when this experience is reachable in the team's live checkout tree."
   createdAt:
+    description: Creation timestamp, ISO 8601 UTC.
+    example: "2026-08-12T15:04:05.000Z"
     type: string
-    description: "Creation timestamp, ISO 8601 UTC."
   methods:
-    type: array
+    description: Shipping methods offered by this experience.
     items: { $ref: ./checkout-shipping-method.schema.yaml }
-    description: "Shipping methods offered by this experience."
+    type: array
   addLandedCosts:
-    description: "True when landed costs (duties and import fees) are added to every method's price in this experience. Omitted when the merchant has never configured it."
+    description:
+      True when landed costs (duties and import fees) are added to every
+      method's price in this experience. Omitted when the merchant has never
+      configured it.
     type: boolean
   fulfillmentDelayDaysOverride:
-    description: "Days Redo assumes an order takes to ship when it estimates delivery dates, for every shipping method in this experience. A dynamic method's own `fulfillmentDelayDaysOverride` takes precedence. Omitted when the experience uses the store-level value. A whole number of days, zero or more."
-    type: integer
+    description: >-
+      Days Redo assumes an order takes to ship when it estimates delivery dates,
+      for every shipping method in this experience. A dynamic method's own
+      `fulfillmentDelayDaysOverride` takes precedence. Omitted when the
+      experience uses the store-level value. A whole number of days, zero or
+      more.
+    example: 2
     minimum: 0
+    type: integer
   autoSelectedShippingMethodIds:
-    description: "Shipping methods shown first at checkout, in this order, as IDs from `methods`. The first one available is pre-selected for the shopper; methods not listed follow in their usual order. Omitted when auto-selection is off for this experience."
-    type: array
+    description: >-
+      Shipping methods shown first at checkout, in this order, as IDs from
+      `methods`. The first one available is pre-selected for the shopper;
+      methods not listed follow in their usual order. Omitted when
+      auto-selection is off for this experience.
+    example: [66b2f1c9e4b0a1d2c3f4a5c8]
     items:
       type: string
+    type: array
 required: [id, name, active, createdAt, methods]
-description: "A checkout experience: a named group of shipping methods shown together at checkout. It does not decide who sees it — the checkout tree does. An experience can also group checkout widgets and a post-purchase upsell page; neither is covered here."
-title: "Checkout experience"
+title: Checkout experience
+type: object
