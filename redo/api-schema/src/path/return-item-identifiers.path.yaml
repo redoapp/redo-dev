@@ -1,0 +1,55 @@
+description: Return item identifiers.
+put:
+  description: >-
+    Set merchant-supplied external identifiers on return items. Each entry in
+    `items` matches a return item by its `id` and records the supplied
+    `externalIdentifier` on it. The full return object is returned after the
+    update.
+
+
+    Possible 400 problem types:
+
+    - `com.getredo.api:return/invalid-request` — the request body is malformed.
+
+    - `com.getredo.api:return/item-not-found` — one or more item IDs supplied
+      in the request do not exist on this return.
+  operationId: Return item identifiers put
+  requestBody:
+    content:
+      application/json:
+        schema:
+          { $ref: ../schema/return-item-identifiers-request.schema.yaml }
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            properties:
+              return: { $ref: ../schema/return-read.schema.yaml }
+            required: [return]
+            type: object
+      description: Success
+    "400":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Invalid request body or item ID not found on this return
+    "404":
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Return not found
+    default:
+      content:
+        application/problem+json:
+          schema: { $ref: ../schema/error.schema.yaml }
+      description: Error
+  security:
+    - Bearer: []
+  summary: Set Return Item Identifiers
+  tags: [Returns]
+parameters:
+  - { $ref: ../param/store-id.param.yaml }
+  - { $ref: ../param/return-id.param.yaml }
+summary: Return Item Identifiers
