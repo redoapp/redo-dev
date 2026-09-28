@@ -3,8 +3,10 @@ description: |
   Return type.
 enum:
   - claim
+  - recycle
   - return
   - warranty
+  - withdrawal
 example: return
 title: Return type
 type: string
