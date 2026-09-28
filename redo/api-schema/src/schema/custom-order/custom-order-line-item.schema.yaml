@@ -58,7 +58,9 @@ properties:
     type: array
   tags:
     default: []
-    description: Tags (use "returns", "package protection", or "both" for Redo items)
+    description: Tags. On a Redo coverage line item, use "returns", "package
+      protection", "both", or "final sale". Read only when the `_redo_type`
+      property is absent.
     items:
       type: string
     title: Tags
