@@ -2850,6 +2850,7 @@ paths:
         - $ref: '#/components/parameters/shopify-order-name'
         - $ref: '#/components/parameters/provider-order-name'
         - $ref: '#/components/parameters/return-status.param'
+        - $ref: '#/components/parameters/return-type.param'
       responses:
         '200':
           content:
@@ -3836,6 +3837,12 @@ components:
       name: status
       schema:
         $ref: '#/components/schemas/return-status.schema'
+    return-type.param:
+      description: Filter returns by type
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/return-type.schema'
     idempotency-key.param:
       description: Optional idempotency key for safely retrying create requests.
       in: header
@@ -9564,8 +9571,10 @@ components:
         Return type.
       enum:
         - claim
+        - recycle
         - return
         - warranty
+        - withdrawal
       example: return
       title: Return type
       type: string
@@ -10314,6 +10323,13 @@ components:
             externalOrderId:
               type: string
               description: External order ID from the ecommerce platform.
+            type:
+              type: string
+              enum:
+                - return
+                - warranty
+              default: return
+              description: Kind of return to create.
             items:
               type: array
               minItems: 1
@@ -10339,7 +10355,11 @@ components:
                     enum:
                       - refund
                       - store_credit
-                    description: How the customer should be compensated for this item.
+                      - same_item_replacement
+                    description: |
+                      How the customer should be compensated for this item.
+
+                      `same_item_replacement` exchanges each unit for the same variant (Shopify, BigCommerce, and Commerce Cloud orders). The request fails with a `com.getredo.api:return/replacement-unavailable` error listing `unavailableLineItemIds` when the variant is out of stock or deleted. If the variant goes out of stock before the return is processed, the item's value goes to a refund or store credit per the store's exchange settings.
                   notes:
                     type: string
                     description: Customer-facing notes for this item.
@@ -10398,6 +10418,37 @@ components:
             notes:
               type: string
               description: Internal merchant-side notes.
+            newOrderShipping:
+              type: object
+              description: |
+                Shipping for the exchange order created for replacement items. When omitted, the customer is charged for shipping at the ecommerce platform's own rates.
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: Title of the exchange order's shipping line.
+                price:
+                  type: object
+                  description: Price charged for the exchange order's shipping. Use an amount of `"0"` for free shipping.
+                  properties:
+                    amount:
+                      type: string
+                      pattern: ^\d+(\.\d+)?$
+                      examples:
+                        - '0'
+                        - '5.00'
+                      description: Non-negative decimal amount.
+                    currency:
+                      type: string
+                      examples:
+                        - USD
+                      description: ISO 4217 currency code. Must match the order's currency.
+                  required:
+                    - amount
+                    - currency
+              required:
+                - name
+                - price
           required:
             - provider
             - externalOrderId

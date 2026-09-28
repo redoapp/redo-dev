@@ -1,0 +1,5 @@
+description: Filter returns by type
+in: query
+name: type
+schema:
+  $ref: ../schema/return-type.schema.yaml
