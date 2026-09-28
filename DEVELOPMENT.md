@@ -25,6 +25,34 @@ bazel run docs
 A local preview of your documentation will be available at
 `http://localhost:3000`.
 
+## Moving or renaming pages
+
+Published page URLs must keep working. When you move, rename, or delete a page,
+add a redirect from the old path to the new one in the `redirects` array of
+`redo/docs.json`:
+
+```json
+{
+  "destination": "/docs/mcp-server/introduction",
+  "source": "/docs/guides/developer-tools/redo-mcp-server"
+}
+```
+
+Paths are the URL paths, including the `/docs` prefix. A whole directory can be
+forwarded with a wildcard:
+
+```json
+{
+  "destination": "/docs/guides/reports/:slug*",
+  "source": "/docs/guides/other/:slug*"
+}
+```
+
+Redirects are only needed for pages that have been published from the release
+branch. Pages that only ever existed on a feature branch can be moved freely.
+Keep old redirects indefinitely; external links and search results outlive any
+restructuring.
+
 ## Generating OpenAPI files
 
 Do not adjust the redo/api-schema/openapi.yaml directly. Instead:

@@ -1,0 +1,192 @@
+---
+title: "SSO with OIDC"
+description: "Sign in to the Redo Merchant App through your identity provider using OpenID Connect (OIDC)"
+icon: "key"
+---
+
+Redo can act as an [OpenID
+Connect](https://openid.net/specs/openid-connect-core-1_0.html) relying party,
+so your team signs in to the Merchant App with your identity provider (IdP)
+instead of a Redo password or email code. Any conformant provider works,
+including Okta, Microsoft Entra ID, Google Workspace, Auth0, and OneLogin.
+
+<Info>
+  This guide covers signing in to the Redo Merchant App at
+  [app.getredo.com](https://app.getredo.com). It doesn't affect how shoppers
+  sign in to your returns portal.
+</Info>
+
+## Overview
+
+Redo uses the [authorization code
+flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth) with
+a client secret, and discovers your provider's endpoints with [OpenID Connect
+Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html). When a
+team member enters their email on the sign-in page and the domain is
+configured for SSO, Redo redirects them to your IdP, exchanges the returned
+code for an ID token, and matches its `email` claim to a user on your team.
+Roles and permissions stay in Redo. Request parameters, token validation, and
+error codes are in the [OpenID Connect reference](/docs/identity/oidc).
+
+
+## Prerequisites
+
+- The **Admin** role in Redo
+- Admin access to your IdP
+- Each team member provisioned with [SCIM](/docs/identity/scim-provisioning)
+  or added under **Settings** → **General** → **Users**, with the email
+  address your IdP will assert. SSO doesn't create users.
+
+## Register Redo in your identity provider
+
+Create a confidential OIDC client using the [client registration
+values](/docs/identity/oidc#client-registration), assign the users or
+groups who should have access, and note the **issuer URL**, **client ID**, and
+**client secret**.
+
+<AccordionGroup>
+<Accordion title="Okta">
+  Follow [Create OIDC app
+  integrations](https://help.okta.com/en-us/content/topics/apps/apps_app_integration_wizard_oidc.htm)
+  and choose **Web Application**.
+
+  The issuer is your org URL, e.g. `https://example.okta.com`, or the issuer of
+  a [custom authorization
+  server](https://developer.okta.com/docs/concepts/auth-servers/) such as
+  `https://example.okta.com/oauth2/default`.
+</Accordion>
+
+<Accordion title="Microsoft Entra ID">
+  Follow [Register an
+  application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)
+  with a **Web** redirect URI, then [add a client
+  secret](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app#add-credentials).
+  Copy the secret's **Value**, not its **Secret ID**.
+
+  The issuer is `https://login.microsoftonline.com/<tenant-id>/v2.0`; see
+  [OpenID Connect on the Microsoft identity
+  platform](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc).
+
+  Entra doesn't always emit `email` in the ID token. If sign-in fails with a
+  missing email, add it as an [optional
+  claim](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims).
+  Entra secrets expire; see [Rotate the client
+  secret](#rotate-the-client-secret).
+</Accordion>
+
+<Accordion title="Google Workspace">
+  Follow [OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect)
+  to create a **Web application** OAuth client. Set the consent screen's user
+  type to **Internal** to restrict sign-in to your organization.
+
+  The issuer is `https://accounts.google.com`.
+</Accordion>
+</AccordionGroup>
+
+## Configure Redo
+
+<Steps>
+<Step title="Open the SSO settings">
+  In the [Redo Dashboard](https://app.getredo.com), go to **Settings** →
+  **General** → **Single sign-on** and click **Add identity provider**.
+</Step>
+
+<Step title="Enter the connection details">
+  <ParamField path="Issuer URL" type="string" required>
+    The `issuer` value from your provider's discovery document. Redo fetches
+    `<issuer>/.well-known/openid-configuration` and validates the `iss` claim
+    of every ID token against it.
+  </ParamField>
+
+  <ParamField path="Client ID" type="string" required>
+    The client ID from your IdP.
+  </ParamField>
+
+  <ParamField path="Client secret" type="string" required>
+    The client secret from your IdP. Stored encrypted and not shown again
+    after saving; enter a new value to replace it.
+  </ParamField>
+
+  <ParamField path="Email domains" type="string[]" required>
+    Domains, e.g. `example.com`, whose users are sent to your IdP at sign-in.
+    Other users continue to sign in as before.
+  </ParamField>
+</Step>
+
+<Step title="Test and save">
+  Click **Test connection** to run a sign-in against your IdP in a new window.
+  Redo reports whether it received a valid ID token and which email address it
+  contained. Nothing changes for other users until you click **Save**.
+</Step>
+</Steps>
+
+### Require SSO
+
+By default, users with a matching email domain can still sign in with a
+password or email code. Once SSO is confirmed working, turn on **Require SSO**
+to disable those methods for matching domains.
+
+<Warning>
+  With **Require SSO** on, a broken IdP configuration locks out your whole
+  team. Contact [support@getredo.com](mailto:support@getredo.com) and we'll
+  turn the requirement off so you can sign in and fix it.
+</Warning>
+
+## User matching
+
+Redo matches the ID token's `email` claim, case-insensitively, to a user on
+your team (see [Claims](/docs/identity/oidc#claims)). Users aren't created at
+sign-in: provision them with
+[SCIM](/docs/identity/scim-provisioning) or add them under
+**Settings** → **General** → **Users**. Roles come from **Settings** →
+**General** → **Roles** or from SCIM groups, not from ID token claims.
+
+## Sessions and sign-out
+
+- Signing out of Redo ends the Redo session only; it doesn't sign the user
+  out of your IdP.
+- Deactivating a user in your IdP blocks new sign-ins but doesn't end active
+  sessions. Deactivation pushed through SCIM ends sessions immediately; without
+  SCIM, also remove the user under **Settings** → **General** → **Users**.
+
+## Rotate the client secret
+
+1. Create a new secret in your IdP, leaving the old one valid
+2. In Redo, go to **Settings** → **General** → **Single sign-on**, enter the
+   new value in **Client secret**, and save
+3. Delete the old secret in your IdP
+
+Once a secret expires, every SSO sign-in fails with `invalid_client` until a
+new one is saved in Redo.
+
+## Troubleshooting
+
+Every sign-in error message and its cause is listed in the [OpenID Connect
+reference](/docs/identity/oidc#errors). The ones below have fixes that aren't
+obvious from the message.
+
+<AccordionGroup>
+<Accordion title="Couldn’t reach your identity provider">
+  Discovery failed. Open `<issuer>/.well-known/openid-configuration` in a
+  browser: it must return a document whose `issuer` exactly equals the
+  **Issuer URL** you entered, including scheme, path, and trailing slash.
+</Accordion>
+
+<Accordion title="Your IdP reports a redirect URI mismatch">
+  The registered redirect URI isn't exactly
+  `https://app.getredo.com/login/oidc/callback`. Check the scheme, path, and
+  trailing slash.
+</Accordion>
+
+<Accordion title="Your identity provider didn’t return an email address">
+  Neither the ID token nor UserInfo contained `email`. Confirm the `email`
+  scope is granted and the user has an email address in your IdP. Entra ID
+  may need `email` as an optional claim.
+</Accordion>
+
+<Accordion title="No Redo user matches this email address">
+  The asserted email isn't on your team. Provision the user with SCIM or add
+  them under **Settings** → **General** → **Users** with the exact address
+  your IdP sends; invited addresses often differ from the IdP's primary email.
+</Accordion>
+</AccordionGroup>
